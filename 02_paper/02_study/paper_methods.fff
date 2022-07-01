@@ -2,7 +2,7 @@
 \ifnextchar[{\eatarg}{}
 
 
-{\centering \includegraphics{./pictures/tobiiglasses2}
+{\centering \includegraphics[width=14.07in]{./pictures/tobiiglasses2}
 
 }
 
