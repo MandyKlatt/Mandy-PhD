@@ -45,7 +45,8 @@ draft             : no
 documentclass     : "apa6"
 classoption       : "man"
 output            : papaja::apa6_pdf
-# bookdown::word_document2
+# bookdown::word_document2 papaja::apa6_pdf
+
 ---
 
 
@@ -368,13 +369,15 @@ The novice teachers (`r demo.data %>% filter(Gender == 1 & Group == "Novice") %>
 
 The subjects were primarily recruited through personal contacts, social media (Facebook), e-mail distribution lists and advertising in lectures at the University Leipzig. All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board. The authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
-## 
+## Design
 
-## Variables
+The underlying research was conducted as a laboratory study in a cross-sectional study design as part of the dissertation project *ProVisioNET*. This project investigates whether and how a teacher's classroom experiences have an impact on the perception of and response to classroom disruptions.
 
-All stimuli are freely available in the following online repository: https://github.com/... .
+The study was based on a quasi-experimental study design, as there was no random assignment of subjects to experimental conditions. Due to the use of MET technology, the study had a high external validity (Gegenfurtner et al., 2018). To ensure internal validity the occurring instructional events were exactly the same for all subjects, as the learners received precise behavioral instructions. These disruptions followed a script and coding guide in which the actions of the class were precisely described. The order of the disruptions as well as the performing actors were prompted and fully balanced with Latin Square. The scripted behavioral instructions during the classroom sequence distinguish this study with a high degree of standardization, especially when compared to events that take place in a real classroom. The study was based on an experimental manual, script, and coding guide which explicitly describes the execution, evaluation and interpretation of the data and thus and interpretation of the data, thus making them objectively ascertainable and measurable.
 
-### Eye-Tracking data
+## Materials
+
+### Eye-Tracking Apparatus
 
 To record eye-tracking data, teachers wore a binocular Tobii Pro Glasses 2 eye-tracker during the micro-teaching-unit. The system consisted of a wearable head unit and a recording unit. As shown in Figure \@ref(fig:tobiiglasses2), the head unit was a measuring device with different sensors. A high-definition scene camera captured a full HD video of the teacher’s field of vision. An integrated microphone recorded the surrounding sounds. Infrared light illuminators supported the eye tracking sensors which recorded the eye orientation to capture the teacher's gaze point as shown in Figure \@ref(fig:teachersgaze). The videos were recorded with a sampling rate of 50 Hz in a video resolution with 1920 x 1080 at 25 frames per second. The scene camera had a field of view of 90 deg. in 16:9 format (82 deg. horizontal and 52 deg. vertical) and a frame dimension of 179 x 159 x 57 mm (width x depth x height). 
 
@@ -390,21 +393,50 @@ knitr::include_graphics("./pictures/teachersgaze.pdf", dpi = 108)
 
 ```
 
-
-
 ### Video data
 
-The speech, sounds and voices of the participants were recorded with Zoom H3-VR Ambient Recorder installed in the middle of the lab setting (see set up plan \@ref(fig:setup). The Zoom H3-VR recorded with four built-in mics arranged in an Ambisonic array with a bitrate of 4608 kBits/s. 
+#### Apparatus 
 
-Movements, facial expressions and gestures of the subjects were recorded by four Go Pro Hero 7 black cameras from different angles (see set up plan \@ref(fig:setup). The videos were recorded with a sampling rate of 50 Hz in a video resolution with 1920 x 1080 at 50 frames per second in 16:9 format with a linear field of view. 
+The speech, sounds and voices of the participants were recorded with Zoom H3-VR Ambient Recorder installed in the middle of the lab setting (see set up plan \@ref(fig:setup). The Zoom H3-VR recorded with four built-in mics arranged in an Ambisonic array with a bitrate of 4608 kBits/s. Movements, facial expressions and gestures of the subjects were recorded with four Go Pro Hero 7 black cameras from different angles (see set up plan \@ref(fig:setup). The videos were recorded with a sampling rate of 50 Hz in a video resolution with 1920 x 1080 at 50 frames per second in 16:9 format with a linear field of view. 
+
+#### Videography: Coding scheme for expertise indicators
+
+Part of the test procedure was that the subject taught a 15min micro-teaching-unit and was disrupted by the students in the class. The participant's behavior and reaction to the disruption were recorded using video cameras and then evaluated with two self developed coding schemes to assess the teacher's reaction on the one hand and the time on task during the unit. Both aspects are important indicators of teaching quality and are therefore used as another measure to make differences in expertise visible and measurable.
+
+Video analysis was chosen as the research method for evaluating the teacher's reaction to classroom disruptions because it offers numerous advantages. In contrast to transcripts or audio-only recordings, a video also shows nonverbal forms of communication, which is emphasized here, as well as the entire complex lesson excerpt in which many things happen simultaneously (cf. Krammer & Reusser, 2012, p. 47f). Video data can also be viewed and analyzed over and over again from different perspectives (Petko et al., 2003, p. 265). The possible problem of selectivity (cf. Petko et al., 2003, p. 271), i.e., the fact that only a section of the events can be shown due to the position and perspective of the camera, was countered by recording the lessons from a total of four cameras. In this way, a case of doubt can be analyzed from several angles. Another challenge can be the so-called 'camera effect', i.e. that the filmed persons feel disturbed and act differently than usual and less naturally. However, Petko et al. (2003) conclude, despite filming with a camera person at the time, that there is little reason to believe that teachers can easily change their teaching style from one lesson to the next (p. 270) and that it should not be assumed that the mere presence of a camera has significantly improved or worsened teaching' (p. 270). In the 'ProVisioNET' survey, four very small cameras were placed in the room and their presence was barely noticeable. Accordingly, it is assumed that no major nuisance emanates from them.
+
+Schnettler and Knoblauch (2009, p. 227) distinguish 'natural' and edited video data, depending on whether the situation was created specifically for the recording or whether the situation was influenced as little as possible or not at all. In the survey for this paper, although the subjects were to act exactly as they would have done without a camera, the classroom disruptions were scripted events that were performed by the actors.
+
+
+##### Coding Teachers' Reaction
+
+The evaluation of the teacher's reaction to the disruptions was conducted as a systematic observation using a category system with fixed categories and instructions. This corresponds to a highly inferential procedure, which is combined with an event sampling procedure (cf. Lotz et al., 2013, p. 359). 
+
+A theory-based coding scheme was developed as an observation tool for classroom observation. The coding of the reactions was done in seven levels. Based on the literature on effective approaches to classroom disruptions, nonverbal response was given Code 1 as the best variant because it best accommodates the classroom management strategies of presence and overlapping (cf. Kounin 2006; Gold & Holodynski 2015) by not interrupting the flow of instruction. Code 2 or Code 3 was assigned for a brief verbal expression with or without a preceding nonverbal response. A brief, timely, and purposeful rebuke of the disruptive student is considered by Kounin (2009, p. 99), among others, to be an important component of the strategy of presence and thus demonstrates good classroom management. If the teacher reacts non-verbally and at the same time with a longer verbal statement, code 4 was assigned, because the flow of the lesson was already noticeably delayed. There were two possibilities, if there was no reaction: If the teacher deliberately ignored the disruption, code 5 was assigned. If the teacher did not notice the disruption, code 6 was assigned, because then no effective monitoring was realized (cf. Gold & Holodynski, 2015). If the reaction to the disruption was dysfunctional, i.e., if the teacher shows an inappropriate reaction, such as explaining the class rules for a very long time in the case of an insignificant disruption, code 7 was assigned. According to Gippert et al. (2019), there is a relational error in such cases, as the intensity of the student response should be relative to the disruptive behavior (p. 2).
+
+In developing the coding system, questions initially aroused about how descriptions of responses should be made and in what order (especially codes 3-4). Initially, it was planned to assign code 3 for a nonverbal and simultaneously long verbal response and code 4 for a purely verbal response. However, during the initial trial coding of the videos, it became apparent that it was difficult to reliably distinguish nonverbal reactions to a classroom disruption from normal facial expressions and gestures of the teacher when talking. Moreover, during a prolonged verbal utterance, nonverbal signs could virtually always be detected. Furthermore, a category for short, purely verbal reactions was missing.
+
+After developing and reviewing the coding system, the observers coordinated and the consistency of their ratings was verified. For the evaluation, the individual videos of the sample were then coded and the data transferred to an Excel file.
+
+###### Test quality criteria
+
+In the construction of the video analysis method, attention was paid to compliance with the quality criteria of objectivity, reliability and validity.
+
+In order to ensure implementation objectivity, uniform implementation conditions were created. In the experimental manual of the ProVisioNET study, the survey procedure is described in detail, so that it is the same for each participant. On the one hand, the objectivity of the evaluation was given by the processing in the R. On the other hand, prior to the analysis of the videos, a precise coding scheme, which precisely describes the individual codes, explains them and contains examples, was created and discursively discussed in the team (see chapter 4.4.1). This coding scheme was tested and revised in a piloting process, which increased the internal validity of the method. Interrater reliability was determined for the two raters using sample ratings of the same videos. Percent agreement yielded 77.8% and a Cohen's Kappa of k = 0.6, which is a satisfactory value according to Landis & Koch (1977). Interpretive objectivity was ensured by specifying scientific hypotheses that then had to be neutrally tested.
+
+With the help of scripted behavioral instructions for students in the instructional unit, a high degree of standardization was achieved that is not present in the normal school setting. The lessons were recorded with several video cameras from different angles and an audio recorder. This means a big advantage compared to the subjective evaluation of observers in real time. In addition, video recordings can be viewed multiple times, by different people or from different perspectives. Thus, a high measurement accuracy (reliability) is given (cf. Mayring, P., Gläser-Zikuda, M., & Ziegelbauer, 2005). All measures taken contribute to increase the validity of the method. However, it cannot be answered whether the coding scheme is completely valid, because a validation with the help of another measuring instrument was not possible. Therefore, it could not be controlled whether the collected construct is related to other similar constructs.
+
+##### Coding Time on Task
 
 
 
-### Questionnaire data
+### Questionnaie data
+
+#### Presence Questionnaire
 
 After each micro-teaching-unit, the three actors answered items on teaching quality using a validated questionnaire [@helmke2014unterrichtsdiagnostik] and self developed scales on the teacher's presence behavior derived from the research literature. In addition, subjects were asked to give a self-assessment on  classroom management by completing the same questionnaire after each micro-teaching-unit. The questionnaire was a 4-point Likert scale (1 = Strongly Disagree; 2 = Disagree; 3 = Agree; 4 = Strongly Agree).
 
-```{r presence_questionnaire_novices, include=TRUE, echo=FALSE, results='asis'}
+```{r presence_questionnaire, include=TRUE, echo=FALSE, results='asis'}
 # load data files
 quest.data <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
   mutate(Group = ifelse(LI06_05 < 200, "Novice","Expert")) %>%
@@ -423,7 +455,7 @@ rownames(quest.table.novice) <- c("LM", "LB", "LP", "LV")
   colnames(quest.table.novice) <- c("N Items","M","SD","Min","Max","Skewness","Kurtosis","alpha")
 
 # creating a loop
-# i <- "LM"
+i <- "LM"
 
 for (i in c("LM", "LB", "LP", "LV")) {
 
@@ -501,9 +533,8 @@ quest.table.novice,
   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
 )
-```
 
-```{r presence_questionnaire_experts, include=TRUE, echo=FALSE, results='asis'}
+
 
 ############## EXPERT TABLE #########################
 
@@ -594,35 +625,74 @@ quest.table.expert,
 
 ```
 
-```{r item_analysis_classroom_management, include=TRUE, results='asis'}
-# quest.data %>%
-#   dplyr::select(contains("LM")) %>%
-#   as.data.frame() %>%
-#   tab_itemscale(CSS = list(
-#     css.firsttablerow.col7 = "'cronbachs alpha';"
-#   ))
+```{r item_analysis_classroom_management_novice, echo=FALSE, include=FALSE, results='asis'}
+quest.data %>%
+  dplyr::filter(Group == "Novice") %>% 
+  dplyr::select(contains("LM")) %>%
+  as.data.frame() %>%
+  tab_itemscale(CSS = list(
+    css.firsttablerow.col7 = "'cronbachs alpha';"
+  ))
 ```
 
-```{r item_analysis_balance, include=TRUE, results='asis'}
-# quest.data %>%
-#   dplyr::select(contains("LB")) %>%
-#   as.data.frame() %>%
-#   tab_itemscale()
+```{r item_analysis_classroom_management_expert, echo=FALSE, include=FALSE, results='asis'}
+quest.data %>%
+  dplyr::filter(Group == "Expert") %>% 
+  dplyr::select(contains("LM")) %>%
+  as.data.frame() %>%
+  tab_itemscale(CSS = list(
+    css.firsttablerow.col7 = "'cronbachs alpha';"
+  ))
 ```
 
-```{r item_analysis_presence, include=TRUE,results='asis'}
-# quest.data %>%
-#   dplyr::select(contains("LP")) %>%
-#   as.data.frame() %>%
-#   tab_itemscale()
+```{r item_analysis_balance_novice, echo=FALSE, include=FALSE, results='asis'}
+quest.data %>%
+  dplyr::filter(Group == "Novice") %>% 
+  dplyr::select(contains("LB")) %>%
+  as.data.frame() %>%
+  tab_itemscale()
 ```
 
-```{r item_analysis_behavior, include=TRUE,results='asis'}
-# quest.data %>%
-#   dplyr::select(contains("LV")) %>%
-#   as.data.frame() %>%
-#   tab_itemscale()
+```{r item_analysis_balance_expert, echo=FALSE, include=FALSE, results='asis'}
+quest.data %>%
+  dplyr::filter(Group == "Expert") %>%
+  dplyr::select(contains("LB")) %>%
+  as.data.frame() %>%
+  tab_itemscale()
 ```
+
+```{r item_analysis_presence_novice, echo=FALSE, include=FALSE,results='asis'}
+quest.data %>%
+  dplyr::filter(Group == "Novice") %>%
+  dplyr::select(contains("LP")) %>%
+  as.data.frame() %>%
+  tab_itemscale()
+```
+
+```{r item_analysis_presence_expert, echo=FALSE, include=FALSE,results='asis'}
+quest.data %>%
+  dplyr::filter(Group == "Expert") %>%
+  dplyr::select(contains("LP")) %>%
+  as.data.frame() %>%
+  tab_itemscale()
+```
+
+```{r item_analysis_behavior_novice, echo=FALSE, include=FALSE,results='asis'}
+quest.data %>%
+  dplyr::filter(Group == "Novice") %>%
+  dplyr::select(contains("LV")) %>%
+  as.data.frame() %>%
+  tab_itemscale()
+```
+
+```{r item_analysis_behavior_expert, echo=FALSE, include=FALSE,results='asis'}
+quest.data %>%
+  dplyr::filter(Group == "Expert") %>%
+  dplyr::select(contains("LV")) %>%
+  as.data.frame() %>%
+  tab_itemscale()
+```
+
 
 #### Rating scales 
 
@@ -638,10 +708,70 @@ Both questions were answered using a scale ranging from 0 to 10. On this scale, 
 
 With these rating scales, the subjects indicated their personal subjective feeling towards the individual lesson disruption. Rating scales usually consist of a number of clearly arranged categories that can be presented visually in a variety of ways [@albers2009methodik, p. 67f]. In the present questionnaire, the numerical representation with eleven answer options (0-10) was used. There was no specific designated neutral position. In this questionnaire, the middle category 5 was not interpreted as a neutral position. In order to avoid misinterpretations of the scaling, the questionnaire was described verbally by the experimenter and follow-up questions from the test subjects were possible at any time. With regard to the quality criteria, it should be made clear that complete objectivity in answering the two questions is given by the rating scales. The question remained the same for all subjects and no additional comments were made. Validity can also be assumed for the questionnaire, since the subjects couls ask follow-up questions and thus uncertainties were clarified. However, similar to the video data, there was no perfect reliability with this survey instrument, because in a few exceptional cases, for example, the experimenter forgot to ask the subject the relevant questions.
 
+```{r rating_scales, include=TRUE, echo=FALSE, results='asis'}
 
-#### Situational Jugdement Test
+# read in data and combine multiple excel sheets into a single table 
+sri <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% 
+  dplyr::select(Group, Event, `Disruption Factor`, `Confident Factor`) %>% # select relevant columns
+  dplyr::filter(!`Disruption Factor` == -100,
+           !`Confident Factor` == -100,
+           !`Disruption Factor`== -99,
+           !`Confident Factor` == -99)
 
-To assess the strategic knowledge of classroom management, subjects answered a Situational Judgement Test (SJT, [@gold2015development]). In the questionnaire, participants were given hypothetical school scenarios with with 5-7 response strategy for which they had to evaluate the effectiveness of each strategy on a 6-point rating scale from 1 (A) to 6 (F) according to school grades (see example scenario XXX REFERENZ EINFÜGEN). 
+############## Disruption Factor #########################
+
+sri.disrup.table <- 
+  sri %>%
+  group_by(Group, Event) %>%
+  mutate(Group = ifelse(Group < 200, "Novice","Expert")) %>%
+  summarise("M" = round(mean(`Disruption Factor`), 
+                        digits = 2),
+            "SD" = round(sd(`Disruption Factor`),
+                         digits = 2),
+            "Min" = min(`Disruption Factor`),
+            "Max" = max(`Disruption Factor`))
+
+# format and insert table in manuscript
+papaja::apa_table(
+sri.disrup.table,
+  caption = "Table Rating Scales Disruption Factor",
+  # note = "Write Note here",
+  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+  font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+)
+
+############## Confident Factor #########################
+
+sri.confi.table <- 
+  sri %>%
+  group_by(Group, Event) %>%
+  mutate(Group = ifelse(Group < 200, "Novice","Expert")) %>%
+  summarise("M" = round(mean(`Confident Factor`), 
+                        digits = 2),
+            "SD" = round(sd(`Confident Factor`),
+                         digits = 2),
+            "Min" = min(`Confident Factor`),
+            "Max" = max(`Confident Factor`))
+
+# format and insert table in manuscript
+papaja::apa_table(
+sri.confi.table,
+  caption = "Table Rating Scales Confident Factor",
+  # note = "Write Note here",
+  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+  font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+)
+
+```
+
+
+#### Situational Jugdement Test of Strategic Knowledge of Classroom Management
+
+To assess the strategic knowledge of classroom management, subjects answered a Situational Judgement Test (SJT, [@gold2015development]). In the questionnaire, participants were given hypothetical school scenarios with five to six response strategies for which they had to evaluate the effectiveness of each strategy on a 6-point rating scale from 1 (A) to 6 (F) according to school grades (see example scenario XXX REFERENZ EINFÜGEN). Depending on the grade given to each strategy, scores were converted in an SPSS syntax resulting in scores ranging from 0 to 1 for each participant.
 
 In developing the test procedure, the authors divided the concept of classroom management into three main aspects: *Monitoring*, *managing momentum* (structuring) and *rules and routines* [@gold2015development, p. 230f]. 
 
@@ -659,7 +789,203 @@ The scenarios could each be assigned to one facet of the mentioned classroom man
 
 In the current study, objectivity of application was ensured by the questionnaire-format, the written instructions and by a detailed test administration manual of the study *ProVisioNET*. The objectivity of analysis was given by processing the obtained questionnaire data in `r cite_r("r-references.bib")` and IBM SPSS 28.
 
-Since the test was a questionnaire designed to assess strategic knowledge of classroom management of *primary school teachers*, but the sample of the study included several types of schools, changes were made in 10 out of 12 scenarios by deleting the indicated class grade. Only in two scenarios was the class grade information not deleted, as the action alternatives would otherwise not be appropriate without the information.
+Since the test was a questionnaire designed to assess strategic knowledge of classroom management of *primary school teachers*, but the sample of the study included several types of schools, changes were made in 10 out of 12 scenarios by deleting the indicated class grade. Only in two scenarios was the class grade information not deleted, as the action alternatives would otherwise not be appropriate without the information. 
+
+```{r sjt, include=TRUE, echo=FALSE, results='asis'}
+
+# read in data
+df_sjt <- read_csv2(file = "data/SJT.csv") %>% 
+  mutate(Group = ifelse(UI06_05 < 200, "Novice","Expert")) %>%
+  dplyr::select(Group, 
+                PK_S1_AL:PK_S14_R)
+
+# remove NAs
+df_sjt <- na.omit(df_sjt)
+
+# create two data frames
+sjt.novice <- df_sjt %>% filter(Group == "Novice")
+sjt.expert <- df_sjt %>% filter(Group == "Expert")
+
+
+############## NOVICE TABLE #########################
+
+# creating a matrix
+sjt.table.novice <- 
+  matrix(data = NA, nrow = 3, ncol = 8)
+  rownames(sjt.table.novice) <- c("AL", "ST", "R")
+  colnames(sjt.table.novice) <- c("N Items","M","SD","Min","Max","Skewness","Kurtosis","alpha")
+
+# creating a loop
+i <- "AL"
+
+for (i in c("AL", "ST", "R")) {
+
+loop.data <- sjt.novice %>%
+  dplyr::select(ends_with(match = i))
+
+sjt.table.novice[i, "N Items"] <- length(loop.data)
+
+# calculating mean
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  mean() %>%
+  round(., digits = 2) ->
+sjt.table.novice[i, "M"]
+
+# calculating SD
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  sd() %>%
+  round(., digits = 2) ->
+sjt.table.novice[i, "SD"]
+
+# calculating Min
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  min() %>%
+  round(., digits = 2) ->
+sjt.table.novice[i, "Min"]
+
+# calculating Max
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  max() %>%
+  round(., digits = 2) ->
+sjt.table.novice[i, "Max"]
+
+# calculating Skewness
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  skewness() %>%
+  round(., digits = 2) ->
+sjt.table.novice[i, "Skewness"]
+
+# calculating Kurtosis
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  kurtosis() %>%
+  round(., digits = 2) ->
+sjt.table.novice[i, "Kurtosis"]
+
+# calculating alpha
+alpha <- loop.data %>%
+  cronbach.alpha()
+
+sjt.table.novice[i, "alpha"] <- round(alpha$alpha,2)
+
+}
+
+# rename columns
+rownames(sjt.table.novice) <- c("Monitoring", "Managing Momentum", "Rules and routines")
+
+
+# format and insert table in manuscript
+papaja::apa_table(
+sjt.table.novice,
+  caption = "Scale analysis SJT novices",
+  # note = "Write Note here",
+  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+  font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+)
+
+
+
+############## EXPERT TABLE #########################
+
+# creating a matrix
+sjt.table.expert <- 
+  matrix(data = NA, nrow = 3, ncol = 8)
+  rownames(sjt.table.expert) <- c("AL", "ST", "R")
+  colnames(sjt.table.expert) <- c("N Items","M","SD","Min","Max","Skewness","Kurtosis","alpha")
+
+# creating a loop
+i <- "AL"
+
+for (i in c("AL", "ST", "R")) {
+
+loop.data <- sjt.expert %>%
+  dplyr::select(ends_with(match = i))
+
+sjt.table.expert[i, "N Items"] <- length(loop.data)
+
+# calculating mean
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  mean() %>%
+  round(., digits = 2) ->
+sjt.table.expert[i, "M"]
+
+# calculating SD
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  sd() %>%
+  round(., digits = 2) ->
+sjt.table.expert[i, "SD"]
+
+# calculating Min
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  min() %>%
+  round(., digits = 2) ->
+sjt.table.expert[i, "Min"]
+
+# calculating Max
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  max() %>%
+  round(., digits = 2) ->
+sjt.table.expert[i, "Max"]
+
+# calculating Skewness
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  skewness() %>%
+  round(., digits = 2) ->
+sjt.table.expert[i, "Skewness"]
+
+# calculating Kurtosis
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  kurtosis() %>%
+  round(., digits = 2) ->
+sjt.table.expert[i, "Kurtosis"]
+
+# calculating alpha
+alpha <- loop.data %>%
+  cronbach.alpha()
+
+sjt.table.expert[i, "alpha"] <- round(alpha$alpha,2)
+
+}
+
+# rename columns
+rownames(sjt.table.expert) <- c("Monitoring", "Managing Momentum", "Rules and routines")
+
+
+# format and insert table in manuscript
+papaja::apa_table(
+sjt.table.expert,
+  caption = "Scale analysis SJT novices",
+  # note = "Write Note here",
+  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+  font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+)
+
+```
 
 
 ## Procedure
@@ -707,8 +1033,7 @@ After the lesson, the time was again noted from the smartwatch as well as the su
 
 After the letter search, the experimenter clapped twice with the hands to record an acoustic signal for the synchronization of all technical devices. Afterwards, all devices were switched off and the subjects as well as the actors were given a short questionnaire, which contained items to collect demographic information as well as items about the previously given lesson on teaching quality using a validated questionnaire [@helmke2014unterrichtsdiagnostik] and self developed scales on the teacher's presence behavior derived from the research literature. The completion of the questionnaire took approximately 5 minutes.
 
-In the second part of the study, the experimenter conducted a Stimulated Recall Interview (SRI) with the subject(see in Figure \@ref(fig:sri). The interview was recorded by the ambient recorder and additionally with a software called OBS to record the speech and screen. The recorded eye-tracking video was watched and commented on by the subject while thinking aloud. The interview was structured by a guideline based on a fixed sequence of questions, however the subjects were allowed to answer completely open to these questions. The objective was to collect data that would provide insight into the subjects' thoughts and reactions in relation to the scripted classroom disruptions. The eye-tracking video was not completely re-watched, but stopped at the points where disruptions occurred. After the disruption occurred, the subject was asked to describe what had just happened. If the disruption was noticed, the subject was asked how disruptive the event was at that moment on a scale from 0 to 10 (for a detailed description of the scale question, see Rating Scales). In addition, the subject was asked to reason the given number. In a next step, the experimenter re-played the subject's reaction to the disruption and asked to describe and reason the reaction. The 
-
+In the second part of the study, the experimenter conducted a Stimulated Recall Interview (SRI) with the subject(see in Figure \@ref(fig:sri). The interview was recorded by the ambient recorder and additionally with a software called OBS to record the speech and screen. The recorded eye-tracking video was watched and commented on by the subject while thinking aloud. The interview was structured by a guideline based on a fixed sequence of questions, however the subjects were allowed to answer completely open to these questions. The objective was to collect data that would provide insight into the subjects' thoughts and reactions in relation to the scripted classroom disruptions. The eye-tracking video was not completely re-watched, but stopped at the points where disruptions occurred. After the disruption occurred, the subject was asked to describe what had just happened. If the disruption was noticed, the subject was asked how disruptive the event was at that moment on a scale from 0 to 10. In addition, the subject was asked to reason the given number. In a next step, the experimenter re-played the subject's reaction to the disruption and asked to describe and reason the reaction. The experimenter then asked the subject to rate on a scale from 0 to 10 how confident he/she felt in dealing with the disruption and again to reason the number (for a detailed description of the scale question, see Rating Scales).
 
 
 ```{r sri, include = T, fig.cap = "Subject and experimenter during the Stimulated Recall Interview", fig.align = "center", echo = FALSE}
@@ -717,8 +1042,7 @@ knitr::include_graphics("./pictures/sri.pdf", dpi = 108)
 
 ```
 
-Finally, the subjects answered a Situational Judgement Test (SJT, [@gold2015development]) in the form of a questionnaire. Here they had to assess teaching scenarios and evaluate their behavior in response to them. The SJT was used to assess strategic knowledge about classroom management. The
-completion of the entire survey took 15 min on average.
+Finally, the subjects answered a Situational Judgement Test of Strategic Knowledge of Classroom Management (SJT, [@gold2015development]) in the form of a questionnaire. Here they had to assess teaching scenarios and evaluate their behavior in response to them. The SJT was used to assess strategic knowledge about classroom management. The completion of the entire survey took 15 min on average.
 
 
 ## Data analysis
