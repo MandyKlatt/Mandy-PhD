@@ -261,18 +261,6 @@ demo.data <-
 # changing character Percent_schooltype into numeric
 demo.data$Percent_schooltype <- as.numeric(demo.data$Percent_schooltype)
 
-
-XXX
-
-# creating a subset to report school type in text
-demo.school <- 
-  demo.data %>% 
-  dplyr::select(Group,
-         Percent_schooltype) %>% 
-  group_by(Group) %>% 
-  summarise_each(funs(sum))
-
-
 # changing character Semester into numeric
 demo.data$Semester <- as.numeric(demo.data$Semester)
 
@@ -373,16 +361,10 @@ The inclusion criterion for experts was that they have successfully completed te
 
 
 The expert teachers (`r demo.data %>% filter(Gender == 1 & Group == "Expert") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(Group == "Expert") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(Group == "Expert") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(Group == "Expert") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(Group == "Expert") %>% pull("Min Age in years")`-`r demo.table %>%  filter(Group == "Expert") %>% pull("Max Age in years")`) and an average teaching experience of `r exp.table %>% filter(Group == "Expert") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years (*SD* = `r exp.table %>% filter(Group == "Expert") %>% pull("SD Exp.") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Expert") %>% pull("Min Exp.")`-`r exp.table %>%  filter(Group == "Expert") %>% pull("Max Exp.")`). 
-
-`r demo.data %>% filter(Group == "Expert" & School_type == "Primary School") %>% pull("Percent_schooltype")`% of the experts were primary school teachers and `r demo.data %>% filter(Group == "Expert" & School_type == "Secondary School") %>% pull("Percent_schooltype")`% were secondary school teachers. 
-
-`r exp.table %>% filter(Group == "Expert") %>% pull("Secondary Teaching Activities")`% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers. 
+`r demo.data %>% filter(Group == "Expert" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the experts were primary school teachers and `r demo.data %>% filter(Group == "Expert" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% were secondary school teachers. `r exp.table %>% filter(Group == "Expert") %>% pull("Secondary Teaching Activities")`% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers. 
 
 The novice teachers (`r demo.data %>% filter(Gender == 1 & Group == "Novice") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(Group == "Novice") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(Group == "Novice") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(Group == "Novice") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(Group == "Novice") %>% pull("Min Age in years")`-`r demo.table %>%  filter(Group == "Novice") %>% pull("Max Age in years")`) with an average teaching experience of `r exp.table %>% filter(Group == "Novice") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years. On average, the student teachers were in their `r exp.table %>% filter(Group == "Novice") %>% pull("M Semester") %>% mean() %>% round(., digits = 1)` semester (*SD* = `r exp.table %>% filter(Group == "Novice") %>% pull("SD Semester") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Novice") %>% pull("Min Semester")`-`r exp.table %>%  filter(Group == "Novice") %>% pull("Max Semester")`). Furthermore, they had an average teaching experience of `r exp.table %>% filter(Group == "Novice") %>% pull("M Internship") %>% mean() %>% round(., digits = 1)` teaching units à 45min (*SD* = `r exp.table %>% filter(Group == "Novice") %>% pull("SD Internship") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Novice") %>% pull("Min Internship")`-`r exp.table %>%  filter(Group == "Novice") %>% pull("Max Internship")`) through the internships during their studies. 
-
-`r demo.data %>% filter(Group == "Novice" & School_type == "Primary School") %>% pull("Percent_schooltype")`% of the novices were studying to become primary school teachers, `r demo.data %>% filter(Group == "Novice" & School_type == "Secondary School") %>% pull("Percent_schooltype")`% to become secondary school teachers and `r demo.data %>% filter(Group == "Novice" & School_type == "Special Education") %>% pull("Percent_schooltype")`% to become special education teachers. 
-
-`r exp.table %>% filter(Group == "Novice") %>% pull("Extracurricular Teaching Experience")`% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision. 
+`r demo.data %>% filter(Group == "Novice" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the novices were studying to become primary school teachers, `r demo.data %>% filter(Group == "Novice" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% to become secondary school teachers and `r demo.data %>% filter(Group == "Novice" & School_type == "Special Education") %>% pull("Percent_schooltype") %>% unique()`% to become special education teachers. `r exp.table %>% filter(Group == "Novice") %>% pull("Extracurricular Teaching Experience")`% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision. 
 
 The subjects were primarily recruited through personal contacts, social media (Facebook), e-mail distribution lists and advertising in lectures at the University Leipzig. All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board. The authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 

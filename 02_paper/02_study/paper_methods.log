@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.6.4)  1 JUL 2022 17:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.6.4)  2 JUL 2022 16:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -722,26 +722,29 @@ Underfull \vbox (badness 2189) has occurred while \output is active []
 [21] [22]
 \openout3 = `paper_methods.ttt'.
 
-(paper_methods.ttt) [23] [24]
+(paper_methods.ttt) [23]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[24]
 \openout4 = `paper_methods.fff'.
 
 (paper_methods.fff)
 
-LaTeX Warning: Reference `fig:setup' on page 25 undefined on input line 448.
+LaTeX Warning: Reference `fig:setup' on page 25 undefined on input line 442.
 
 
-LaTeX Warning: Reference `fig:setup' on page 25 undefined on input line 450.
+LaTeX Warning: Reference `fig:setup' on page 25 undefined on input line 444.
 
 [25] [26] [27] [28]
 Underfull \vbox (badness 7649) has occurred while \output is active []
 
-[29] [30] [31]
-Underfull \vbox (badness 3977) has occurred while \output is active []
+[29] [30] [31] [32]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[32]
-Underfull \vbox (badness 3977) has occurred while \output is active []
+[33]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[33] [34] [35]
+[34] [35]
 Underfull \vbox (badness 1028) has occurred while \output is active []
 
 [36]
@@ -766,7 +769,7 @@ Overfull \hbox (430.71025pt too wide) in paragraph at lines 33--50
 
 
 ] [42] (./paper_methods.fff
-<./pictures/tobiiglasses2.png, id=432, 732.336pt x 244.2726pt>
+<./pictures/tobiiglasses2.png, id=434, 732.336pt x 244.2726pt>
 File: ./pictures/tobiiglasses2.png Graphic file (type png)
 <use ./pictures/tobiiglasses2.png>
 Package pdftex.def Info: ./pictures/tobiiglasses2.png  used on input line 5.
@@ -776,12 +779,12 @@ Overfull \hbox (262.59036pt too wide) in paragraph at lines 5--6
  [][] 
  []
 
-<./pictures/teachersgaze.pdf, id=433, 845.0471pt x 597.50829pt>
+<./pictures/teachersgaze.pdf, id=435, 845.0471pt x 597.50829pt>
 File: ./pictures/teachersgaze.pdf Graphic file (type pdf)
 <use ./pictures/teachersgaze.pdf>
 Package pdftex.def Info: ./pictures/teachersgaze.pdf  used on input line 15.
 (pdftex.def)             Requested size: 469.75456pt x 332.14981pt.
-<./pictures/sri.pdf, id=434, 845.0471pt x 597.50829pt>
+<./pictures/sri.pdf, id=436, 845.0471pt x 597.50829pt>
 File: ./pictures/sri.pdf Graphic file (type pdf)
 <use ./pictures/sri.pdf>
 Package pdftex.def Info: ./pictures/sri.pdf  used on input line 25.
@@ -799,18 +802,18 @@ Package rerunfilecheck Info: File `paper_methods.out' has not changed.
 (rerunfilecheck)             Checksum: 557F3EEE3B3BAAE8265144104E780BC5;4617.
  ) 
 Here is how much of TeX's memory you used:
- 16447 strings out of 480253
- 271755 string characters out of 5892445
+ 16448 strings out of 480253
+ 271772 string characters out of 5892445
  587545 words of memory out of 5000000
  33902 multiletter control sequences out of 15000+600000
  524992 words of font info for 74 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,11n,77p,2664b,659s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,11n,77p,2722b,659s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}<c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb><c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/mk99feta/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss8.pfb>
-Output written on paper_methods.pdf (45 pages, 7445616 bytes).
+Output written on paper_methods.pdf (45 pages, 7445613 bytes).
 PDF statistics:
- 672 PDF objects out of 1000 (max. 8388607)
- 550 compressed objects within 6 object streams
- 165 named destinations out of 1000 (max. 500000)
+ 674 PDF objects out of 1000 (max. 8388607)
+ 552 compressed objects within 6 object streams
+ 166 named destinations out of 1000 (max. 500000)
  216 words of extra memory for PDF output out of 10000 (max. 10000000)
 
