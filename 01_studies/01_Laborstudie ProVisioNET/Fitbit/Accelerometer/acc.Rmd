@@ -1,0 +1,200 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+# Packages
+
+```{r}
+library(needs)
+needs(tidyverse,
+      lubridate,
+      janitor)
+```
+
+# Daten
+
+```{r}
+df_acc <- read_tsv(file = "data/ProVisioNET.tsv") %>% 
+  clean_names()
+```
+```{r}
+df_acc <- transmute(df_acc,
+                    ID = str_replace(str_sub(participant_name,
+                                             start = 19,
+                                             end = 21
+                                             ),
+                                     pattern = "_",
+                                     replacement = ""
+                                     ),
+                    gyro_x = as.numeric(str_replace(gyro_x,
+                                                    pattern = ",",
+                                                    replacement = "."
+                                                    )
+                                        ),
+                    gyro_y = as.numeric(str_replace(gyro_y,
+                                                    pattern = ",",
+                                                    replacement = "."
+                                                    )
+                                        ),
+                    acc_x = as.numeric(str_replace(accelerometer_x,
+                                                    pattern = ",",
+                                                    replacement = "."
+                                                    )
+                                        ),
+                    acc_z = as.numeric(str_replace(accelerometer_z,
+                                                    pattern = ",",
+                                                    replacement = "."
+                                                    )
+                                        ),
+                    time = as.numeric(milliseconds(recording_timestamp
+                                                   )
+                                      ),
+                    sensor = sensor,
+                    meter_x = rep(0),
+                    meter_z = rep(0)
+                    ) %>% 
+  filter(as.numeric(ID) > 100) %>%
+  select(!contains("gyro")) %>%
+  na.omit() %>%
+  select(!"sensor")
+  
+
+# df_acc <- df_acc %>% 
+#   filter(as.numeric(ID) > 100)
+# 
+# df_acc_acc <- df_acc %>%
+#   filter(sensor == "Accelerometer") %>%
+#   select(!contains("gyro")) %>%
+#   pivot_longer(cols = c(acc_x, acc_z),
+#                names_to = "acc")
+# 
+# df_acc_gyro <- df_acc %>%
+#   filter(sensor == "Gyroscope") %>%
+#   select(!contains("acc"))
+```
+
+
+```{r}
+plot_acc <- 
+ggplot(data = df_acc_acc,
+       mapping = aes(x = time,
+                     y = value
+                     )
+       ) +
+  geom_path() +
+  geom_path() +
+  facet_grid(rows = vars(ID),
+             cols = vars(acc)
+             ) 
+
+ggsave(plot = plot_acc,
+       filename = "Plots/plot_acc.pdf",
+       height = 10,
+       width = 5)
+
+# df_sum <- 
+# df_acc_acc %>% 
+#   group_by(acc, ID) %>%
+#   summarize(sum = sum(abs(value)),
+#             time = max(time)
+#             )
+```
+
+```{r}
+# First step: create tibbles for each individual.
+for (i in unique(df_acc$ID)) {
+  
+  df <- filter(df_acc,
+               ID == i
+               )
+
+  assign(value = df,
+         x = paste0("df_", i)
+         )
+  
+}
+
+# For each of the tibbles, create two vectors (x and z) 
+  # for meters for each time period.
+
+for (i in unique(df_acc$ID)) {
+  
+  df <- get(paste0("df_", i))
+
+# Vectors x and z with length equal to time periods 
+  # present in each tibble; initial with 0 meters for each   # time period. 
+
+  x <- rep(0, length(get(paste0("df_", i))$time))
+  z <- rep(0, length(get(paste0("df_", i))$time))
+
+# For each time period, calculate the meters walked in 
+  # two dimensions (x and z), given the initial velocity 
+  # for each period is 0 m/s. First value stays 0 for
+  # convenience.
+  # See formula 1.
+
+  for (j in 2:length(get(paste0("df_", i))$time)) {
+    
+    x[[j]] <- 0.5 * get(paste0("df_", i))$acc_x[j] * (get(paste0("df_", i))$time[j] - get(paste0("df_", i))$time[j-1])^2
+     
+    z[[j]] <- 0.5 * get(paste0("df_", i))$acc_z[j] * (get(paste0("df_", i))$time[j] - get(paste0("df_", i))$time[j-1])^2
+    
+  }
+
+# Save both vectors in new tibble.
+  
+  df <- tibble(meter_x = x,
+               meter_z = z,
+               ID = paste0(i))
+  assign(x = paste0("df_meter_", i),
+           value = df)
+  
+}
+
+# Combine all tibbles containing distance walked per 
+  # time period.
+  # Calculate sum of absolute distance walked for each 
+  # participant and dimension.
+  # See formula 2.
+
+df_meter_all <- 
+  mget(ls(pattern = "meter")) %>%
+  bind_rows() %>% 
+  group_by(ID) %>%
+  summarise(meter_x = sum(abs(meter_x)),
+            meter_z = sum(abs(meter_z)))
+
+# Calculate walked distance in two-dimensional space.
+  # See formula 3.
+
+df_meter_all$ges <- sqrt(df_meter_all$meter_x^2 + df_meter_all$meter_z^2)
+```
+
+$$\Delta x_{d,i} = 0.5 (t_{i-1}-t_{i})^2, \text{ with }i=2,...,t_n; d = z,x$$
+$$x_d=\sum_{i=1}^n |\Delta x_{d,i}|, \text{ with }i=2,...,t_n; d = z,x$$
+$$\sum x=\sqrt{x_z^2+x_x^2}$$
+
+- 4 Szenarien (still, still + kopf, viel gehen, wenig gehen, fahrstuhl, treppe) + whatever
+
+```{r}
+saveRDS(object = df_meter_all,
+        file = "data/df_meter_all.rds")
+
+rm(list = ls())
+```
+
+# Plot 
+
+```{r}
+ggplot(data = df_acc_hr,
+       mapping = aes(x = mean,
+                      y = ges
+                      )
+        ) +
+   geom_point(mapping = aes(color = status)) +
+   geom_smooth(method = "lm",
+               se = F) +
+   labs(x = "Average Heart Rate\n(in Beats per Minute)",
+        y = "Meters Walked\n(in Meters)")
+```
+
