@@ -624,7 +624,7 @@ quest.table.expert,
 )
 
 ```
-
+XXX FRANZI
 ```{r item_analysis_classroom_management_novice, echo=FALSE, include=FALSE, results='asis'}
 quest.data %>%
   dplyr::filter(Group == "Novice") %>% 
@@ -986,7 +986,7 @@ sjt.table.expert,
 )
 
 ```
-
+XXX FRANZI
 
 ## Procedure
 
