@@ -1,0 +1,192 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Packages
+
+```{r}
+library(needs)
+
+needs(tidyverse,
+      lubridate,
+      hms,
+      readxl,
+      viridis)
+```
+
+
+# Data 
+
+```{r}
+df_dia <- read_rds(file = "Data/df.rds")
+```
+
+```{r}
+df_dia$date_time <- 
+  make_datetime(hour = hour(df_dia$start_time),
+                min = minute(df_dia$start_time),
+                sec = second(df_dia$start_time)
+                ) + 
+  seconds(as.numeric(milliseconds(df_dia$time
+                                          )
+                             )
+                )
+
+df_dia$seconds <- floor(second(df_dia$date_time))
+df_dia$minutes <- minute(df_dia$date_time)
+df_dia$hours <- hour(df_dia$date_time)
+
+df_dia_aggr <- 
+df_dia %>% 
+  group_by(hours, minutes, seconds, ID) %>%
+  summarise(dia_left = mean(left),
+            dia_right = mean(right)
+            ) %>%
+  ungroup() %>%
+  mutate(Time = hms(hours = hours,
+                    minutes = minutes,
+                    seconds = seconds
+                    )
+         ) %>%
+  select(dia_left,
+         dia_right,
+         Time,
+         ID)
+
+# df_dia_aggr$time <- 
+# hms(hours = df_dia_aggr$hours,
+#     minutes = df_dia_aggr$minutes,
+#     seconds = df_dia_aggr$seconds)
+# 
+
+rm(df_dia)
+
+```
+
+# Heart Rate data
+
+```{r, message=FALSE, include=FALSE, error=FALSE, }
+part <- read_xlsx(path = "Data/Heart Rate.xlsx")
+
+#...............................................................................
+#                                                                              .
+#  Enter the missing cases in Heart Rate table below.                                       .
+#                                                                              .
+#...............................................................................
+
+part <- filter(part,
+              `ID participant` != 108 # |
+              #`ID participant` != | etc.
+              )
+
+part <- part$`ID participant`
+
+for (i in part) {
+  nam <- paste("m", i, sep = "")
+  assign(x = nam, 
+         value = read_csv(file = paste("Data/", i, "_m.csv", 
+                                       sep = ""
+                                       )
+                          )
+         ) 
+  }
+```
+
+# Extract data sets
+
+```{r}
+df_dia_aggr <-
+  df_dia_aggr %>%
+  filter(ID != "108" &
+           ID != "109")
+
+for (i in unique(df_dia_aggr$ID)) {
+
+name <- paste0("pupil", i)
+df <- filter(df_dia_aggr,
+             ID == i)
+assign(x = name,
+       value = df)  
+}
+```
+
+# concetanate data sets
+
+```{r}
+
+for (i in unique(df_dia_aggr$ID)) {
+
+name1 <- paste0("m", i)
+name2 <- paste0("pupil", i)
+name3 <- paste0("tib_", i)
+df <- left_join(x = get(name1),
+                y = get(name2),
+                by = "Time")
+
+df <- df %>% mutate(dia_left = scale(dia_left),
+                    dia_right = scale(dia_right),
+                    `Heart Rate` = scale(`Heart Rate`)
+                    )
+assign(name3,
+       value = df)  
+}
+
+rm(df)
+rm(name3)
+
+```
+
+```{r}
+df_compl <- 
+  mget(ls(pattern = "tib")) %>%
+  bind_rows() %>%
+  mutate(ID = as_factor(ID),
+         Type = as_factor(ifelse(test = as.numeric(as.character(ID)) > 200,
+                                 yes = "advanced",
+                                 no = "novice"
+                                 )
+                          )
+         )
+```
+
+
+```{r}
+ggplot(data = na.omit(df_compl),
+       mapping = aes(x = dia_right,
+                     y = `Heart Rate`
+                     )
+       ) +
+  geom_point(mapping = aes(color = Type),
+             alpha = 0.7) +
+  geom_smooth(method = "lm",
+              mapping = aes(color = Type),
+              se = FALSE) +
+  labs(x = "Pupil Dialation\n(in ,standardized)",
+       y = "Heart Rate\n(in beats per minute, standardized)") +
+  scale_color_viridis_d(option = "A",
+                        begin = 0.3,
+                        end = 0.7)
+  
+
+ggplot(data = na.omit(df_compl),
+       mapping = aes(x = dia_left,
+                     y = `Heart Rate`
+                     )
+       ) +
+  geom_point(mapping = aes(color = Type)) +
+  geom_smooth(method = "lm",
+              mapping = aes(color = Type),
+              se = FALSE)
+
+ggplot(data = na.omit(df_compl)
+       ) + 
+  geom_histogram(mapping = aes(x = dia_left),
+                 alpha = 0.4,
+                 color = "blue") +
+  geom_histogram(mapping = aes(x = dia_right),
+                 alpha = 0.4,
+                 color = "red")
+
+```
+

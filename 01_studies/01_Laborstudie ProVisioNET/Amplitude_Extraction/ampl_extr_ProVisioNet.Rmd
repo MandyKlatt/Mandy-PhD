@@ -1,0 +1,89 @@
+---
+title: "Amplitude Extraction"
+subtitle: "ProVisioNET Study"
+output: html_notebook
+---
+
+# Preparations
+
+```{r}
+library(needs)
+
+needs(tidyverse)
+```
+
+```{r}
+# Add file path for synced Audio Files 
+# Edit file path according to system
+data_to_process <- "/Volumes/EmpForsch/00 Video Archive/022_ProVisioNET/ProVisioNet_study_glasses_synced/"
+
+# Add Vector for all .wav files available
+list_wavs <- list.files(path = data_to_process, 
+                        pattern = ".wav")
+
+# Add Vector for already existing data 
+existing_data <- list.files(path = "data",
+                            pattern = ".csv") %>% 
+  str_replace(pattern = "_ENV.csv",
+              replacement = ".wav")
+
+# Alter the vector so that only data is left that has not already been analyzed.
+list_wavs <- str_subset(string = list_wavs,
+                        pattern = existing_data,
+                        negate = TRUE)
+```
+
+# Function
+
+So there is more than one way to compute a smoothed amplitude envelope. We however follow the procedure originally coded in PRAAT by He & Dellwo (2017; ref 4.) which we reimplemented in R. The main function below follow their procedure. Firstly, we read in a sound file, and then apply a Hilbert transform to the waveform signal, which yields what is called a complex analytic signal (containing real and imaginary numbers). From this we can extract the amplitude information by applying what is called the complex modulus, and we are left with a 1D signal that will track the \emph{rough or more precise} contours of that audio waveform \emph{depending the amount of smoothing}. Following He & Dellwo, since we are interested in an approximation of the syllable cycles that tend to occur no shorter than 200ms, we will smooth the signal at a max 5Hz (1000ms/5Hz = 200ms) using a Hanning Window filter. We then downsample the smoothed amplitude envelope to something more workable, namely, to 100Hz time series, which we can later align for example with other signals (e.g., motion tracking data). For a more information about the key procedure, the Hilbert transformation, see (5. Cohen, 2019)
+
+Note, that the function below, allows you to set the resampling rate differently (e.g., 200Hz instead of 100Hz), as well as the hanning window settings (e.g., 8Hz instead of 5Hz).
+
+```{r main_function, warning=FALSE, message= FALSE}
+needs(seewave,
+      signal,
+      rPraat,
+      dplR)
+
+#####################MAIN FUNCTION TO EXTRACT SMOOTHED ENVELOPE###############################
+amplitude_envelope.extract <- function(locationsound, smoothingHz, resampledHz)
+{
+  #read the sound file into R
+  snd <- rPraat::snd.read(locationsound)
+  #apply the hilbert on the signal
+  hilb <- seewave::hilbert(snd$sig, f = snd$fs, fftw =FALSE)
+  #apply complex modulus
+  env <- as.vector(abs(hilb))
+  #smooth with a hanning window
+  env_smoothed <- dplR::hanning(x= env, n = snd$fs/smoothingHz)
+  #set undeterminable at beginning and end NA's to 0
+  env_smoothed[is.na(env_smoothed)] <- 0
+  #resample settings at desired sampling rate
+  f <- approxfun(1:(snd$duration*snd$fs),env_smoothed)
+  #resample apply
+  downsampled <- f(seq(from=0,to=snd$duration*snd$fs,by=snd$fs/resampledHz))
+  #let function return the downsampled smoothed amplitude envelope
+  return(downsampled[!is.na(downsampled)])
+}
+```
+
+# Apply to .wav data
+
+```{r}
+#loop through soundfile locations
+for(wav in list_wavs){
+  #location of the current sound file in the loop  
+  locsound <- paste0(data_to_process, wav)
+  #get the amplitude envelope at location, 5Hz Hanning, 100Hz sampling
+  env <- amplitude_envelope.extract(locsound, 5, 100)
+  #make a time vector based on sampling rate (1000/Hz)
+  time_ms <- seq(1000/100, length(env)*(1000/100), by = 1000/100)
+  #bind into data frame
+  ENV <- cbind.data.frame(time_ms, env)
+  #save it to a folder
+  write.csv(ENV, file = paste0(paste0("data/", substr(wav, 1, nchar(wav)-4), "_ENV", ".csv")),row.names=FALSE) 
+  }
+
+```
+
+

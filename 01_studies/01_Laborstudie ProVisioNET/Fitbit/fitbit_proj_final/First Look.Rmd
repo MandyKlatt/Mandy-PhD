@@ -1,0 +1,704 @@
+---
+title: "Fit Bit - First Look"
+output: html_notebook
+---
+
+# Packages
+
+```{r}
+#install.packages("needs")
+#1
+
+library(needs)
+
+needs(tidyverse,
+      lubridate,
+      janitor,
+      viridis,
+      hms,
+      readxl,
+      grid,
+      gridExtra,
+      cowplot,
+      readxl,
+      ARTofR)
+```
+
+# Heart Rate
+
+## Data 
+
+```{r, message=FALSE, include=FALSE, error=FALSE}
+part <- read_xlsx(path = "Data/Heart Rate.xlsx")
+
+#...............................................................................
+#                                                                              .
+#  Enter the missing cases in Heart Rate table below.                                       .
+#                                                                              .
+#...............................................................................
+
+part <- filter(part,
+              `ID participant` != 108 # |
+              #`ID participant` != | etc.
+              )
+
+part <- part$`ID participant`
+
+for (i in part) {
+  nam <- paste("m", i, sep = "")
+  assign(x = nam, 
+         value = read_csv(file = paste("Data/", i, "_m.csv", 
+                                       sep = ""
+                                       )
+                          )
+         ) 
+  }
+
+for (i in part) {
+  nam <- paste("a", i, sep = "")
+  assign(x = nam, 
+         value = read_csv(file = paste("Data/", i, "_a.csv", 
+                                       sep = ""
+                                       )
+                          )
+         ) 
+  }
+
+for (i in part) {
+  nam <- paste("p", i, sep = "")
+  assign(x = nam, 
+         value = read_csv(file = paste("Data/", i, "_p.csv", 
+                                       sep = ""
+                                       )
+                          )
+         ) 
+  }
+```
+
+## Change Time to seconds
+
+```{r}
+for (i in part) {
+  nam <- paste0("m", i)
+  value <- get(nam)$Time - min(get(nam)$Time)
+  `Heart Rate` <- get(nam)$`Heart Rate`
+  df <- tibble(Time = as.numeric(value),
+               `Heart Rate` = `Heart Rate`,
+               ID = i
+               )
+  assign(paste0("m", i), df)
+  }
+
+for (i in part) {
+  nam <- paste0("a", i)
+  value <- get(nam)$Time - min(get(nam)$Time)
+  `Heart Rate` <- get(nam)$`Heart Rate`
+  df <- tibble(Time = as.numeric(value),
+               `Heart Rate` = `Heart Rate`,
+               ID = i
+               )
+  assign(paste0("a", i), df)
+  }
+
+for (i in part) {
+  nam <- paste0("p", i)
+  value <- get(nam)$Time - min(get(nam)$Time)
+  `Heart Rate` <- get(nam)$`Heart Rate`
+  df <- tibble(Time = as.numeric(value),
+               `Heart Rate` = `Heart Rate`,
+               ID = i
+               )
+  assign(paste0("p", i), df)
+  }
+```
+
+## Join Data Frames
+
+```{r}
+rm(part)
+rm(nam)
+rm(`Heart Rate`)
+rm(i)
+rm(value)
+rm(df)
+
+df_m <- 
+  mget(ls(pattern = "m")) %>%
+  bind_rows()
+
+df_p <- 
+  mget(ls(pattern = "p")) %>%
+  bind_rows()
+
+df_a <- 
+  mget(ls(pattern = "a")) %>%
+  bind_rows()
+```
+
+# Plots
+
+## Last Data Adjustments
+
+```{r}
+df_a$Type <- "Post"
+df_m$Type <- "Main"
+df_p$Type <- "Pre"
+
+df_all <- bind_rows(list(df_a,df_p, df_m))
+
+df_all <- df_all %>%
+  mutate(Type = factor(Type,
+                       levels = c("Pre","Main","Post")),
+         ID = as_factor(ID)
+         )
+
+ df_all$status <- if_else(as.numeric(as.character(df_all$ID)) < 200,
+                          "novice",
+                          "advanced")
+ 
+ df_aggr <- df_all %>%
+  group_by(Type, ID, status) %>%
+  summarise(mean = mean(`Heart Rate`))
+
+ df_all_min <- df_all %>%
+ group_by(ID) %>%
+   summarise(min = max(Time))
+
+```
+
+## Flow
+
+```{r}
+plot_flow <-
+ggplot(data = filter(df_all),
+       mapping = aes(x = as.numeric(Time),
+                     y = `Heart Rate`
+                     )
+       ) +
+  geom_line(mapping = aes(color = as_factor(ID),
+                          linetype = as_factor(status)
+                          ),
+            size = 0.3,
+            alpha = 0.7
+            ) +
+  xlim(0, min(df_all_min$min)) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Time (in Seconds)",
+       y = "Heart Rate\n(in Beats per Minute)") +
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        legend.position = "none",
+        strip.text = element_text(size = 16)) +
+  facet_grid(cols = vars(Type),
+             scales = "free_x")
+
+plot_flow_leg <-
+ggplot(data = df_all,
+       mapping = aes(x = Time,
+                     y = `Heart Rate`
+                     )
+       ) +
+  geom_smooth(mapping = aes(color = as_factor(ID),
+                            linetype = as_factor(status)
+                            ),
+              method = "loess") +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Time (in Seconds)",
+       y = "Heart Rate\n(in Beats per Minute)") +
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        legend.title = element_blank()) +
+  facet_grid(cols = vars(Type))
+
+legend <- cowplot::get_legend(plot_flow_leg)
+
+plot_loess <-
+ggplot(data = filter(df_all),
+       mapping = aes(x = as.numeric(Time),
+                     y = `Heart Rate`
+                     )
+       ) +
+  stat_smooth(geom = "line",
+              mapping = aes(color = as.factor(ID),
+                            linetype = as_factor(status)
+                            ),
+              method = "loess",
+              se = FALSE) +
+  xlim(0,min(df_all_min$min)) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Time (in Seconds)",
+       y = "Heart Rate\n(in Beats per Minute)") +
+  theme_minimal() +
+  facet_grid(cols = vars(Type),
+             scales = "free_x",
+             ) +
+  theme(text = element_text(family = "serif"),
+        legend.position = "none",
+        strip.background = element_blank(),
+        strip.text.x = element_blank()
+        )
+```
+
+## Boxplots
+
+```{r}
+plot_box <- 
+ggplot(data = df_aggr,
+       mapping = aes(x = Type,
+                     y = mean,
+                     color = as_factor(ID)
+                     )
+       ) +
+  geom_boxplot(color = "darkgrey",
+               fill = "grey",
+               alpha = 0.6) +
+  geom_line(data = filter(df_aggr,
+                          status == "novice"),
+            mapping = aes(x = Type,
+                          y = mean,
+                          group = as_factor(ID)
+                          ),
+            linetype = 1
+            ) +
+  geom_line(data = filter(df_aggr,
+                          status == "advanced"),
+            mapping = aes(x = Type,
+                          y = mean,
+                          group = as_factor(ID)
+                          ),
+            linetype = 6
+            ) +
+  geom_point(size = 2) +
+  labs(x = "",
+       y = "Average Heart Rate\n(in Beats per Minute)") +
+  scale_color_viridis_d(option = "A",
+                       end = 0.8) +
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        strip.text = element_blank(),
+        legend.position = "none",
+        axis.text.x = element_blank()
+        ) +
+  aes(fill = Type)
+```
+
+## Combine
+
+```{r}
+lo_mat <- rbind(c(1,1,1,1,1,1,NA),
+                c(2,2,2,2,2,2,4),
+                c(3,3,3,3,3,3,NA))
+
+plot_fitbit <- 
+grid.arrange(grobs = list(plot_flow, plot_loess, plot_box, legend),
+             layout_matrix = lo_mat)
+
+ggsave(plot = plot_fitbit,
+       file = "Plots/fitbit.pdf",
+       height = 16,
+       width = 20,
+       units = "cm"
+       )
+```
+
+# Steps
+
+## Data
+```{r}
+df_steps <- read_xlsx(path = "Data/Heart Rate.xlsx")
+```
+
+```{r}
+df_steps <- df_steps %>%
+  transmute(ID = as.numeric(as.character(df_steps$`ID participant`)),
+            Steps = Diff
+            )
+
+df_steps$type <- ifelse(df_steps$ID < 200, 
+                        "Novice",
+                        "Expert"
+                        )
+```
+
+```{r}
+df_aggr_main <- df_aggr %>% mutate(ID = as.numeric(as.character(ID)),
+                                      ) %>%
+  ungroup() %>%
+  filter(Type == "Main") %>%
+  select(ID, mean)
+
+df_steps <- full_join(x = df_aggr_main,
+                      y = df_steps,
+                      key = ID)
+```
+
+```{r}
+df_steps$mean <- scale(df_steps$mean)
+df_steps$Steps <- scale(df_steps$Steps)
+
+plot_scatter <-
+ggplot(data = df_steps,
+       mapping = aes(x = Steps,
+                     y = mean)
+       ) +
+    geom_smooth(mapping = aes(color = type),
+              method = "lm",
+              se = F) +
+  geom_point(mapping = aes(shape = type),
+             alpha = 0.6,
+             size = 2.5) +
+  scale_color_viridis_d(option = "A",
+                       end = 0.8,
+                       begin = 0.3
+                       ) +
+  labs(x = "Steps\n(z-standardized)",
+       y = "Mean Heart Rate\n(z-standardized)"
+       ) +
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        legend.title = element_blank(),
+        )
+ 
+ggsave(plot = plot_scatter,
+       filename = "Plots/scatter.pdf",
+       height = 5,
+       width = 7,
+       units = "in")
+
+```
+
+# Walked Distance
+
+## data
+
+```{r}
+df_acc <- read_tsv(file = "Data/ProVisioNET.tsv") %>% 
+  clean_names()
+```
+
+## wrangling
+
+```{r}
+df_acc <- transmute(df_acc,
+                    ID = str_replace(str_sub(participant_name,
+                                             start = 19,
+                                             end = 21
+                                             ),
+                                     pattern = "_",
+                                     replacement = ""
+                                     ),
+                    gyro_x = as.numeric(str_replace(gyro_x,
+                                                    pattern = ",",
+                                                    replacement = "."
+                                                    )
+                                        ),
+                    gyro_y = as.numeric(str_replace(gyro_y,
+                                                    pattern = ",",
+                                                    replacement = "."
+                                                    )
+                                        ),
+                    acc_x = as.numeric(str_replace(accelerometer_x,
+                                                    pattern = ",",
+                                                    replacement = "."
+                                                    )
+                                        ),
+                    acc_z = as.numeric(str_replace(accelerometer_z,
+                                                    pattern = ",",
+                                                    replacement = "."
+                                                    )
+                                        ),
+                    time = as.numeric(milliseconds(recording_timestamp
+                                                   )
+                                      ),
+                    sensor = sensor
+                    ) %>% 
+  filter(as.numeric(ID) > 100) %>%
+  select(!contains("gyro")) %>%
+  na.omit() %>%
+  select(!"sensor")
+```
+
+## calculation
+
+```{r}
+# First step: create tibbles for each individual.
+for (i in unique(df_acc$ID)) {
+  
+  df <- filter(df_acc,
+               ID == i
+               )
+
+  assign(value = df,
+         x = paste0("df_", i)
+         )
+  
+}
+
+# For each of the tibbles, create two vectors (x and z) 
+  # for meters for each time period.
+
+for (i in unique(df_acc$ID)) {
+  
+  df <- get(paste0("df_", i))
+
+# Vectors x and z with length equal to time periods 
+  # present in each tibble; initial with 0 meters for each   # time period. 
+
+  x <- rep(0, length(get(paste0("df_", i))$time))
+  z <- rep(0, length(get(paste0("df_", i))$time))
+
+# For each time period, calculate the meters walked in 
+  # two dimensions (x and z), given the initial velocity 
+  # for each period is 0 m/s. First value stays 0 for
+  # convenience.
+  # See formula 1.
+
+  for (j in 2:length(get(paste0("df_", i))$time)) {
+    
+    x[[j]] <- 0.5 * get(paste0("df_", i))$acc_x[j] * (get(paste0("df_", i))$time[j] - get(paste0("df_", i))$time[j-1])^2
+     
+    z[[j]] <- 0.5 * get(paste0("df_", i))$acc_z[j] * (get(paste0("df_", i))$time[j] - get(paste0("df_", i))$time[j-1])^2
+    
+  }
+
+# Save both vectors in new tibble.
+  
+  df <- tibble(meter_x = x,
+               meter_z = z,
+               ID = paste0(i))
+  assign(x = paste0("df_meter_", i),
+           value = df)
+  
+}
+
+# Combine all tibbles containing distance walked per 
+  # time period.
+  # Calculate sum of absolute distance walked for each 
+  # participant and dimension.
+  # See formula 2.
+
+df_meter_all <- 
+  mget(ls(pattern = "meter")) %>%
+  bind_rows() %>% 
+  group_by(ID) %>%
+  summarise(meter_x = sum(abs(meter_x)),
+            meter_z = sum(abs(meter_z)))
+
+# Calculate walked distance in two-dimensional space.
+  # See formula 3.
+
+df_meter_all$ges <- sqrt(df_meter_all$meter_x^2 + df_meter_all$meter_z^2)
+```
+
+$$\Delta x_{d,i} = 0.5 (t_{i-1}-t_{i})^2, \text{ with }i=2,...,t_n; d = z,x$$
+$$x_d=\sum_{i=1}^n |\Delta x_{d,i}|, \text{ with }i=2,...,t_n; d = z,x$$
+$$\sum x=\sqrt{x_z^2+x_x^2}$$
+
+# Useful plots
+
+## Distance over Heart Rate
+
+```{r}
+df_dist_hr <- df_aggr %>%
+  ungroup() %>%
+  filter(Type == "Main")
+
+df_dist_hr <- left_join(x = df_dist_hr,
+                        y = df_meter_all,
+                        by = "ID")
+
+
+ggplot(data = df_dist_hr,
+       mapping = aes(x = mean,
+                      y = ges
+                      )
+        ) +
+   geom_point(mapping = aes(color = status)) +
+   geom_smooth(method = "lm",
+               se = F) +
+   labs(x = "Average Heart Rate\n(in Beats per Minute)",
+        y = "Meters Walked\n(in Meters)")
+```
+
+## Acceleration over time
+
+```{r}
+#...............................................................................
+#                                                                              .
+#  Following Code takes a while...                                             .
+#                                                                              .
+#...............................................................................
+
+
+#plot_acc <- 
+df_acc %>% 
+  pivot_longer(cols = c(acc_x, acc_z),
+               names_to = "acc") %>%
+ggplot(mapping = aes(x = time,
+                     y = value
+                     )
+       ) +
+  geom_path() +
+  geom_path() +
+  facet_grid(rows = vars(ID),
+             cols = vars(acc)
+             ) 
+
+# ggsave(plot = plot_acc,
+#        filename = "Plots/plot_acc.pdf",
+#        height = 10,
+#        width = 5)
+```
+
+# Pupil Dialation
+
+## Data 
+
+```{r}
+df_dia <- read_rds(file = "Data/df.rds")
+```
+
+```{r}
+df_dia$date_time <- 
+  make_datetime(hour = hour(df_dia$start_time),
+                min = minute(df_dia$start_time),
+                sec = second(df_dia$start_time)
+                ) + 
+  seconds(as.numeric(milliseconds(df_dia$time
+                                          )
+                             )
+                )
+
+df_dia$seconds <- floor(second(df_dia$date_time))
+df_dia$minutes <- minute(df_dia$date_time)
+df_dia$hours <- hour(df_dia$date_time)
+
+df_dia_aggr <- 
+df_dia %>% 
+  group_by(hours, minutes, seconds, ID) %>%
+  summarise(dia_left = mean(left),
+            dia_right = mean(right)
+            ) %>%
+  ungroup() %>%
+  mutate(Time = hms(hours = hours,
+                    minutes = minutes,
+                    seconds = seconds
+                    )
+         ) %>%
+  select(dia_left,
+         dia_right,
+         Time,
+         ID)
+
+# df_dia_aggr$time <- 
+# hms(hours = df_dia_aggr$hours,
+#     minutes = df_dia_aggr$minutes,
+#     seconds = df_dia_aggr$seconds)
+# 
+
+rm(df_dia)
+
+```
+
+## Extract data sets
+
+```{r}
+df_dia_aggr <-
+  df_dia_aggr %>%
+  filter(ID != "108" &
+           ID != "109")
+
+for (i in unique(df_dia_aggr$ID)) {
+
+name <- paste0("pupil", i)
+df <- filter(df_dia_aggr,
+             ID == i)
+assign(x = name,
+       value = df)  
+}
+```
+
+## concetanate data sets
+
+```{r}
+
+for (i in unique(df_dia_aggr$ID)) {
+
+name1 <- paste0("m", i)
+name2 <- paste0("pupil", i)
+name3 <- paste0("tib_", i)
+df <- left_join(x = get(name1),
+                y = get(name2),
+                by = "Time")
+
+df <- df %>% mutate(dia_left = scale(dia_left),
+                    dia_right = scale(dia_right),
+                    `Heart Rate` = scale(`Heart Rate`)
+                    )
+assign(name3,
+       value = df)  
+}
+
+rm(df)
+rm(name3)
+
+```
+
+```{r}
+df_compl <- 
+  mget(ls(pattern = "tib")) %>%
+  bind_rows() %>%
+  mutate(ID = as_factor(ID),
+         Type = as_factor(ifelse(test = as.numeric(as.character(ID)) > 200,
+                                 yes = "advanced",
+                                 no = "novice"
+                                 )
+                          )
+         )
+```
+
+
+```{r}
+ggplot(data = na.omit(df_compl),
+       mapping = aes(x = dia_right,
+                     y = `Heart Rate`
+                     )
+       ) +
+  geom_point(mapping = aes(color = Type),
+             alpha = 0.7) +
+  geom_smooth(method = "lm",
+              mapping = aes(color = Type),
+              se = FALSE) +
+  labs(x = "Pupil Dialation\n(in ,standardized)",
+       y = "Heart Rate\n(in beats per minute, standardized)") +
+  scale_color_viridis_d(option = "A",
+                        begin = 0.3,
+                        end = 0.7)
+  
+
+ggplot(data = na.omit(df_compl),
+       mapping = aes(x = dia_left,
+                     y = `Heart Rate`
+                     )
+       ) +
+  geom_point(mapping = aes(color = Type)) +
+  geom_smooth(method = "lm",
+              mapping = aes(color = Type),
+              se = FALSE)
+
+ggplot(data = na.omit(df_compl)
+       ) + 
+  geom_histogram(mapping = aes(x = dia_left),
+                 alpha = 0.4,
+                 color = "blue") +
+  geom_histogram(mapping = aes(x = dia_right),
+                 alpha = 0.4,
+                 color = "red")
+
+```

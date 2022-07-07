@@ -1,0 +1,137 @@
+---
+title: "Test Data"
+output: html_notebook
+---
+
+# Packages
+
+```{r}
+library(needs)
+needs(tidyverse,
+      janitor,
+      lubridate)
+```
+
+# Data 
+
+```{r message=FALSE}
+df_test <- read_tsv(file = "data/Acc_Test_Data.tsv") %>% 
+  clean_names()
+```
+
+# Let the wrangle begin
+
+```{r}
+df_test <- 
+  df_test %>%
+  transmute(time = as.numeric(milliseconds(recording_timestamp_ms
+                                           )
+                              ),
+            name = participant_name,
+            acc_x = as.numeric(str_replace(accelerometer_x_m_s2,
+                                           pattern = ",",
+                                           replacement = "."
+                                           )
+                               ),
+            acc_z = as.numeric(str_replace(accelerometer_z_m_s2,
+                                           pattern = ",",
+                                           replacement = "."
+                                           )
+                               )
+            )
+```
+
+# Loops
+
+```{r}
+# First step: create tibbles for each individual.
+for (i in unique(df_test$name)) {
+  
+  df <- filter(df_test,
+               name == i
+               )
+
+  assign(value = df,
+         x = paste0("df_", i)
+         )
+
+}
+
+# For each of the tibbles, create two vectors (x and z) 
+  # for meters for each time period.
+
+for (i in unique(df_test$name)) {
+  
+  df <- get(paste0("df_", i))
+
+# Vectors x and z with length equal to time periods 
+  # present in each tibble; initial with 0 meters for each   # time period. 
+
+  x <- rep(0, length(get(paste0("df_", i))$time))
+  z <- rep(0, length(get(paste0("df_", i))$time))
+
+# For each time period, calculate the meters walked in 
+  # two dimensions (x and z), given the initial velocity 
+  # for each period is 0 m/s. First value stays 0 for
+  # convenience.
+  # See formula 1.
+
+  for (j in 2:length(get(paste0("df_", i))$time)) {
+    
+    x[[j]] <- 0.5 * get(paste0("df_", i))$acc_x[j] * (get(paste0("df_", i))$time[j] - get(paste0("df_", i))$time[j-1])^2
+     
+    z[[j]] <- 0.5 * get(paste0("df_", i))$acc_z[j] * (get(paste0("df_", i))$time[j] - get(paste0("df_", i))$time[j-1])^2
+    
+  }
+
+# Save both vectors in new tibble.
+  
+  df <- tibble(meter_x = x,
+               meter_z = z,
+               ID = paste0(i))
+  assign(x = paste0("df_meter_", i),
+           value = df)
+  
+}
+
+# Combine all tibbles containing distance walked per 
+  # time period.
+  # Calculate sum of absolute distance walked for each 
+  # participant and dimension.
+  # See formula 2.
+
+df_meter_all <- 
+  mget(ls(pattern = "meter")) %>%
+  bind_rows() %>% 
+  group_by(ID) %>%
+  summarise(meter_x = sum(abs(meter_x)),
+            meter_z = sum(abs(meter_z))
+            )
+
+# Calculate walked distance in two-dimensional space.
+  # See formula 3.
+
+df_meter_all$ges <- sqrt(df_meter_all$meter_x^2 + df_meter_all$meter_z^2)
+```
+
+# Ergebnisse
+
+```{r}
+df_meter_all
+```
+
+```{r}
+df_test %>%
+  pivot_longer(cols = contains("acc"),
+               names_to = "acc") %>%
+ggplot(mapping = aes(x = time,
+                     y = value
+                     )
+       ) +
+  geom_path() +
+  facet_grid(rows = vars(name),
+             cols = vars(acc) 
+             ) +
+  theme(strip.text.y = element_text(angle = 0))
+```
+
