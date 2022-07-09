@@ -50,6 +50,38 @@ Novice & 26 & 0.00 & 0.00 & 0.00 & 0.00 & 7.15 & 2.62 & 3.00 & 11.00 & 10.92 & 8
 \end{center}
 
 \end{table*}
+\efloatseparator
+ 
+\begin{lltable}
+
+\begin{TableNotes}[para]
+\normalsize{\textit{Note.} Item scores are summed. Women who score 3+ and men who score 4+ are at-risk}
+\end{TableNotes}
+
+\begin{longtable}{m{8cm}m{2cm}m{2cm}m{2cm}m{2cm}m{2cm}}\noalign{\getlongtablewidth\global\LTcapwidth=\longtablewidth}
+\caption{\label{tab:reaction_codingsystem}AUDIT-C scoring table}\\
+\toprule
+ & \multicolumn{5}{c}{Score} \\
+\cmidrule(r){2-6}
+Questions & \multicolumn{1}{c}{0} & \multicolumn{1}{c}{1} & \multicolumn{1}{c}{2} & \multicolumn{1}{c}{3} & \multicolumn{1}{c}{4}\\
+\midrule
+\endfirsthead
+\caption*{\normalfont{Table \ref{tab:reaction_codingsystem} continued}}\\
+\toprule
+ & \multicolumn{5}{c}{Score} \\
+\cmidrule(r){2-6}
+Questions & \multicolumn{1}{c}{0} & \multicolumn{1}{c}{1} & \multicolumn{1}{c}{2} & \multicolumn{1}{c}{3} & \multicolumn{1}{c}{4}\\
+\midrule
+\endhead
+How often do you have a drink containing alcohol? & Never & Monthly or less & 2-4 times per month & 2-3 times per week & 4+ times per week\\
+How many standard drinks of alcohol do you drink on a typical day when you are drinking? & 1–2 & 3-4 & 5-6 & 7-9 & 10+\\
+How often do you have 5 or more drinks on one occasion? & Never & Less than monthly & monthly & Weekly & Daily or almost daily\\
+\bottomrule
+\addlinespace
+\insertTableNotes
+\end{longtable}
+
+\end{lltable}
 \begin{table*}[hbt]
 \ifnextchar[{\eatarg}{}
 [h]

@@ -416,7 +416,76 @@ A theory-based coding scheme was developed as an observation tool for classroom 
 
 In developing the coding system, questions initially aroused about how descriptions of responses should be made and in what order (especially codes 3-4). Initially, it was planned to assign code 3 for a nonverbal and simultaneously long verbal response and code 4 for a purely verbal response. However, during the initial trial coding of the videos, it became apparent that it was difficult to reliably distinguish nonverbal reactions to a classroom disruption from normal facial expressions and gestures of the teacher when talking. Moreover, during a prolonged verbal utterance, nonverbal signs could virtually always be detected. Furthermore, a category for short, purely verbal reactions was missing.
 
+XXX FRANZI 
+```{r reaction_codingsystem, include=TRUE, echo=FALSE, results='asis'}
+
+audit_table <- structure(
+  list(
+    Description = c(
+      "The teacher reacts exclusively non-verbally to a disturbance. The flow of the lesson is not interrupted.",
+      "The teacher reacts nonverbally and simultaneously with a short verbal reaction. The nonverbal response includes gestures (stop signals, decreasing proximity) and facial expressions (fixing gaze). The verbal response includes name calling, brief verbal prompts / admonitions.",
+      "The teacher responds briefly and verbally to a disruption without a preceding nonverbal response.",
+      "The teacher responds nonverbally and simultaneously overlapping with a verbal long response to a disruption. The nonverbal response includes gestures (stop signals, decreasing proximity) and facial expressions (fixating gaze).",
+      "There is no reaction from the teacher to a disruption because the teacher does not consider it relevant to address the disruption. This information can only be obtained through the Stimulated Recall Interview.",
+      "There is no reaction to a disruption on the part of the teacher because the teacher has not registered the disruption. This information can only be obtained through the Stimulated Recall Interview.",
+      "Dysfunctional Response: the teacher responds inappropriately to a disruption through a lengthy verbal discussion of class rules, yelling around, etc."
+                  ),
+    `1` = c("Never", "1–2", "Never"),
+    `2` = c("Monthly or less", "3-4", "Less than monthly"),
+    `3` = c("2-4 times per month", "5-6", "monthly"),
+    `4` = c("2-3 times per week","7-9", "Weekly"),
+    `5` = c("4+ times per week", "10+", "Daily or almost daily"),
+    `6` = c("bla"),
+    `7` = c("bla")
+          ),
+  class = "data.frame",
+  row.names = c(NA)
+)
+
+apa_table(
+  audit_table,
+  caption = "AUDIT-C scoring table",
+  align = c("m{8cm}", rep("m{2cm}", 5)),
+  col_spanners = list("Code" = c(2,7)),
+  note = "Item scores are summed. Women who score 3+ and men who score 4+ are at-risk",
+  landscape = TRUE
+  )
+
+
+# df_react_table <-
+#   structure(list(
+#     Code = c("1", "2", "3", "4", "5", "6", "7"),
+#     Description = c(
+#       "The teacher reacts exclusively non-verbally to a disturbance. The flow of the lesson is not interrupted.",
+#       "The teacher reacts nonverbally and simultaneously with a short verbal reaction. The nonverbal response includes gestures (stop signals, decreasing proximity) and facial expressions (fixing gaze). The verbal response includes name calling, brief verbal prompts / admonitions.",
+#       "The teacher responds briefly and verbally to a disruption without a preceding nonverbal response.",
+#       "The teacher responds nonverbally and simultaneously overlapping with a verbal long response to a disruption. The nonverbal response includes gestures (stop signals, decreasing proximity) and facial expressions (fixating gaze).",
+#       "There is no reaction from the teacher to a disruption because the teacher does not consider it relevant to address the disruption. This information can only be obtained through the Stimulated Recall Interview.",
+#       "There is no reaction to a disruption on the part of the teacher because the teacher has not registered the disruption. This information can only be obtained through the Stimulated Recall Interview.",
+#       "Dysfunctional Response: the teacher responds inappropriately to a disruption through a lengthy verbal discussion of class rules, yelling around, etc."
+#     ),
+#     `Anchor examples` = c("-",
+#                           "-",
+#                           "drawing on a sheet of paper",
+#                           "-",
+#                           "-",
+#                           "-",
+#                           "-"),
+#     class = "data.frame"
+#   ))
+# 
+# papaja::apa_table(
+#   x = df_react_table,
+#   caption = "Self-developed coding scheme for the teacher's reaction",
+#   align = c("m{8cm}", rep("m{2cm}", 5)),
+#   col_spanners = list("NA"),
+#   # note = "",
+#   landscape = TRUE)
+
+```
+
 After developing and reviewing the coding system, the observers coordinated and the consistency of their ratings was verified. For the evaluation, the individual videos of the sample were then coded and the data transferred to an Excel file.
+
 
 ###### Test quality criteria
 
