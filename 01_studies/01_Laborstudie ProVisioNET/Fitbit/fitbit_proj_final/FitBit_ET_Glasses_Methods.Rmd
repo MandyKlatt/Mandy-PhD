@@ -49,7 +49,7 @@ summary(df_meter_real$ges)
 
 On the contrary, simulated situations revealed multiple problems. 
 
-For the first simulation the participant was standing still without moving its head and with stong movements of the head respectively. A reliable measurement would give the same distance for both situations. 
+For the first simulation the participant was standing still without moving its head and with strong movements of the head respectively. A reliable measurement would give the same distance for both situations. 
 Afterwards, we simulated two two times 5 meter long walks. One time the participant turned around after 5 meters. During the other walk the participant walked 5 meters and walked back backwards. Again, we expect the glasses to give the same walking distance.
 To test real world situations we simulated two random walks in a simulated class room. One walk simulated an extensive walk and the other walk simulated a less intense walk.
 Additionally, we tested the values for taking the elevator and walking a staircase.
@@ -277,6 +277,15 @@ ggplot(data = df_steps,
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank()
         ) 
+
+### Validation of steps 
+# selecting some rows at random with sample_n()
+sample_n(df_steps, 6)
+
+# Output:
+# Experts: 219, 218, 214
+# Novices: 108, 117, 110
+
 ```
 
 # Combined Analysis
