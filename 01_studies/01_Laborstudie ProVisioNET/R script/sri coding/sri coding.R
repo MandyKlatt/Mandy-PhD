@@ -20,7 +20,7 @@ sri <-
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% 
   select(Group, Event, `Disruption Factor`, `Confident Factor`) %>% # select relevant columns 
-  filter(Group %in% c(101:122, 202:212))# filter relevant rows
+  filter(Group %in% c(101:125, 202:217))# filter relevant rows
 
  
 # # counting drop outs (-99 not perceived, -100 not answered)
@@ -456,3 +456,4 @@ sd_confi_exp <-
   pull(`Confident Factor`) %>% 
   sd() %>% 
   round(., digits = 0)
+

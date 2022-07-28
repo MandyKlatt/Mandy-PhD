@@ -375,9 +375,11 @@ The underlying research was conducted as a laboratory study in a cross-sectional
 
 The study was based on a quasi-experimental study design, as there was no random assignment of subjects to experimental conditions. Due to the use of MET technology, the study had a high external validity (Gegenfurtner et al., 2018). To ensure internal validity the occurring instructional events were exactly the same for all subjects, as the learners received precise behavioral instructions. These disruptions followed a script and coding guide in which the actions of the class were precisely described. The order of the disruptions as well as the performing actors were prompted and fully balanced with Latin Square. The scripted behavioral instructions during the classroom sequence distinguish this study with a high degree of standardization, especially when compared to events that take place in a real classroom. The study was based on an experimental manual, script, and coding guide which explicitly describes the execution, evaluation and interpretation of the data and thus and interpretation of the data, thus making them objectively ascertainable and measurable.
 
-## Materials
+## Materials and Measures
 
-### Eye-Tracking Apparatus
+### Eye-Tracking Data
+
+#### Apparatus
 
 To record eye-tracking data, teachers wore a binocular Tobii Pro Glasses 2 eye-tracker during the micro-teaching-unit. The system consisted of a wearable head unit and a recording unit. As shown in Figure \@ref(fig:tobiiglasses2), the head unit was a measuring device with different sensors. A high-definition scene camera captured a full HD video of the teacher’s field of vision. An integrated microphone recorded the surrounding sounds. Infrared light illuminators supported the eye tracking sensors which recorded the eye orientation to capture the teacher's gaze point as shown in Figure \@ref(fig:teachersgaze). The videos were recorded with a sampling rate of 50 Hz in a video resolution with 1920 x 1080 at 25 frames per second. The scene camera had a field of view of 90 deg. in 16:9 format (82 deg. horizontal and 52 deg. vertical) and a frame dimension of 179 x 159 x 57 mm (width x depth x height). 
 
@@ -392,6 +394,19 @@ knitr::include_graphics("./pictures/tobiiglasses2.png", dpi = 108)
 knitr::include_graphics("./pictures/teachersgaze.pdf", dpi = 108)
 
 ```
+
+
+#### Teachers' visual focus of attention
+
+Teachers' areas of interest (AOI) were identified as targets where teachers looked during the micro-teaching-unit using Tobii Pro Lab Analyzer Software Version 1.171. In the present study, general AOIs where defined as the student group, the students' nametags, the teacher material, the students' material, the board and non-instructional material in the classroom (wall, window, floor). These AOIs were coded during the manual fixation mapping process during the entire micro-teaching-unit. Additionally, the disruptive person was coded as an event-based AOI only over the duration of the disruption. 
+
+
+--> Only eye-tracking video recordings with 70 % and above gaze sample percentages were selected for the study to ensure that one or both eyes were detected during 70 % of the recording’s duration (Chaudhuri et al, 2022). Screenshots of the video recordings were used to define the AOI in the eye-tracking videos. The coder started manual gaze mapping when the teacher entered the classroom and ended coding when the micro-teaching-unit ended. The start and end of the micro-teaching-unit was defined by a visual and acoustical signal. The two coders who were assigned to code the eye-tracking videos student employees who studied to be teachers and received a detailed introduction to the software. The intercoder reliability was checked by double coding 20 % of the videos from the whole dataset. Double coding agreement ranged from XXX % to XXX %.
+
+We coded each fixation using the Attention Filter in Pro Lab with the velocity threshold parameter set to 100 degrees/second instead of the default 30 degrees/second. This filter is suitable for dynamic situations to study attention without separating any eye movements. By choosing the Attention Filter typical fixations, most VOR (Vestibulo-ocular reflex), smooth pursuit eye movements, and slow saccades are classified as fixations.
+
+The relevant fixation metrics such as number of fixations, the total duration of fixations and time to first fixation on the relevant event (disruptive person) were obtained by exporting an interval-based TSV file from the Tobii Pro Lab Analyzer Software. The total fixation duration and the time to first fixation metrics were measured in milliseconds (ms) and the number of fixation in counts as an integer. To calculate the average fixation of durations for all AOIs, we divided the total duration of fixations by the number of  fixations for each AOI.
+
 
 ### Video data
 
@@ -408,7 +423,7 @@ Video analysis was chosen as the research method for evaluating the teacher's re
 Schnettler and Knoblauch (2009, p. 227) distinguish 'natural' and edited video data, depending on whether the situation was created specifically for the recording or whether the situation was influenced as little as possible or not at all. In the survey for this paper, although the subjects were to act exactly as they would have done without a camera, the classroom disruptions were scripted events that were performed by the actors.
 
 
-##### Coding Teachers' Reaction
+##### Teachers' Reaction to disruptions
 
 The evaluation of the teacher's reaction to the disruptions was conducted as a systematic observation using a category system with fixed categories and instructions. This corresponds to a highly inferential procedure, which is combined with an event sampling procedure (cf. Lotz et al., 2013, p. 359). 
 
@@ -497,7 +512,7 @@ With the help of scripted behavioral instructions for students in the instructio
 
 ##### Coding Time on Task
 
-
+XXX
 
 ### Questionnaie data
 
@@ -763,14 +778,14 @@ quest.data %>%
 ```
 
 
-#### Rating scales 
+#### Teachers' perception of disruption and confidence using Rating scales 
 
 Two self-developed 11-point rating scales were used to record how disruptive the individual disruptions were perceived by the subjects and how confident they felt in dealing with the disruptions. Data for rating scales were collected during the Stimulted Recall Interview, where the experimenter watched the pre-recorded eye-tracking video with the subject. 
 
 The questionnaire included nine questions for each scripted disruptive event. The subjects did not have to complete the questionnaire themselves at any time, as this was done by the experimenter. 
 
 For the present study, the following two questions from the interview were relevant:
-1. "How disturbing did you perceive this event to be?"
+1. "How disruptive was this event for you?"
 2. "How confident did you feel in dealing with this event?" 
 
 Both questions were answered using a scale ranging from 0 to 10. On this scale, 0 stood for "not at all disruptive" or "not at all safe" and 10 for "extremely disturbing" or "extremely safe."
