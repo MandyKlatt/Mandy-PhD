@@ -1,5 +1,5 @@
 ---
-title: "AOI - number and duration of fixations"
+title: "AOI TOI - number of fixations, duration of fixation & time to first fixation"
 output: html_notebook
 ---
 
@@ -424,6 +424,7 @@ df_aoi %>%
   mutate(Average_duration = round(Sum_duration_fixation/Sum_number_fixation,
                                          digits = 0),
          Group = as_factor(Group)) -> df_aoi_sum
+
 # mean & SD average duration 
 # novices
 mean_dur_nov <- 
@@ -723,6 +724,261 @@ d_aver_stud <- CohenD(x = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group ==
                       na.rm = TRUE)
 
 ```
+
+# Time to first fixation on all AOIs
+
+```{r}
+
+df_aoi %>% 
+  filter(TOI == "Lesson") %>% 
+  select (Group,
+          starts_with("Time_to_first_fixation"),
+          !"Time_to_first_fixation.Disruptive_Person") %>%
+  rowwise() %>% 
+  transmute(Group = Group,
+            Sum_time_fixation = sum(c_across(starts_with("Time_to_first_fixation")
+                                                    ),
+                                           na.rm = TRUE
+                                           ) 
+            ) %>% 
+  mutate(Group = as_factor(Group)) -> df_ttff_sum
+
+# mean & SD time to first fixation 
+# novices
+mean_time_nov <- 
+  df_ttff_sum %>%
+  filter(Group == "Novice") %>% 
+  pull(Sum_time_fixation) %>% 
+  mean() %>% 
+  round(., digits = 0)
+
+sd_time_nov <- 
+  df_ttff_sum %>%
+  filter(Group == "Novice") %>% 
+  pull(Sum_time_fixation) %>% 
+  sd() %>% 
+  round(., digits = 0)
+
+# experts
+mean_time_exp <-
+  df_ttff_sum %>%
+  filter(Group == "Expert") %>% 
+  pull(Sum_time_fixation) %>% 
+  mean() %>% 
+  round(., digits = 0)
+
+sd_time_exp <- 
+  df_ttff_sum %>%
+  filter(Group == "Expert") %>% 
+  pull(Sum_time_fixation) %>% 
+  sd() %>% 
+  round(., digits = 0)
+
+
+# plotting average duration on ALL AOIS
+df_ttff_sum %>% 
+  ggplot(mapping = aes(x = Group,
+                       y = Sum_time_fixation)) +
+  geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  # scale_x_discrete(labels = paste0(c("Novice\n","Expert\n"),
+  #                                  "M = ", c(mean_dur_nov, mean_dur_exp),
+  #                                  "; SD = ", c(sd_dur_nov, sd_dur_exp)
+  #                                  )
+  #                  ) +
+  labs(x ="",
+       y = "Milliseconds") + 
+  scale_fill_brewer(palette  = "RdBu") +  
+  ggtitle("Time to first fixation\non all AOIs") +
+  theme_cowplot() +
+  theme(legend.position="none",
+        axis.text.x = element_text(size = 34),
+        axis.text.y = element_text(size = 18),
+        axis.title = element_text(size = 34),
+        plot.title = element_text(size = 35, 
+                                  face = "bold")
+        ) -> plot_time_group
+plot_time_group
+
+# saving plot average plot
+ggsave(plot = plot_time_group,
+       filename = "plots/plot_time_group.svg",
+       height = 8,
+       width = 14,
+       units = "in")
+
+
+# TIME TO FIRST FIXATIONS on all AOIs 
+# t-test for expertise differences
+t.test(x = df_ttff_sum$Sum_time_fixation[df_ttff_sum$Group == "Expert"],
+       y = df_ttff_sum$Sum_time_fixation[df_ttff_sum$Group == "Novice"])
+
+
+# TIME TO FIRST FIXATIONS on all AOIs 
+# effect size for expertise differences
+d_time_all <- CohenD(x = df_ttff_sum$Sum_time_fixation[df_ttff_sum$Group == "Expert"],
+                    y = df_ttff_sum$Sum_time_fixation[df_ttff_sum$Group == "Novice"],
+                    na.rm = TRUE)
+
+```
+
+# Time to first fixation on AOI "Disruptive Person" 
+
+```{r}
+############### TIME TO FIRST FIXATION ####################
+
+df_aoi %>% 
+  filter(TOI == "Lesson") %>% 
+  select (Group,
+          "Time_to_first_fixation.Disruptive_Person") %>% 
+  rowwise() %>% 
+  mutate(Group = as_factor(Group)) -> df_ttff_disrup
+
+# changing milliseconds into seconds
+df_ttff_disrup$`Time to first fixation in seconds` <-
+  round(df_ttff_disrup$Time_to_first_fixation.Disruptive_Person / 1000,
+        digits = 2)
+
+##################### plotting time to first fixation for groups ##################### 
+fix_group_plot <- 
+  ggplot(data = df_ttff_disrup,
+         mapping = aes(x = Group,
+                       y = `Time to first fixation in seconds`)) +
+ geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  # scale_x_discrete(labels = paste0(c("Novice\n","Expert\n"),
+  #                                  "M = ", c(mean_dur_nov, mean_dur_exp),
+  #                                  "; SD = ", c(sd_dur_nov, sd_dur_exp)
+  #                                  )
+  #                  ) +
+  # ylim(0,250) +
+  labs(x ="",
+       y = "Seconds") + 
+  scale_fill_brewer(palette  = "RdBu") +  
+  ggtitle("Time to First Fixation\non AOI `Disruptive Person`") +
+  theme_cowplot() +
+  theme(legend.position="none",
+        axis.text.x = element_text(size = 34),
+        axis.text.y = element_text(size = 18),
+        axis.title = element_text(size = 34),
+        plot.title = element_text(size = 35, 
+                                  face = "bold")
+  ) 
+
+fix_group_plot
+
+```
+
+# Time to first fixations on AOI "Students"
+
+```{r}
+##################### plotting time to first fixation for 3 disruptions sum up ##################### 
+df_aoi %>%
+  select (Group,
+          Participant,
+          TOI,
+          "Time_to_first_fixation.Disruptive_Person") %>% 
+  mutate(Group = as_factor(Group)) -> toi_fix
+
+toi_fix$TOI[toi_fix$TOI == "Chatting_with_neighbour" |
+              toi_fix$TOI == "Heckling" |
+              toi_fix$TOI == "Whispering"] <- "Verbal disruption"
+
+toi_fix$TOI[toi_fix$TOI == "Head_on_table" |
+              toi_fix$TOI == "Looking_at_phone" |
+              toi_fix$TOI == "Drawing"] <- "Lack of eagerness"
+
+toi_fix$TOI[toi_fix$TOI == "Clicking_pen" |
+              toi_fix$TOI == "Drumming_with_hands" |
+              toi_fix$TOI == "Snipping_with_fingers"] <- "Agitation"
+
+
+toi_fix <-
+  toi_fix %>% 
+  filter(TOI == "Verbal disruption" |
+         TOI == "Lack of eagerness"|
+         TOI == "Agitation")
+
+
+# remoce all NAs
+toi_fix <- na.omit(toi_fix)
+
+# changing milliseconds into seconds
+toi_fix$`Time to first fixation in seconds`<- round(toi_fix$Time_to_first_fixation.Disruptive_Person/1000,
+                                                    digits = 2)
+
+# plotting
+fix_plot_sum <-
+  ggplot(data = toi_fix,
+         mapping = aes(x = Group,
+                       y = `Time to first fixation in seconds`)) +
+ geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  labs(x ="",
+       y = "Seconds") + 
+  scale_fill_brewer(palette  = "RdBu") +  
+  ggtitle("Time to First Fixation\non AOI `Disruptive Person`\nfor disruption categories") +
+  theme_cowplot() +
+  theme(legend.position="none",
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 18),
+        axis.title = element_text(size = 34),
+        plot.title = element_text(size = 35, 
+                                  face = "bold")) +
+  facet_wrap(facets = vars(TOI),
+             nrow = 1,
+             strip.position = "bottom")
+
+fix_plot_sum
+
+
+#################### MEAN, SD, N ############
+
+# mean ttff for groups
+toi_group_mean <- df_ttff_disrup %>%
+  group_by(Group) %>%
+  summarise("N"=n_distinct(Participant),
+            "M" = round(mean(`Time to first fixation in seconds`), 2),
+            "SD" = round(sd(`Time to first fixation in seconds`), 2))
+
+# mean ttff for disrup. categories
+toi_mean <- toi_fix %>%
+  group_by(Group,
+           TOI) %>%
+  summarise("N"=n_distinct(Participant),
+            "M" = round(mean(`Time to first fixation in seconds`), 2),
+            "SD" = round(sd(`Time to first fixation in seconds`), 2))
+
+################ t-test & effect size
+# TIME TO FIRST FIXATIONS 
+# t-test for expertise differences
+t.test(x = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Expert"],
+       y = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Novice"])
+
+
+# AVERAGE DURATION OF FIXATIONS on AOI Students
+# effect size for expertise differences
+d_aver_stud <- CohenD(x = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Expert"],
+                      y = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Novice"],
+                      na.rm = TRUE)
+
+```
+
 
 
 
