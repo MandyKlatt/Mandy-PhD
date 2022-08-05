@@ -1,0 +1,52 @@
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+
+\begin{center}
+\begin{threeparttable}
+
+\caption{\label{tab:demographicstable}Demographic Information}
+
+\tiny{
+
+\begin{tabular}{lllllll}
+\toprule
+Group & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{Gender female in percent} & \multicolumn{1}{c}{M Age in years} & \multicolumn{1}{c}{SD Age in years} & \multicolumn{1}{c}{Min Age in years} & \multicolumn{1}{c}{Max Age in years}\\
+\midrule
+Expert & 16 & 56.25 & 41.44 & 10.73 & 27.00 & 59.00\\
+Novice & 25 & 64.00 & 23.40 & 1.76 & 20.00 & 27.00\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{threeparttable}
+\end{center}
+
+\end{table*}
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+
+\begin{center}
+\begin{threeparttable}
+
+\caption{\label{tab:demographicstable}Teaching Experience in years, internship experience in teaching units (45min) and extracurricular teaching experience in percent}
+
+\tiny{
+
+\begin{tabular}{llllllllllllllll}
+\toprule
+Group & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{M Exp.} & \multicolumn{1}{c}{SD Exp.} & \multicolumn{1}{c}{Min Exp.} & \multicolumn{1}{c}{Max Exp.} & \multicolumn{1}{c}{M Semester} & \multicolumn{1}{c}{SD Semester} & \multicolumn{1}{c}{Min Semester} & \multicolumn{1}{c}{Max Semester} & \multicolumn{1}{c}{M Internship} & \multicolumn{1}{c}{SD Internship} & \multicolumn{1}{c}{Min Internship} & \multicolumn{1}{c}{Max Internship} & \multicolumn{1}{c}{Extracurricular Teaching Experience} & \multicolumn{1}{c}{Secondary Teaching Activities}\\
+\midrule
+Expert & 16 & 13.56 & 12.79 & 2.00 & 37.00 & NA & NA & NA & NA & NA & NA & NA & NA & NA & 56.00\\
+Novice & 25 & 0.00 & 0.00 & 0.00 & 0.00 & 7.28 & 2.59 & 3.00 & 11.00 & 11.20 & 8.13 & 0.00 & 36.00 & 88.00 & NA\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{threeparttable}
+\end{center}
+
+\end{table*}
