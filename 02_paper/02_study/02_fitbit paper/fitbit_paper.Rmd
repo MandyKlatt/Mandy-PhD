@@ -271,10 +271,16 @@ The subjects were primarily recruited through personal contacts, social media (F
 We used a Fitbit Charge 4 to measure the teachers' heart rate. The device was attached 2-finger widths above the ulnar styloid process to the partipant's wrist following the manufacturer’s instructions. To determine the heart rate, the Fitbit flashes green LEDs many times per second and uses light-sensitive photodiodes to measure the volume changes in the capillaries and then calculates how many times the heart beats per minute (bpm). Data were automatically wireless synced with an iPad via Bluetooth to a Fitbit account, and subsequently, the intraday second-by-second data were exported for each session using the opensource software Pulse Watch (PulseWatch. URL: https://iccir919.github.io/pulseWatch/public/index.html [accessed 2022-08-03]).
 
 
-
 ## Procedure
+In a laboratory setting, three trained actors performed teaching disruptions in a counter balanced fashion while the subject taught a 15-minute micro-teaching unit prepared in advance. To record the subject's heart rate, the Fitbit Charge 4 was put on at least 10 minutes before the start of the lesson. The lesson was recorded by four cameras and an audio recorder. In addition, the subject wore eye-tracking glasses to record gaze behavior. 
 
+Subsequently, the subjects as well as the actors were given a short questionnaire, which contained items to collect demographic information as well as items about the previously given lesson on teaching quality using a validated questionnaire (EMU, @helmke2014unterrichtsdiagnostik) and self developed scales on the teacher's presence behavior derived from the research literature via the online survey website SoSci Survey (4-point Likert scale; 1 = strongly disagree; 2 = disagree; 3 = agree; 4 = strongly agree). The completion of the questionnaire took approximately 5 minutes. 
 
+The experimenter then conducted a Stimulated Recall Interview (SRI), where the subject commented and rated the reactions to classroom events while watching the eye tracking video.
+
+Finally, a Situational Judgment Test (SJT, @gold2015development) was used to assess the subject's strategic knowledge of classroom management. The subject was asked to judge alternative actions on school scenarios on a 6-point rating scale from 1 (A) to 6 (F) according to school grades. Data from the SJT were again collected as an online questionnaire via the website www.soscisurvey.de and lastet approximately 10 minutes. 
+
+The Fitbit watch was removed only after the last questionnaire to obtain heart rate at three different measurement time points: before, during, and after the lesson. 
 
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
