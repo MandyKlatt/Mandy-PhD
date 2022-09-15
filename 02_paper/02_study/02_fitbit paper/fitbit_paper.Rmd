@@ -1,5 +1,5 @@
 ---
-title             : "A Walk In The Classroom - Using Fitbit Charge 4 to measure expert and novice teachers’ heart rate and step counts in a laboratory study"
+title             : "New approaches to teachers' experience of stress: Do heart rate measurements with fitness trackers provide an efficient, inexpensive, and robust measurement method?"
 shorttitle        : "Measuring novice and expert teachers' heart rate"
 
 author: 
@@ -21,6 +21,13 @@ author:
     affiliation   : "1,2"
     role:
       - "Conceptualization"
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - name          : "Christin Lotz"
+    affiliation   : "1"
+    role:
+      - "Conceptualization"
+      - "Writing - Original Draft Preparation"
       - "Writing - Review & Editing"
   - name          : "Anne Deiglmayr"
     affiliation   : "1"
@@ -110,15 +117,14 @@ needs(tidyverse,
 
 ```
 # Introduction
-Especially the first five years are a crucial time the teaching profession, whether the development from novice to expert is experienced as successful and as an increase in competence or leads to the fact that between 40 and 50 percent of the beginning teachers left the profession [@ingersoll2003wrong; @prilleltensky2016teacher]. One reason among many why teachers end their careers is the demanding workload and resulting stress in the teaching profession [@struyven2014teachers]. In her study with 400 secondary teachers, @fisher2011factors showed that burnout scores were significantly different between novice and experienced teachers, whereby novices had higher burnout. Furthermore, she found that low years of experience was a statistically significant predictor for stress in the teaching profession, along with job satisfaction and burnout.
 
-XXX ÜBERGANG VON STRESS ZU HEART RATE XXX 
+Prospective teachers experience the first five years as a particular professional challenge, as they are associated with a high workload (e.g., class size, poor student behavior) and resulting stress in the teaching profession [@struyven2014teachers].
 
-The heart rate is considered an indicator of physical or emotional stress. Increased workload is accompanied by increased heart rate. Therefore, heart rate can be considered the most important psycho physiological parameter [@sachs2014physiologische]. 
+Psychosomatic stress symptoms, such as increasing heart rate, result from an interaction of situational stressors and person-specific available resources ["transactional stress model"; @lazarus1987transactional; @obbarius2021modified]. If teachers are exposed to a stressful teaching-learning environment for a long time and do not have the sufficient resources and coping strategies, this can lead to burnout. 
 
-XXX ÜBERGANG VON HEART RATE ZU SMARTWATCHES - VORTEILE XXX low-cost, non-invasive, wrist-worn devices
+Fisher (2011) showed in her study of 400 secondary school teachers that burnout scores differed significantly between novice and experienced teachers, with novices having higher burnout scores. In addition, she found that a low number of years of professional experience was a statistically significant predictor of stress in the teaching profession, along with job satisfaction and burnout.
 
-There is a gap in research on whether heart rate measurements using fitness watches are appropriate to detect differences between experienced and inexperienced teachers in a laboratory setting.
+In addition to self-reported indicators of stress (e.g., emotional exhaustion), psychophysiological indicators (e.g., heart rate) are becoming increasingly important in research. Heart rate as the number of heart contractions per minute [@Löllgen2015] is an important indicator of physical or emotional stress. Increased workload is associated with increased heart rate [@sachs2014physiologische]. Arguably, physiological data provide a more objective and non-reactive measure of stress in the classroom (Runge et al., 2020). However, in an educational context, this requires the use of low-cost, non-invasive instruments. Fitness trackers worn on the wrist could fill this research gap [@ferguson2015validity]. 
 
 
 ## Aim of the study
