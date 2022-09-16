@@ -157,7 +157,7 @@ df_aggr <- df_all %>%
 
  df_all$status <- if_else(as.numeric(as.character(df_all$ID)) < 200,
                           "novice",
-                          "advanced")
+                          "expert")
 
  df_all_min <- df_all %>%
  group_by(ID) %>%
