@@ -131,6 +131,7 @@ df_heart_aggr <-
                          )
          )
 
+############### FLOW PLOT #############
 plot_flow <-
 ggplot(data = df_heart_all,
        mapping = aes(x = as.numeric(Time),
@@ -171,6 +172,8 @@ ggplot(data = df_heart_all,
 
 legend <- cowplot::get_legend(plot_flow_leg)
 
+############### LOESS PLOT #############
+
 plot_loess <-
 ggplot(data = filter(df_heart_all),
        mapping = aes(x = as.numeric(Time),
@@ -196,6 +199,8 @@ ggplot(data = filter(df_heart_all),
         strip.background = element_blank(),
         strip.text.x = element_blank()
         )
+
+############### BOX PLOT #############
 
 plot_box <- 
 ggplot(data = df_heart_aggr,

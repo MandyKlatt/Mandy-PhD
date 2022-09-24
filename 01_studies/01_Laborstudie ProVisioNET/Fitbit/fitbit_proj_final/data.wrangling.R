@@ -275,12 +275,12 @@ part <- read_xlsx(path = "Data/Heart Rate.xlsx")
 #                                                                              .
 #...............................................................................
 
-part <- filter(part,
-                `ID participant` != 126 |
-                 `ID participant` != 132 |
-                 `ID participant` != 134
-               )
-
+part <- part %>% 
+  filter(!`ID participant`%in% c("126", 
+                                 "132", 
+                                 "134")
+         )
+  
 part <- part$`ID participant`
 
 for (i in part) {
@@ -452,11 +452,11 @@ part <- read_xlsx(path = "Data/Heart Rate.xlsx")
 #                                                                              .
 #...............................................................................
 
-part <- filter(part,
-               `ID participant` != 126  |
-                `ID participant` != 132 |
-               `ID participant` != 134  
-               )
+part <- part %>% 
+  filter(!`ID participant`%in% c("126", 
+                                 "132", 
+                                 "134")
+         )
 
 part <- part$`ID participant`
 
