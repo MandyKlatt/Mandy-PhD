@@ -109,50 +109,7 @@ All participants were given a FitBit Smart Watch to wear during the experiment.
 ## Heart Rate
 
 ```{r}
-# Mean, SD and Cohen D for experts & novices
-
-# novices
-mean_nov <- 
-  df_heart_all %>%
-  filter(status == "Novice" ) %>% 
-  pull(`Heart Rate`) %>% 
-  mean() %>% 
-  round(., digits = 0)
-
-sd_nov <- 
-  df_heart_all %>%
-  filter(status == "Novice") %>% 
-  pull(`Heart Rate`) %>% 
-  sd() %>% 
-  round(., digits = 0)
-
-# experts
-mean_exp <-
-  df_heart_all %>%
-  filter(status == "Expert") %>% 
-  pull(`Heart Rate`) %>% 
-  mean() %>% 
-  round(., digits = 0)
-
-sd_exp <- 
-  df_heart_all %>%
-  filter(status == "Expert") %>% 
-  pull(`Heart Rate`) %>% 
-  sd() %>% 
-  round(., digits = 0)
-
-# effect size for expertise differences
-d_heartrate <- CohenD(x = df_heart_all$`Heart Rate`[df_heart_all$status == "Expert"],
-               y = df_heart_all$`Heart Rate`[df_heart_all$status == "Novice"],
-               na.rm = TRUE)
-
-```
-
-
-The heart rate of each participant were measured during the experiment.
-
-```{r}
-# Plots
+# aggregate data 
 
 df_heart_all <-
   read_rds(file = "final_data/heart_all.rds") |> 
@@ -173,29 +130,74 @@ df_heart_aggr <-
                          )
          )
 
+
+# Mean, SD and Cohen D for experts & novices
+# novices
+mean_nov <- 
+  df_heart_aggr %>%
+  filter(status == "Novice" ) %>% 
+  pull(mean) %>% 
+  mean() %>% 
+  round(., digits = 0)
+
+sd_nov <- 
+  df_heart_aggr %>%
+  filter(status == "Novice") %>% 
+  pull(mean) %>% 
+  sd() %>% 
+  round(., digits = 0)
+
+# experts
+mean_exp <-
+  df_heart_aggr %>%
+  filter(status == "Expert") %>% 
+  pull(mean) %>% 
+  mean() %>% 
+  round(., digits = 0)
+
+sd_exp <- 
+  df_heart_aggr %>%
+  filter(status == "Expert") %>% 
+  pull(mean) %>% 
+  sd() %>% 
+  round(., digits = 0)
+
+# effect size for expertise differences
+d_heartrate <- CohenD(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
+               y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"],
+               na.rm = TRUE)
+
+```
+
+
+The heart rate of each participant were measured during the experiment.
+
+```{r}
+# Plots
+
 ############### FLOW PLOT #############
-plot_flow <-
-ggplot(data = df_heart_all,
-       mapping = aes(x = as.numeric(Time),
-                     y = `Heart Rate`,
-                     group = ID)
-       ) +
-  geom_line(mapping = aes(color = status),
-            size = 0.3,
-            alpha = 1
-            ) +
-  xlim(0, min(df_heart_min$min)) +
-  scale_color_viridis_d(option = "A",
-                       end = 0.8)  +
-  scale_linetype_manual(values = c(1, 6)) +
-  labs(x = "Time (in Seconds)",
-       y = "Heart Rate\n(in Beats per Minute)") +
-  theme_minimal() +
-  theme(text = element_text(family = "serif"),
-        legend.position = "none",
-        strip.text = element_text(size = 16)) +
-  facet_grid(cols = vars(Type),
-             scales = "free_x")
+# plot_flow <-
+# ggplot(data = df_heart_all,
+#        mapping = aes(x = as.numeric(Time),
+#                      y = `Heart Rate`,
+#                      group = ID)
+#        ) +
+#   geom_line(mapping = aes(color = status),
+#             size = 0.3,
+#             alpha = 1
+#             ) +
+#   xlim(0, 600) +
+#   scale_color_viridis_d(option = "A",
+#                        end = 0.8)  +
+#   scale_linetype_manual(values = c(1, 6)) +
+#   labs(x = "Time (in Seconds)",
+#        y = "Heart Rate\n(in Beats per Minute)") +
+#   theme_minimal() +
+#   theme(text = element_text(family = "serif"),
+#         legend.position = "none",
+#         strip.text = element_text(size = 16)) +
+#   facet_grid(cols = vars(Type),
+#              scales = "free_x")
 
 ############### FLOW PLOT EXPERT NOVICE #############
 
@@ -205,16 +207,32 @@ ggplot(data = df_heart_all,
                      y = `Heart Rate`
                      )
        ) +
+  xlim(0, 600) +
   geom_smooth(mapping = aes(color = status),
               method = "loess") +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
- # scale_linetype_manual(values = c(1, 6)) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Time (in Seconds)",
+       y = "Heart Rate\n(in Beats per Minute)") +
+  ggtitle("Experts' and novices' heart rate in comparison per phase") +
   theme_minimal() +
   theme(text = element_text(family = "serif"),
-        legend.title = element_blank()) 
+        legend.title = element_blank(),
+        strip.text = element_text(size = 16),
+        plot.title = element_text(size = 20, 
+                                  face = "bold")) +
+  facet_grid(cols = vars(Type),
+             scales = "free_x")
 
-legend <- cowplot::get_legend(plot_flow_leg)
+# legend <- cowplot::get_legend(plot_flow_leg)
+
+# saving plot 
+ggsave(plot = plot_flow_leg,
+       filename = "Plots/plot_flow_leg.pdf",
+       height = 8,
+       width = 8,
+       units = "in")
 
 ############### LOESS PLOT #############
 
@@ -228,7 +246,7 @@ ggplot(data = filter(df_heart_all),
               mapping = aes(color = status),
               method = "loess",
               se = FALSE) +
-  xlim(0,min(df_heart_min$min)) +
+  xlim(0,600) +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
@@ -243,6 +261,7 @@ ggplot(data = filter(df_heart_all),
         strip.background = element_blank(),
         strip.text.x = element_blank()
         )
+
 
 ############### BOX PLOT #############
 
