@@ -15,7 +15,8 @@ needs(tidyverse,
       ggthemes,
       gridExtra,
       imputeTS,
-      DescTools)
+      DescTools,
+      cowplot)
 ```
 
 
@@ -215,10 +216,13 @@ ggplot(data = df_heart_all,
   scale_linetype_manual(values = c(1, 6)) +
   labs(x = "Time (in Seconds)",
        y = "Heart Rate\n(in Beats per Minute)") +
-  ggtitle("Experts' and novices' heart rate in comparison per phase") +
+  ggtitle("Experts' and novices' heart rate per phase") +
   theme_minimal() +
   theme(text = element_text(family = "serif"),
+        legend.text = element_text(size = 15),
         legend.title = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10),
         strip.text = element_text(size = 16),
         plot.title = element_text(size = 20, 
                                   face = "bold")) +
@@ -229,8 +233,8 @@ ggplot(data = df_heart_all,
 
 # saving plot 
 ggsave(plot = plot_flow_leg,
-       filename = "Plots/plot_flow_leg.pdf",
-       height = 8,
+       filename = "Plots/plot_flow_leg.svg",
+       height = 5,
        width = 8,
        units = "in")
 
@@ -306,6 +310,46 @@ ggplot(data = df_heart_aggr,
         ) +
   aes(fill = Type)
 
+plot_box
+
+##### Mandys Box Plot
+plot_box <-
+  ggplot(data = df_heart_aggr,
+         mapping = aes(x = Type,
+                       y = mean)) + 
+  geom_boxplot(mapping = aes(fill = status),
+               outlier.shape = NA) +
+  geom_point(mapping = aes(shape = status),
+             alpha = 0.5,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  labs(x ="",
+       y = "Average Heart Rate\n(in Beats per Minute)") + 
+  ggtitle("Experts' and novices' heart rate per phase") +
+  scale_fill_brewer(palette  = "RdBu") +  
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        legend.text = element_text(size = 15),
+        legend.title = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10),
+        strip.text = element_text(size = 16),
+        plot.title = element_text(size = 20, 
+                                  face = "bold"))
+
+plot_box
+
+# saving plot 
+ggsave(plot = plot_box,
+       filename = "Plots/plot_box.svg",
+       height = 5,
+       width = 8,
+       units = "in")
+
+##############
+
+
 lo_mat <- rbind(c(1,1,1,1,1,1,NA),
                 c(2,2,2,2,2,2,4),
                 c(3,3,3,3,3,3,NA))
@@ -316,6 +360,13 @@ grid.arrange(grobs = list(plot_flow, plot_loess, plot_box, legend),
 
 plot_heart
 ```
+
+```{r}
+aov(data = df_heart_aggr,
+    formula = Type ~ mean) %>%  # Form: AV ~ UV
+  summary(.)
+```
+
 
 ## Steps
 
