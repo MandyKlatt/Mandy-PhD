@@ -60,7 +60,7 @@ abstract: |
   
   <!-- https://tinyurl.com/ybremelq -->
   
-keywords          : "heart rate; photoplethysmography; wearable electronic device; expertise differences "
+keywords          : "heart rate; photoplethysmography; wearable electronic device; expertise differences"
 wordcount         : "X"
 
 bibliography      : "r-references.bib"

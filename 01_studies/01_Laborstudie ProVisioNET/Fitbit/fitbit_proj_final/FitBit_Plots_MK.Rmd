@@ -17,13 +17,14 @@ needs(tidyverse,
       imputeTS,
       DescTools,
       cowplot,
-      rstatix)
+      rstatix,
+      ggpubr)
 ```
 
 
 # Initial Preparations
 
-Run following Code if and only if new data is added to the initial data.
+Run following Code only if new data is added to the initial data.
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 # fitbit data
@@ -47,9 +48,9 @@ demo.data <- rename(demo.data, c("ID" = "LI06_05",
 
 # exclude cases (no fitbit data)
 demo.data <- demo.data %>% filter(!ID %in% c("126",
-                                                "132",
-                                                "134"
-                                                )
+                                             "132",
+                                             "134"
+                                             )
                                   )
 
 
@@ -317,7 +318,7 @@ ggsave(plot = plot_box,
 
 
 # Repeated Measures ANOVA
-XXX GREGOR
+
 ```{r}
 
 # merge demo data and fitbit data
@@ -328,17 +329,70 @@ df_anova <- merge(demo.data,
 # clean variable names
 df_anova <- df_anova %>% clean_names()
 
+# check for outliers
+outliers <-
+  df_anova %>%
+  group_by(type) %>%
+  identify_outliers(mean)
+
+# check for normality assumption --> can be checked by computing Shapiro-Wilk test for each time point. If the data is normally distributed, the p-value should be greater than 0.05
+norm_assump <-
+  df_anova %>%
+  group_by(type) %>%
+  shapiro_test(mean)
+
+ggqqplot(df_anova, "mean", facet.by = "type")
+
+
 # anova
 res.aov <- rstatix::anova_test(data = df_anova,
                                dv = mean,
                                wid = id,
                                within = type)
-
 get_anova_table(res.aov)
 
-# aov(data = df_heart_aggr,
-#     formula = Type ~ mean) %>%  # Form: AV ~ UV
-#   summary(.)
+# anova expert novice
+res.aov2 <- rstatix::anova_test(data = df_anova,
+                               dv = mean,
+                               between = status,
+                               wid = id,
+                               within = type)
+get_anova_table(res.aov2)
+
+
+# pairwise comparisons
+pwc <- df_anova %>%
+  pairwise_t_test(
+    mean ~ type, paired = TRUE,
+    p.adjust.method = "bonferroni"
+    )
+pwc
+
+# Visualization: box plots with p-values
+pwc <- 
+  pwc %>% 
+  add_xy_position(x = "type")
+
+# boxplot
+bxp_anova <- ggboxplot(data = df_anova, 
+                 x = "type", 
+                 y = "mean", 
+                 add = "point")
+
+bxp_anova + 
+  stat_pvalue_manual(pwc) +
+  labs(
+    subtitle = get_test_label(res.aov, detailed = TRUE),
+    caption = get_pwc_label(pwc)
+    )
+
+
+# saving plot 
+ggsave(plot = bxp_anova,
+       filename = "Plots/bxp_anova.svg",
+       height = 5,
+       width = 8,
+       units = "in")
 
 ```
 
