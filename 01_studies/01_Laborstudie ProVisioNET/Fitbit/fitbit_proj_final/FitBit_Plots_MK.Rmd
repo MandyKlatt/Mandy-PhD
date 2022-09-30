@@ -48,8 +48,7 @@ demo.data <- rename(demo.data, c("ID" = "LI06_05",
 
 # exclude cases (no fitbit data)
 demo.data <- demo.data %>% filter(!ID %in% c("126",
-                                             "132",
-                                             "134"
+                                             "132"
                                              )
                                   )
 

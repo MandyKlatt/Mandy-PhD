@@ -113,8 +113,12 @@ needs(tidyverse,
       kableExtra,
       xtable,
       DescTools,
-      formattable)
-
+      formattable,
+      ggthemes,
+      imputeTS,
+      rstatix,
+      ggpubr)
+  
 ```
 # Introduction
 
@@ -137,10 +141,11 @@ We report how we determined our sample size, all data exclusions (if any), all m
 ## Participants
 ```{r demographicstable, include = TRUE, echo=FALSE}
 
+# DEMOGRAPHIC DATA
 # read in data and select and rename relevant columns with transmute 
-demo.data <- 
+demo.data.raw <- 
   read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% 
-  transmute(Group = LI06_05,
+  transmute(ID = LI06_05,
             Gender = LI02_01_1,
             Age = LI03_01,
             `Teaching Experience` = LI04_01,
@@ -153,8 +158,14 @@ demo.data <-
             `Secondary Teaching Activities` = LI17
             )
 
+# exclude cases with no fitbit data
+demo.data.raw <- demo.data %>% filter(!ID %in% c("126",
+                                                 "132"
+                                                 )
+                                      )
+
 # define expert and novice with ifelse function
-demo.data$Group = ifelse(demo.data$Group < 200, "Novice","Expert")
+demo.data$ID = ifelse(demo.data$ID < 200, "Novice","Expert")
 
 # changing gender to count female gender (male = 2 --> 0)
 demo.data$Gender = ifelse(demo.data$Gender == 2, "1","0")
@@ -164,7 +175,7 @@ demo.data$Gender <- as.numeric(demo.data$Gender)
 
 # creating new column with total participants to calculate percent of gender
 demo.data <- demo.data %>%
-  group_by(Group) %>%
+  group_by(ID) %>%
   mutate(Sum_participants = n())
 
 # replacing 2 to 1 (Oberschule = Gymnasisium --> Secondary school)
@@ -173,7 +184,7 @@ demo.data$School_type[demo.data$School_type == 2] <- "1"
 # creating new column to calculate percent of school type
 demo.data <- 
   demo.data %>%
-  group_by(School_type, Group) %>%
+  group_by(School_type, ID) %>%
   mutate(Count_Schooltype = sum(n())) %>% 
   mutate(Percent_schooltype = round((Count_Schooltype/Sum_participants) * 100, 
          digits = 2))
@@ -218,7 +229,7 @@ demo.data$`Secondary Teaching Activities` <- as.numeric(demo.data$`Secondary Tea
 
 # create a basic table (tibble) using tidyverse functions
 demo.table <- demo.data %>%
-  group_by(Group) %>%
+  group_by(ID) %>%
   summarise(N=n(),
             "Gender female in percent" = round(sum(Gender/Sum_participants) * 100, 
                                                digits = 2),
@@ -243,7 +254,7 @@ demo.table <- demo.data %>%
 
 # create a basic table (tibble) using tidyverse functions
 exp.table <- demo.data %>%
-  group_by(Group) %>%
+  group_by(ID) %>%
   summarise(N=n(),
            "M Exp." = round(mean(`Teaching Experience`), 2),
             "SD Exp." = round(sd(`Teaching Experience`), 2),
@@ -274,17 +285,17 @@ exp.table <- demo.data %>%
 
 ```
 
-XXX  fitbit data exclusion XXX
+The sample consisted of *N* = `r length(demo.data$ID)` participants with *n* = `r length(demo.data$ID[demo.data$ID == "Expert"])` expert teachers and *n* = `r length(demo.data$ID[demo.data$ID == "Novice"])` novice teachers. 
 
-The sample consisted of *N* = `r length(demo.data$Group)` participants with *n* = `r length(demo.data$Group[demo.data$Group == "Expert"])` expert teachers and *n* = `r length(demo.data$Group[demo.data$Group == "Novice"])` novice teachers. 
+The data of two participants (two novices, XXX experts) were excluded from the analyses due to insufficient data quality. 
 
 The inclusion criterion for experts was that they have successfully completed teacher training and are actively employed in the teaching profession. According to @palmer2005identifying, we selected teachers as experts who had at least three years of professional experience and ideally had worked in another teaching position, such as subject advisor or trainer for trainee teachers, in addition to their teaching profession in school. Novices were student teachers who had successfully completed their first internship in a school and gained one to four hours of teaching experience.
 
-The expert teachers (`r demo.data %>% filter(Gender == 1 & Group == "Expert") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(Group == "Expert") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(Group == "Expert") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(Group == "Expert") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(Group == "Expert") %>% pull("Min Age in years")`-`r demo.table %>%  filter(Group == "Expert") %>% pull("Max Age in years")`) and an average teaching experience of `r exp.table %>% filter(Group == "Expert") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years (*SD* = `r exp.table %>% filter(Group == "Expert") %>% pull("SD Exp.") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Expert") %>% pull("Min Exp.")`-`r exp.table %>%  filter(Group == "Expert") %>% pull("Max Exp.")`). 
-`r demo.data %>% filter(Group == "Expert" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the experts were primary school teachers and `r demo.data %>% filter(Group == "Expert" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% were secondary school teachers. `r exp.table %>% filter(Group == "Expert") %>% pull("Secondary Teaching Activities")`% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers. 
+The expert teachers (`r demo.data %>% filter(Gender == 1 & ID == "Expert") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(ID == "Expert") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(ID == "Expert") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(ID == "Expert") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(ID == "Expert") %>% pull("Min Age in years")`-`r demo.table %>%  filter(ID == "Expert") %>% pull("Max Age in years")`) and an average teaching experience of `r exp.table %>% filter(ID == "Expert") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years (*SD* = `r exp.table %>% filter(ID == "Expert") %>% pull("SD Exp.") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Expert") %>% pull("Min Exp.")`-`r exp.table %>%  filter(ID == "Expert") %>% pull("Max Exp.")`). 
+`r demo.data %>% filter(ID == "Expert" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the experts were primary school teachers and `r demo.data %>% filter(ID == "Expert" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% were secondary school teachers. `r exp.table %>% filter(ID == "Expert") %>% pull("Secondary Teaching Activities")`% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers. 
 
-The novice teachers (`r demo.data %>% filter(Gender == 1 & Group == "Novice") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(Group == "Novice") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(Group == "Novice") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(Group == "Novice") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(Group == "Novice") %>% pull("Min Age in years")`-`r demo.table %>%  filter(Group == "Novice") %>% pull("Max Age in years")`) with an average teaching experience of `r exp.table %>% filter(Group == "Novice") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years. On average, the student teachers were in their `r exp.table %>% filter(Group == "Novice") %>% pull("M Semester") %>% mean() %>% round(., digits = 1)` semester (*SD* = `r exp.table %>% filter(Group == "Novice") %>% pull("SD Semester") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Novice") %>% pull("Min Semester")`-`r exp.table %>%  filter(Group == "Novice") %>% pull("Max Semester")`). Furthermore, they had an average teaching experience of `r exp.table %>% filter(Group == "Novice") %>% pull("M Internship") %>% mean() %>% round(., digits = 1)` teaching units à 45min (*SD* = `r exp.table %>% filter(Group == "Novice") %>% pull("SD Internship") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Novice") %>% pull("Min Internship")`-`r exp.table %>%  filter(Group == "Novice") %>% pull("Max Internship")`) through the internships during their studies. 
-`r demo.data %>% filter(Group == "Novice" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the novices were studying to become primary school teachers, `r demo.data %>% filter(Group == "Novice" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% to become secondary school teachers and `r demo.data %>% filter(Group == "Novice" & School_type == "Special Education") %>% pull("Percent_schooltype") %>% unique()`% to become special education teachers. `r exp.table %>% filter(Group == "Novice") %>% pull("Extracurricular Teaching Experience")`% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision. 
+The novice teachers (`r demo.data %>% filter(Gender == 1 & ID == "Novice") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(ID == "Novice") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(ID == "Novice") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(ID == "Novice") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(ID == "Novice") %>% pull("Min Age in years")`-`r demo.table %>%  filter(ID == "Novice") %>% pull("Max Age in years")`) with an average teaching experience of `r exp.table %>% filter(ID == "Novice") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years. On average, the student teachers were in their `r exp.table %>% filter(ID == "Novice") %>% pull("M Semester") %>% mean() %>% round(., digits = 1)` semester (*SD* = `r exp.table %>% filter(ID == "Novice") %>% pull("SD Semester") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Novice") %>% pull("Min Semester")`-`r exp.table %>%  filter(ID == "Novice") %>% pull("Max Semester")`). Furthermore, they had an average teaching experience of `r exp.table %>% filter(ID == "Novice") %>% pull("M Internship") %>% mean() %>% round(., digits = 1)` teaching units à 45min (*SD* = `r exp.table %>% filter(ID == "Novice") %>% pull("SD Internship") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Novice") %>% pull("Min Internship")`-`r exp.table %>%  filter(ID == "Novice") %>% pull("Max Internship")`) through the internships during their studies. 
+`r demo.data %>% filter(ID == "Novice" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the novices were studying to become primary school teachers, `r demo.data %>% filter(ID == "Novice" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% to become secondary school teachers and `r demo.data %>% filter(ID == "Novice" & School_type == "Special Education") %>% pull("Percent_schooltype") %>% unique()`% to become special education teachers. `r exp.table %>% filter(ID == "Novice") %>% pull("Extracurricular Teaching Experience")`% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision. 
 
 The subjects were primarily recruited through personal contacts, social media (Facebook), e-mail distribution lists and advertising in lectures at Leipzig University. All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board. The authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
@@ -315,151 +326,193 @@ All participants were given a FitBit Smart Watch Charge 4 to wear during the exp
 
 The heart rate of each subject were measured before, during and after the experiment.
 
-XXX Data and data wrangling need to be imported XXX 
 ```{r}
-# # Initial Preparations
-# ## Run following Code if and only if new data is added to the initial data.
-# 
-# source(file = "data.wrangling.R")
-# 
-# 
-# # Plots
-# 
-# df_heart_all <-
-#   read_rds(file = "final_data/heart_all.rds") |> 
-#   mutate(status = factor(status,
-#                          levels = c("Expert","Novice"),
-#                          labels = c("Expert","Novice")
-#                          )
-#          )
-# 
-# df_heart_min <-
-#   read_rds(file = "final_data/heart_min.rds")
-# 
-# df_heart_aggr <- 
-#   read_rds(file = "final_data/heart_aggr.rds") |> 
-#   mutate(status = factor(status,
-#                          levels = c("Novice","Expert"),
-#                          labels = c("Novice","Expert")
-#                          )
-#          )
-# 
-# plot_flow <-
-# ggplot(data = df_heart_all,
-#        mapping = aes(x = as.numeric(Time),
-#                      y = `Heart Rate`,
-#                      group = ID)
-#        ) +
-#   geom_line(mapping = aes(color = status),
-#             size = 0.3,
-#             alpha = 1
-#             ) +
-#   xlim(0, min(df_heart_min$min)) +
-#   scale_color_viridis_d(option = "A",
-#                        end = 0.8)  +
-#   scale_linetype_manual(values = c(1, 6)) +
-#   labs(x = "Time (in Seconds)",
-#        y = "Heart Rate\n(in Beats per Minute)") +
-#   theme_minimal() +
-#   theme(text = element_text(family = "serif"),
-#         legend.position = "none",
-#         strip.text = element_text(size = 16)) +
-#   facet_grid(cols = vars(Type),
-#              scales = "free_x")
-# 
-# plot_flow_leg <-
-# ggplot(data = df_heart_all,
-#        mapping = aes(x = Time,
-#                      y = `Heart Rate`
-#                      )
-#        ) +
-#   geom_smooth(mapping = aes(color = status),
-#               method = "loess") +
-#   scale_color_viridis_d(option = "A",
-#                         end = 0.8) +
-#  # scale_linetype_manual(values = c(1, 6)) +
-#   theme_minimal() +
-#   theme(text = element_text(family = "serif"),
-#         legend.title = element_blank()) 
-# 
-# legend <- cowplot::get_legend(plot_flow_leg)
-# 
-# plot_loess <-
-# ggplot(data = filter(df_heart_all),
-#        mapping = aes(x = as.numeric(Time),
-#                      y = `Heart Rate`
-#                      )
-#        ) +
-#   stat_smooth(geom = "line",
-#               mapping = aes(color = status),
-#               method = "loess",
-#               se = FALSE) +
-#   xlim(0,min(df_heart_min$min)) +
-#   scale_color_viridis_d(option = "A",
-#                         end = 0.8) +
-#   scale_linetype_manual(values = c(1, 6)) +
-#   labs(x = "Time (in Seconds)",
-#        y = "Heart Rate\n(in Beats per Minute)") +
-#   theme_minimal() +
-#   facet_grid(cols = vars(Type),
-#              scales = "free_x",
-#              ) +
-#   theme(text = element_text(family = "serif"),
-#         legend.position = "none",
-#         strip.background = element_blank(),
-#         strip.text.x = element_blank()
-#         )
-# 
-# plot_box <- 
-# ggplot(data = df_heart_aggr,
-#        mapping = aes(x = Type,
-#                      y = mean,
-#                      color = status
-#                      )
-#        ) +
-#   geom_boxplot(color = "darkgrey",
-#                fill = "grey") +
-#   geom_line(data = filter(df_heart_aggr,
-#                           status == "Novice"),
-#             mapping = aes(x = Type,
-#                           y = mean,
-#                           group = as_factor(ID)
-#                           ),
-#             linetype = 1,
-#             alpha = 0.5
-#             ) +
-#   geom_line(data = filter(df_heart_aggr,
-#                           status == "Expert"),
-#             mapping = aes(x = Type,
-#                           y = mean,
-#                           group = as_factor(ID)
-#                           ),
-#             linetype = 6,
-#             alpha = 0.5
-#             ) +
-#   geom_point(size = 2,
-#              alpha = 0.5) +
-#   labs(x = "",
-#        y = "Average Heart Rate\n(in Beats per Minute)") +
-#   scale_color_viridis_d(option = "A",
-#                        end = 0.8) +
-#   theme_minimal() +
-#   theme(text = element_text(family = "serif"),
-#         strip.text = element_blank(),
-#        legend.position = "none",
-#         axis.text.x = element_blank()
-#         ) +
-#   aes(fill = Type)
-# 
-# lo_mat <- rbind(c(1,1,1,1,1,1,NA),
-#                 c(2,2,2,2,2,2,4),
-#                 c(3,3,3,3,3,3,NA))
-# 
-# plot_heart <- 
-# grid.arrange(grobs = list(plot_flow, plot_loess, plot_box, legend),
-#              layout_matrix = lo_mat)
-# 
-# plot_heart
+# Initial Preparations
+## Run following Code if and only if new data is added to the initial data.
+
+source(file = "data.wrangling.R")
+
+# Mean, SD, t-test & Cohen D for experts & novices
+# novices
+mean_nov <- 
+  df_heart_aggr %>%
+  filter(status == "Novice" ) %>% 
+  pull(mean) %>% 
+  mean() %>% 
+  round(., digits = 0)
+
+sd_nov <- 
+  df_heart_aggr %>%
+  filter(status == "Novice") %>% 
+  pull(mean) %>% 
+  sd() %>% 
+  round(., digits = 0)
+
+# experts
+mean_exp <-
+  df_heart_aggr %>%
+  filter(status == "Expert") %>% 
+  pull(mean) %>% 
+  mean() %>% 
+  round(., digits = 0)
+
+sd_exp <- 
+  df_heart_aggr %>%
+  filter(status == "Expert") %>% 
+  pull(mean) %>% 
+  sd() %>% 
+  round(., digits = 0)
+
+# t-test for expertise differences
+t.test(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
+       y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"])
+
+
+# effect size for expertise differences
+d_heartrate <- CohenD(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
+               y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"],
+               na.rm = TRUE)
+
+
+# Plots
+
+df_heart_all <-
+  read_rds(file = "data/heart_all.rds") |>
+  mutate(status = factor(status,
+                         levels = c("Expert","Novice"),
+                         labels = c("Expert","Novice")
+                         )
+         )
+
+df_heart_min <-
+  read_rds(file = "data/heart_min.rds")
+
+df_heart_aggr <-
+  read_rds(file = "data/heart_aggr.rds") |>
+  mutate(status = factor(status,
+                         levels = c("Novice","Expert"),
+                         labels = c("Novice","Expert")
+                         )
+         )
+
+plot_flow_leg <-
+ggplot(data = df_heart_all,
+       mapping = aes(x = Time,
+                     y = `Heart Rate`
+                     )
+       ) +
+  xlim(0, 600) +
+  geom_smooth(mapping = aes(color = status),
+              method = "loess") +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Time (in Seconds)",
+       y = "Heart Rate\n(in Beats per Minute)") +
+  ggtitle("Experts' and novices' heart rate per phase") +
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        legend.text = element_text(size = 15),
+        legend.title = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10),
+        strip.text = element_text(size = 16),
+        plot.title = element_text(size = 20, 
+                                  face = "bold")) +
+  facet_grid(cols = vars(Type),
+             scales = "free_x")
+
+legend <- cowplot::get_legend(plot_flow_leg)
+
+# saving plot 
+ggsave(plot = plot_flow_leg,
+       filename = "Plots/plot_flow_leg.svg",
+       height = 5,
+       width = 8,
+       units = "in")
+
+
+############### BOX PLOT #############
+
+##### Box 1 Plot ##### 
+plot_box1 <- 
+ggplot(data = df_heart_aggr,
+       mapping = aes(x = Type,
+                     y = mean,
+                     color = status
+                     )
+       ) +
+  geom_boxplot(color = "darkgrey",
+               fill = "grey") +
+  geom_line(data = filter(df_heart_aggr,
+                          status == "Novice"),
+            mapping = aes(x = Type,
+                          y = mean,
+                          group = as_factor(ID)
+                          ),
+            linetype = 1,
+            alpha = 0.5
+            ) +
+  geom_line(data = filter(df_heart_aggr,
+                          status == "Expert"),
+            mapping = aes(x = Type,
+                          y = mean,
+                          group = as_factor(ID)
+                          ),
+            linetype = 6,
+            alpha = 0.5
+            ) +
+  geom_point(size = 2,
+             alpha = 0.5) +
+  labs(x = "",
+       y = "Average Heart Rate\n(in Beats per Minute)") +
+  scale_color_viridis_d(option = "A",
+                       end = 0.8) +
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        strip.text = element_blank(),
+        legend.position = "none",
+        axis.text.x = element_blank()
+        ) +
+  aes(fill = Type)
+
+plot_box1
+
+##### Box 2 Plot ##### 
+plot_box <-
+  ggplot(data = df_heart_aggr,
+         mapping = aes(x = Type,
+                       y = mean)) + 
+  geom_boxplot(mapping = aes(fill = status),
+               outlier.shape = NA) +
+  geom_point(mapping = aes(shape = status),
+             alpha = 0.5,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  labs(x ="",
+       y = "Average Heart Rate\n(in Beats per Minute)") + 
+  ggtitle("Experts' and novices' heart rate per phase") +
+  scale_fill_brewer(palette  = "RdBu") +  
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        legend.text = element_text(size = 15),
+        legend.title = element_blank(),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 10),
+        strip.text = element_text(size = 16),
+        plot.title = element_text(size = 20, 
+                                  face = "bold"))
+
+plot_box
+
+# saving plot 
+ggsave(plot = plot_box,
+       filename = "Plots/plot_box.svg",
+       height = 5,
+       width = 8,
+       units = "in")
+
 ```
 
 ### Steps
@@ -467,41 +520,41 @@ XXX Data and data wrangling need to be imported XXX
 Using the FitBit we measured the steps a person walked during the experiment as well. We validated the steps in six randomly selected videos by manual step counting. A step was considered to be the movement of the subject's foot forward, backward, or sideways. The measurement was not as reliable as hoped.
 
 ```{r}
-# df_steps <- read_rds(file = "final_data/steps.rds")
-# set.seed(5678)
-# ggplot(data = df_steps,
-#        mapping = aes(x = type,
-#                      y = Steps
-#                      )
-#        ) +
-#   geom_boxplot(mapping = aes(color = type),
-#                fill = "grey",
-#                alpha = 0.6) +
-#   geom_jitter(mapping = aes(color = type),
-#               alpha = 0.9,
-#               width = 0.3) + 
-#   scale_color_viridis_d(option = "A",
-#                        end = 0.8) +
-#   labs(x = "",
-#        y = "Steps During\nMain Phase") +
-#   theme_minimal() +
-#   theme(text = element_text(family = "serif"),
-#         legend.title = element_blank(),
-#         axis.text.x = element_blank(),
-#         axis.ticks.x = element_blank()
-#         ) 
-# 
-# ### Validation of steps 
-# # selecting some rows at random with sample_n()
-# sample_n(df_steps, 6)
-# 
-# # random ID Output:
-# # Novices ID: 102, 125, 110
-# # Experts ID: 219, 218, 214
-# 
-# # Results from manual step counting:
-# # Novices ID: 110 -> 178 steps; 102 -> 219 steps; 125 -> 319 steps
-# # Experts ID: 214 -> 437 steps; 218 -> 195 steps; 219 -> 530 steps
+df_steps <- read_rds(file = "data/steps.rds")
+set.seed(5678)
+ggplot(data = df_steps,
+       mapping = aes(x = type,
+                     y = Steps
+                     )
+       ) +
+  geom_boxplot(mapping = aes(color = type),
+               fill = "grey",
+               alpha = 0.6) +
+  geom_jitter(mapping = aes(color = type),
+              alpha = 0.9,
+              width = 0.3) +
+  scale_color_viridis_d(option = "A",
+                       end = 0.8) +
+  labs(x = "",
+       y = "Steps During\nMain Phase") +
+  theme_minimal() +
+  theme(text = element_text(family = "serif"),
+        legend.title = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()
+        )
+
+### Validation of steps
+# selecting some rows at random with sample_n()
+sample_n(df_steps, 6)
+
+# random ID Output:
+# Novices ID: 102, 125, 110
+# Experts ID: 219, 218, 214
+
+# Results from manual step counting:
+# Novices ID: 110 -> 178 steps; 102 -> 219 steps; 125 -> 319 steps
+# Experts ID: 214 -> 437 steps; 218 -> 195 steps; 219 -> 530 steps
 
 ```
 
