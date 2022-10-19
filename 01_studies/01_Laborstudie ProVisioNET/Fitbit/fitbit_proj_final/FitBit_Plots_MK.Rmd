@@ -115,6 +115,11 @@ sd_exp <-
   sd() %>% 
   round(., digits = 0)
 
+# t-test for expertise differences 
+t.test(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
+       y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"])
+
+
 # effect size for expertise differences
 d_heartrate <- CohenD(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
                y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"],
@@ -166,9 +171,9 @@ ggplot(data = df_heart_all,
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
-  labs(x = "Time (in Seconds)",
-       y = "Heart Rate\n(in Beats per Minute)") +
-  ggtitle("Experts' and novices' heart rate per phase") +
+  labs(x = "Zeit (in Sekunden)",
+       y = "Herzrate\n(in Schläge pro Minute)") +
+  ggtitle("Herzrate in jeweiliger Phase mit Expertiseunterschied") +
   theme_minimal() +
   theme(text = element_text(family = "serif"),
         legend.text = element_text(size = 15),
