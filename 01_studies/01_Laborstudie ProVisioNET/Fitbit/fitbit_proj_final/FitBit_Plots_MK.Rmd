@@ -171,9 +171,9 @@ ggplot(data = df_heart_all,
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
-  labs(x = "Zeit (in Sekunden)",
-       y = "Herzrate\n(in Schläge pro Minute)") +
-  ggtitle("Herzrate in jeweiliger Phase mit Expertiseunterschied") +
+  labs(x = "Time (in seconds)",
+       y = "Heart rate\n(in beats per minute)") +
+  ggtitle("Expert and novice teachers' heart rate in different phases") +
   theme_minimal() +
   theme(text = element_text(family = "serif"),
         legend.text = element_text(size = 15),

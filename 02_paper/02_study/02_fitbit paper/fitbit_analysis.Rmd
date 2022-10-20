@@ -1,0 +1,53 @@
+---
+title: "fitbit analysis"
+output: html_notebook
+---
+
+# Install packages
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+# Packages
+# install.packages("needs")
+# Choose "No"
+library(needs)
+needs(tidyverse,
+      janitor,
+      lubridate,
+      readxl,
+      ggthemes,
+      gridExtra,
+      imputeTS,
+      DescTools,
+      cowplot,
+      rstatix,
+      ggpubr)
+```
+
+# Read in data
+```{r}
+# disruption & confidence rating
+df_rating <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  select(ID, # select relevant columns 
+         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         confident_factor) 
+
+# demographic data
+df_demo <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  transmute(ID = LI06_05, # select and rename relevant columns 
+            gender = LI02_01_1,
+            age = LI03_01, # 1 = male; 2 = female
+            teaching_experience = LI04_01)
+
+# merge two data frames by ID 
+df_merge <- merge(df_demo,
+                  df_rating,
+                  by="ID") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132")
+         )
+
+```
+
