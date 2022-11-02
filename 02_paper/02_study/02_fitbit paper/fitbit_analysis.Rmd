@@ -14,7 +14,8 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 # install.packages("needs")
 # Choose "No"
 library(needs)
-needs(tidyverse,
+needs(ltm,
+      tidyverse,
       janitor,
       lubridate,
       readxl,
@@ -24,7 +25,8 @@ needs(tidyverse,
       DescTools,
       cowplot,
       rstatix,
-      ggpubr)
+      ggpubr,
+      lme4)
 ```
 
 # Read in data
@@ -74,6 +76,7 @@ map(.x = dir(path = data_path,
              pattern = ".csv"),
     ~ read_csv(file.path(data_path, .), id = "id") %>% 
       mutate(time = .$Time - min(.$Time),
+             time = as.numeric(time),
              heart_rate = `Heart Rate`,
              ID = id,
              time_span = case_when(
@@ -85,6 +88,7 @@ map(.x = dir(path = data_path,
                               pattern = "[:digit:]{3}"),
              ID = as.numeric(ID)
       ) %>% 
+      filter(time <= 600) %>% 
     select(!c("Time","Heart Rate","id"))
     ) %>% 
   bind_rows()
@@ -94,7 +98,9 @@ main <-
             by = "ID")
 ```
 
- Check for disruptive factor
+# Analyses
+
+Check for disruptive factor
  
 ```{r}
 df_rating %>% 
@@ -147,7 +153,174 @@ Just curious
 ```{r}
 df_merge %>% 
   group_by(ID) %>% 
-  summarize()
+  summarize(teaching_experience = teaching_experience,
+            confident_factor = mean(confident_factor, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = teaching_experience,
+                       y = confident_factor
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm")
+  
 ```
 
+```{r}
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(teaching_experience = teaching_experience,
+            disruption_factor = mean(disruption_factor, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = teaching_experience,
+                       y = disruption_factor
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+# Modelfit
+
+```{r}
+main %>% 
+  filter(time_span == "pre") %>% 
+  select("time","ID","heart_rate","age") %>% 
+  distinct() %>% 
+  mutate(ID = as_factor(ID)) %>% 
+  lmer(formula = heart_rate ~ (1|ID) + ID * time) %>% 
+  summary() ->
+  fit_first
+
+as_tibble(fit_first$coefficients,
+          rownames = "Coefficient") %>%
+  filter(str_detect(.$Coefficient,
+                    pattern = "time")) %>% 
+  mutate(coefficient = case_when(Coefficient == "time" ~ "101",
+                                 TRUE ~ Coefficient),
+         ID = str_extract(string = coefficient,
+                                   pattern = "[:digit:]{3}"
+                                   ),
+         ID = as.numeric(ID)
+         ) %>% 
+  select("ID","Estimate") ->
+  df_estimates
+
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(confident_factor_m = mean(confident_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            ID = ID,
+            t_exp = teaching_experience) %>% 
+  distinct() %>% 
+  left_join(., df_estimates,
+            by = "ID") ->
+  df_corr
+```
+
+```{r}
+main %>% 
+  filter(time_span == "pre") %>% 
+  select("ID","time","heart_rate") %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_line(mapping = aes(color = as_factor(ID)),
+            stat = "smooth", 
+            method = "lm",
+            alpha = 0.6) +
+  geom_point(mapping = aes(color = as_factor(ID)),
+             alpha = 0.1) +
+  geom_line(stat = "smooth",
+            method = "lm",
+            linetype = 2) +
+  labs(x = "Time (in seconds)",
+       y = "Heart Rate (in beats per minute)") +
+  theme(legend.position = "none",
+        text = element_text(family = "serif"))
+```
+
+```{r}
+cor.test(df_corr$confident_factor_m,
+         df_corr$Estimate) ->
+  corr_conf
+
+df_corr %>% 
+  ggplot(mapping = aes(x = confident_factor_m,
+                       y = Estimate
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  annotate(geom = "text",
+           label = paste0("r = ", round(corr_conf$estimate, 2)),
+           x = 5.5,
+           y = -0.025,
+           family = "serif"
+           ) +
+  theme(text = element_text(family = "serif"))
+
+
+cor.test(df_corr$disruption_factor_m,
+         df_corr$Estimate) ->
+  corr_disrup
+
+df_corr %>% 
+  ggplot(mapping = aes(x = disruption_factor_m,
+                       y = Estimate
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  annotate(geom = "text",
+           label = paste0("r = ", round(corr_disrup$estimate, 2)),
+           x = 5.5,
+           y = -0.025,
+           family = "serif"
+           ) +
+  theme(text = element_text(family = "serif"))
+```
+
+```{r}
+cor.test(df_corr$t_exp,
+          df_corr$Estimate) ->
+  corr_teach
+
+df_corr %>% 
+  ggplot(mapping = aes(x = t_exp,
+                       y = Estimate
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  annotate(geom = "text",
+           label = paste0("r = ", round(corr_teach$estimate, 2)),
+           x = 15,
+           y = -0.025,
+           family = "serif"
+           ) +
+  theme(text = element_text(family = "serif"))
+```
+
+```{r}
+df_merge %>% 
+  select("ID","disruption_factor") %>%
+  mutate(var_number = rep(letters[1:9],
+                          times = length(unique(.$ID))
+                          )
+         ) %>% 
+  pivot_wider(names_from = var_number,
+              values_from = disruption_factor,
+              id_cols = ID) %>% 
+  select(!"ID") %>% 
+  cronbach.alpha(na.rm = TRUE)
+```
 
