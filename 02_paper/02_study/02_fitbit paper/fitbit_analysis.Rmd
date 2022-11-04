@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 # Choose "No"
 library(needs)
 needs(ltm,
+      lm.beta,
       tidyverse,
       janitor,
       lubridate,
@@ -63,7 +64,7 @@ df_merge <- merge(df_demo,
                     "132")
          )
 
-rm(list = c("df_demo","df_rating"))
+# rm(list = c("df_demo","df_rating"))
 ```
 
 Get Data from Fitbit
@@ -75,22 +76,22 @@ main <-
 map(.x = dir(path = data_path,
              pattern = ".csv"),
     ~ read_csv(file.path(data_path, .), id = "id") %>% 
-      mutate(time = .$Time - min(.$Time),
-             time = as.numeric(time),
-             heart_rate = `Heart Rate`,
-             ID = id,
-             time_span = case_when(
-               str_detect(string = id, pattern = "_a") ~ "after",
-               str_detect(string = id, pattern = "_m") ~ "main",
-               str_detect(string = id, pattern = "_p") ~ "pre"
-               ),
-             ID = str_extract(string = ID,
-                              pattern = "[:digit:]{3}"),
-             ID = as.numeric(ID)
-      ) %>% 
-      filter(time <= 600) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(
+           str_detect(string = id, pattern = "_a") ~ "after",
+           str_detect(string = id, pattern = "_m") ~ "main",
+           str_detect(string = id, pattern = "_p") ~ "pre"
+           ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+      filter(time <= 600) %>%
     select(!c("Time","Heart Rate","id"))
-    ) %>% 
+    ) %>%
   bind_rows()
 
 main <-
@@ -146,6 +147,8 @@ df_merge %>%
 df_merge %>% 
   ggplot(mapping = aes(x = log(teaching_experience))) +
   geom_histogram(binwidth = 0.3)
+
+cor(df_demo$teaching_experience, df_demo$age)
 ```
 
 Just curious
@@ -322,5 +325,29 @@ df_merge %>%
               id_cols = ID) %>% 
   select(!"ID") %>% 
   cronbach.alpha(na.rm = TRUE)
+```
+
+```{r}
+left_join(x = df_corr,
+          y = df_demo,
+          by = "ID") %>% 
+  mutate(gender = factor(gender,
+                         levels = 1:2,
+                         labels = c("male","female")
+                         ),
+         Estimate = Estimate * 1000
+         ) %>% 
+  lm(formula = Estimate ~ confident_factor_m + disruption_factor_m + gender + age) ->
+  fit_whatever
+
+confint(fit_whatever)
+
+lm.beta(fit_whatever) %>% confint()
+```
+
+```{r}
+df_demo %>% 
+  ggplot(mapping = aes(x = gender)) +
+  geom_bar()
 ```
 
