@@ -38,7 +38,8 @@ df_rating <-
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   select(ID, # select relevant columns 
          disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
-         confident_factor) %>% 
+         confident_factor,
+         event) %>% 
   mutate(disruption_factor = ifelse(disruption_factor < 0,
                                     yes = NA,
                                     no = disruption_factor
@@ -117,7 +118,7 @@ df_rating %>%
 confidence
 
 ```{r}
-df_merge %>% 
+df_demo %>% 
   group_by(ID) %>% 
   summarize(mean = mean(confident_factor,
                         na.rm = TRUE
@@ -130,21 +131,21 @@ df_merge %>%
 Age
 
 ```{r}
-df_merge %>% 
+df_demo %>% 
   ggplot(mapping = aes(x = age)) +
   geom_histogram(binwidth = 5)
 
-df_merge %>% 
+df_demo %>% 
   ggplot(mapping = aes(x = log(age))) +
   geom_histogram(binwidth = 0.1)
 ```
 
 ```{r}
-df_merge %>% 
+df_demo %>% 
   ggplot(mapping = aes(x = teaching_experience)) +
   geom_histogram(binwidth = 2)
 
-df_merge %>% 
+df_demo %>% 
   ggplot(mapping = aes(x = log(teaching_experience))) +
   geom_histogram(binwidth = 0.3)
 
