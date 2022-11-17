@@ -1770,13 +1770,16 @@ display: none;
 <p>Get Data from Fitbit</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gYG11dGF0ZSgpYDpcbiEgUHJvYmxlbSB3aGlsZSBjb21wdXRpbmcgYHRpbWUgPSAuJFRpbWUgLSBtaW4oLiRUaW1lKWAuXG54IGB0aW1lYCBtdXN0IGJlIHNpemUgODQwIG9yIDEsIG5vdCAwLlxuQmFja3RyYWNlOlxuICAxLiAuLi4gJT4lIGJpbmRfcm93cygpXG4gMTAuIGRwbHlyOjo6bXV0YXRlLmRhdGEuZnJhbWUoLi4uKVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gYG11dGF0ZSgpYDpcbiEgUHJvYmxlbSB3aGlsZSBjb21wdXRpbmcgYHRpbWUgPSAuJFRpbWUgLSBtaW4oLiRUaW1lKWAuXG5DYXVzZWQgYnkgZXJyb3IgaW4gYC4kVGltZSAtIG1pbiguJFRpbWUpYDpcbiEgbm9uLW51bWVyaWMgYXJndW1lbnQgdG8gYmluYXJ5IG9wZXJhdG9yXG5CYWNrdHJhY2U6XG4gIDEuIC4uLiAlPiUgYmluZF9yb3dzKClcbiAxMC4gZHBseXI6OjptdXRhdGUuZGF0YS5mcmFtZSguLi4pXG4gMTEuIGRwbHlyOjo6bXV0YXRlX2NvbHMoLmRhdGEsIGRwbHlyX3F1b3N1cmVzKC4uLiksIGNhbGxlcl9lbnYgPSBjYWxsZXJfZW52KCkpXG4gMTMuIG1hc2skZXZhbF9hbGxfbXV0YXRlKHF1bylcbiJ9 -->
 <pre><code>Error in `mutate()`:
 ! Problem while computing `time = .$Time - min(.$Time)`.
-x `time` must be size 840 or 1, not 0.
+Caused by error in `.$Time - min(.$Time)`:
+! non-numeric argument to binary operator
 Backtrace:
   1. ... %&gt;% bind_rows()
- 10. dplyr:::mutate.data.frame(...)</code></pre>
+ 10. dplyr:::mutate.data.frame(...)
+ 11. dplyr:::mutate_cols(.data, dplyr_quosures(...), caller_env = caller_env())
+ 13. mask$eval_all_mutate(quo)</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
