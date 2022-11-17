@@ -37,7 +37,7 @@ df_rating <-
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   select(ID, # select relevant columns 
-         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         disruption_factor, # -88 = actor did not perform the event; -99 = subject did not notice event; -100 = experimenter did not asked for event
          confident_factor,
          event) %>% 
   mutate(disruption_factor = ifelse(disruption_factor < 0,
@@ -84,7 +84,9 @@ map(.x = dir(path = data_path,
          time_span = case_when(
            str_detect(string = id, pattern = "_a") ~ "after",
            str_detect(string = id, pattern = "_m") ~ "main",
-           str_detect(string = id, pattern = "_p") ~ "pre"
+           str_detect(string = id, pattern = "_p") ~ "pre",
+           str_detect(string = id, pattern = "_s") ~ "subsequent",
+           str_detect(string = id, pattern = "_i") ~ "interview"
            ),
          ID = str_extract(string = ID,
                           pattern = "[:digit:]{3}"),
