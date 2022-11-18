@@ -76,7 +76,10 @@ data_path <- "./data/heart_rate_data"
 main <-
 map(.x = dir(path = data_path,
              pattern = ".csv"),
-    ~ read_csv(file.path(data_path, .), id = "id") %>% 
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
   mutate(time = .$Time - min(.$Time),
          time = as.numeric(time),
          heart_rate = `Heart Rate`,
@@ -86,7 +89,8 @@ map(.x = dir(path = data_path,
            str_detect(string = id, pattern = "_m") ~ "main",
            str_detect(string = id, pattern = "_p") ~ "pre",
            str_detect(string = id, pattern = "_s") ~ "subsequent",
-           str_detect(string = id, pattern = "_i") ~ "interview"
+           str_detect(string = id, pattern = "_i") ~ "interview",
+           TRUE ~ "overall"
            ),
          ID = str_extract(string = ID,
                           pattern = "[:digit:]{3}"),
