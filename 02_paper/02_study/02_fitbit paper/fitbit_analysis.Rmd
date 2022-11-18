@@ -124,7 +124,7 @@ df_rating %>%
 confidence
 
 ```{r}
-df_demo %>% 
+df_rating %>% 
   group_by(ID) %>% 
   summarize(mean = mean(confident_factor,
                         na.rm = TRUE
