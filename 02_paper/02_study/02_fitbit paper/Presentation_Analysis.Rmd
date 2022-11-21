@@ -104,11 +104,66 @@ main <-
             by = "ID")
 ```
 
+# Überblick Datenerhebung
+
+```{r timeline, fig.align = "center", echo = FALSE}
+
+knitr::include_graphics("./images/timeline_fitbit.png", dpi = 130)
+
+```
+
 # Überblick Daten
 
 ```{r}
 knitr::kable(main[1:10,], format = "simple")
 ```
+
+# Plot für einzelne Phasen 
+
+```{r, fig.height = 8, fig.width = 15}
+
+main %>% 
+  filter(time_span != "overall") %>% 
+  select("ID","time_span", "time","heart_rate") %>% 
+  mutate(status = case_when(ID < 200 ~ "Unerfahren",
+                            ID > 200 ~ "Erfahren"),
+         time_span = fct_recode(time_span,
+                                "Pre-Lehrphase" = "pre",
+                                "Lehrphase" = "main",
+                                "Post-Lehrphase" = "subsequent",
+                                "Intviewphase" = "interview",
+                                "Endphase" = "after"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-Lehrphase",
+                                       "Lehrphase",
+                                       "Post-Lehrphase",
+                                       "Intviewphase",
+                                       "Endphase"
+                                       )
+                            )
+         ) %>%
+  distinct() %>% 
+ggplot(mapping = aes(x = time,
+                     y = heart_rate
+                     )
+       ) +
+  stat_smooth(geom = "line",
+              mapping = aes(color = status),
+              method = "loess",
+              se = FALSE) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Zeit (in Sekunden)",
+       y = "Herzrate (in Schlägen pro Minute)") +
+  theme_apa() +
+  facet_grid(cols = vars(time_span),
+             scales = "free_x",
+             )
+
+```
+
 
 # Verteilungen
 
