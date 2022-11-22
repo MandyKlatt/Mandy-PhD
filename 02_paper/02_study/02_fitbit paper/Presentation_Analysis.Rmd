@@ -796,8 +796,8 @@ left_join(x = df_corr_sub,
 
 ## Main Phase vs. Interview Phase
 
-- Main Phase = 10 Minuten der...
-- Interview Phase = 
+- Main Phase = 10 Minuten ab Lektionsbeginn 
+- Interview Phase = 10 Minuten mittig vom Interview (Differenz vom Ende der Unterrichtseinheit und von take off watch - die Länge des Zeitraumes, wo die 10 Minuten mittig reinlegt werden --> diese Länge wurde nochmals halbiert, um zur Mitte des Intervalls zu kommen und 5 Minuten abgezogen, um am Start des 10-Minuten-Intervalls zu landen)
 
 Plan:
 
