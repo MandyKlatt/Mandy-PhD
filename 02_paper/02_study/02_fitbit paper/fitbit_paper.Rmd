@@ -60,7 +60,7 @@ abstract: |
   
   <!-- https://tinyurl.com/ybremelq -->
   
-keywords          : "heart rate; photoplethysmography; wearable electronic device; expertise differences"
+keywords          : "heart rate; photoplethysmography; wearable electronic device; teaching"
 wordcount         : "X"
 
 bibliography      : "r-references.bib"
@@ -89,36 +89,105 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-```{r include=FALSE}
-# install.packages("needs")
-
-# suppress "summarize" info. 
-# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
-options(dplyr.summarise.inform = FALSE)
+```{r data wrangling, include=FALSE}
 
 library(needs)
-
-needs(tidyverse,
-      lubridate,
+needs(ltm,
+      broom,
+      ppcor,
+      jtools,
+      lm.beta,
+      tidyverse,
       janitor,
-      viridis,
-      grid,
-      gridExtra,
-      cowplot,
+      lubridate,
       readxl,
-      ARTofR,
-      moments,
-      ltm,
-      sjPlot,
-      kableExtra,
-      xtable,
-      DescTools,
-      formattable,
       ggthemes,
+      gridExtra,
       imputeTS,
+      DescTools,
+      cowplot,
       rstatix,
-      ggpubr)
-  
+      ggpubr,
+      lme4,
+      viridis)
+
+# disruption & confidence rating
+df_rating <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  select(ID, # select relevant columns 
+         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         confident_factor,
+         event
+         ) %>% 
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
+                                    yes = NA,
+                                    no = disruption_factor
+                                    ),
+         confident_factor = ifelse(confident_factor < 0,
+                                   yes = NA,
+                                   no = confident_factor),
+         event = as_factor(event)
+         )
+
+# demographic data
+df_demo <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  transmute(ID = LI06_05, # select and rename relevant columns 
+            gender = factor(LI02_01_1,
+                            levels = 1:2,
+                            labels = c("male","female")
+                            ),
+            age = LI03_01, # 1 = male; 2 = female
+            teaching_experience = LI04_01,
+            school_type = LI18,
+            term = LI11_01, 
+            extracurricular_teaching_experience = LI14,
+            secondary_teaching_activities = LI17)
+
+# merge two data frames by ID 
+df_merge <- merge(df_demo,
+                  df_rating,
+                  by = "ID") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132")
+         )
+
+# rm(list = c("df_demo","df_rating"))
+
+
+data_path <- "./data/heart_rate_data"
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "after",
+           str_detect(string = id, pattern = "_m") ~ "main",
+           str_detect(string = id, pattern = "_p") ~ "pre",
+           str_detect(string = id, pattern = "_s") ~ "subsequent",
+           str_detect(string = id, pattern = "_i") ~ "interview",
+           TRUE ~ "overall"
+           ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+      filter(time <= 600) %>%
+    select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+main <-
+  left_join(main, df_merge,
+            by = "ID")
 ```
 
 ```{r, include=FALSE}
@@ -134,7 +203,7 @@ Thus, there remains a lack of robust studies on whether fitness trackers are an 
  
 
 ## Aim of the study
-Against this background, we investigated whether heart rate measurements using fitness trackers in a controlled teaching-learning setting are suitable to map differences between (1) anticipation, arousal, and rest phases and (2) between experienced and inexperienced teachers. We expected heart rates to be higher in the arousal phase than in the rest phases and exploratively examine whether experienced teachers have lower heart rates and more steps compared to inexperienced teachers.
+Against this background, we investigated whether heart rate measurements using fitness trackers in a controlled teaching-learning setting are suitable to map differences between (1) anticipation, arousal, and rest phases. We expected heart rates to be higher in the arousal phase than in the rest phases.
 
 
 # Methods
@@ -143,60 +212,33 @@ We report how we determined our sample size, all data exclusions (if any), all m
 ## Participants
 ```{r demographicstable, include = TRUE, echo=FALSE}
 
-# DEMOGRAPHIC DATA
-# read in data and select and rename relevant columns with transmute 
-demo.data.raw <- 
-  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% 
-  transmute(ID = LI06_05,
-            Gender = LI02_01_1,
-            Age = LI03_01,
-            `Teaching Experience` = LI04_01,
-            School_type = LI18,
-            Grade = LI16_05,
-            Subject = LI10_05,
-            Semester = LI11_01,
-            Internship = LI13_01,
-            `Extracurricular Teaching Experience` = LI14,
-            `Secondary Teaching Activities` = LI17
-            )
-
-# exclude cases with no fitbit data
-demo.data <- demo.data.raw %>% filter(!ID %in% c("126",
-                                                 "132"
-                                                 )
-                                      )
-
 # define expert and novice with ifelse function
-demo.data$ID = ifelse(demo.data$ID < 200, "Novice","Expert")
+df_demo$ID = ifelse(df_demo$ID < 200, "Novice","Expert")
 
 # changing gender to count female gender (male = 2 --> 0)
-demo.data$Gender = ifelse(demo.data$Gender == 2, "1","0")
+df_demo$gender = ifelse(df_demo$gender == 2, "1","0")
 
 # changing character Gender into numeric
-demo.data$Gender <- as.numeric(demo.data$Gender)
+df_demo$gender <- as.numeric(df_demo$gender)
 
 # creating new column with total participants to calculate percent of gender
-demo.data <- demo.data %>%
+df_demo <- df_demo %>%
   group_by(ID) %>%
-  mutate(Sum_participants = n())
+  mutate(sum_participants = n())
 
 # replacing 2 to 1 (Oberschule = Gymnasisium --> Secondary school)
-demo.data$School_type[demo.data$School_type == 2] <- "1"
+df_demo$school_type[df_demo$school_type == 2] <- "1"
 
 # creating new column to calculate percent of school type
-demo.data <- 
-  demo.data %>%
-  group_by(School_type, ID) %>%
-  mutate(Count_Schooltype = sum(n())) %>% 
-  mutate(Percent_schooltype = round((Count_Schooltype/Sum_participants) * 100, 
+df_demo <- 
+  df_demo %>%
+  group_by(school_type, ID) %>%
+  mutate(count_schooltype = sum(n())) %>% 
+  mutate(percent_schooltype = round((count_schooltype/sum_participants) * 100, 
          digits = 2))
 
-# changing character Percent_schooltype into numeric
-demo.data$Percent_schooltype <- as.numeric(demo.data$Percent_schooltype)
-
-# changing character Semester into numeric
-demo.data$Semester <- as.numeric(demo.data$Semester)
-
+# changing character percent_schooltype into numeric
+df_demo$percent_schooltype <- as.numeric(df_demo$percent_schooltype)
 
 # changing Type of School into character
 # LI18:
@@ -206,31 +248,27 @@ demo.data$Semester <- as.numeric(demo.data$Semester)
 # 4: Förderschule/Sondershausen
 # 5: Berufsbildende Schule
 # -1: andere Schulform
-demo.data$School_type <- factor(x = demo.data$School_type,
+df_demo$school_type <- factor(x = df_demo$school_type,
                    levels = c("1","3","4","5","-1"), # Mögliche Werte # andere Möglichkeit: unique(demo.data$School_type)
                    labels = c("Primary School","Secondary School", "Special Education","Vocational School", "Other Schooltype")) # Bezeichnungen
 
-# changing `Extracurricular Teaching Experience` to count experience (no experience = 2 --> 0)
-demo.data$`Extracurricular Teaching Experience` = ifelse(demo.data$`Extracurricular Teaching Experience` == 1, "1","0")
+# changing character semester into numeric
+df_demo$term <- as.numeric(df_demo$term)
+
+# changing `extracurricular_teaching_experience to count experience (no experience = 2 --> 0)
+df_demo$extracurricular_teaching_experience = ifelse(demo.data$extracurricular_teaching_experience == 1, "1","0")
+
+# changing character extracurricular_teaching_experience into numeric
+df_demo$extracurricular_teaching_experience <- as.numeric(df_demo$extracurricular_teaching_experience)
+
+# changing secondary_teaching_activities to count experience (no experience = 2 --> 0)
+df_demo$secondary_teaching_activities = ifelse(df_demo$secondary_teaching_activities == 1, "1","0")
 
 # changing character Extra. Exp. into numeric
-demo.data$`Extracurricular Teaching Experience` <- as.numeric(demo.data$`Extracurricular Teaching Experience`)
-
-# changing `Secondary Teaching Activities` to count experience (no experience = 2 --> 0)
-demo.data$`Secondary Teaching Activities` = ifelse(demo.data$`Secondary Teaching Activities` == 1, "1","0")
-
-# changing character Extra. Exp. into numeric
-demo.data$`Secondary Teaching Activities` <- as.numeric(demo.data$`Secondary Teaching Activities`)
-
-# create new columns that give proportion of Gender
-# percent = female gender divided by all female Gender
-# demo.data <- demo.data  %>% 
-#   group_by(Group) %>% 
-#   mutate(Gender_percent = Gender/Sum_participants) %>% 
-#   mutate(Gender_percent = round(sum(Gender_percent)*100, digits=0))
+df_demo$secondary_teaching_activities <- as.numeric(df_demo$secondary_teaching_activities)
 
 # create a basic table (tibble) using tidyverse functions
-demo.table <- demo.data %>%
+df_demo <- df_demo %>%
   group_by(ID) %>%
   summarise(N=n(),
             "Gender female in percent" = round(sum(Gender/Sum_participants) * 100, 
@@ -287,7 +325,7 @@ exp.table <- demo.data %>%
 
 ```
 
-The sample consisted of *N* = `r length(demo.data$ID)` participants with *n* = `r length(demo.data$ID[demo.data$ID == "Expert"])` expert teachers and *n* = `r length(demo.data$ID[demo.data$ID == "Novice"])` novice teachers. 
+The sample consisted of *N* = `r length(df_demo$ID)` participants with *n* = `r length(df_demo$ID[df_demo$ID == "Expert"])` expert teachers and *n* = `r length(demo.data$ID[demo.data$ID == "Novice"])` novice teachers. 
 
 The data of two participants (two novices, XXX experts) were excluded from the analyses due to insufficient data quality. 
 
