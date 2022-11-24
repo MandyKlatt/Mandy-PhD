@@ -148,10 +148,11 @@ ggplot(mapping = aes(x = time,
                      y = heart_rate
                      )
        ) +
-  stat_smooth(geom = "line",
-              mapping = aes(color = status),
-              method = "loess",
-              se = FALSE) +
+ # stat_smooth(geom = "line",
+             # mapping = aes(color = status),
+  #            method = "loess",
+   #           se = TRUE) 
+  geom_smooth(method = "glm") +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
