@@ -131,7 +131,7 @@ df_rating <-
          )
 
 # demographic data
-df_demo <- 
+df_demo_all <- 
   read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
   transmute(ID = LI06_05, # select and rename relevant columns 
             # gender = factor(LI02_01_1,
@@ -140,14 +140,14 @@ df_demo <-
             #                 ),
             gender = LI02_01_1, # 1 = male; 2 = female
             age = LI03_01, 
-            teaching_experience = LI04_01)
-            # school_type = LI18)
-            # term = LI11_01, 
-            # extracurricular_teaching_experience = LI14,
-            # secondary_teaching_activities = LI17)
+            teaching_experience = LI04_01,
+            school_type = LI18,
+            term = LI11_01,
+            extracurricular_teaching_experience = LI14,
+            secondary_teaching_activities = LI17)
 
 # merge two data frames by ID 
-df_merge <- merge(df_demo,
+df_merge <- merge(df_demo_all,
                   df_rating,
                   by = "ID") %>% 
   filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
@@ -214,6 +214,13 @@ We report how we determined our sample size, all data exclusions (if any), all m
 ## Participants
 ```{r demographicstable, include = TRUE, echo=FALSE}
 
+# exclude cases with no fitbit data
+df_demo <- df_demo_all %>% 
+  filter(!ID %in% c("126",
+                     "132"
+                     )
+          )
+
 # changing gender to count female gender (male = 2 --> 0)
 df_demo$gender = ifelse(df_demo$gender == 2, "1","0")
 
@@ -224,9 +231,36 @@ df_demo$gender <- as.numeric(df_demo$gender)
 df_demo <- df_demo %>%
   mutate(sum_participants = sum(n()))
 
+# replacing 2 to 1 (Oberschule = Gymnasisium --> Secondary school)
+df_demo$school_type[df_demo$school_type == 2] <- "1"
+
+# creating new column to calculate percent of school type
+df_demo <- 
+  df_demo %>%
+  group_by(school_type) %>%
+  mutate(count_schooltype = sum(n())) %>% 
+  mutate(percent_schooltype = round((count_schooltype/sum_participants) * 100, 
+         digits = 2))
+
+# changing character Percent_schooltype into numeric
+df_demo$percent_schooltype <- as.numeric(df_demo$percent_schooltype)
+
+#changing type of school into character
+# LI18:
+# 1: Grundschule
+# 2: Oberschule
+# 3: Gymnasium
+# 4: Förderschule/Sondershausen
+# 5: Berufsbildende Schule
+# -1: andere Schulform
+df_demo$school_type <- factor(x = df_demo$school_type,
+                              levels = c("1","3","4","5","-1"), # Mögliche Werte # andere Möglichkeit: unique(demo.data$School_type)
+                              labels = c("Primary School","Secondary School", "Special Education","Vocational School", "Other Schooltype")) # Bezeichnungen
+
 
 # create a basic table (tibble) using tidyverse functions
 df_demo_table <- df_demo %>%
+  ungroup() %>%
   summarise(N=n(),
             "Gender female in percent" = round(sum(gender/sum_participants) * 100,
                                                digits = 2),
@@ -257,17 +291,36 @@ df_demo_table <- df_demo %>%
 
 ```
 
-The sample consisted of *N* = `r length(df_demo$ID)` participants. Data of two participants were excluded from the analyses due to insufficient data quality. 
+The sample consisted in total of *N* = `r length(df_demo_all$ID)` pre- and in-service teachers. The subjects were recruited from the Leipzig University or from German schools in Saxony via personal contact, e-mail lists and flyers. Data of two participants were excluded from the analyses due to insufficient data quality, yielding demographic data from *N* = `r length(df_demo$ID)` subjects.
 
 The subjects (`r df_demo %>% filter(gender == 1) %>% pull(gender) %>% length()` women; `r df_demo_table %>% pull("Gender female in percent")` %) had a mean age of `r df_demo %>% pull(age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r df_demo_table %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r df_demo_table %>%  pull("Min Age in years")`-`r df_demo_table %>% pull("Max Age in years")`) and an average teaching experience of `r df_demo_table %>% pull("M Teaching Experience in years")` years (*SD* = `r df_demo_table %>% pull("SD Teaching Experience in years")`; range: `r df_demo_table %>% pull("Min Teaching Experience in years")`-`r df_demo_table %>% pull("Max Teaching Experience in years")`). 
 
+`r df_demo %>% filter(school_type == "Primary School") %>% pull("percent_schooltype") %>% unique()`% of the subjects were (studying to become) teachers for primary school, `r df_demo %>% filter(school_type == "Secondary School") %>% pull("percent_schooltype") %>% unique()`% were (studying to become) teachers for secondary school and  `r df_demo %>% filter(school_type == "Special Education") %>% pull("percent_schooltype") %>% unique()`% were (studying to become) teachers for special education needs.
+
+All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board and the authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
 
 ## Material
+
+### Teachers' heart rate
 We used a Fitbit Charge 4 to measure the teachers' heart rate. The device was attached 2-finger widths above the ulnar styloid process to the subject’s wrist following the manufacturer’s instructions. To determine the heart rate, the Fitbit flashes green LEDs many times per second and uses light-sensitive photodiodes to measure the volume changes in the capillaries and then calculates how many times the heart beats per minute (bpm). Data were automatically wireless synced with an iPad via Bluetooth to a Fitbit account, and subsequently, the intraday second-by-second data were exported for each session using the opensource software Pulse Watch (PulseWatch. URL: https://iccir919.github.io/pulseWatch/public/index.html [accessed 2022-08-03]).
+
+### Teachers' self-assessment of arousal during the teaching phase
+
+
 
 
 ## Procedure
+
+The data collection was part of a larger research project with a planned sample of *n* = 40 in-service teachers and *n* = 40 pre-service teachers. 
+
+In a controlled laboratory setting, heart rate data in beats per minute (bpm) were recorded using Fitbit Charge 4 over a total period of approximately two hours. Within this time frame, teachers taught a 15-minute self-prepared lesson to an audience of three actors. For analyzing the heart rate data, we selected five 10-minute intervals of theoretical interest: 
+(1) the pre-teaching phase, which started from the moment the subject put on the watch 
+(2) the teaching phase, which began at the moment when the subject started the lesson 
+(3) the post-teaching phase, which was the 10 minutes immediately after the end of the lesson
+(4) the interview phase, which was 10 minutes in the middle of the interview (for this, the difference was calculated from the end of the lesson and from the time when the subject took off the watch. This duration was divided in two to get to the middle of the interval and 5 minutes were subtracted to get to the start of the 10-minute interval),
+(5) the end phase, which was the 10 minutes before the subject took off the watch.
+
 In a laboratory setting, three trained actors performed teaching disruptions in a counter balanced fashion while the subject taught a 15-minute micro-teaching unit prepared in advance. To record the subject's heart rate, the Fitbit Charge 4 was put on at least 10 minutes before the start of the lesson. The lesson was recorded by four cameras and an audio recorder. In addition, the subject wore eye-tracking glasses to record gaze behavior. 
 
 Subsequently, the subjects as well as the actors were given a short questionnaire, which contained items to collect demographic information as well as items about the previously given lesson on teaching quality using a validated questionnaire (EMU, @helmke2014unterrichtsdiagnostik) and self developed scales on the teacher's presence behavior derived from the research literature via the online survey website SoSci Survey (4-point Likert scale; 1 = strongly disagree; 2 = disagree; 3 = agree; 4 = strongly agree). The completion of the questionnaire took approximately 5 minutes. 
@@ -276,7 +329,7 @@ The experimenter then conducted a Stimulated Recall Interview (SRI), where the s
 
 Finally, a Situational Judgment Test (SJT, @gold2015development) was used to assess the subject's strategic knowledge of classroom management. The subject was asked to judge alternative actions on school scenarios on a 6-point rating scale from 1 (A) to 6 (F) according to school grades. Data from the SJT were again collected as an online questionnaire via the website www.soscisurvey.de and lastet approximately 10 minutes. 
 
-The Fitbit watch was removed only after the last questionnaire to obtain heart rate at three different measurement time points: before, during, and after the lesson. 
+The Fitbit watch was removed only after the last questionnaire to obtain heart rate data during the entire study.
 
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
@@ -287,159 +340,6 @@ All participants were given a FitBit Smart Watch Charge 4 to wear during the exp
 
 ## Heart Rate
 
-The heart rate of each subject were measured before, during and after the experiment.
-
-```{r}
-# Initial Preparations
-
-## Run following Code only if new data is added to the initial data.
-# 
-# source(file = "data.wrangling.R")
-# 
-# # aggregate data 
-# df_heart_all <-
-#   read_rds(file = "data/heart_all.rds") |> 
-#   mutate(status = factor(status,
-#                          levels = c("Expert","Novice"),
-#                          labels = c("Expert","Novice")
-#                          )
-#          )
-# 
-# df_heart_min <-
-#   read_rds(file = "data/heart_min.rds")
-# 
-# df_heart_aggr <- 
-#   read_rds(file = "data/heart_aggr.rds") |> 
-#   mutate(status = factor(status,
-#                          levels = c("Novice","Expert"),
-#                          labels = c("Novice","Expert")
-#                          )
-#          )
-# 
-# 
-# # Mean, SD, t-test & Cohen D for experts & novices
-# # novices
-# mean_nov <- 
-#   df_heart_aggr %>%
-#   filter(status == "Novice" ) %>% 
-#   pull(mean) %>% 
-#   mean() %>% 
-#   round(., digits = 0)
-# 
-# sd_nov <- 
-#   df_heart_aggr %>%
-#   filter(status == "Novice") %>% 
-#   pull(mean) %>% 
-#   sd() %>% 
-#   round(., digits = 0)
-# 
-# # experts
-# mean_exp <-
-#   df_heart_aggr %>%
-#   filter(status == "Expert") %>% 
-#   pull(mean) %>% 
-#   mean() %>% 
-#   round(., digits = 0)
-# 
-# sd_exp <- 
-#   df_heart_aggr %>%
-#   filter(status == "Expert") %>% 
-#   pull(mean) %>% 
-#   sd() %>% 
-#   round(., digits = 0)
-# 
-# # t-test for expertise differences
-# t.test(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
-#        y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"])
-# 
-# 
-# # effect size for expertise differences
-# d_heartrate <- CohenD(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
-#                y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"],
-#                na.rm = TRUE)
-# 
-# 
-# # Plots
-# 
-# plot_flow_leg <-
-# ggplot(data = df_heart_all,
-#        mapping = aes(x = Time,
-#                      y = `Heart Rate`
-#                      )
-#        ) +
-#   xlim(0, 600) +
-#   geom_smooth(mapping = aes(color = status),
-#               method = "loess") +
-#   scale_color_viridis_d(option = "A",
-#                         end = 0.8) +
-#   scale_linetype_manual(values = c(1, 6)) +
-#   labs(x = "Time (in Seconds)",
-#        y = "Heart Rate\n(in Beats per Minute)") +
-#   ggtitle("Experts' and novices' heart rate per phase") +
-#   theme_minimal() +
-#   theme(text = element_text(family = "serif"),
-#         legend.text = element_text(size = 15),
-#         legend.title = element_blank(),
-#         axis.text.x = element_text(size = 12),
-#         axis.text.y = element_text(size = 10),
-#         strip.text = element_text(size = 16),
-#         plot.title = element_text(size = 20, 
-#                                   face = "bold")) +
-#   facet_grid(cols = vars(Type),
-#              scales = "free_x")
-# 
-# # saving plot 
-# ggsave(plot = plot_flow_leg,
-#        filename = "plots/plot_flow_leg.svg",
-#        height = 5,
-#        width = 8,
-#        units = "in")
-
-```
-
-
-### Steps
-
-Using the FitBit we measured the steps a person walked during the experiment as well. We validated the steps in six randomly selected videos by manual step counting. A step was considered to be the movement of the subject's foot forward, backward, or sideways. The measurement was not as reliable as hoped.
-
-```{r}
-# df_steps <- read_rds(file = "data/steps.rds")
-# set.seed(5678)
-# ggplot(data = df_steps,
-#        mapping = aes(x = type,
-#                      y = Steps
-#                      )
-#        ) +
-#   geom_boxplot(mapping = aes(color = type),
-#                fill = "grey",
-#                alpha = 0.6) +
-#   geom_jitter(mapping = aes(color = type),
-#               alpha = 0.9,
-#               width = 0.3) +
-#   scale_color_viridis_d(option = "A",
-#                        end = 0.8) +
-#   labs(x = "",
-#        y = "Steps During\nMain Phase") +
-#   theme_minimal() +
-#   theme(text = element_text(family = "serif"),
-#         legend.title = element_blank(),
-#         axis.text.x = element_blank(),
-#         axis.ticks.x = element_blank()
-#         )
-# 
-# ### Validation of steps
-# # selecting some rows at random with sample_n()
-# sample_n(df_steps, 6)
-# 
-# # random ID Output:
-# # Novices ID: 102, 125, 110
-# # Experts ID: 219, 218, 214
-# 
-# # Results from manual step counting:
-# # Novices ID: 110 -> 178 steps; 102 -> 219 steps; 125 -> 319 steps
-# # Experts ID: 214 -> 437 steps; 218 -> 195 steps; 219 -> 530 steps
-
-```
 
 
 # Results
