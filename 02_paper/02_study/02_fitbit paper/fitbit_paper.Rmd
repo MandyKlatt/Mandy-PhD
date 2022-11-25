@@ -134,16 +134,17 @@ df_rating <-
 df_demo <- 
   read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
   transmute(ID = LI06_05, # select and rename relevant columns 
-            gender = factor(LI02_01_1,
-                            levels = 1:2,
-                            labels = c("male","female")
-                            ),
-            age = LI03_01, # 1 = male; 2 = female
-            teaching_experience = LI04_01,
-            school_type = LI18,
-            term = LI11_01, 
-            extracurricular_teaching_experience = LI14,
-            secondary_teaching_activities = LI17)
+            # gender = factor(LI02_01_1,
+            #                 levels = 1:2,
+            #                 labels = c("male","female")
+            #                 ),
+            gender = LI02_01_1, # 1 = male; 2 = female
+            age = LI03_01, 
+            teaching_experience = LI04_01)
+            # school_type = LI18)
+            # term = LI11_01, 
+            # extracurricular_teaching_experience = LI14,
+            # secondary_teaching_activities = LI17)
 
 # merge two data frames by ID 
 df_merge <- merge(df_demo,
@@ -188,6 +189,7 @@ map(.x = dir(path = data_path,
 main <-
   left_join(main, df_merge,
             by = "ID")
+
 ```
 
 ```{r, include=FALSE}
@@ -212,9 +214,6 @@ We report how we determined our sample size, all data exclusions (if any), all m
 ## Participants
 ```{r demographicstable, include = TRUE, echo=FALSE}
 
-# define expert and novice with ifelse function
-df_demo$ID = ifelse(df_demo$ID < 200, "Novice","Expert")
-
 # changing gender to count female gender (male = 2 --> 0)
 df_demo$gender = ifelse(df_demo$gender == 2, "1","0")
 
@@ -223,99 +222,32 @@ df_demo$gender <- as.numeric(df_demo$gender)
 
 # creating new column with total participants to calculate percent of gender
 df_demo <- df_demo %>%
-  group_by(ID) %>%
-  mutate(sum_participants = n())
+  mutate(sum_participants = sum(n()))
 
-# replacing 2 to 1 (Oberschule = Gymnasisium --> Secondary school)
-df_demo$school_type[df_demo$school_type == 2] <- "1"
-
-# creating new column to calculate percent of school type
-df_demo <- 
-  df_demo %>%
-  group_by(school_type, ID) %>%
-  mutate(count_schooltype = sum(n())) %>% 
-  mutate(percent_schooltype = round((count_schooltype/sum_participants) * 100, 
-         digits = 2))
-
-# changing character percent_schooltype into numeric
-df_demo$percent_schooltype <- as.numeric(df_demo$percent_schooltype)
-
-# changing Type of School into character
-# LI18:
-# 1: Grundschule
-# 2: Oberschule
-# 3: Gymnasium
-# 4: Förderschule/Sondershausen
-# 5: Berufsbildende Schule
-# -1: andere Schulform
-df_demo$school_type <- factor(x = df_demo$school_type,
-                   levels = c("1","3","4","5","-1"), # Mögliche Werte # andere Möglichkeit: unique(demo.data$School_type)
-                   labels = c("Primary School","Secondary School", "Special Education","Vocational School", "Other Schooltype")) # Bezeichnungen
-
-# changing character semester into numeric
-df_demo$term <- as.numeric(df_demo$term)
-
-# changing `extracurricular_teaching_experience to count experience (no experience = 2 --> 0)
-df_demo$extracurricular_teaching_experience = ifelse(demo.data$extracurricular_teaching_experience == 1, "1","0")
-
-# changing character extracurricular_teaching_experience into numeric
-df_demo$extracurricular_teaching_experience <- as.numeric(df_demo$extracurricular_teaching_experience)
-
-# changing secondary_teaching_activities to count experience (no experience = 2 --> 0)
-df_demo$secondary_teaching_activities = ifelse(df_demo$secondary_teaching_activities == 1, "1","0")
-
-# changing character Extra. Exp. into numeric
-df_demo$secondary_teaching_activities <- as.numeric(df_demo$secondary_teaching_activities)
 
 # create a basic table (tibble) using tidyverse functions
-df_demo <- df_demo %>%
-  group_by(ID) %>%
+df_demo_table <- df_demo %>%
   summarise(N=n(),
-            "Gender female in percent" = round(sum(Gender/Sum_participants) * 100, 
+            "Gender female in percent" = round(sum(gender/sum_participants) * 100,
                                                digits = 2),
-            "M Age in years" = round(mean(Age), 
+            "M Age in years" = round(mean(age),
                                      digits = 2),
-            "SD Age in years" = round(sd(Age), 
+            "SD Age in years" = round(sd(age),
                                       digits = 2),
-            "Min Age in years" = min(Age),
-            "Max Age in years" = max(Age)
+            "Min Age in years" = min(age),
+            "Max Age in years" = max(age),
+            "M Teaching Experience in years" = round(mean(teaching_experience),
+                                            digits = 2),
+            "SD Teaching Experience in years" = round(sd(teaching_experience),
+                                            digits = 2),
+            "Min Teaching Experience in years" = min(teaching_experience),
+            "Max Teaching Experience in years" = max(teaching_experience)
             )
 
 # # format and insert table in manuscript
-# demo.table %>%
+# df_demo_table %>%
 # papaja::apa_table(
 #   caption = "Demographic Information",
-#   # note = "Write Note here",
-#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
-#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
-#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
-#   )
-
-
-# create a basic table (tibble) using tidyverse functions
-exp.table <- demo.data %>%
-  group_by(ID) %>%
-  summarise(N=n(),
-           "M Exp." = round(mean(`Teaching Experience`), 2),
-            "SD Exp." = round(sd(`Teaching Experience`), 2),
-            "Min Exp." = min(`Teaching Experience`),
-            "Max Exp." = max(`Teaching Experience`),
-            "M Semester" = round(mean(Semester), 2),
-            "SD Semester" = round(sd(Semester), 2),
-            "Min Semester" = min(Semester),
-            "Max Semester" = max(Semester),
-            "M Internship" = round(mean(Internship), 2),
-            "SD Internship" = round(sd(Internship), 2),
-            "Min Internship" = min(Internship),
-            "Max Internship" = max(Internship),
-            "Extracurricular Teaching Experience" = round(sum(`Extracurricular Teaching Experience`/Sum_participants) * 100, digits = 2),
-            "Secondary Teaching Activities" = round(sum(`Secondary Teaching Activities`/Sum_participants) * 100)
-           )
-
-# # format and insert table in manuscript
-# exp.table %>%
-# papaja::apa_table(
-#   caption = "Teaching Experience in years, internship experience in teaching units (45min) and extracurricular teaching experience in percent",
 #   # note = "Write Note here",
 #   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
 #   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
@@ -325,19 +257,10 @@ exp.table <- demo.data %>%
 
 ```
 
-The sample consisted of *N* = `r length(df_demo$ID)` participants with *n* = `r length(df_demo$ID[df_demo$ID == "Expert"])` expert teachers and *n* = `r length(demo.data$ID[demo.data$ID == "Novice"])` novice teachers. 
+The sample consisted of *N* = `r length(df_demo$ID)` participants. Data of two participants were excluded from the analyses due to insufficient data quality. 
 
-The data of two participants (two novices, XXX experts) were excluded from the analyses due to insufficient data quality. 
+The subjects (`r df_demo %>% filter(gender == 1) %>% pull(gender) %>% length()` women; `r df_demo_table %>% pull("Gender female in percent")` %) had a mean age of `r df_demo %>% pull(age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r df_demo_table %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r df_demo_table %>%  pull("Min Age in years")`-`r df_demo_table %>% pull("Max Age in years")`) and an average teaching experience of `r df_demo_table %>% pull("M Teaching Experience in years")` years (*SD* = `r df_demo_table %>% pull("SD Teaching Experience in years")`; range: `r df_demo_table %>% pull("Min Teaching Experience in years")`-`r df_demo_table %>% pull("Max Teaching Experience in years")`). 
 
-The inclusion criterion for experts was that they have successfully completed teacher training and are actively employed in the teaching profession. According to @palmer2005identifying, we selected teachers as experts who had at least three years of professional experience and ideally had worked in another teaching position, such as subject advisor or trainer for trainee teachers, in addition to their teaching profession in school. Novices were student teachers who had successfully completed their first internship in a school and gained one to four hours of teaching experience.
-
-The expert teachers (`r demo.data %>% filter(Gender == 1 & ID == "Expert") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(ID == "Expert") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(ID == "Expert") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(ID == "Expert") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(ID == "Expert") %>% pull("Min Age in years")`-`r demo.table %>%  filter(ID == "Expert") %>% pull("Max Age in years")`) and an average teaching experience of `r exp.table %>% filter(ID == "Expert") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years (*SD* = `r exp.table %>% filter(ID == "Expert") %>% pull("SD Exp.") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Expert") %>% pull("Min Exp.")`-`r exp.table %>%  filter(ID == "Expert") %>% pull("Max Exp.")`). 
-`r demo.data %>% filter(ID == "Expert" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the experts were primary school teachers and `r demo.data %>% filter(ID == "Expert" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% were secondary school teachers. `r exp.table %>% filter(ID == "Expert") %>% pull("Secondary Teaching Activities")`% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers. 
-
-The novice teachers (`r demo.data %>% filter(Gender == 1 & ID == "Novice") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(ID == "Novice") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(ID == "Novice") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(ID == "Novice") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(ID == "Novice") %>% pull("Min Age in years")`-`r demo.table %>%  filter(ID == "Novice") %>% pull("Max Age in years")`) with an average teaching experience of `r exp.table %>% filter(ID == "Novice") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years. On average, the student teachers were in their `r exp.table %>% filter(ID == "Novice") %>% pull("M Semester") %>% mean() %>% round(., digits = 1)` semester (*SD* = `r exp.table %>% filter(ID == "Novice") %>% pull("SD Semester") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Novice") %>% pull("Min Semester")`-`r exp.table %>%  filter(ID == "Novice") %>% pull("Max Semester")`). Furthermore, they had an average teaching experience of `r exp.table %>% filter(ID == "Novice") %>% pull("M Internship") %>% mean() %>% round(., digits = 1)` teaching units à 45min (*SD* = `r exp.table %>% filter(ID == "Novice") %>% pull("SD Internship") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Novice") %>% pull("Min Internship")`-`r exp.table %>%  filter(ID == "Novice") %>% pull("Max Internship")`) through the internships during their studies. 
-`r demo.data %>% filter(ID == "Novice" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the novices were studying to become primary school teachers, `r demo.data %>% filter(ID == "Novice" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% to become secondary school teachers and `r demo.data %>% filter(ID == "Novice" & School_type == "Special Education") %>% pull("Percent_schooltype") %>% unique()`% to become special education teachers. `r exp.table %>% filter(ID == "Novice") %>% pull("Extracurricular Teaching Experience")`% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision. 
-
-The subjects were primarily recruited through personal contacts, social media (Facebook), e-mail distribution lists and advertising in lectures at Leipzig University. All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board. The authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
 
 ## Material

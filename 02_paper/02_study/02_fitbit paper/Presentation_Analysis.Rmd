@@ -84,17 +84,18 @@ map(.x = dir(path = data_path,
          heart_rate = `Heart Rate`,
          ID = id,
          time_span = case_when(str_detect(string = id, pattern = "_a") ~ "after",
-           str_detect(string = id, pattern = "_m") ~ "main",
-           str_detect(string = id, pattern = "_p") ~ "pre",
-           str_detect(string = id, pattern = "_s") ~ "subsequent",
-           str_detect(string = id, pattern = "_i") ~ "interview",
-           TRUE ~ "overall"
-           ),
+                               str_detect(string = id, pattern = "_m") ~ "main",
+                               str_detect(string = id, pattern = "_p") ~ "pre",
+                               str_detect(string = id, pattern = "_s") ~ "subsequent",
+                               str_detect(string = id, pattern = "_i") ~ "interview",
+                               TRUE ~ "overall"
+                               ),
          ID = str_extract(string = ID,
                           pattern = "[:digit:]{3}"),
          ID = as.numeric(ID)
       ) %>%
-      filter(time <= 600) %>%
+      # filter(time <= 600) %>% # filter for 10min intervals
+    filter(time <= 9000) %>% # filter for 2 hours 30min (maximal duration of study)
     select(!c("Time","Heart Rate","id"))
     ) %>%
   bind_rows()
@@ -118,7 +119,33 @@ knitr::include_graphics("./images/timeline_fitbit.png", dpi = 130)
 knitr::kable(main[1:10,], format = "simple")
 ```
 
-# Plot für einzelne Phasen 
+## Plot für Gesamtverlauf 
+
+```{r, fig.height = 8, fig.width = 15}
+
+  main %>% 
+  filter(time_span == "overall") %>% 
+  select("ID","time_span", "time","heart_rate") %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+ # stat_smooth(geom = "line",
+ #             method = "loess",
+ #             se = FALSE) +
+  geom_smooth(method = "loess",
+              se = FALSE) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Zeit (in Sekunden)",
+       y = "Herzrate (in Schlägen pro Minute)") +
+  theme_apa()
+
+```
+
+## Plot für einzelne Phasen 
 
 ```{r, fig.height = 8, fig.width = 15}
 
