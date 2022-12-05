@@ -201,12 +201,22 @@ Physiological data such as heart rate are becoming increasingly important in res
 
 To date, there is still little evidence on the usefulness of heart rate measurements using fitness trackers in teaching and learning settings [@ertzberger2016use; @lowe2016educational]. @rungeusing alone examined teacher stress in a relatively small sample (*N* = 4 teachers) and showed that high heart rate, high step count, and little sleep indicate more stress in teachers.
 
-Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, inexpensive, and robust measurement method for assessing teachers' experience of stress. Since, among other things, greater professional experience is associated with lower feelings of stress in the teaching profession [@fisher2011factors], this study will also consider the heart rate measurements of experienced and inexperienced teachers.
+Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, inexpensive, and robust measurement method for assessing teachers' experience of arousal during teaching.
 
+## Theoretical Backround
+
+### Stress in Teaching Profession
+--> Lehrberuf sehr stressig
+--> wie entsteht Stress
+
+### Measuring stress in eductional context
+--> wie wurde Stress bisher gemessen  
 
 
 ## Aim of the study
-Against this background, we investigated whether heart rate measurements using fitness trackers in a controlled teaching-learning setting are suitable to map differences between (1) anticipation, arousal, and rest phases. We expected heart rates to be higher in the arousal phase than in the rest phases.
+In the present study, we assessed HR measures and self-report data of pre- and in-service teachers in a controlled teaching-learning setting. The aim was to investigate whether heart rate measurements using wrist-worn fitness trackers are a suitable and effective method __(1)__ to map differences in states of arousal between five different phases (pre-teaching phase, teaching phase, post-teaching phase, interview phase and end phase) and __(2)__ to evaluate the correlation between self-report arousal states and HR measures. 
+
+__(H1)__ We expected heart rates to be higher during the teaching phase than during the pre- and the three post-teaching phases, and the HR measures would decrease over the course of the study. __(H2)__ We also predicted that HR response and a high ranking on the negative arousal item on our survey (feeling disturbed by disruptions) would correlate positively and a high ranking on the positive arousal item (feeling confident in dealing with disruptions) would follow the inverse pattern. 
 
 
 # Methods
@@ -364,18 +374,18 @@ The Fitbit watch was removed only after the last questionnaire to obtain heart r
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
 
-### FitBit
+### Heart rate Data
 
 All participants were given a FitBit Smart Watch Charge 4 to wear during the experiment. 
 
-## Heart Rate
+### Rating Scale Data
 
 
 
 # Results
 
 # Discussion and implication
-
+The analyses showed that wrist-worn fitness trackers are a suitable method to measure different phases of arousal in (prospective) teachers in laboratory settings, with clear effects visible even in intervals of just 10 minutes.
 
 \newpage
 
