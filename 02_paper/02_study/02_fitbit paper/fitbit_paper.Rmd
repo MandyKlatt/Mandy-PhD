@@ -199,24 +199,44 @@ options(tinytex.verbose = TRUE)
 # Introduction
 Physiological data such as heart rate are becoming increasingly important in research on stress experience. They represent an important indicator of physical or emotional stress, as increased workload is associated with increased heart rate [@sachs2014physiologische]. Furthermore, they allow a more objective recording of stress than self-reports [@rungeusing]. However, capturing heart rate in an educational context requires the use of low-cost and non-invasive instruments. Fitness trackers worn on the wrist have the potential to be such a useful tool [@ferguson2015validity].
 
-To date, there is still little evidence on the usefulness of heart rate measurements using fitness trackers in teaching and learning settings [@ertzberger2016use; @lowe2016educational]. @rungeusing alone examined teacher stress in a relatively small sample (*N* = 4 teachers) and showed that high heart rate, high step count, and little sleep indicate more stress in teachers.
+To date, there is still little evidence on the usefulness of heart rate measurements using fitness trackers in teaching and learning settings [@ertzberger2016use; @lowe2016educational]. @rungeusing alone examined teacher stress in a relatively small sample (*N* = 4 teachers) and showed that high heart rate indicate more stress in teachers.
 
 Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, inexpensive, and robust measurement method for assessing teachers' experience of arousal during teaching.
 
 ## Theoretical Backround
 
 ### Stress in Teaching Profession
---> Lehrberuf sehr stressig
---> wie entsteht Stress
 
-### Measuring stress in eductional context
+--> teacher profession is one of the most stressful professions. 
+
+Teacher stress can be defined as "[...] the experience by a teacher of unpleasant, negative emotions, such as anger, anxiety, tension, frustration or depression, resulting from some aspect of their work as a teacher." [@kyriacou2001teacher].
+
+Teachers' individual perceptions of student misbehavior in the classroom are closely related to their well-being [@ALDRUP2018126].
+
+--> wie entsteht Stress
 --> wie wurde Stress bisher gemessen  
 
 
-## Aim of the study
-In the present study, we assessed HR measures and self-report data of pre- and in-service teachers in a controlled teaching-learning setting. The aim was to investigate whether heart rate measurements using wrist-worn fitness trackers are a suitable and effective method __(1)__ to map differences in states of arousal between five different phases (pre-teaching phase, teaching phase, post-teaching phase, interview phase and end phase) and __(2)__ to evaluate the correlation between self-report arousal states and HR measures. 
 
-__(H1)__ We expected heart rates to be higher during the teaching phase than during the pre- and the three post-teaching phases, and the HR measures would decrease over the course of the study. __(H2)__ We also predicted that HR response and a high ranking on the negative arousal item on our survey (feeling disturbed by disruptions) would correlate positively and a high ranking on the positive arousal item (feeling confident in dealing with disruptions) would follow the inverse pattern. 
+### Heart rate as an indicator for stress or arousal
+Heart rate is physiologically regulated by the autonomic nervous system. An increase in the activity of the sympathetic as part of the autonomic nervous system results in the heart rate being speeded up ("fight or flight"). On the other hand, an increased activity of the parasympathetic as the counterpart has the effect of slowing down the heart rate ("rest and digest") [@Battipaglia2015]. In addition to the autonomic nervous system and genetic factors, heart rate is influenced by numerous external factors such as social, personal, psychological, environmental and behavioural factors [@wang2022using]. 
+
+### Wrist-worn devices as a new approach to assess physiological measures
+"The use of physiological measures enabled us to get some insight into teachers’ affective responses without disrupting the teaching process (Mauss & Robinson, 2009) and to reduce issues with social desirability, retrospective bias, and high cognitive load (Becker et al., 2015; Goetz et al., 2015; Scollon et al.,2009; Wilhelm & Grossman, 2010). Moreover, we found that heart rate measures discriminated between both teachers, even when their interpersonal behavior during the lesson start was relatively similar."
+
+(20) (PDF) A Quantitative Exploration of Two Teachers with Contrasting Emotions: Intra-Individual Process Analyses of Physiology and Interpersonal Behavior. Available from: https://www.researchgate.net/publication/329787434_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting_Emotions_Intra-Individual_Process_Analyses_of_Physiology_and_Interpersonal_Behavior [accessed Dec 07 2022].
+
+
+
+
+
+In this proof-of-concept study, we aimed to advance the field of teacher stress by collecting heart rate data with wrist-worn devices and testing a methodology that has the potential to provide more insights on the non-invasive assessment of teacher stress. 
+
+
+## Aim of the study
+In the present study, we assessed HR measures and self-report data of pre- and in-service teachers in a controlled teaching-learning setting. The aim was to investigate whether heart rate measurements using wrist-worn fitness trackers are a suitable and effective method __(1)__ to map differences in states of arousal between five different phases (pre-teaching phase, teaching phase, post-teaching phase, interview phase and end phase) and __(2)__ to evaluate the correlation between self-reported evaluations and HR measures. 
+
+__(H1)__ We expected heart rates to be higher during the teaching phase than during the pre- and the three post-teaching phases, and that the HR measures would decrease over the course of the study. __(H2)__ We also predicted that HR and a high ranking on the negative scale on our survey (feeling disturbed by disruptions) would correlate positively and a high ranking on the positive scale (feeling confident in dealing with disruptions) would follow the inverse pattern. 
 
 
 # Methods
