@@ -217,6 +217,8 @@ Teachers' individual perceptions of student misbehavior in the classroom are clo
 
 --> wie entsteht Stress
 
+
+
 --> wie wurde Stress bisher gemessen  
 
 
@@ -339,7 +341,6 @@ The subject's self-assessment of arousal in response to the nine disruptions dur
 The response format was purposely chosen to be closed and with several answer options in order to assign numerical values to the subjetcts' self-assessment and emotional experience, and thus to make them measurable and comparable [@eid2015statistik; @doring2016empirische]. The gradations of the rating scale were unambiguous and the intervals between them identical. The characteristic value was estimated by the subjects immediately after seeing the recording of the respective disruption and communicated verbally to the experimenter.
 
 
-
 ## Procedure
 
 The data collection was part of a larger research project with a planned sample of *n* = 40 in-service teachers and *n* = 40 pre-service teachers. 
@@ -352,7 +353,9 @@ The subject was instructed during the lesson to behave and move as naturally as 
 
 For analyzing the heart rate data, we focused on five 10-minute intervals of theoretical interest for multiple reason. First, 10 minutes was to the minimum duration of all intervals, so we wanted to ensure the comparability of the intervals for all participants. Second, @lu2008can confirmed in their study that 10-minute intervals are an useful duration for analyzing photoplethysmography (PPG) data. Third, other studies revealed that the first minutes of the lesson start are essential regarding teacher-student interaction [@donker2018quantitative; @claessens2017positive].
 
-_(1)_ The _pre-teaching phase_ was the first 10 minutes belonging to the interval of interest. This interval was calculated from the moment the subject arrived and the Fitbit watch was put on, which happened immediately after the subject was welcomed by the experimenter and the three actors. After the experimenter briefly explained the project and the procedure of the study to the subject, contact details were subsequently collected as part of the hygiene concept of COVID-19 and the written consent to voluntarily participate in the study was requested. Next, the subject was asked to prepare the necessary materials for the lesson (connecting the laptop to the beamer, preparing worksheets, etc.). This phase varied in duration according to the prepared lesson (about 1-5min on average). 
+The procedure of the study and how we calculated the five phases is described in the following: 
+
+_(1)_ The _pre-teaching phase_ was the first 10-minute interval of interest. This interval was calculated from the moment the subject arrived and the Fitbit watch was put on, which happened immediately after the subject was welcomed by the experimenter and the three actors. After the experimenter briefly explained the project and the procedure of the study to the subject, contact details were subsequently collected as part of the hygiene concept of COVID-19 and the written consent to voluntarily participate in the study was requested. Next, the subject was asked to prepare the necessary materials for the lesson (connecting the laptop to the beamer, preparing worksheets, etc.). This phase varied in duration according to the prepared lesson (about 1-5min on average). 
 
 Once the preparation was completed, the eye-tracking glasses were briefly explained to the subject as well as the adjustment made to the subject by the experimenter (changing the lenses or the nose pad if necessary). Subsequently, a 1-point calibration of the eye-tracking glasses took place and together with further devices (GoPro camera, 3D camera, audio recorder) the recordings were started.
 
