@@ -58,6 +58,8 @@ abstract: |
   
   Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
   
+  XXX In this proof-of-concept study, we aimed to advance the field of teacher stress by collecting heart rate data with wrist-worn devices and testing a methodology that has the potential to provide more insights on the non-invasive assessment of teacher stress. XXX
+  
   <!-- https://tinyurl.com/ybremelq -->
   
 keywords          : "heart rate; photoplethysmography; wearable electronic device; teaching"
@@ -199,9 +201,9 @@ options(tinytex.verbose = TRUE)
 # Introduction
 Physiological data such as heart rate are becoming increasingly important in research on stress experience. They represent an important indicator of physical or emotional stress, as increased workload is associated with increased heart rate [@sachs2014physiologische]. Furthermore, they allow a more objective recording of stress than self-reports [@rungeusing]. However, capturing heart rate in an educational context requires the use of low-cost and non-invasive instruments. Fitness trackers worn on the wrist have the potential to be such a useful tool [@ferguson2015validity].
 
-To date, there is still little evidence on the usefulness of heart rate measurements using fitness trackers in teaching and learning settings [@ertzberger2016use; @lowe2016educational]. @rungeusing alone examined teacher stress in a relatively small sample (*N* = 4 teachers) and showed that high heart rate indicate more stress in teachers.
+To date, there is still little evidence on the usefulness of heart rate measurements using fitness trackers in teaching and learning settings [@ertzberger2016use; @lowe2016educational]. @rungeusing alone examined teacher stress in a relatively small sample (*N* = 4 teachers) and showed that high heart rate indicates more stress in teachers.
 
-Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, inexpensive, and robust measurement method for assessing teachers' experience of arousal during teaching.
+Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, low-cost, and robust measurement method for assessing teachers' experience of arousal during teaching.
 
 ## Theoretical Backround
 
@@ -214,6 +216,7 @@ Teacher stress can be defined as "[...] the experience by a teacher of unpleasan
 Teachers' individual perceptions of student misbehavior in the classroom are closely related to their well-being [@ALDRUP2018126].
 
 --> wie entsteht Stress
+
 --> wie wurde Stress bisher gemessen  
 
 
@@ -226,11 +229,6 @@ Heart rate is physiologically regulated by the autonomic nervous system. An incr
 
 (20) (PDF) A Quantitative Exploration of Two Teachers with Contrasting Emotions: Intra-Individual Process Analyses of Physiology and Interpersonal Behavior. Available from: https://www.researchgate.net/publication/329787434_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting_Emotions_Intra-Individual_Process_Analyses_of_Physiology_and_Interpersonal_Behavior [accessed Dec 07 2022].
 
-
-
-
-
-In this proof-of-concept study, we aimed to advance the field of teacher stress by collecting heart rate data with wrist-worn devices and testing a methodology that has the potential to provide more insights on the non-invasive assessment of teacher stress. 
 
 
 ## Aim of the study
@@ -352,7 +350,7 @@ For this purpose, a seminar room was converted into a classroom. The classroom w
 
 The subject was instructed during the lesson to behave and move as naturally as possible, as they would in a real classroom. In advance, all subjects were given information about planning their lesson in a meeting to ensure that an appropriately realistic teaching situation could take place, e.g. it was pointed out that longer film clips as well as group work as a social form should be avoided in order to ensure interaction between teacher and students in the short time of the study. 
 
-For analyzing the heart rate data, we selected five 10-minute intervals of theoretical interest. To ensure that the intervals are comparable for all participants, we decided on 10-minute intervals because this was the minimum duration of all intervals. The individual intervals are described in detail below.
+For analyzing the heart rate data, we focused on five 10-minute intervals of theoretical interest for multiple reason. First, 10 minutes was to the minimum duration of all intervals, so we wanted to ensure the comparability of the intervals for all participants. Second, @lu2008can confirmed in their study that 10-minute intervals are an useful duration for analyzing photoplethysmography (PPG) data. Third, other studies revealed that the first minutes of the lesson start are essential regarding teacher-student interaction [@donker2018quantitative; @claessens2017positive].
 
 _(1)_ The _pre-teaching phase_ was the first 10 minutes belonging to the interval of interest. This interval was calculated from the moment the subject arrived and the Fitbit watch was put on, which happened immediately after the subject was welcomed by the experimenter and the three actors. After the experimenter briefly explained the project and the procedure of the study to the subject, contact details were subsequently collected as part of the hygiene concept of COVID-19 and the written consent to voluntarily participate in the study was requested. Next, the subject was asked to prepare the necessary materials for the lesson (connecting the laptop to the beamer, preparing worksheets, etc.). This phase varied in duration according to the prepared lesson (about 1-5min on average). 
 
@@ -364,7 +362,7 @@ Before the lesson began, a warm-up phase took place to familiarize the subject w
 -	The second part of the warm-up phase involved getting into conversation with each other by asking questions. For this purpose, the subject was asked to come up with a question for each of the actors (three questions in total) and was also asked a question in return by each actor. This could be anything that interested the participants. The questions should be as authentic as possible and were not tailored to the role of the actors.
 The purpose of this warming-up phase was, on the one hand, to make the subject forget about the devices and, on the other hand, to create as realistic as possible a classroom situation in which interactions were based on a teacher-student relationship.
 
-The pre-teaching phase lasted 10-15 minutes on average, depending on different issues (preparing the lesson, technical problems, adjusting the eye-tracking glasses). XXX GENAUEN M + SD BERECHNEN XXX
+The pre-teaching phase lasted 10-15 minutes on average, depending on different issues (preparing the lesson, technical problems, adjusting the eye-tracking glasses).
 
 _(2)_ The second 10-minute interval was the _teaching phase_, which began with the experimenter noting the time and step count of the fitness tracker. The subject was then asked to carry out a 9-point calibration alone in a room next door. After the calibration, the lesson started with the subject opening the door to the laboratory room. 
 During the lesson, the actors were instructed to simulate nine typical classroom events, three each in the following categories: (a) verbal disruptive behavior (chatting with the neighbor, whispering, heckling), (b) physical disruptions (clicking with a pen, drumming with hands on the table, snipping) and (c) lack of eagerness to learn (drawing on a sheet of paper, putting the head on the table, looking at the phone). 
@@ -373,20 +371,20 @@ The order of the events and the performing actors were fully balanced with Latin
 
 After a short familiarization phase for the teacher of two and a half minutes, the instructions appeared as intervals (every 90 seconds for 30 seconds) on a screen that was only visible for the class. The actors were trained to stop the disruptive behavior as soon as the teacher intervened. 
 
-Time management was regulated by the experimenter by showing time cards (yellow = 1 minute until the end; red = end of the lesson). The lesson lasted about 18 minutes on average but only the first 10 minutes were used as an interval to ensure the identical duration for all participants. XXX GENAUEN M + SD BERECHNEN XXX At the end of the lesson, the experimenter again noted the time and the steps on the clock. 
+Time management was regulated by the experimenter by showing time cards (yellow = 1 minute until the end; red = end of the lesson). The lesson lasted about 18 minutes on average but only the first 10 minutes were used as an interval to ensure the identical duration for all participants. At the end of the lesson, the experimenter again noted the time and the steps on the clock. 
 
-_(3)_ The noted time of the lesson end was also the starting point for the _post-teaching_ phase as the third 10 minute interval. At the end of the lesson, the experimenter attached letters A through D in the lab while the teacher performed a second 9-point calibration outside. The letter search as a control condition was part of another project, which is why it will not be discussed further in the study. Subsequently, the subjects as well as the actors were given a short questionnaire, which contained items to collect demographic information as well as items about the previously given lesson on teaching quality (4-point Likert scale; 1 = strongly disagree; 2 = disagree; 3 = agree; 4 = strongly agree; EMU, @helmke2014unterrichtsdiagnostik) via the online survey website SoSci Survey. The completion of the questionnaire took approximately 5 minutes.
+_(3)_ The noted time of the lesson end was also the starting point for the _post-teaching_ phase as the third 10-minute interval. At the end of the lesson, the experimenter attached letters A through D in the lab while the teacher performed a second 9-point calibration outside. The letter search as a control condition was part of another project, which is why it will not be discussed further in the study. Subsequently, the subjects as well as the actors were given a short questionnaire, which contained items to collect demographic information as well as items about the previously given lesson on teaching quality (4-point Likert scale; 1 = strongly disagree; 2 = disagree; 3 = agree; 4 = strongly agree; EMU, @helmke2014unterrichtsdiagnostik) via the online survey website SoSci Survey. The completion of the questionnaire took approximately 5 minutes.
 
 Meanwhile, the experimenter prepared the second part of the data collection: The Stimulated Recall Interview. Within post-teaching phase, the majority of subjects completed the questionnaire and positioned themselves next to the experimenter to begin the interview. In some cases, the beginning of the interview was part of the post-teaching phase due to individual needs (going to the toilet, spending more time completing the questionnaire, etc.).
 
-_(4)_ The fourth 10 minute interval of interest was the _interview phase_ that are 10 minutes in the middle of the interview. To ensure that all subjects were in the middle of the interview, we calculated the difference from the end of the lesson and from the time when the subject took off the watch. This duration was divided in two to get to the middle of the interval. Then, 5 minutes were subtracted to get to the start of the 10-minute interval. 
+_(4)_ The fourth 10-minute interval of interest was the _interview phase_ that was 10 minutes in the middle of the interview. To ensure that all subjects were in the middle of the interview, we calculated the difference from the end of the lesson and from the time when the subject took off the watch. This duration was divided in two to get to the middle of the interval. Then, 5 minutes were subtracted to get to the start of the 10-minute interval. 
 
 The interview itself took place using the Think Aloud procedure (Konrad, 2020). For this purpose, the eye tracking video was watched again and the experimenter stopped the video at the nine disruptions when they appeared to asks several questions. The questions were identical for each disruption, they were asked in a fixed order. 
 First, the subject was asked to describe the disruption, to evaluate (11-point rating scale) and justify the disruptiveness of each disruption. Next, the subject was asked to describe and justify the reaction. The experimenter then asked the subject to evaluate (11-point rating scale) and justify the confidence the subject had in dealing with the disruption. Statements about the evaluation of the disruptiveness and the confidence were quantified. For this purpose, subjects determined their individual value on a rating scale from 0 (not disturbing / not safe) to 10 (disturbing / safe).
 
 The interview lasted on average 45-60 minutes. 
 
-_(5)_ The last interesting interval for the analyses is the _end phase_, which was the 10 minutes before the subject took off the watch. In this interval, the subject answered a second questionnaire (Situational Judgment Test, @gold2015development) to assess the subject's strategic knowledge of classroom management. The subject was asked to judge alternative actions on school scenarios on a 6-point rating scale from 1 (A) to 6 (F) according to school grades. Data from the questionnaire were again collected as an online questionnaire via the website www.soscisurvey.de and lasted approximately 10-15 minutes.
+_(5)_ The last interesting interval for the analyses was the _end phase_, which was the 10 minutes before the subject took off the watch. In this interval, the subject answered a second questionnaire (Situational Judgment Test, @gold2015development) to assess the subject's strategic knowledge of classroom management. The subject was asked to judge alternative actions on school scenarios on a 6-point rating scale from 1 (A) to 6 (F) according to school grades. Data from the questionnaire were again collected as an online questionnaire via the website www.soscisurvey.de and lasted approximately 10-15 minutes.
 
 The Fitbit watch was removed only after the last questionnaire to obtain heart rate data during the entire study.
 
