@@ -1,0 +1,127 @@
+---
+title: "FitBit Analysis"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE)
+```
+
+```{r data wrangling, include = FALSE}
+library(needs)
+needs(ltm,
+      broom,
+      ppcor,
+      jtools,
+      lm.beta,
+      tidyverse,
+      janitor,
+      lubridate,
+      readxl,
+      ggthemes,
+      gridExtra,
+      imputeTS,
+      DescTools,
+      cowplot,
+      rstatix,
+      ggpubr,
+      lme4,
+      viridis)
+
+# disruption & confidence rating
+df_rating <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  select(ID, # select relevant columns 
+         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         confident_factor,
+         event
+         ) %>% 
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
+                                    yes = NA,
+                                    no = disruption_factor
+                                    ),
+         confident_factor = ifelse(confident_factor < 0,
+                                   yes = NA,
+                                   no = confident_factor),
+         event = as_factor(event)
+         )
+
+# demographic data
+df_demo <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  transmute(ID = LI06_05, # select and rename relevant columns 
+            gender = factor(LI02_01_1,
+                            levels = 1:2,
+                            labels = c("male","female")
+                            ),
+            age = LI03_01, # 1 = male; 2 = female
+            teaching_experience = LI04_01)
+
+# merge two data frames by ID 
+df_merge <- merge(df_demo,
+                  df_rating,
+                  by = "ID") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132")
+         )
+
+# rm(list = c("df_demo","df_rating"))
+
+
+data_path <- "./data/heart_rate_data"
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "after",
+                               str_detect(string = id, pattern = "_m") ~ "main",
+                               str_detect(string = id, pattern = "_p") ~ "pre",
+                               str_detect(string = id, pattern = "_s") ~ "subsequent",
+                               str_detect(string = id, pattern = "_i") ~ "interview",
+                               TRUE ~ "overall"
+                               ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+      # filter(time <= 600) %>% # filter for 10min intervals
+    filter(time <= 9000) %>% # filter for 2 hours 30min (maximal duration of study)
+    select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+# main <-
+#   left_join(main, df_merge,
+#             by = "ID")
+```
+
+
+# Plot Gesamtverlauf
+
+```{r}
+main %>% 
+  filter(time_span == "overall") %>% 
+  group_by(ID) %>% 
+  summarise(mean_hr = mean(heart_rate),
+            sd_hr = sd(heart_rate)) %>% 
+  right_join(x = .,
+             y = main,
+             by = "ID") %>% 
+  transmute(ID = ID,
+            heart_rate_std = (heart_rate - mean_hr) / sd_hr,
+            )
+
+```
+
+
+
