@@ -328,7 +328,7 @@ The subjects (`r df_demo %>% filter(gender == 1) %>% pull(gender) %>% length()` 
 
 `r df_demo %>% filter(school_type == "Primary School") %>% pull("percent_schooltype") %>% unique()`% of the subjects were (studying to become) teachers for primary school, `r df_demo %>% filter(school_type == "Secondary School") %>% pull("percent_schooltype") %>% unique()`% were (studying to become) teachers for secondary school and  `r df_demo %>% filter(school_type == "Special Education") %>% pull("percent_schooltype") %>% unique()`% were (studying to become) teachers for special education needs.
 
-All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board and the authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
+XXX Helsinki XXX All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board and the authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
 
 ## Material
