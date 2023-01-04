@@ -218,7 +218,6 @@ Teachers' individual perceptions of student misbehavior in the classroom are clo
 --> wie entsteht Stress
 
 
-
 --> wie wurde Stress bisher gemessen  
 
 
@@ -227,6 +226,9 @@ Teachers' individual perceptions of student misbehavior in the classroom are clo
 Heart rate is physiologically regulated by the autonomic nervous system. An increase in the activity of the sympathetic as part of the autonomic nervous system results in the heart rate being speeded up ("fight or flight"). On the other hand, an increased activity of the parasympathetic as the counterpart has the effect of slowing down the heart rate ("rest and digest") [@Battipaglia2015]. In addition to the autonomic nervous system and genetic factors, heart rate is influenced by numerous external factors such as social, personal, psychological, environmental and behavioural factors [@wang2022using]. 
 
 ### Wrist-worn devices as a new approach to assess physiological measures
+
+@fuller2020reliability showed in their review article that wearable devices such as Fitbit watches are accurate and reliable for measuring heart rate in controlled settings.
+
 "The use of physiological measures enabled us to get some insight into teachers’ affective responses without disrupting the teaching process (Mauss & Robinson, 2009) and to reduce issues with social desirability, retrospective bias, and high cognitive load (Becker et al., 2015; Goetz et al., 2015; Scollon et al.,2009; Wilhelm & Grossman, 2010). Moreover, we found that heart rate measures discriminated between both teachers, even when their interpersonal behavior during the lesson start was relatively similar."
 
 (20) (PDF) A Quantitative Exploration of Two Teachers with Contrasting Emotions: Intra-Individual Process Analyses of Physiology and Interpersonal Behavior. Available from: https://www.researchgate.net/publication/329787434_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting_Emotions_Intra-Individual_Process_Analyses_of_Physiology_and_Interpersonal_Behavior [accessed Dec 07 2022].
@@ -336,9 +338,10 @@ XXX Helsinki XXX All study procedures were carried out in accordance with the et
 ### Teachers' heart rate
 We used a Fitbit Charge 4 to measure the teachers' heart rate. The device was attached 2-finger widths above the ulnar styloid process to the subject’s wrist following the manufacturer’s instructions. To determine the heart rate, the Fitbit flashes green LEDs many times per second and uses light-sensitive photodiodes to measure the volume changes in the capillaries and then calculates how many times the heart beats per minute (bpm). Data were automatically wireless synced with an iPad via Bluetooth to a Fitbit account, and subsequently, the intraday second-by-second data were exported for each session using the opensource software Pulse Watch (PulseWatch. URL: https://iccir919.github.io/pulseWatch/public/index.html [accessed 2022-08-03]).
 
-### Teachers' self-assessment of arousal during the teaching phase
-The subject's self-assessment of arousal in response to the nine disruptions during the lesson was assessed in a Stimulated Recall Interview that took place after the lesson. For this purpose, two numerical 11-point rating scales were used: _(1)_	The first rating scale collected data of the teacher's subjective perception of disruptiveness of each disruption with the following question: "On a scale of 0-10: how disruptive did you find the event? 0 is not disruptive at all, 10 is extremely disruptive" _(2)_	The second rating scale assessed the teacher’s subjective perception of confidence in dealing with the disruptions during the lesson asked as follows: "How confident did you feel in dealing with this event on a scale of 0-10? 0 is not confident at all and 10 is extremely confident"
-The response format was purposely chosen to be closed and with several answer options in order to assign numerical values to the subjetcts' self-assessment and emotional experience, and thus to make them measurable and comparable [@eid2015statistik; @doring2016empirische]. The gradations of the rating scale were unambiguous and the intervals between them identical. The characteristic value was estimated by the subjects immediately after seeing the recording of the respective disruption and communicated verbally to the experimenter.
+### Teachers' self-reported data of arousal during the teaching phase
+The subject's self-reported data of arousal in response to the nine disruptions during the lesson was assessed in a Stimulated Recall Interview that took place after the lesson. For this purpose, two numerical 11-point rating scales were used: _(1)_	The first rating scale collected data of the teacher's subjective perception of disruptiveness of each disruption ("On a scale of 0-10: how disruptive did you find the event? 0 is not disruptive at all, 10 is extremely disruptive") _(2)_	The second rating scale assessed the teacher’s subjective perception of confidence in dealing with the disruptions during the lesson ("How confident did you feel in dealing with this event on a scale of 0-10? 0 is not confident at all and 10 is extremely confident"). 
+
+The response format was purposely chosen to be closed and with several answer options in order to assign numerical values to the subjects' self-report and emotional experience, and thus to make them measurable and comparable [@eid2015statistik; @doring2016empirische]. The gradations of the rating scale were unambiguous and the intervals between them identical. The characteristic value was estimated by the subjects immediately after seeing the recording of the respective disruption and communicated verbally to the experimenter.
 
 
 ## Procedure
@@ -395,17 +398,17 @@ The Fitbit watch was removed only after the last questionnaire to obtain heart r
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
 
-### Heart rate Data
+### Heart rate data
 
 All participants were given a FitBit Smart Watch Charge 4 to wear during the experiment. 
 
-### Rating Scale Data
+### Teachers' self-reported data of arousal during the teaching phase
 
 
 
 # Results
 
-# Discussion and implication
+# Discussion and implications
 The analyses showed that wrist-worn fitness trackers are a suitable method to measure different phases of arousal in (prospective) teachers in laboratory settings, with clear effects visible even in intervals of just 10 minutes.
 
 \newpage
