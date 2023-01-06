@@ -99,7 +99,7 @@ demo.data <- rename(demo.data, c("Group" = "LI06_05",
                                   "Gender" = "LI02_01_1",
                                   "Age" = "LI03_01",
                                   "Teaching Experience" = "LI04_01")) %>% 
-    filter(Group %in% c(101:125, 202:217))# filter relevant rows
+    filter(Group %in% c(101:136, 202:217))# filter relevant rows
 
 
 # define expert and novice with ifelse function
