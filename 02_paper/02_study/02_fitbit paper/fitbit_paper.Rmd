@@ -78,6 +78,7 @@ footnotelist      : no
 
 classoption       : "man"
 output            : papaja::apa6_pdf
+# bookdown::word_document2 
 ---
 
 ```{r setup, include = FALSE}
@@ -188,9 +189,9 @@ map(.x = dir(path = data_path,
     ) %>%
   bind_rows()
 
-main <-
-  left_join(main, df_merge,
-            by = "ID")
+# main <-
+#   left_join(main, df_merge,
+#             by = "ID")
 
 ```
 
@@ -205,9 +206,9 @@ To date, there is still little evidence on the usefulness of heart rate measurem
 
 Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, low-cost, and robust measurement method for assessing teachers' experience of arousal during teaching.
 
-## Theoretical Backround
+# Theoretical Background
 
-### Stress in Teaching Profession
+## Stress in Teaching Profession
 
 --> teacher profession is one of the most stressful professions. 
 
@@ -222,10 +223,10 @@ Teachers' individual perceptions of student misbehavior in the classroom are clo
 
 
 
-### Heart rate as an indicator for stress or arousal
+## Heart rate as an indicator for stress or arousal
 Heart rate is physiologically regulated by the autonomic nervous system. An increase in the activity of the sympathetic as part of the autonomic nervous system results in the heart rate being speeded up ("fight or flight"). On the other hand, an increased activity of the parasympathetic as the counterpart has the effect of slowing down the heart rate ("rest and digest") [@Battipaglia2015]. In addition to the autonomic nervous system and genetic factors, heart rate is influenced by numerous external factors such as social, personal, psychological, environmental and behavioural factors [@wang2022using]. 
 
-### Wrist-worn devices as a new approach to assess physiological measures
+## Wrist-worn devices as a new approach to assess physiological measures
 
 @fuller2020reliability showed in their review article that wearable devices such as Fitbit watches are accurate and reliable for measuring heart rate in controlled settings.
 
@@ -330,7 +331,7 @@ The subjects (`r df_demo %>% filter(gender == 1) %>% pull(gender) %>% length()` 
 
 `r df_demo %>% filter(school_type == "Primary School") %>% pull("percent_schooltype") %>% unique()`% of the subjects were (studying to become) teachers for primary school, `r df_demo %>% filter(school_type == "Secondary School") %>% pull("percent_schooltype") %>% unique()`% were (studying to become) teachers for secondary school and  `r df_demo %>% filter(school_type == "Special Education") %>% pull("percent_schooltype") %>% unique()`% were (studying to become) teachers for special education needs.
 
-XXX Helsinki XXX All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board and the authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
+All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board and the authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
 
 ## Material
@@ -396,20 +397,80 @@ The Fitbit watch was removed only after the last questionnaire to obtain heart r
 
 
 ## Data analysis
-We used `r cite_r("r-references.bib")` for all our analyses.
+We used `r cite_r("r-references.bib")` for all our analyses (descriptive statistics, correlations, and multilevel regression). Statistical assumptions including linearity, homogeneity of variance, and normal distribution of residuals were tested and confirmed with RStudio [palmeri2020]. An alpha level of 0.05 was used for the statistical tests. 
 
-### Heart rate data
+### Descriptive statistics 
 
-All participants were given a FitBit Smart Watch Charge 4 to wear during the experiment. 
+Means, standard deviations and the range of teachers’ heart rate and the self-reported data are shown in Table 2.
 
-### Teachers' self-reported data of arousal during the teaching phase
+```{r descriptive statistics}
+# Mean, SD and range for overall 
+descrip_hr_overall <- main %>%
+  filter(time_span %in% c("overall")) %>% 
+  summarise("M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
+
+# Mean, SD and range for individual phases 
+descrip_hr_phases <- main %>% 
+  filter(!time_span %in% c("overall")) %>% 
+  group_by(time_span) %>% 
+  summarise("M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
+
+# # format and insert table in manuscript
+# descrip_hr_phases %>%
+# papaja::apa_table(
+#   caption = "Mean, SD and range for teachers' heart rate in individual phases",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+#   )
+
+# Mean, SD and range for disruption and confident factor
+rating_table <- 
+  df_rating %>% 
+  filter(!is.na(confident_factor),
+         !is.na(disruption_factor)) %>% 
+   summarise("M disruption factor" = round(mean(disruption_factor),
+                                     digits = 2),
+            "SD disruption factor" = round(sd(disruption_factor),
+                                      digits = 2),
+            "Min disruption factor" = min(disruption_factor),
+            "Max disruption factor" = max(disruption_factor),
+            "M confident factor" = round(mean(confident_factor),
+                                     digits = 2),
+            "SD confident factor" = round(sd(confident_factor),
+                                      digits = 2),
+            "Min confident factor" = min(confident_factor),
+            "Max confident factor" = max(confident_factor)
+            )
+
+```
+
+Teachers’ average heart rate during the entire course of the study was approximately `r descrip_hr_overall %>% pull("M heart rate in bpm")` bpm with a standard deviation of `r descrip_hr_overall %>% pull("SD heart rate in bpm")` and a range from `r descrip_hr_overall %>% pull("Min heart rate in bpm")` to `r descrip_hr_overall %>% pull("Max heart rate in bpm")` bpm. 
+
+Means, standard deviations and the range of teachers’ heart rate for the different phases and the self-reported data are shown in Table 2.
+
+
+### Multilevel regressions
 
 
 
 # Results
 
 # Discussion and implications
-The analyses showed that wrist-worn fitness trackers are a suitable method to measure different phases of arousal in (prospective) teachers in laboratory settings, with clear effects visible even in intervals of just 10 minutes.
+
 
 \newpage
 
