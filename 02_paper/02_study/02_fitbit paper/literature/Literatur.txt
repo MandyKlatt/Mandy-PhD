@@ -1,3 +1,108 @@
+@article{beaty2010classroom,
+  title={Classroom management strategies for difficult students: Promoting change through relationships},
+  author={Beaty-O’Ferrall, Mary Ellen and Green, Alan and Hanna, Fred},
+  journal={Middle School Journal},
+  volume={41},
+  number={4},
+  pages={4--11},
+  year={2010},
+  publisher={Taylor \& Francis}
+}
+
+@article{ruedi2014bedeutung,
+  title={Zur Bedeutung positiver Beziehungen f{\"u}r die Klassenf{\"u}hrung und den Umgang mit Unterrichtsst{\"o}rungen},
+  author={R{\"u}edi, J{\"u}rg},
+  journal={Beziehungen in Schule und Unterricht. Teil},
+  volume={3},
+  pages={105--126},
+  year={2014}
+}
+
+@article{parker2012teachers,
+  title={Teachers’ workplace well-being: Exploring a process model of goal orientation, coping behavior, engagement, and burnout},
+  author={Parker, Philip D and Martin, Andrew J and Colmar, Susan and Liem, Gregory A},
+  journal={Teaching and Teacher Education},
+  volume={28},
+  number={4},
+  pages={503--513},
+  year={2012},
+  publisher={Elsevier}
+}
+
+@article{aldrup2018student,
+  title={Student misbehavior and teacher well-being: Testing the mediating role of the teacher-student relationship},
+  author={Aldrup, Karen and Klusmann, Uta and L{\"u}dtke, Oliver and G{\"o}llner, Richard and Trautwein, Ulrich},
+  journal={Learning and instruction},
+  volume={58},
+  pages={126--136},
+  year={2018},
+  publisher={Elsevier}
+}
+
+@article{donker2018quantitative,
+  title={A quantitative exploration of two teachers with contrasting emotions: intra-individual process analyses of physiology and interpersonal behavior.},
+  author={Donker, Monika H and Van Gog, Tamara and Mainhard, M Tim},
+  journal={Frontline Learning Research},
+  volume={6},
+  number={3},
+  pages={162--184},
+  year={2018},
+  publisher={ERIC}
+}
+
+@article{jalongo2006editorial,
+  title={Editorial teacher attrition: An issue of national concern},
+  author={Jalongo, Mary Renck and Heider, Kelly},
+  journal={Early Childhood Education Journal},
+  volume={33},
+  number={6},
+  pages={379--380},
+  year={2006},
+  publisher={Springer}
+}
+
+@article{unterbrink2007burnout,
+  title={Burnout and effort--reward-imbalance in a sample of 949 German teachers},
+  author={Unterbrink, Thomas and Hack, Anna and Pfeifer, Ruth and Buhl-Grie{\ss}haber, Veronika and M{\"u}ller, Udo and Wesche, Helmut and Frommhold, Markus and Scheuch, Klaus and Seibt, Reingard and Wirsching, Michael and others},
+  journal={International archives of occupational and environmental health},
+  volume={80},
+  number={5},
+  pages={433--441},
+  year={2007},
+  publisher={Springer}
+}
+
+@article{boyle1995structural,
+  title={A structural model of the dimensions of teacher stress},
+  author={Boyle, Gregory J and Borg, Mark G and Falzon, Joseph M and Baglioni Jr, Anthony J},
+  journal={British Journal of Educational Psychology},
+  volume={65},
+  number={1},
+  pages={49--67},
+  year={1995},
+  publisher={Wiley Online Library}
+}
+
+@book{smith2000stress,
+title = "Scale of occupational stress: a further analysis of the impact of demographic factors and type of job",
+author = "Andrew Smith and C Brice and Alison Collins and Rachel McNamara and Victoria Matthews",
+year = "2000",
+language = "English",
+volume = "Contract research report no. 311/200",
+publisher = "HSE",
+}
+
+@article{dicke2014self,
+  title={Self-efficacy in classroom management, classroom disturbances, and emotional exhaustion: A moderated mediation analysis of teacher candidates.},
+  author={Dicke, Theresa and Parker, Philip D and Marsh, Herbert W and Kunter, Mareike and Schmeck, Annett and Leutner, Detlev},
+  journal={Journal of educational psychology},
+  volume={106},
+  number={2},
+  pages={569},
+  year={2014},
+  publisher={American Psychological Association}
+}
+
 @book{cooper2012teachers,
   title={Teachers Under Pressure: Stress in the Teaching Profession},
   author={Cooper, Cary and Travers, Cheryl},
@@ -33,9 +138,9 @@ title = {Accuracy and precision of energy expenditure, heart rate, and steps mea
 doi = {10.31236/osf.io/tgk7a}
 }
 
-@article{heneghan2019investigation,
+@article{russell2019investigation,
   title={Investigation of an estimate of daily resting heart rate using a consumer wearable device},
-  author={Heneghan, Conor and Venkatraman, Subbu and Russell, Allison},
+  author={Russell, Allison and Heneghan, Conor and Venkatraman, Subbu},
   journal={medRxiv},
   pages={19008771},
   year={2019},
