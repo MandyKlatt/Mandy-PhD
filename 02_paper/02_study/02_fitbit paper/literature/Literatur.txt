@@ -1,3 +1,46 @@
+@article{pintrich2003motivational,
+  title={A motivational science perspective on the role of student motivation in learning and teaching contexts.},
+  author={Pintrich, Paul R},
+  journal={Journal of educational Psychology},
+  volume={95},
+  number={4},
+  pages={667},
+  year={2003},
+  publisher={American Psychological Association}
+}
+
+@article{junker2021potential,
+  title={Potential classroom stressors of teachers: An audiovisual and physiological approach},
+  author={Junker, Robin and Donker, Monika H and Mainhard, Tim},
+  journal={Learning and Instruction},
+  volume={75},
+  pages={101495},
+  year={2021},
+  publisher={Elsevier}
+}
+
+@misc{nanchen2018resting,
+  title={Resting heart rate: what is normal?},
+  author={Nanchen, David},
+  journal={Heart},
+  volume={104},
+  number={13},
+  pages={1048--1049},
+  year={2018},
+  publisher={BMJ Publishing Group Ltd and British Cardiovascular Society}
+}
+
+@article{friedman2003self,
+  title={Self-efficacy and burnout in teaching: The importance of interpersonal-relations efficacy},
+  author={Friedman, Isaac A},
+  journal={Social Psychology of Education},
+  volume={6},
+  number={3},
+  pages={191--215},
+  year={2003},
+  publisher={Springer}
+}
+
 @article{beaty2010classroom,
   title={Classroom management strategies for difficult students: Promoting change through relationships},
   author={Beaty-O’Ferrall, Mary Ellen and Green, Alan and Hanna, Fred},
