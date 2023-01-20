@@ -1,3 +1,46 @@
+@misc{eckstein2021conditions,
+author = {Eckstein, Boris and Grob, Urs and Reusser, Kurt},
+title = {Conditions of Classroom Disturbances},
+howpublished = {\textsc{url:}~\url{https://www.researchgate.net/profile/Boris-Eckstein/publication/354117558_Conditions_of_Classroom_Disturbances_The_role_of_teaching_quality_and_teachers'_personality_in_the_production_and_the_perception_of_classroom_disturbances_Introduction_Tendencies_in_the_Public_and_Aca/links/612605e0a8348b1a46046f13/Conditions-of-Classroom-Disturbances-The-role-of-teaching-quality-and-teachers-personality-in-the-production-and-the-perception-of-classroom-disturbances-Introduction-Tendencies-in-the-Public-and-Acad.pdf}},
+month = {8},
+year = {2021}
+}
+
+@article{ecksteinconditions,
+  title={Conditions of Classroom Disturbances},
+  author={Eckstein, Boris and Grob, Urs and Reusser, Kurt}
+}
+
+@article{fisher2011factors,
+  title={Factors influencing stress, burnout, and retention of secondary teachers},
+  author={Fisher, Molly H},
+  journal={Current issues in education},
+  volume={14},
+  number={1},
+  year={2011}
+}
+
+@article{obbarius2021modified,
+  title={A modified version of the transactional stress concept according to Lazarus and Folkman was confirmed in a psychosomatic inpatient sample},
+  author={Obbarius, Nina and Fischer, Felix and Liegl, Gregor and Obbarius, Alexander and Rose, Matthias},
+  journal={Frontiers in psychology},
+  volume={12},
+  pages={584333},
+  year={2021},
+  publisher={Frontiers Media SA}
+}
+
+@article{lazarus1987transactional,
+  title={Transactional theory and research on emotions and coping},
+  author={Lazarus, Richard S and Folkman, Susan},
+  journal={European Journal of personality},
+  volume={1},
+  number={3},
+  pages={141--169},
+  year={1987},
+  publisher={SAGE Publications Sage UK: London, England}
+}
+
 @article{pintrich2003motivational,
   title={A motivational science perspective on the role of student motivation in learning and teaching contexts.},
   author={Pintrich, Paul R},
