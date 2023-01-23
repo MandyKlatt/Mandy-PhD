@@ -12,6 +12,7 @@ needs(tidyverse,
       readxl)
 
 
+
 # suppress "summarize" info. 
 # if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
 options(dplyr.summarise.inform = FALSE)
@@ -39,10 +40,14 @@ r2 <- r2 %>% filter(`VP ID` == "101")
 
 # reshape data frame in long format 
 r1_long <- r1 %>% 
-  pivot_longer(!`VP ID`, names_to = "Event", values_to = "Value")
+  pivot_longer(!`VP ID`, 
+               names_to = "Event", 
+               values_to = "Value")
 
 r2_long <- r2 %>% 
-  pivot_longer(!`VP ID`, names_to = "Event", values_to = "Value")
+  pivot_longer(!`VP ID`, 
+               names_to = "Event", 
+               values_to = "Value")
 
 r1_long$Value <- as.numeric(r1_long$Value)
 
