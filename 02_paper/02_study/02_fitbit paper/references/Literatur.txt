@@ -1,3 +1,136 @@
+@article{liu2020anxiety,
+  title={Anxiety and Stress in In-Service Chinese University Teachers of Arts.},
+  author={Liu, Meihua and Yan, Yi},
+  journal={International journal of higher education},
+  volume={9},
+  number={1},
+  pages={237--248},
+  year={2020},
+  publisher={ERIC}
+}
+
+@article{fimian1990validity,
+  title={The validity and reliability of the Teacher Stress Inventory: A re-analysis of aggregate data},
+  author={Fimian, Michael J and Fastenau, Philip S},
+  journal={Journal of Organizational Behavior},
+  pages={151--157},
+  year={1990},
+  publisher={JSTOR}
+}
+
+@article{goker2012impact,
+  title={Impact of EFL Teachers' Collective Efficacy and Job Stress on Job Satisfaction.},
+  author={G{\"o}ker, Suleyman Davut},
+  journal={Theory \& Practice in Language Studies},
+  volume={2},
+  number={8},
+  year={2012}
+}
+
+@article{chaplain2008stress,
+  title={Stress and psychological distress among trainee secondary teachers in England},
+  author={Chaplain, Roland P},
+  journal={Educational Psychology},
+  volume={28},
+  number={2},
+  pages={195--209},
+  year={2008},
+  publisher={Taylor \& Francis}
+}
+
+@article{kyriacou1978teacher,
+  title={Teacher stress: Prevalence, sources, and symptoms},
+  author={Kyriacou, Chris and SUTCLIFFE, James},
+  journal={British journal of educational psychology},
+  volume={48},
+  number={2},
+  pages={159--167},
+  year={1978},
+  publisher={Wiley Online Library}
+}
+
+@article{rotter2020stressbewaltigung,
+  title={Stressbew{\"a}ltigung},
+  author={Rotter, Max and Renneberg, Babette and Kaluza, Gert},
+  journal={Psychologie in der medizinischen Rehabilitation: Somatopsychologie und Verhaltensmedizin},
+  pages={185--196},
+  year={2020},
+  publisher={Springer}
+}
+
+@article{jachymek2021wristbands,
+  title={Wristbands in Home-Based Rehabilitation—Validation of Heart Rate Measurement},
+  author={Jachymek, Magdalena and Jachymek, Micha{\l} T and Kiedrowicz, Rados{\l}aw M and Ka{\'z}mierczak, Jaros{\l}aw and P{\l}o{\'n}ska-Go{\'s}ciniak, Edyta and Peregud-Pogorzelska, Ma{\l}gorzata},
+  journal={Sensors},
+  volume={22},
+  number={1},
+  pages={60},
+  year={2021},
+  publisher={MDPI}
+}
+
+@article{blascovich2001perceiver,
+  title={Perceiver threat in social interactions with stigmatized others.},
+  author={Blascovich, Jim and Mendes, Wendy Berry and Hunter, Sarah B and Lickel, Brian and Kowai-Bell, Neneh},
+  journal={Journal of personality and social psychology},
+  volume={80},
+  number={2},
+  pages={253},
+  year={2001},
+  publisher={American Psychological Association}
+}
+
+@article{blascovich1999social,
+  title={Social" facilitation" as challenge and threat.},
+  author={Blascovich, Jim and Mendes, Wendy Berry and Hunter, Sarah B and Salomon, Kristen},
+  journal={Journal of personality and social psychology},
+  volume={77},
+  number={1},
+  pages={68},
+  year={1999},
+  publisher={American Psychological Association}
+}
+
+@article{doi:10.1177/1098300717732066,
+author = {Keith C. Herman and Jal’et Hickmon-Rosa and Wendy M. Reinke},
+title ={Empirically Derived Profiles of Teacher Stress, Burnout, Self-Efficacy, and Coping and Associated Student Outcomes},
+journal = {Journal of Positive Behavior Interventions},
+volume = {20},
+number = {2},
+pages = {90-100},
+year = {2018},
+doi = {10.1177/1098300717732066},
+URL = {https://doi.org/10.1177/1098300717732066},
+eprint = {https://doi.org/10.1177/1098300717732066},
+abstract = { Understanding how teacher stress, burnout, coping, and self-efficacy are interrelated can inform preventive and intervention efforts to support teachers. In this study, we explored these constructs to determine their relation to student outcomes, including disruptive behaviors and academic achievement. Participants in this study were 121 teachers and 1,817 students in grades kindergarten to fourth from nine elementary schools in an urban Midwestern school district. Latent profile analysis was used to determine patterns of teacher adjustment in relation to stress, coping, efficacy, and burnout. These profiles were then linked to student behavioral and academic outcomes. Four profiles of teacher adjustment were identified. Three classes were characterized by high levels of stress and were distinguished by variations in coping and burnout ranging from (a) high coping/low burnout (60\%) to (b) moderate coping and burnout (30\%), to (c) low coping/high burnout (3\%). The fourth class was distinguished by low stress, high coping, and low burnout. Only 7\% of the sample fell into this Well-Adjusted class. Teachers in the high stress, high burnout, and low coping class were associated with the poorest student outcomes. Implications for supporting teachers to maximize student outcomes are discussed. }
+}
+
+
+@article{HERMAN202054,
+title = {Profiles of middle school teacher stress and coping: Concurrent and prospective correlates},
+journal = {Journal of School Psychology},
+volume = {78},
+pages = {54-68},
+year = {2020},
+issn = {0022-4405},
+doi = {https://doi.org/10.1016/j.jsp.2019.11.003},
+url = {https://www.sciencedirect.com/science/article/pii/S0022440519300937},
+author = {Keith C. Herman and Sara L. Prewett and Colleen L. Eddy and Alyson Savala and Wendy M. Reinke},
+keywords = {Teacher stress, Teacher coping, Latent profile analysis, Middle school},
+abstract = {This study examined the stress and coping patterns of middle school teachers. A final teacher sample of 102 and student sample of 1450 agreed to participate in the study. We conducted a latent profile analysis of the teachers' self-reported levels of stress and coping at the beginning of the school year and used the resulting profiles to predict teacher practices and student outcomes over time. Nearly all teachers were characterized by high stress and high coping (66%) or high stress and low coping (28%). Based on concurrent ratings and observations, the High Stress/Low Coping profile had higher burnout and lower self-efficacy, higher rates of observed reprimands, and higher student-reported depression in comparison to the other classes. The most adaptive profile, Low Stress/High Coping (6% of sample), had lower burnout, greater parent involvement and higher student prosocial skills in comparison to the other groups. Profiles also predicted the maintenance of most of these effects and the increase of some effects over the school year. Examining stress and coping in combination can inform efforts to improve teacher well-being and have a positive influence on student learning environments.}
+}
+
+@article{chaudhuri2022teachers,
+  title={Teachers’ focus of attention in first-grade classrooms: exploring teachers experiencing less and more stress using mobile eye-tracking},
+  author={Chaudhuri, Saswati and Muhonen, Heli and Pakarinen, Eija and Lerkkanen, Marja-Kristiina},
+  journal={Scandinavian Journal of Educational Research},
+  volume={66},
+  number={6},
+  pages={1076--1092},
+  year={2022},
+  publisher={Taylor \& Francis}
+}
+
 @article{aloe2014multivariate,
   title={A multivariate meta-analysis of student misbehavior and teacher burnout},
   author={Aloe, Ariel M and Shisler, Shannon M and Norris, Benjamin D and Nickerson, Amanda B and Rinker, Tyler W},

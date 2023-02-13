@@ -38,15 +38,15 @@ df_rating <-
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   select(ID, # select relevant columns 
          disruption_factor, # -88 = actor did not perform the event; -99 = subject did not notice event; -100 = experimenter did not asked for event
-         confident_factor,
+         confidence_factor,
          event) %>% 
   mutate(disruption_factor = ifelse(disruption_factor < 0,
                                     yes = NA,
                                     no = disruption_factor
                                     ),
-         confident_factor = ifelse(confident_factor < 0,
+         confidence_factor = ifelse(confidence_factor < 0,
                                    yes = NA,
-                                   no = confident_factor)
+                                   no = confidence_factor)
          )
 
 # demographic data
@@ -126,7 +126,7 @@ confidence
 ```{r}
 df_rating %>% 
   group_by(ID) %>% 
-  summarize(mean = mean(confident_factor,
+  summarize(mean = mean(confidence_factor,
                         na.rm = TRUE
                         )
             ) %>% 
@@ -164,11 +164,11 @@ Just curious
 df_merge %>% 
   group_by(ID) %>% 
   summarize(teaching_experience = teaching_experience,
-            confident_factor = mean(confident_factor, na.rm = TRUE)) %>% 
+            confidence_factor = mean(confidence_factor, na.rm = TRUE)) %>% 
   ungroup() %>% 
   distinct() %>% 
   ggplot(mapping = aes(x = teaching_experience,
-                       y = confident_factor
+                       y = confidence_factor
                        )
          ) +
   geom_point() +
@@ -219,7 +219,7 @@ as_tibble(fit_first$coefficients,
 
 df_merge %>% 
   group_by(ID) %>% 
-  summarize(confident_factor_m = mean(confident_factor,
+  summarize(confidence_factor_m = mean(confidence_factor,
                                       na.rm = TRUE),
             disruption_factor_m = mean(disruption_factor,
                                        na.rm = TRUE),
@@ -256,12 +256,12 @@ main %>%
 ```
 
 ```{r}
-cor.test(df_corr$confident_factor_m,
+cor.test(df_corr$confidence_factor_m,
          df_corr$Estimate) ->
   corr_conf
 
 df_corr %>% 
-  ggplot(mapping = aes(x = confident_factor_m,
+  ggplot(mapping = aes(x = confidence_factor_m,
                        y = Estimate
                        )
          ) +
@@ -344,7 +344,7 @@ left_join(x = df_corr,
                          ),
          Estimate = Estimate * 1000
          ) %>% 
-  lm(formula = Estimate ~ confident_factor_m + disruption_factor_m + gender + age) ->
+  lm(formula = Estimate ~ confidence_factor_m + disruption_factor_m + gender + age) ->
   fit_whatever
 
 confint(fit_whatever)

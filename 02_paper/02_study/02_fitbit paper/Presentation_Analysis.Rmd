@@ -131,11 +131,7 @@ knitr::kable(main[1:10,], format = "simple")
                        y = heart_rate
                        )
          ) +
- # stat_smooth(geom = "line",
- #             method = "loess",
- #             se = FALSE) +
-  geom_smooth(method = "loess",
-              se = FALSE) +
+  geom_smooth() +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
@@ -158,14 +154,14 @@ main %>%
                                 "Pre-Lehrphase" = "pre",
                                 "Lehrphase" = "main",
                                 "Post-Lehrphase" = "subsequent",
-                                "Intviewphase" = "interview",
+                                "Interviewphase" = "interview",
                                 "Endphase" = "after"
                                 ),
          time_span = factor(time_span,
                             levels = c("Pre-Lehrphase",
                                        "Lehrphase",
                                        "Post-Lehrphase",
-                                       "Intviewphase",
+                                       "Interviewphase",
                                        "Endphase"
                                        )
                             )
