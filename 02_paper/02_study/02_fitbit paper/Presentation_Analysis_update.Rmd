@@ -35,16 +35,16 @@ df_rating <-
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   select(ID, # select relevant columns 
          disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
-         confident_factor,
+         confidence_factor,
          event
          ) %>% 
   mutate(disruption_factor = ifelse(disruption_factor < 0,
                                     yes = NA,
                                     no = disruption_factor
                                     ),
-         confident_factor = ifelse(confident_factor < 0,
+         confidence_factor = ifelse(confidence_factor < 0,
                                    yes = NA,
-                                   no = confident_factor),
+                                   no = confidence_factor),
          event = as_factor(event)
          )
 

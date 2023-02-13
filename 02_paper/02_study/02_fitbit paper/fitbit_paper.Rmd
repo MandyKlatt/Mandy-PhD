@@ -120,16 +120,16 @@ df_rating <-
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   select(ID, # select relevant columns 
          disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
-         confident_factor,
+         confidence_factor,
          event
          ) %>% 
   mutate(disruption_factor = ifelse(disruption_factor < 0,
                                     yes = NA,
                                     no = disruption_factor
                                     ),
-         confident_factor = ifelse(confident_factor < 0,
+         confidence_factor = ifelse(confidence_factor < 0,
                                    yes = NA,
-                                   no = confident_factor),
+                                   no = confidence_factor),
          event = as_factor(event)
          )
 
@@ -437,10 +437,10 @@ descrip_hr_phases <- main %>%
 #   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
 #   )
 
-# Mean, SD and range for disruption and confident factor
+# Mean, SD and range for disruption and confidence factor
 rating_table <- 
   df_rating %>% 
-  filter(!is.na(confident_factor),
+  filter(!is.na(confidence_factor),
          !is.na(disruption_factor)) %>% 
    summarise("M disruption factor" = round(mean(disruption_factor),
                                      digits = 2),
@@ -448,12 +448,12 @@ rating_table <-
                                       digits = 2),
             "Min disruption factor" = min(disruption_factor),
             "Max disruption factor" = max(disruption_factor),
-            "M confident factor" = round(mean(confident_factor),
+            "M confidence factor" = round(mean(confidence_factor),
                                      digits = 2),
-            "SD confident factor" = round(sd(confident_factor),
+            "SD confidence factor" = round(sd(confidence_factor),
                                       digits = 2),
-            "Min confident factor" = min(confident_factor),
-            "Max confident factor" = max(confident_factor)
+            "Min confidence factor" = min(confidence_factor),
+            "Max confidence factor" = max(confidence_factor)
             )
 
 ```

@@ -35,16 +35,16 @@ df_rating <-
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   select(ID, # select relevant columns 
          disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
-         confident_factor,
+         confidence_factor,
          event
          ) %>% 
   mutate(disruption_factor = ifelse(disruption_factor < 0,
                                     yes = NA,
                                     no = disruption_factor
                                     ),
-         confident_factor = ifelse(confident_factor < 0,
+         confidence_factor = ifelse(confidence_factor < 0,
                                    yes = NA,
-                                   no = confident_factor),
+                                   no = confidence_factor),
          event = as_factor(event)
          )
 
@@ -291,17 +291,17 @@ df_demo %>%
 - Vorschlag: Lehrerfahrung weglassen und Alter aufnehmen
 - Konsistent mit Idee, Expert\*innen und Noviz\*innen nicht zu trennen
 
-## Confident Factor
+## confidence Factor
 
 ```{r}
 df_merge %>% 
-  filter(!is.na(confident_factor)) %>% 
-  group_by(event, confident_factor) %>% 
+  filter(!is.na(confidence_factor)) %>% 
+  group_by(event, confidence_factor) %>% 
   summarize(value = n()) %>% 
   mutate(prop = value/sum(value)) %>% 
   ggplot(mapping = aes(x = reorder(event, prop),
                        y = prop,
-                       fill = confident_factor
+                       fill = confidence_factor
                        )
          ) +
   geom_bar(position = "stack",
@@ -310,7 +310,7 @@ df_merge %>%
   scale_fill_viridis_c() +
   labs(y = "",
        x = "",
-       fill = "Confident Factor") +
+       fill = "confidence Factor") +
   theme_apa()
 ```
 
@@ -345,8 +345,8 @@ df_merge %>%
 
 ```{r}
 df_merge %>% 
-  filter(!is.na(disruption_factor) | !is.na(confident_factor)) %>% 
-  ggplot(mapping = aes(x = confident_factor,
+  filter(!is.na(disruption_factor) | !is.na(confidence_factor)) %>% 
+  ggplot(mapping = aes(x = confidence_factor,
                        y = disruption_factor
                        )
          ) +
@@ -354,7 +354,7 @@ df_merge %>%
   geom_smooth(method = "lm",
               se = FALSE) +
   scale_color_viridis_d() +
-  labs(x = "Confident Factor",
+  labs(x = "confidence Factor",
        y = "Disruption Factor",
        color = "Event") +
   theme_apa()
@@ -365,16 +365,16 @@ df_merge %>%
 
 ```{r}
 df_merge %>% 
-  filter(!is.na(confident_factor) | !is.na(disruption_factor)) %>% 
+  filter(!is.na(confidence_factor) | !is.na(disruption_factor)) %>% 
   ggplot(mapping = aes(x = age,
-                       y = confident_factor
+                       y = confidence_factor
                        )
          ) +
   geom_jitter(mapping = aes(color = event)) +
   geom_smooth(method = "lm",
               se = F) +
   labs(x = "Alter",
-       y = "Confident Factor") +
+       y = "confidence Factor") +
   scale_color_viridis_d() +
   theme_apa()
 ```
@@ -383,20 +383,20 @@ df_merge %>%
 
 ```{r}
 df_merge %>% 
-  filter(!(is.na(confident_factor) | is.na(disruption_factor))) %>% 
+  filter(!(is.na(confidence_factor) | is.na(disruption_factor))) %>% 
   group_by(ID) %>% 
-  summarize(mean_confident = mean(confident_factor),
+  summarize(mean_confidence = mean(confidence_factor),
             age = mean(age)) %>%
   ungroup() %>% 
   ggplot(mapping = aes(x = age,
-                       y = mean_confident
+                       y = mean_confidence
                        )
          ) +
   geom_point(color = "#440154") +
   geom_smooth(method = "lm",
               se = FALSE) +
   labs(x = "Alter",
-       y = "Mean(Confident Factor)") +
+       y = "Mean(confidence Factor)") +
   theme_apa()
 ```
 
@@ -404,7 +404,7 @@ df_merge %>%
 
 ```{r}
 df_merge %>% 
-  filter(!is.na(confident_factor) | !is.na(disruption_factor)) %>% 
+  filter(!is.na(confidence_factor) | !is.na(disruption_factor)) %>% 
   ggplot(mapping = aes(x = age,
                        y = disruption_factor
                        )
@@ -422,7 +422,7 @@ df_merge %>%
 
 ```{r}
 df_merge %>% 
-  filter(!(is.na(confident_factor) | is.na(disruption_factor))) %>% 
+  filter(!(is.na(confidence_factor) | is.na(disruption_factor))) %>% 
   group_by(ID) %>% 
   summarize(mean_disruption = mean(disruption_factor),
             age = mean(age)) %>%
@@ -500,7 +500,7 @@ as_tibble(fit_first$coefficients,
 
 df_merge %>% 
   group_by(ID) %>% 
-  summarize(confident_factor_m = mean(confident_factor,
+  summarize(confidence_factor_m = mean(confidence_factor,
                                       na.rm = TRUE),
             disruption_factor_m = mean(disruption_factor,
                                        na.rm = TRUE),
@@ -525,7 +525,7 @@ Plan für Pre- und Subsequent Phase:
 
 - Multiple Lineare Regression
   - AV: Estimate
-  - UV: Gender, Alter, Disruption Factor (mean), Confident Factor (mean)
+  - UV: Gender, Alter, Disruption Factor (mean), confidence Factor (mean)
   - Alle metrischen Variablen sind standardisiert
 
 ## Pre Phase
@@ -560,7 +560,7 @@ as_tibble(fit_first$coefficients,
 
 df_merge %>% 
   group_by(ID) %>% 
-  summarize(confident_factor_m = mean(confident_factor,
+  summarize(confidence_factor_m = mean(confidence_factor,
                                       na.rm = TRUE),
             disruption_factor_m = mean(disruption_factor,
                                        na.rm = TRUE),
@@ -576,7 +576,7 @@ left_join(x = df_corr_pre,
           y = df_demo,
           by = "ID") %>% 
 transmute(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
-          confident_factor_m = (confident_factor_m - mean(.$confident_factor_m))/sd(.$confident_factor_m),
+          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
           disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
           gender = if_else(gender == "male",
                            true = 0,
@@ -592,7 +592,7 @@ left_join(x = df_corr_pre,
           y = df_demo,
           by = "ID") %>% 
 transmute(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
-          confident_factor_m = (confident_factor_m - mean(.$confident_factor_m))/sd(.$confident_factor_m),
+          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
           disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
           gender = if_else(gender == "male",
                            true = 0,
@@ -613,22 +613,22 @@ left_join(x = df_corr_pre,
           by = "ID") %>% 
   ungroup() %>% 
   mutate(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
-         confident_factor_m = (confident_factor_m - mean(.$confident_factor_m))/sd(.$confident_factor_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
          gender = gender,
          age = (age - mean(.$age))/sd(.$age)
          ) %>%
-  lm(formula = Estimate ~ confident_factor_m + disruption_factor_m  + gender + age) %>% 
+  lm(formula = Estimate ~ confidence_factor_m + disruption_factor_m  + gender + age) %>% 
   tidy(x = .,
        conf.int = TRUE) %>% 
-  mutate(term = case_when(term == "confident_factor_m" ~ "Confident Factor",
+  mutate(term = case_when(term == "confidence_factor_m" ~ "confidence Factor",
                               term == "disruption_factor_m" ~ "Disruption Factor",
                               term == "genderfemale" ~ "Weiblich\n(Ref.: Männlich)",
                               term == "age" ~ "Alter",
                               TRUE ~ "Intercept"
                            ),
          term = fct_relevel(term, 
-                            c("Confident Factor",
+                            c("confidence Factor",
                               "Disruption Factor",
                               "Weiblich\n(Ref.: Männlich)",
                               "Alter"
@@ -693,7 +693,7 @@ as_tibble(fit_first$coefficients,
 
 df_merge %>% 
   group_by(ID) %>% 
-  summarize(confident_factor_m = mean(confident_factor,
+  summarize(confidence_factor_m = mean(confidence_factor,
                                       na.rm = TRUE),
             disruption_factor_m = mean(disruption_factor,
                                        na.rm = TRUE),
@@ -709,7 +709,7 @@ left_join(x = df_corr_pre,
           y = df_demo,
           by = "ID") %>% 
 transmute(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
-          confident_factor_m = (confident_factor_m - mean(.$confident_factor_m))/sd(.$confident_factor_m),
+          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
           disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
           gender = if_else(gender == "male",
                            true = 0,
@@ -725,7 +725,7 @@ left_join(x = df_corr_pre,
           y = df_demo,
           by = "ID") %>% 
 transmute(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
-          confident_factor_m = (confident_factor_m - mean(.$confident_factor_m))/sd(.$confident_factor_m),
+          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
           disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
           gender = if_else(gender == "male",
                            true = 0,
@@ -767,7 +767,7 @@ as_tibble(fit_first$coefficients,
 
 df_merge %>% 
   group_by(ID) %>% 
-  summarize(confident_factor_m = mean(confident_factor,
+  summarize(confidence_factor_m = mean(confidence_factor,
                                       na.rm = TRUE),
             disruption_factor_m = mean(disruption_factor,
                                        na.rm = TRUE),
@@ -782,15 +782,15 @@ left_join(x = df_corr_sub,
           y = df_demo,
           by = "ID") %>% 
   mutate(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
-         confident_factor_m = (confident_factor_m - mean(.$confident_factor_m))/sd(.$confident_factor_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
          gender = gender,
          age = (age - mean(.$age))/sd(.$age)
          ) %>%
-  lm(formula = Estimate ~ confident_factor_m + disruption_factor_m + gender + age) %>% 
+  lm(formula = Estimate ~ confidence_factor_m + disruption_factor_m + gender + age) %>% 
   tidy(x = .,
        conf.int = TRUE) %>% 
-  mutate(term = case_when(term == "confident_factor_m" ~ "Confident Factor",
+  mutate(term = case_when(term == "confidence_factor_m" ~ "confidence Factor",
                               term == "disruption_factor_m" ~ "Disruption Factor",
                               term == "genderfemale" ~ "Weiblich\n(Ref.: Männlich)",
                               term == "age" ~ "Alter",
@@ -841,7 +841,7 @@ main %>%
   filter(time_span == "main") %>% 
   group_by(ID) %>% 
   transmute(heart_rate_m = mean(heart_rate),
-            confident_factor_m = mean(confident_factor,
+            confidence_factor_m = mean(confidence_factor,
                                       na.rm = TRUE),
             disruption_factor_m = mean(disruption_factor,
                                        na.rm = TRUE),
@@ -851,7 +851,7 @@ main %>%
   distinct() %>% 
   ungroup() %>% 
   transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
-         confident_factor_m = (confident_factor_m - mean(.$confident_factor_m))/sd(.$confident_factor_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
          gender = if_else(gender == "male",
                            true = 0,
@@ -870,7 +870,7 @@ main %>%
   filter(time_span == "interview") %>% 
   group_by(ID) %>% 
   transmute(heart_rate_m = mean(heart_rate),
-            confident_factor_m = mean(confident_factor,
+            confidence_factor_m = mean(confidence_factor,
                                       na.rm = TRUE),
             disruption_factor_m = mean(disruption_factor,
                                        na.rm = TRUE),
@@ -880,7 +880,7 @@ main %>%
   distinct() %>% 
   ungroup() %>% 
   transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
-         confident_factor_m = (confident_factor_m - mean(.$confident_factor_m))/sd(.$confident_factor_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
          gender = if_else(gender == "male",
                            true = 0,

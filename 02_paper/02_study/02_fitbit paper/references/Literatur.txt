@@ -1,3 +1,13 @@
+@article{aloe2014multivariate,
+  title={A multivariate meta-analysis of student misbehavior and teacher burnout},
+  author={Aloe, Ariel M and Shisler, Shannon M and Norris, Benjamin D and Nickerson, Amanda B and Rinker, Tyler W},
+  journal={Educational Research Review},
+  volume={12},
+  pages={30--44},
+  year={2014},
+  publisher={Elsevier}
+}
+
 @misc{eckstein2021conditions,
 author = {Eckstein, Boris and Grob, Urs and Reusser, Kurt},
 title = {Conditions of Classroom Disturbances},
