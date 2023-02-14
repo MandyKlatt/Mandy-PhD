@@ -58,14 +58,16 @@ abstract: |
   
   Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
   
+  XXX In this proof-of-concept study, we aimed to advance the field of teacher stress by collecting heart rate data with wrist-worn devices and testing a methodology that has the potential to provide more insights on the non-invasive assessment of teacher stress. XXX
+  
   <!-- https://tinyurl.com/ybremelq -->
   
-keywords          : "heart rate; photoplethysmography; wearable electronic device; expertise differences"
+keywords          : "heart rate; photoplethysmography; wearable electronic device; teaching"
 wordcount         : "X"
 
 bibliography      : "r-references.bib"
 
-floatsintext      : no
+floatsintext      : yes
 linenumbers       : yes
 draft             : no
 mask              : no
@@ -76,6 +78,7 @@ footnotelist      : no
 
 classoption       : "man"
 output            : papaja::apa6_pdf
+# bookdown::word_document2 
 ---
 
 ```{r setup, include = FALSE}
@@ -89,36 +92,107 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-```{r include=FALSE}
-# install.packages("needs")
-
-# suppress "summarize" info. 
-# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
-options(dplyr.summarise.inform = FALSE)
+```{r data wrangling, include=FALSE}
 
 library(needs)
-
-needs(tidyverse,
-      lubridate,
+needs(ltm,
+      broom,
+      ppcor,
+      jtools,
+      lm.beta,
+      tidyverse,
       janitor,
-      viridis,
-      grid,
-      gridExtra,
-      cowplot,
+      lubridate,
       readxl,
-      ARTofR,
-      moments,
-      ltm,
-      sjPlot,
-      kableExtra,
-      xtable,
-      DescTools,
-      formattable,
       ggthemes,
+      gridExtra,
       imputeTS,
+      DescTools,
+      cowplot,
       rstatix,
-      ggpubr)
-  
+      ggpubr,
+      lme4,
+      viridis)
+
+# disruption & confidence rating
+df_rating <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  select(ID, # select relevant columns 
+         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         confidence_factor,
+         event
+         ) %>% 
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
+                                    yes = NA,
+                                    no = disruption_factor
+                                    ),
+         confidence_factor = ifelse(confidence_factor < 0,
+                                   yes = NA,
+                                   no = confidence_factor),
+         event = as_factor(event)
+         )
+
+# demographic data
+df_demo_all <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  transmute(ID = LI06_05, # select and rename relevant columns 
+            # gender = factor(LI02_01_1,
+            #                 levels = 1:2,
+            #                 labels = c("male","female")
+            #                 ),
+            gender = LI02_01_1, # 1 = male; 2 = female
+            age = LI03_01, 
+            teaching_experience = LI04_01,
+            school_type = LI18,
+            term = LI11_01,
+            extracurricular_teaching_experience = LI14,
+            secondary_teaching_activities = LI17)
+
+# merge two data frames by ID 
+df_merge <- merge(df_demo_all,
+                  df_rating,
+                  by = "ID") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132")
+         )
+
+# rm(list = c("df_demo","df_rating"))
+
+
+data_path <- "./data/heart_rate_data"
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "after",
+           str_detect(string = id, pattern = "_m") ~ "main",
+           str_detect(string = id, pattern = "_p") ~ "pre",
+           str_detect(string = id, pattern = "_s") ~ "subsequent",
+           str_detect(string = id, pattern = "_i") ~ "interview",
+           TRUE ~ "overall"
+           ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+      filter(time <= 600) %>%
+    select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+# main <-
+#   left_join(main, df_merge,
+#             by = "ID")
+
 ```
 
 ```{r, include=FALSE}
@@ -128,13 +202,44 @@ options(tinytex.verbose = TRUE)
 # Introduction
 Physiological data such as heart rate are becoming increasingly important in research on stress experience. They represent an important indicator of physical or emotional stress, as increased workload is associated with increased heart rate [@sachs2014physiologische]. Furthermore, they allow a more objective recording of stress than self-reports [@rungeusing]. However, capturing heart rate in an educational context requires the use of low-cost and non-invasive instruments. Fitness trackers worn on the wrist have the potential to be such a useful tool [@ferguson2015validity].
 
-To date, there is still little evidence on the usefulness of heart rate measurements using fitness trackers in teaching and learning settings [@ertzberger2016use; @lowe2016educational]. @rungeusing alone examined teacher stress in a relatively small sample (*N* = 4 teachers) and showed that high heart rate, high step count, and little sleep indicate more stress in teachers.
+To date, there is still little evidence on the usefulness of heart rate measurements using fitness trackers in teaching and learning settings [@ertzberger2016use; @lowe2016educational]. @rungeusing alone examined teacher stress in a relatively small sample (*N* = 4 teachers) and showed that high heart rate indicates more stress in teachers.
 
-Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, inexpensive, and robust measurement method for assessing teachers' experience of stress. Since, among other things, greater professional experience is associated with lower feelings of stress in the teaching profession [@fisher2011factors], this study will also consider the heart rate measurements of experienced and inexperienced teachers.
- 
+Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, low-cost, and robust measurement method for assessing teachers' experience of arousal during teaching.
+
+# Theoretical Background
+
+## Stress in Teaching Profession
+
+--> teacher profession is one of the most stressful professions. 
+
+Teacher stress can be defined as "[...] the experience by a teacher of unpleasant, negative emotions, such as anger, anxiety, tension, frustration or depression, resulting from some aspect of their work as a teacher." [@kyriacou2001teacher].
+
+Teachers' individual perceptions of student misbehavior in the classroom are closely related to their well-being [@ALDRUP2018126].
+
+--> wie entsteht Stress
+
+
+--> wie wurde Stress bisher gemessen  
+
+
+
+## Heart rate as an indicator for stress or arousal
+Heart rate is physiologically regulated by the autonomic nervous system. An increase in the activity of the sympathetic as part of the autonomic nervous system results in the heart rate being speeded up ("fight or flight"). On the other hand, an increased activity of the parasympathetic as the counterpart has the effect of slowing down the heart rate ("rest and digest") [@Battipaglia2015]. In addition to the autonomic nervous system and genetic factors, heart rate is influenced by numerous external factors such as social, personal, psychological, environmental and behavioural factors [@wang2022using]. 
+
+## Wrist-worn devices as a new approach to assess physiological measures
+
+@fuller2020reliability showed in their review article that wearable devices such as Fitbit watches are accurate and reliable for measuring heart rate in controlled settings.
+
+"The use of physiological measures enabled us to get some insight into teachers’ affective responses without disrupting the teaching process (Mauss & Robinson, 2009) and to reduce issues with social desirability, retrospective bias, and high cognitive load (Becker et al., 2015; Goetz et al., 2015; Scollon et al.,2009; Wilhelm & Grossman, 2010). Moreover, we found that heart rate measures discriminated between both teachers, even when their interpersonal behavior during the lesson start was relatively similar."
+
+(20) (PDF) A Quantitative Exploration of Two Teachers with Contrasting Emotions: Intra-Individual Process Analyses of Physiology and Interpersonal Behavior. Available from: https://www.researchgate.net/publication/329787434_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting_Emotions_Intra-Individual_Process_Analyses_of_Physiology_and_Interpersonal_Behavior [accessed Dec 07 2022].
+
+
 
 ## Aim of the study
-Against this background, we investigated whether heart rate measurements using fitness trackers in a controlled teaching-learning setting are suitable to map differences between (1) anticipation, arousal, and rest phases and (2) between experienced and inexperienced teachers. We expected heart rates to be higher in the arousal phase than in the rest phases and exploratively examine whether experienced teachers have lower heart rates and more steps compared to inexperienced teachers.
+In the present study, we assessed HR measures and self-report data of pre- and in-service teachers in a controlled teaching-learning setting. The aim was to investigate whether heart rate measurements using wrist-worn fitness trackers are a suitable and effective method __(1)__ to map differences in states of arousal between five different phases (pre-teaching phase, teaching phase, post-teaching phase, interview phase and end phase) and __(2)__ to evaluate the correlation between self-reported evaluations and HR measures. 
+
+__(H1)__ We expected heart rates to be higher during the teaching phase than during the pre- and the three post-teaching phases, and that the HR measures would decrease over the course of the study. __(H2)__ We also predicted that HR and a high ranking on the negative scale on our survey (feeling disturbed by disruptions) would correlate positively and a high ranking on the positive scale (feeling confident in dealing with disruptions) would follow the inverse pattern. 
 
 
 # Methods
@@ -143,62 +248,38 @@ We report how we determined our sample size, all data exclusions (if any), all m
 ## Participants
 ```{r demographicstable, include = TRUE, echo=FALSE}
 
-# DEMOGRAPHIC DATA
-# read in data and select and rename relevant columns with transmute 
-demo.data.raw <- 
-  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% 
-  transmute(ID = LI06_05,
-            Gender = LI02_01_1,
-            Age = LI03_01,
-            `Teaching Experience` = LI04_01,
-            School_type = LI18,
-            Grade = LI16_05,
-            Subject = LI10_05,
-            Semester = LI11_01,
-            Internship = LI13_01,
-            `Extracurricular Teaching Experience` = LI14,
-            `Secondary Teaching Activities` = LI17
-            )
-
 # exclude cases with no fitbit data
-demo.data <- demo.data.raw %>% filter(!ID %in% c("126",
-                                                 "132"
-                                                 )
-                                      )
-
-# define expert and novice with ifelse function
-demo.data$ID = ifelse(demo.data$ID < 200, "Novice","Expert")
+df_demo <- df_demo_all %>% 
+  filter(!ID %in% c("126",
+                     "132"
+                     )
+          )
 
 # changing gender to count female gender (male = 2 --> 0)
-demo.data$Gender = ifelse(demo.data$Gender == 2, "1","0")
+df_demo$gender = ifelse(df_demo$gender == 2, "1","0")
 
 # changing character Gender into numeric
-demo.data$Gender <- as.numeric(demo.data$Gender)
+df_demo$gender <- as.numeric(df_demo$gender)
 
 # creating new column with total participants to calculate percent of gender
-demo.data <- demo.data %>%
-  group_by(ID) %>%
-  mutate(Sum_participants = n())
+df_demo <- df_demo %>%
+  mutate(sum_participants = sum(n()))
 
 # replacing 2 to 1 (Oberschule = Gymnasisium --> Secondary school)
-demo.data$School_type[demo.data$School_type == 2] <- "1"
+df_demo$school_type[df_demo$school_type == 2] <- "1"
 
 # creating new column to calculate percent of school type
-demo.data <- 
-  demo.data %>%
-  group_by(School_type, ID) %>%
-  mutate(Count_Schooltype = sum(n())) %>% 
-  mutate(Percent_schooltype = round((Count_Schooltype/Sum_participants) * 100, 
+df_demo <- 
+  df_demo %>%
+  group_by(school_type) %>%
+  mutate(count_schooltype = sum(n())) %>% 
+  mutate(percent_schooltype = round((count_schooltype/sum_participants) * 100, 
          digits = 2))
 
 # changing character Percent_schooltype into numeric
-demo.data$Percent_schooltype <- as.numeric(demo.data$Percent_schooltype)
+df_demo$percent_schooltype <- as.numeric(df_demo$percent_schooltype)
 
-# changing character Semester into numeric
-demo.data$Semester <- as.numeric(demo.data$Semester)
-
-
-# changing Type of School into character
+#changing type of school into character
 # LI18:
 # 1: Grundschule
 # 2: Oberschule
@@ -206,78 +287,35 @@ demo.data$Semester <- as.numeric(demo.data$Semester)
 # 4: Förderschule/Sondershausen
 # 5: Berufsbildende Schule
 # -1: andere Schulform
-demo.data$School_type <- factor(x = demo.data$School_type,
-                   levels = c("1","3","4","5","-1"), # Mögliche Werte # andere Möglichkeit: unique(demo.data$School_type)
-                   labels = c("Primary School","Secondary School", "Special Education","Vocational School", "Other Schooltype")) # Bezeichnungen
+df_demo$school_type <- factor(x = df_demo$school_type,
+                              levels = c("1","3","4","5","-1"), # Mögliche Werte # andere Möglichkeit: unique(demo.data$School_type)
+                              labels = c("Primary School","Secondary School", "Special Education","Vocational School", "Other Schooltype")) # Bezeichnungen
 
-# changing `Extracurricular Teaching Experience` to count experience (no experience = 2 --> 0)
-demo.data$`Extracurricular Teaching Experience` = ifelse(demo.data$`Extracurricular Teaching Experience` == 1, "1","0")
-
-# changing character Extra. Exp. into numeric
-demo.data$`Extracurricular Teaching Experience` <- as.numeric(demo.data$`Extracurricular Teaching Experience`)
-
-# changing `Secondary Teaching Activities` to count experience (no experience = 2 --> 0)
-demo.data$`Secondary Teaching Activities` = ifelse(demo.data$`Secondary Teaching Activities` == 1, "1","0")
-
-# changing character Extra. Exp. into numeric
-demo.data$`Secondary Teaching Activities` <- as.numeric(demo.data$`Secondary Teaching Activities`)
-
-# create new columns that give proportion of Gender
-# percent = female gender divided by all female Gender
-# demo.data <- demo.data  %>% 
-#   group_by(Group) %>% 
-#   mutate(Gender_percent = Gender/Sum_participants) %>% 
-#   mutate(Gender_percent = round(sum(Gender_percent)*100, digits=0))
 
 # create a basic table (tibble) using tidyverse functions
-demo.table <- demo.data %>%
-  group_by(ID) %>%
+df_demo_table <- df_demo %>%
+  ungroup() %>%
   summarise(N=n(),
-            "Gender female in percent" = round(sum(Gender/Sum_participants) * 100, 
+            "Gender female in percent" = round(sum(gender/sum_participants) * 100,
                                                digits = 2),
-            "M Age in years" = round(mean(Age), 
+            "M Age in years" = round(mean(age),
                                      digits = 2),
-            "SD Age in years" = round(sd(Age), 
+            "SD Age in years" = round(sd(age),
                                       digits = 2),
-            "Min Age in years" = min(Age),
-            "Max Age in years" = max(Age)
+            "Min Age in years" = min(age),
+            "Max Age in years" = max(age),
+            "M Teaching Experience in years" = round(mean(teaching_experience),
+                                            digits = 2),
+            "SD Teaching Experience in years" = round(sd(teaching_experience),
+                                            digits = 2),
+            "Min Teaching Experience in years" = min(teaching_experience),
+            "Max Teaching Experience in years" = max(teaching_experience)
             )
 
 # # format and insert table in manuscript
-# demo.table %>%
+# df_demo_table %>%
 # papaja::apa_table(
 #   caption = "Demographic Information",
-#   # note = "Write Note here",
-#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
-#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
-#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
-#   )
-
-
-# create a basic table (tibble) using tidyverse functions
-exp.table <- demo.data %>%
-  group_by(ID) %>%
-  summarise(N=n(),
-           "M Exp." = round(mean(`Teaching Experience`), 2),
-            "SD Exp." = round(sd(`Teaching Experience`), 2),
-            "Min Exp." = min(`Teaching Experience`),
-            "Max Exp." = max(`Teaching Experience`),
-            "M Semester" = round(mean(Semester), 2),
-            "SD Semester" = round(sd(Semester), 2),
-            "Min Semester" = min(Semester),
-            "Max Semester" = max(Semester),
-            "M Internship" = round(mean(Internship), 2),
-            "SD Internship" = round(sd(Internship), 2),
-            "Min Internship" = min(Internship),
-            "Max Internship" = max(Internship),
-            "Extracurricular Teaching Experience" = round(sum(`Extracurricular Teaching Experience`/Sum_participants) * 100, digits = 2),
-            "Secondary Teaching Activities" = round(sum(`Secondary Teaching Activities`/Sum_participants) * 100)
-           )
-
-# # format and insert table in manuscript
-# exp.table %>%
-# papaja::apa_table(
-#   caption = "Teaching Experience in years, internship experience in teaching units (45min) and extracurricular teaching experience in percent",
 #   # note = "Write Note here",
 #   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
 #   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
@@ -287,203 +325,228 @@ exp.table <- demo.data %>%
 
 ```
 
-The sample consisted of *N* = `r length(demo.data$ID)` participants with *n* = `r length(demo.data$ID[demo.data$ID == "Expert"])` expert teachers and *n* = `r length(demo.data$ID[demo.data$ID == "Novice"])` novice teachers. 
+The sample consisted in total of *N* = `r length(df_demo_all$ID)` pre- and in-service teachers. The subjects were recruited from the Leipzig University or from German schools in Saxony via personal contact, e-mail lists and flyers. Data of two participants were excluded from the analyses due to insufficient data quality, yielding data from *N* = `r length(df_demo$ID)` subjects.
 
-The data of two participants (two novices, XXX experts) were excluded from the analyses due to insufficient data quality. 
+The subjects (`r df_demo %>% filter(gender == 1) %>% pull(gender) %>% length()` women; `r df_demo_table %>% pull("Gender female in percent")` %) had a mean age of `r df_demo %>% pull(age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r df_demo_table %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r df_demo_table %>%  pull("Min Age in years")`-`r df_demo_table %>% pull("Max Age in years")`) and an average teaching experience of `r df_demo_table %>% pull("M Teaching Experience in years")` years (*SD* = `r df_demo_table %>% pull("SD Teaching Experience in years")`; range: `r df_demo_table %>% pull("Min Teaching Experience in years")`-`r df_demo_table %>% pull("Max Teaching Experience in years")`). 
 
-The inclusion criterion for experts was that they have successfully completed teacher training and are actively employed in the teaching profession. According to @palmer2005identifying, we selected teachers as experts who had at least three years of professional experience and ideally had worked in another teaching position, such as subject advisor or trainer for trainee teachers, in addition to their teaching profession in school. Novices were student teachers who had successfully completed their first internship in a school and gained one to four hours of teaching experience.
+`r df_demo %>% filter(school_type == "Primary School") %>% pull("percent_schooltype") %>% unique()`% of the subjects were (studying to become) teachers for primary school, `r df_demo %>% filter(school_type == "Secondary School") %>% pull("percent_schooltype") %>% unique()`% were (studying to become) teachers for secondary school and  `r df_demo %>% filter(school_type == "Special Education") %>% pull("percent_schooltype") %>% unique()`% were (studying to become) teachers for special education needs.
 
-The expert teachers (`r demo.data %>% filter(Gender == 1 & ID == "Expert") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(ID == "Expert") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(ID == "Expert") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(ID == "Expert") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(ID == "Expert") %>% pull("Min Age in years")`-`r demo.table %>%  filter(ID == "Expert") %>% pull("Max Age in years")`) and an average teaching experience of `r exp.table %>% filter(ID == "Expert") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years (*SD* = `r exp.table %>% filter(ID == "Expert") %>% pull("SD Exp.") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Expert") %>% pull("Min Exp.")`-`r exp.table %>%  filter(ID == "Expert") %>% pull("Max Exp.")`). 
-`r demo.data %>% filter(ID == "Expert" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the experts were primary school teachers and `r demo.data %>% filter(ID == "Expert" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% were secondary school teachers. `r exp.table %>% filter(ID == "Expert") %>% pull("Secondary Teaching Activities")`% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers. 
-
-The novice teachers (`r demo.data %>% filter(Gender == 1 & ID == "Novice") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(ID == "Novice") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(ID == "Novice") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(ID == "Novice") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(ID == "Novice") %>% pull("Min Age in years")`-`r demo.table %>%  filter(ID == "Novice") %>% pull("Max Age in years")`) with an average teaching experience of `r exp.table %>% filter(ID == "Novice") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years. On average, the student teachers were in their `r exp.table %>% filter(ID == "Novice") %>% pull("M Semester") %>% mean() %>% round(., digits = 1)` semester (*SD* = `r exp.table %>% filter(ID == "Novice") %>% pull("SD Semester") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Novice") %>% pull("Min Semester")`-`r exp.table %>%  filter(ID == "Novice") %>% pull("Max Semester")`). Furthermore, they had an average teaching experience of `r exp.table %>% filter(ID == "Novice") %>% pull("M Internship") %>% mean() %>% round(., digits = 1)` teaching units à 45min (*SD* = `r exp.table %>% filter(ID == "Novice") %>% pull("SD Internship") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(ID == "Novice") %>% pull("Min Internship")`-`r exp.table %>%  filter(ID == "Novice") %>% pull("Max Internship")`) through the internships during their studies. 
-`r demo.data %>% filter(ID == "Novice" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the novices were studying to become primary school teachers, `r demo.data %>% filter(ID == "Novice" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% to become secondary school teachers and `r demo.data %>% filter(ID == "Novice" & School_type == "Special Education") %>% pull("Percent_schooltype") %>% unique()`% to become special education teachers. `r exp.table %>% filter(ID == "Novice") %>% pull("Extracurricular Teaching Experience")`% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision. 
-
-The subjects were primarily recruited through personal contacts, social media (Facebook), e-mail distribution lists and advertising in lectures at Leipzig University. All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board. The authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
+All study procedures were carried out in accordance with the ethical standards of the University’s Institutional Review Board and the authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
 
 ## Material
+
+### Teachers' heart rate
 We used a Fitbit Charge 4 to measure the teachers' heart rate. The device was attached 2-finger widths above the ulnar styloid process to the subject’s wrist following the manufacturer’s instructions. To determine the heart rate, the Fitbit flashes green LEDs many times per second and uses light-sensitive photodiodes to measure the volume changes in the capillaries and then calculates how many times the heart beats per minute (bpm). Data were automatically wireless synced with an iPad via Bluetooth to a Fitbit account, and subsequently, the intraday second-by-second data were exported for each session using the opensource software Pulse Watch (PulseWatch. URL: https://iccir919.github.io/pulseWatch/public/index.html [accessed 2022-08-03]).
+
+### Teachers' self-reported data of arousal during the teaching phase
+The subject's self-reported data of arousal in response to the nine disruptions during the lesson was assessed in a Stimulated Recall Interview that took place after the lesson. For this purpose, two numerical 11-point rating scales were used: _(1)_	The first rating scale collected data of the teacher's subjective perception of disruptiveness of each disruption ("On a scale of 0-10: how disruptive did you find the event? 0 is not disruptive at all, 10 is extremely disruptive") _(2)_	The second rating scale assessed the teacher’s subjective perception of confidence in dealing with the disruptions during the lesson ("How confident did you feel in dealing with this event on a scale of 0-10? 0 is not confident at all and 10 is extremely confident"). 
+
+The response format was purposely chosen to be closed and with several answer options in order to assign numerical values to the subjects' self-report and emotional experience, and thus to make them measurable and comparable [@eid2015statistik; @doring2016empirische]. The gradations of the rating scale were unambiguous and the intervals between them identical. The characteristic value was estimated by the subjects immediately after seeing the recording of the respective disruption and communicated verbally to the experimenter.
 
 
 ## Procedure
-In a laboratory setting, three trained actors performed teaching disruptions in a counter balanced fashion while the subject taught a 15-minute micro-teaching unit prepared in advance. To record the subject's heart rate, the Fitbit Charge 4 was put on at least 10 minutes before the start of the lesson. The lesson was recorded by four cameras and an audio recorder. In addition, the subject wore eye-tracking glasses to record gaze behavior. 
 
-Subsequently, the subjects as well as the actors were given a short questionnaire, which contained items to collect demographic information as well as items about the previously given lesson on teaching quality using a validated questionnaire (EMU, @helmke2014unterrichtsdiagnostik) and self developed scales on the teacher's presence behavior derived from the research literature via the online survey website SoSci Survey (4-point Likert scale; 1 = strongly disagree; 2 = disagree; 3 = agree; 4 = strongly agree). The completion of the questionnaire took approximately 5 minutes. 
+The data collection was part of a larger research project with a planned sample of *n* = 40 in-service teachers and *n* = 40 pre-service teachers. 
 
-The experimenter then conducted a Stimulated Recall Interview (SRI), where the subject commented and rated the reactions to classroom events while watching the eye tracking video.
+The study took place in the rooms of the Faculty of Education at Leipzig University. In a controlled laboratory setting, heart rate data in beats per minute (bpm) were recorded using Fitbit Charge 4 over a total period of approximately two hours. Within this time frame, teachers taught a 15-minute self-prepared lesson to an audience of three actors. 
 
-Finally, a Situational Judgment Test (SJT, @gold2015development) was used to assess the subject's strategic knowledge of classroom management. The subject was asked to judge alternative actions on school scenarios on a 6-point rating scale from 1 (A) to 6 (F) according to school grades. Data from the SJT were again collected as an online questionnaire via the website www.soscisurvey.de and lastet approximately 10 minutes. 
+For this purpose, a seminar room was converted into a classroom. The classroom was equipped with a digital whiteboard and a blackboard. The fictitious class consisting of three trained actors sat facing the teacher head-on in a "U"; pen and paper were provided on their seats. In addition, the students brought their own mobile phone, which was also visibly positioned on the desk. 
 
-The Fitbit watch was removed only after the last questionnaire to obtain heart rate at three different measurement time points: before, during, and after the lesson. 
+The subject was instructed during the lesson to behave and move as naturally as possible, as they would in a real classroom. In advance, all subjects were given information about planning their lesson in a meeting to ensure that an appropriately realistic teaching situation could take place, e.g. it was pointed out that longer film clips as well as group work as a social form should be avoided in order to ensure interaction between teacher and students in the short time of the study. 
+
+For analyzing the heart rate data, we focused on five 10-minute intervals of theoretical interest for multiple reason. First, 10 minutes was to the minimum duration of all intervals, so we wanted to ensure the comparability of the intervals for all participants. Second, @lu2008can confirmed in their study that 10-minute intervals are an useful duration for analyzing photoplethysmography (PPG) data. Third, other studies revealed that the first minutes of the lesson start are essential regarding teacher-student interaction [@donker2018quantitative; @claessens2017positive].
+
+The procedure of the study and how we calculated the five phases is described in the following: 
+
+_(1)_ The _pre-teaching phase_ was the first 10-minute interval of interest. This interval was calculated from the moment the subject arrived and the Fitbit watch was put on, which happened immediately after the subject was welcomed by the experimenter and the three actors. After the experimenter briefly explained the project and the procedure of the study to the subject, contact details were subsequently collected as part of the hygiene concept of COVID-19 and the written consent to voluntarily participate in the study was requested. Next, the subject was asked to prepare the necessary materials for the lesson (connecting the laptop to the beamer, preparing worksheets, etc.). This phase varied in duration according to the prepared lesson (about 1-5min on average). 
+
+Once the preparation was completed, the eye-tracking glasses were briefly explained to the subject as well as the adjustment made to the subject by the experimenter (changing the lenses or the nose pad if necessary). Subsequently, a 1-point calibration of the eye-tracking glasses took place and together with further devices (GoPro camera, 3D camera, audio recorder) the recordings were started.
+
+Before the lesson began, a warm-up phase took place to familiarize the subject with the laboratory setting and equipment. This warm-up phase consisted of two parts:
+
+-	In the first part, the subject and the three actors playfully learned each other's names. Additional fictitious name tags of the actors were attached to the table and did not change across the study. In the game, by throwing two balls, either the participant's own name or the name of the target person was called. 
+-	The second part of the warm-up phase involved getting into conversation with each other by asking questions. For this purpose, the subject was asked to come up with a question for each of the actors (three questions in total) and was also asked a question in return by each actor. This could be anything that interested the participants. The questions should be as authentic as possible and were not tailored to the role of the actors.
+The purpose of this warming-up phase was, on the one hand, to make the subject forget about the devices and, on the other hand, to create as realistic as possible a classroom situation in which interactions were based on a teacher-student relationship.
+
+The pre-teaching phase lasted 10-15 minutes on average, depending on different issues (preparing the lesson, technical problems, adjusting the eye-tracking glasses).
+
+_(2)_ The second 10-minute interval was the _teaching phase_, which began with the experimenter noting the time and step count of the fitness tracker. The subject was then asked to carry out a 9-point calibration alone in a room next door. After the calibration, the lesson started with the subject opening the door to the laboratory room. 
+During the lesson, the actors were instructed to simulate nine typical classroom events, three each in the following categories: (a) verbal disruptive behavior (chatting with the neighbor, whispering, heckling), (b) physical disruptions (clicking with a pen, drumming with hands on the table, snipping) and (c) lack of eagerness to learn (drawing on a sheet of paper, putting the head on the table, looking at the phone). 
+
+The order of the events and the performing actors were fully balanced with Latin square. The actors were trained before to perform the disruptions identically in each data collection. 
+
+After a short familiarization phase for the teacher of two and a half minutes, the instructions appeared as intervals (every 90 seconds for 30 seconds) on a screen that was only visible for the class. The actors were trained to stop the disruptive behavior as soon as the teacher intervened. 
+
+Time management was regulated by the experimenter by showing time cards (yellow = 1 minute until the end; red = end of the lesson). The lesson lasted about 18 minutes on average but only the first 10 minutes were used as an interval to ensure the identical duration for all participants. At the end of the lesson, the experimenter again noted the time and the steps on the clock. 
+
+_(3)_ The noted time of the lesson end was also the starting point for the _post-teaching_ phase as the third 10-minute interval. At the end of the lesson, the experimenter attached letters A through D in the lab while the teacher performed a second 9-point calibration outside. The letter search as a control condition was part of another project, which is why it will not be discussed further in the study. Subsequently, the subjects as well as the actors were given a short questionnaire, which contained items to collect demographic information as well as items about the previously given lesson on teaching quality (4-point Likert scale; 1 = strongly disagree; 2 = disagree; 3 = agree; 4 = strongly agree; EMU, @helmke2014unterrichtsdiagnostik) via the online survey website SoSci Survey. The completion of the questionnaire took approximately 5 minutes.
+
+Meanwhile, the experimenter prepared the second part of the data collection: The Stimulated Recall Interview. Within post-teaching phase, the majority of subjects completed the questionnaire and positioned themselves next to the experimenter to begin the interview. In some cases, the beginning of the interview was part of the post-teaching phase due to individual needs (going to the toilet, spending more time completing the questionnaire, etc.).
+
+_(4)_ The fourth 10-minute interval of interest was the _interview phase_ that was 10 minutes in the middle of the interview. To ensure that all subjects were in the middle of the interview, we calculated the difference from the end of the lesson and from the time when the subject took off the watch. This duration was divided in two to get to the middle of the interval. Then, 5 minutes were subtracted to get to the start of the 10-minute interval. 
+
+The interview itself took place using the Think Aloud procedure (Konrad, 2020). For this purpose, the eye tracking video was watched again and the experimenter stopped the video at the nine disruptions when they appeared to asks several questions. The questions were identical for each disruption, they were asked in a fixed order. 
+First, the subject was asked to describe the disruption, to evaluate (11-point rating scale) and justify the disruptiveness of each disruption. Next, the subject was asked to describe and justify the reaction. The experimenter then asked the subject to evaluate (11-point rating scale) and justify the confidence the subject had in dealing with the disruption. Statements about the evaluation of the disruptiveness and the confidence were quantified. For this purpose, subjects determined their individual value on a rating scale from 0 (not disturbing / not safe) to 10 (disturbing / safe).
+
+The interview lasted on average 45-60 minutes. 
+
+_(5)_ The last interesting interval for the analyses was the _end phase_, which was the 10 minutes before the subject took off the watch. In this interval, the subject answered a second questionnaire (Situational Judgment Test, @gold2015development) to assess the subject's strategic knowledge of classroom management. The subject was asked to judge alternative actions on school scenarios on a 6-point rating scale from 1 (A) to 6 (F) according to school grades. Data from the questionnaire were again collected as an online questionnaire via the website www.soscisurvey.de and lasted approximately 10-15 minutes.
+
+The Fitbit watch was removed only after the last questionnaire to obtain heart rate data during the entire study.
+
 
 ## Data analysis
-We used `r cite_r("r-references.bib")` for all our analyses.
+We used `r cite_r("r-references.bib")` for all our analyses (descriptive statistics, correlations, and multilevel regression). Statistical assumptions including linearity, homogeneity of variance, and normal distribution of residuals were tested and confirmed with RStudio [palmeri2020]. An alpha level of 0.05 was used for the statistical tests. 
 
-### FitBit
+### Descriptive statistics 
 
-All participants were given a FitBit Smart Watch Charge 4 to wear during the experiment. 
+Means, standard deviations and the range of teachers’ heart rate and the self-reported data are shown in Table 2.
 
-## Heart Rate
+```{r descriptive statistics}
+# Mean, SD and range for overall 
+descrip_hr_overall <- main %>%
+  filter(time_span %in% c("overall")) %>% 
+  summarise("M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
 
-The heart rate of each subject were measured before, during and after the experiment.
+# Mean, SD and range for individual phases 
+descrip_hr_phases <- main %>% 
+  filter(!time_span %in% c("overall")) %>% 
+  group_by(time_span) %>% 
+  summarise("M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
 
-```{r}
-# Initial Preparations
+# # format and insert table in manuscript
+# descrip_hr_phases %>%
+# papaja::apa_table(
+#   caption = "Mean, SD and range for teachers' heart rate in individual phases",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+#   )
 
-## Run following Code only if new data is added to the initial data.
-# 
-# source(file = "data.wrangling.R")
-# 
-# # aggregate data 
-# df_heart_all <-
-#   read_rds(file = "data/heart_all.rds") |> 
-#   mutate(status = factor(status,
-#                          levels = c("Expert","Novice"),
-#                          labels = c("Expert","Novice")
-#                          )
-#          )
-# 
-# df_heart_min <-
-#   read_rds(file = "data/heart_min.rds")
-# 
-# df_heart_aggr <- 
-#   read_rds(file = "data/heart_aggr.rds") |> 
-#   mutate(status = factor(status,
-#                          levels = c("Novice","Expert"),
-#                          labels = c("Novice","Expert")
-#                          )
-#          )
-# 
-# 
-# # Mean, SD, t-test & Cohen D for experts & novices
-# # novices
-# mean_nov <- 
-#   df_heart_aggr %>%
-#   filter(status == "Novice" ) %>% 
-#   pull(mean) %>% 
-#   mean() %>% 
-#   round(., digits = 0)
-# 
-# sd_nov <- 
-#   df_heart_aggr %>%
-#   filter(status == "Novice") %>% 
-#   pull(mean) %>% 
-#   sd() %>% 
-#   round(., digits = 0)
-# 
-# # experts
-# mean_exp <-
-#   df_heart_aggr %>%
-#   filter(status == "Expert") %>% 
-#   pull(mean) %>% 
-#   mean() %>% 
-#   round(., digits = 0)
-# 
-# sd_exp <- 
-#   df_heart_aggr %>%
-#   filter(status == "Expert") %>% 
-#   pull(mean) %>% 
-#   sd() %>% 
-#   round(., digits = 0)
-# 
-# # t-test for expertise differences
-# t.test(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
-#        y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"])
-# 
-# 
-# # effect size for expertise differences
-# d_heartrate <- CohenD(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
-#                y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"],
-#                na.rm = TRUE)
-# 
-# 
-# # Plots
-# 
-# plot_flow_leg <-
-# ggplot(data = df_heart_all,
-#        mapping = aes(x = Time,
-#                      y = `Heart Rate`
-#                      )
-#        ) +
-#   xlim(0, 600) +
-#   geom_smooth(mapping = aes(color = status),
-#               method = "loess") +
-#   scale_color_viridis_d(option = "A",
-#                         end = 0.8) +
-#   scale_linetype_manual(values = c(1, 6)) +
-#   labs(x = "Time (in Seconds)",
-#        y = "Heart Rate\n(in Beats per Minute)") +
-#   ggtitle("Experts' and novices' heart rate per phase") +
-#   theme_minimal() +
-#   theme(text = element_text(family = "serif"),
-#         legend.text = element_text(size = 15),
-#         legend.title = element_blank(),
-#         axis.text.x = element_text(size = 12),
-#         axis.text.y = element_text(size = 10),
-#         strip.text = element_text(size = 16),
-#         plot.title = element_text(size = 20, 
-#                                   face = "bold")) +
-#   facet_grid(cols = vars(Type),
-#              scales = "free_x")
-# 
-# # saving plot 
-# ggsave(plot = plot_flow_leg,
-#        filename = "plots/plot_flow_leg.svg",
-#        height = 5,
-#        width = 8,
-#        units = "in")
+# Mean, SD and range for disruption and confidence factor
+rating_table <- 
+  df_rating %>% 
+  filter(!is.na(confidence_factor),
+         !is.na(disruption_factor)) %>% 
+   summarise("M disruption factor" = round(mean(disruption_factor),
+                                     digits = 2),
+            "SD disruption factor" = round(sd(disruption_factor),
+                                      digits = 2),
+            "Min disruption factor" = min(disruption_factor),
+            "Max disruption factor" = max(disruption_factor),
+            "M confidence factor" = round(mean(confidence_factor),
+                                     digits = 2),
+            "SD confidence factor" = round(sd(confidence_factor),
+                                      digits = 2),
+            "Min confidence factor" = min(confidence_factor),
+            "Max confidence factor" = max(confidence_factor)
+            )
 
 ```
 
+Teachers’ average heart rate during the entire course of the study was approximately `r descrip_hr_overall %>% pull("M heart rate in bpm")` bpm with a standard deviation of `r descrip_hr_overall %>% pull("SD heart rate in bpm")` and a range from `r descrip_hr_overall %>% pull("Min heart rate in bpm")` to `r descrip_hr_overall %>% pull("Max heart rate in bpm")` bpm. 
 
-### Steps
+Means, standard deviations and the range of teachers’ heart rate for the different phases and the self-reported data are shown in Table 2.
 
-Using the FitBit we measured the steps a person walked during the experiment as well. We validated the steps in six randomly selected videos by manual step counting. A step was considered to be the movement of the subject's foot forward, backward, or sideways. The measurement was not as reliable as hoped.
+### Pairwaise t-test and effect size
 
-```{r}
-# df_steps <- read_rds(file = "data/steps.rds")
-# set.seed(5678)
-# ggplot(data = df_steps,
-#        mapping = aes(x = type,
-#                      y = Steps
-#                      )
-#        ) +
-#   geom_boxplot(mapping = aes(color = type),
-#                fill = "grey",
-#                alpha = 0.6) +
-#   geom_jitter(mapping = aes(color = type),
-#               alpha = 0.9,
-#               width = 0.3) +
-#   scale_color_viridis_d(option = "A",
-#                        end = 0.8) +
-#   labs(x = "",
-#        y = "Steps During\nMain Phase") +
-#   theme_minimal() +
-#   theme(text = element_text(family = "serif"),
-#         legend.title = element_blank(),
-#         axis.text.x = element_blank(),
-#         axis.ticks.x = element_blank()
-#         )
-# 
-# ### Validation of steps
-# # selecting some rows at random with sample_n()
-# sample_n(df_steps, 6)
-# 
-# # random ID Output:
-# # Novices ID: 102, 125, 110
-# # Experts ID: 219, 218, 214
-# 
-# # Results from manual step counting:
-# # Novices ID: 110 -> 178 steps; 102 -> 219 steps; 125 -> 319 steps
-# # Experts ID: 214 -> 437 steps; 218 -> 195 steps; 219 -> 530 steps
+### Multilevel regressions
 
-```
-
+XXX
 
 # Results
 
-# Discussion and implication
+# First visual results
+
+The graph \@ref(fig:overall_plot) show the heart rate for the entire course of the study.
+
+```{r overall_plot, fig.height = 8, fig.width = 15}
+
+  main %>% 
+  filter(time_span == "overall") %>% 
+  select("ID","time_span", "time","heart_rate") %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+ # stat_smooth(geom = "line",
+ #             method = "loess",
+ #             se = FALSE) +
+  geom_smooth(method = "loess",
+              se = FALSE) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Time (in seconds)",
+       y = "Heart rate (in beats per minute)") +
+  theme_apa() -> overall_plot
+
+overall_plot
+
+```
+
+The second graph \@ref(fig:phase_plot) show the heart rate for the individual five phases.
+
+```{r phase_plot, fig.height = 8, fig.width = 15}
+
+main %>% 
+  filter(time_span != "overall") %>% 
+  select("ID","time_span", "time","heart_rate") %>% 
+  mutate(
+    # status = case_when(ID < 200 ~ "Unerfahren",
+    #                         ID > 200 ~ "Erfahren"),
+         time_span = fct_recode(time_span,
+                                "Pre-teaching phase" = "pre",
+                                "Teaching phase" = "main",
+                                "Post-teaching phase" = "subsequent",
+                                "Intview phase" = "interview",
+                                "End phase" = "after"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-teaching phase",
+                                       "Teaching phase",
+                                       "Post-teaching phase",
+                                       "Intview phase",
+                                       "End phase"
+                                       )
+                            )
+         ) %>%
+  distinct() %>% 
+ggplot(mapping = aes(x = time,
+                     y = heart_rate
+                     )
+       ) +
+  geom_smooth(method = "glm") +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Time (in seconds)",
+       y = "Heart rate (in beats per minute)") +
+  theme_apa() +
+  facet_grid(cols = vars(time_span),
+             scales = "free_x",
+             ) -> phase_plot
+
+phase_plot
+
+```
+
+# Discussion and implications
 
 
 \newpage

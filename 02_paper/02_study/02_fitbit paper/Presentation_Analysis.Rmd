@@ -1,0 +1,946 @@
+---
+title: "FitBit Analysis"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE)
+```
+
+```{r data wrangling, include = FALSE}
+library(needs)
+needs(ltm,
+      broom,
+      ppcor,
+      jtools,
+      lm.beta,
+      tidyverse,
+      janitor,
+      lubridate,
+      readxl,
+      ggthemes,
+      gridExtra,
+      imputeTS,
+      DescTools,
+      cowplot,
+      rstatix,
+      ggpubr,
+      lme4,
+      viridis)
+
+# disruption & confidence rating
+df_rating <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  select(ID, # select relevant columns 
+         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         confidence_factor,
+         event
+         ) %>% 
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
+                                    yes = NA,
+                                    no = disruption_factor
+                                    ),
+         confidence_factor = ifelse(confidence_factor < 0,
+                                   yes = NA,
+                                   no = confidence_factor),
+         event = as_factor(event)
+         )
+
+# demographic data
+df_demo <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  transmute(ID = LI06_05, # select and rename relevant columns 
+            gender = factor(LI02_01_1,
+                            levels = 1:2,
+                            labels = c("male","female")
+                            ),
+            age = LI03_01, # 1 = male; 2 = female
+            teaching_experience = LI04_01)
+
+# merge two data frames by ID 
+df_merge <- merge(df_demo,
+                  df_rating,
+                  by = "ID") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132")
+         )
+
+# rm(list = c("df_demo","df_rating"))
+
+
+data_path <- "./data/heart_rate_data"
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "after",
+                               str_detect(string = id, pattern = "_m") ~ "main",
+                               str_detect(string = id, pattern = "_p") ~ "pre",
+                               str_detect(string = id, pattern = "_s") ~ "subsequent",
+                               str_detect(string = id, pattern = "_i") ~ "interview",
+                               TRUE ~ "overall"
+                               ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+      # filter(time <= 600) %>% # filter for 10min intervals
+    filter(time <= 9000) %>% # filter for 2 hours 30min (maximal duration of study)
+    select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+main <-
+  left_join(main, df_merge,
+            by = "ID")
+```
+
+# Überblick Datenerhebung
+
+```{r timeline, fig.align = "center", echo = FALSE}
+
+knitr::include_graphics("./images/timeline_fitbit.png", dpi = 130)
+
+```
+
+# Überblick Daten
+
+```{r}
+knitr::kable(main[1:10,], format = "simple")
+```
+
+## Plot für Gesamtverlauf 
+
+```{r, fig.height = 8, fig.width = 15}
+
+  main %>% 
+  filter(time_span == "overall") %>% 
+  select("ID","time_span", "time","heart_rate") %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_smooth() +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Zeit (in Sekunden)",
+       y = "Herzrate (in Schlägen pro Minute)") +
+  theme_apa()
+
+```
+
+## Plot für einzelne Phasen 
+
+```{r, fig.height = 8, fig.width = 15}
+
+main %>% 
+  filter(time_span != "overall") %>% 
+  select("ID","time_span", "time","heart_rate") %>% 
+  mutate(status = case_when(ID < 200 ~ "Unerfahren",
+                            ID > 200 ~ "Erfahren"),
+         time_span = fct_recode(time_span,
+                                "Pre-Lehrphase" = "pre",
+                                "Lehrphase" = "main",
+                                "Post-Lehrphase" = "subsequent",
+                                "Interviewphase" = "interview",
+                                "Endphase" = "after"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-Lehrphase",
+                                       "Lehrphase",
+                                       "Post-Lehrphase",
+                                       "Interviewphase",
+                                       "Endphase"
+                                       )
+                            )
+         ) %>%
+  distinct() %>% 
+ggplot(mapping = aes(x = time,
+                     y = heart_rate
+                     )
+       ) +
+ # stat_smooth(geom = "line",
+             # mapping = aes(color = status),
+  #            method = "loess",
+   #           se = TRUE) 
+  geom_smooth(method = "glm") +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Zeit (in Sekunden)",
+       y = "Herzrate (in Schlägen pro Minute)") +
+  theme_apa() +
+  facet_grid(cols = vars(time_span),
+             scales = "free_x",
+             )
+
+```
+
+
+# Verteilungen
+
+# Geschlecht
+
+```{r}
+df_demo %>% 
+  mutate(gender = fct_recode(gender,
+                             "Männlich" = "male",
+                             "Weiblich" = "female"
+                             )
+         ) %>% 
+  ggplot(mapping = aes(x = gender)) +
+  geom_bar(fill = "#440154") +
+  labs(x = "Geschlecht",
+       y = "Anzahl") +
+  theme_apa()
+```
+
+# Alter
+
+```{r}
+df_demo %>% 
+  ggplot(mapping = aes(x = age)) +
+  geom_histogram(binwidth = 5,
+                 fill = "#440154") +
+  labs(x = "Alter",
+       y = "Anzahl") +
+  theme_apa()
+```
+
+- Linkssteile Verteilung
+- Möglicher Umgang: Logarithmieren
+
+```{r}
+df_demo %>% 
+  ggplot(mapping = aes(x = log(age))) +
+  geom_histogram(binwidth = 0.1,
+                 fill = "#440154") +
+  labs(x = "log(Alter)",
+       y = "Anzahl") +
+  theme_apa()
+```
+
+# Alter x Geschlecht
+
+```{r}
+df_demo %>% 
+  mutate(gender = fct_recode(gender,
+                             "Männlich" = "male",
+                             "Weiblich" = "female"
+                             )
+         ) %>% 
+  ggplot(mapping = aes(x = gender,
+                       y = age
+                       )
+         ) +
+  geom_boxplot(fill = "#440154",
+               color = "#3b528b") +
+  labs(x = "Geschlecht",
+       y = "Alter") +
+  theme_apa()
+```
+
+- Alter und Geschlecht unkorreliert
+- $\chi^2=$ `r chisq.test(df_demo$gender, df_demo$age)$statistic[[1]] %>% round(., 2)`
+
+# Lehrerfahrung
+
+```{r}
+df_demo %>% 
+  ggplot(mapping = aes(x = teaching_experience)) +
+  geom_histogram(binwidth = 2,
+                 fill = "#440154") + 
+  labs(x = "Lehrerfahrung",
+       y = "Anzahl") +
+  theme_apa()
+```
+
+- Starke links-verzerrte Verteilung (zero inflation)
+- 0 rausfiltern (keine Option)
+- log(x + 1)
+
+```{r}
+df_demo %>% 
+  ggplot(mapping = aes(x = log(teaching_experience + 1))) +
+  geom_histogram(binwidth = 0.3,
+                 fill = "#440154") + 
+  labs(x = "log(Lehrerfahrung + 1)",
+       y = "Anzahl") +
+  theme_apa()
+```
+
+- In jedem Fall stark korreliert mit Alter $\rightarrow$ Gefahr der Multikollinearität
+- `r paste0("r = ", round(cor(df_demo$teaching_experience, df_demo$age), 2))`
+
+- Vorschlag: Lehrerfahrung weglassen und Alter aufnehmen
+- Konsistent mit Idee, Expert\*innen und Noviz\*innen nicht zu trennen
+
+## confidence Factor
+
+```{r}
+df_merge %>% 
+  filter(!is.na(confidence_factor)) %>% 
+  group_by(event, confidence_factor) %>% 
+  summarize(value = n()) %>% 
+  mutate(prop = value/sum(value)) %>% 
+  ggplot(mapping = aes(x = reorder(event, prop),
+                       y = prop,
+                       fill = confidence_factor
+                       )
+         ) +
+  geom_bar(position = "stack",
+           stat = "identity") +
+  coord_flip() +
+  scale_fill_viridis_c() +
+  labs(y = "",
+       x = "",
+       fill = "confidence Factor") +
+  theme_apa()
+```
+
+## Disruption Factor
+
+```{r}
+df_merge %>% 
+  filter(!is.na(disruption_factor)) %>% 
+  group_by(event, disruption_factor) %>% 
+  summarize(value = n()) %>% 
+  mutate(prop = value/sum(value)) %>% 
+  ggplot(mapping = aes(x = reorder(event, prop),
+                       y = prop,
+                       fill = disruption_factor
+                       )
+         ) +
+  geom_bar(position = "stack",
+           stat = "identity") +
+  coord_flip() +
+  scale_fill_viridis_c() +
+  labs(y = "",
+       x = "",
+       fill = "Disruption Factor") +
+  theme_apa()
+```
+
+- Mittelwerte bilden? (potentielle Aussagekraft: Im Schnitt fühlten sich manche Lehrpersonen sicherer mit der Situation/fühlten sich eher gestört von der Situation)
+
+# Erste Zusammenhänge 
+
+## Confidence x Disruption (out of curiosity)
+
+```{r}
+df_merge %>% 
+  filter(!is.na(disruption_factor) | !is.na(confidence_factor)) %>% 
+  ggplot(mapping = aes(x = confidence_factor,
+                       y = disruption_factor
+                       )
+         ) +
+  geom_jitter(mapping = aes(color = event)) +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  scale_color_viridis_d() +
+  labs(x = "confidence Factor",
+       y = "Disruption Factor",
+       color = "Event") +
+  theme_apa()
+  
+```
+
+## Alter x Confidence
+
+```{r}
+df_merge %>% 
+  filter(!is.na(confidence_factor) | !is.na(disruption_factor)) %>% 
+  ggplot(mapping = aes(x = age,
+                       y = confidence_factor
+                       )
+         ) +
+  geom_jitter(mapping = aes(color = event)) +
+  geom_smooth(method = "lm",
+              se = F) +
+  labs(x = "Alter",
+       y = "confidence Factor") +
+  scale_color_viridis_d() +
+  theme_apa()
+```
+
+- Mittelwerte:
+
+```{r}
+df_merge %>% 
+  filter(!(is.na(confidence_factor) | is.na(disruption_factor))) %>% 
+  group_by(ID) %>% 
+  summarize(mean_confidence = mean(confidence_factor),
+            age = mean(age)) %>%
+  ungroup() %>% 
+  ggplot(mapping = aes(x = age,
+                       y = mean_confidence
+                       )
+         ) +
+  geom_point(color = "#440154") +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  labs(x = "Alter",
+       y = "Mean(confidence Factor)") +
+  theme_apa()
+```
+
+## Alter x Disruption
+
+```{r}
+df_merge %>% 
+  filter(!is.na(confidence_factor) | !is.na(disruption_factor)) %>% 
+  ggplot(mapping = aes(x = age,
+                       y = disruption_factor
+                       )
+         ) +
+  geom_jitter(mapping = aes(color = event)) +
+  geom_smooth(method = "lm",
+              se = F) +
+  scale_color_viridis_d() +
+  labs(x = "Alter",
+       y = "Disruption Factor") +
+  theme_apa()
+```
+
+- Mittelwerte:
+
+```{r}
+df_merge %>% 
+  filter(!(is.na(confidence_factor) | is.na(disruption_factor))) %>% 
+  group_by(ID) %>% 
+  summarize(mean_disruption = mean(disruption_factor),
+            age = mean(age)) %>%
+  ungroup() %>% 
+  ggplot(mapping = aes(x = age,
+                       y = mean_disruption
+                       )
+         ) +
+  geom_point(color = "#440154") +
+  geom_smooth(method = "lm",
+              se = F) +
+  labs(x = "Alter",
+       y = "Mean(Disruption Factor)") +
+  theme_apa()
+```
+
+# Heart Rate
+
+Vorüberlegungen
+
+- Idee: Was erklärt die zunehmende Aufregung am Anfang bzw. abnehmende Aufregung nach der Unterrichtssession?
+- AV: geschätzte Lineare Steigung der Herzrate vor der Session
+- Beachten: jede Person hat eigenen Ruhepuls! $\rightarrow$ random intercept, fixed slope regression model
+
+## Beispiel (Pre-Phase)
+
+```{r}
+main %>% 
+  filter(time_span == "pre") %>% 
+  select("ID","time","heart_rate") %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_line(mapping = aes(color = as_factor(ID)),
+            stat = "smooth", 
+            method = "lm",
+            alpha = 0.6) +
+  geom_point(mapping = aes(color = as_factor(ID)),
+             alpha = 0.1) +
+  geom_line(stat = "smooth",
+            method = "lm",
+            linetype = 2) +
+  scale_color_viridis_d() +
+  labs(x = "Zeit (in Sekunden)",
+       y = "Herzrate (in Schlägen pro Minute)") +
+  theme_apa() +
+  theme(legend.position = "none") 
+```
+
+```{r}
+main %>% 
+  filter(time_span == "pre") %>% 
+  select("time","ID","heart_rate") %>% 
+  distinct() %>% 
+  mutate(ID = as_factor(ID)) %>% 
+  lmer(formula = heart_rate ~ (1|ID) + ID * time) %>% 
+  summary() ->
+  fit_first
+
+as_tibble(fit_first$coefficients,
+          rownames = "Coefficient") %>%
+  filter(str_detect(.$Coefficient,
+                    pattern = "time")) %>% 
+  mutate(coefficient = case_when(Coefficient == "time" ~ "101",
+                                 TRUE ~ Coefficient),
+         ID = str_extract(string = coefficient,
+                                   pattern = "[:digit:]{3}"
+                                   ),
+         ID = as.numeric(ID)
+         ) %>% 
+  select("ID","Estimate") ->
+  df_estimates
+
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            ID = ID,
+            t_exp = teaching_experience) %>% 
+  distinct() %>% 
+  left_join(., df_estimates,
+            by = "ID") ->
+  df_corr_pre
+```
+
+```{r}
+df_corr_pre %>% 
+  select("ID","Estimate") %>% 
+  filter(ID < 110) %>% 
+  knitr::kable(., format = "simple")
+```
+
+Plan für Pre- und Subsequent Phase:
+
+- Partielle Korrelationen
+
+- Multiple Lineare Regression
+  - AV: Estimate
+  - UV: Gender, Alter, Disruption Factor (mean), confidence Factor (mean)
+  - Alle metrischen Variablen sind standardisiert
+
+## Pre Phase
+
+- 10 Minuten nach Anlegen der FitBit
+
+### Korrelationen
+
+```{r}
+main %>% 
+  filter(time_span == "pre") %>% 
+  select("time","ID","heart_rate") %>% 
+  distinct() %>% 
+  mutate(ID = as_factor(ID)) %>% 
+  lmer(formula = heart_rate ~ (1|ID) + ID * time) %>% 
+  summary() ->
+  fit_first
+
+as_tibble(fit_first$coefficients,
+          rownames = "Coefficient") %>%
+  filter(str_detect(.$Coefficient,
+                    pattern = "time")) %>% 
+  mutate(coefficient = case_when(Coefficient == "time" ~ "101",
+                                 TRUE ~ Coefficient),
+         ID = str_extract(string = coefficient,
+                                   pattern = "[:digit:]{3}"
+                                   ),
+         ID = as.numeric(ID)
+         ) %>% 
+  select("ID","Estimate") ->
+  df_estimates
+
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            ID = ID,
+            t_exp = teaching_experience) %>% 
+  distinct() %>% 
+  left_join(., df_estimates,
+            by = "ID") %>% 
+  ungroup() ->
+  df_corr_pre
+
+left_join(x = df_corr_pre,
+          y = df_demo,
+          by = "ID") %>% 
+transmute(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
+          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+          gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          age = (age - mean(.$age))/sd(.$age)
+          ) %>% 
+  pcor(., method = "spearman") %>% 
+  .$estimate %>% 
+  round(., 2) %>% 
+  knitr::kable(format = "simple")
+
+left_join(x = df_corr_pre,
+          y = df_demo,
+          by = "ID") %>% 
+transmute(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
+          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+          gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          age = (age - mean(.$age))/sd(.$age)
+          ) %>% 
+  pcor(., method = "pearson") %>% 
+  .$p.value %>% 
+  round(., 3) %>% 
+  knitr::kable(format = "simple")
+```
+
+### Regression
+
+```{r}
+left_join(x = df_corr_pre,
+          y = df_demo,
+          by = "ID") %>% 
+  ungroup() %>% 
+  mutate(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = gender,
+         age = (age - mean(.$age))/sd(.$age)
+         ) %>%
+  lm(formula = Estimate ~ confidence_factor_m + disruption_factor_m  + gender + age) %>% 
+  tidy(x = .,
+       conf.int = TRUE) %>% 
+  mutate(term = case_when(term == "confidence_factor_m" ~ "confidence Factor",
+                              term == "disruption_factor_m" ~ "Disruption Factor",
+                              term == "genderfemale" ~ "Weiblich\n(Ref.: Männlich)",
+                              term == "age" ~ "Alter",
+                              TRUE ~ "Intercept"
+                           ),
+         term = fct_relevel(term, 
+                            c("confidence Factor",
+                              "Disruption Factor",
+                              "Weiblich\n(Ref.: Männlich)",
+                              "Alter"
+                              )),
+         term = fct_rev(as_factor(term)),
+         ) %>% 
+  filter(term != "Intercept") %>% 
+  ggplot(mapping = aes(y = term)) +
+    geom_point(aes(x = estimate)) +
+  geom_vline(xintercept = 0) +
+  geom_segment(mapping = aes(x = conf.low,
+                             xend = conf.high,
+                             y = term,
+                             yend = term),
+               color = "#440154") +
+  labs(x = "Effect",
+       y = "",
+       title = "Pre-Phase",
+       subtitle = paste0("Dependend Variable: Standardized Estimate\n(M = ", 
+                         mean(df_corr_pre$Estimate) %>% round(.,2),
+                         ")"
+                         )
+       ) +
+  theme_apa() 
+```
+
+- Keine sign. Ergebnisse
+- Selbstbewusste Personen haben einen *niedrigeren* Anstieg der HR vor der Erhebung
+- Personen, die sich stärker gestört gefühlt haben, haben einen *stärkeren* Anstieg der HR
+- Die HR von Frauen steigt *stärker* als die der Männer
+- Je älter die Personen sind, desto *niedriger* ist der Anstieg der HR
+
+## Subsequent Phase
+
+- 10 Minuten nach der Unterrichtseinheit 
+
+### Korrelation
+
+```{r}
+main %>% 
+  filter(time_span == "subsequent") %>% 
+  select("time","ID","heart_rate") %>% 
+  distinct() %>% 
+  mutate(ID = as_factor(ID)) %>% 
+  lmer(formula = heart_rate ~ (1|ID) + ID * time) %>% 
+  summary() ->
+  fit_first
+
+as_tibble(fit_first$coefficients,
+          rownames = "Coefficient") %>%
+  filter(str_detect(.$Coefficient,
+                    pattern = "time")) %>% 
+  mutate(coefficient = case_when(Coefficient == "time" ~ "101",
+                                 TRUE ~ Coefficient),
+         ID = str_extract(string = coefficient,
+                                   pattern = "[:digit:]{3}"
+                                   ),
+         ID = as.numeric(ID)
+         ) %>% 
+  select("ID","Estimate") ->
+  df_estimates
+
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            ID = ID,
+            t_exp = teaching_experience) %>% 
+  distinct() %>% 
+  left_join(., df_estimates,
+            by = "ID") %>% 
+  ungroup() ->
+  df_corr_pre
+
+left_join(x = df_corr_pre,
+          y = df_demo,
+          by = "ID") %>% 
+transmute(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
+          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+          gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          age = (age - mean(.$age))/sd(.$age)
+          ) %>% 
+  pcor(., method = "spearman") %>% 
+  .$estimate %>% 
+  round(., 2) %>% 
+  knitr::kable(format = "simple")
+
+left_join(x = df_corr_pre,
+          y = df_demo,
+          by = "ID") %>% 
+transmute(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
+          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+          gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          age = (age - mean(.$age))/sd(.$age)
+          ) %>% 
+  pcor(., method = "pearson") %>% 
+  .$p.value %>% 
+  round(., 3) %>% 
+  knitr::kable(format = "simple")
+```
+
+
+### Regression
+
+```{r}
+main %>% 
+  filter(time_span == "subsequent") %>% 
+  select("time","ID","heart_rate") %>% 
+  distinct() %>% 
+  mutate(ID = as_factor(ID)) %>% 
+  lmer(formula = heart_rate ~ (1|ID) + ID * time) %>% 
+  summary() ->
+  fit_first
+
+as_tibble(fit_first$coefficients,
+          rownames = "Coefficient") %>%
+  filter(str_detect(.$Coefficient,
+                    pattern = "time")) %>% 
+  mutate(coefficient = case_when(Coefficient == "time" ~ "101",
+                                 TRUE ~ Coefficient),
+         ID = str_extract(string = coefficient,
+                                   pattern = "[:digit:]{3}"
+                                   ),
+         ID = as.numeric(ID)
+         ) %>% 
+  select("ID","Estimate") ->
+  df_estimates
+
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            ID = ID,
+            t_exp = teaching_experience) %>% 
+  distinct() %>% 
+  left_join(., df_estimates,
+            by = "ID") ->
+  df_corr_sub
+
+left_join(x = df_corr_sub,
+          y = df_demo,
+          by = "ID") %>% 
+  mutate(Estimate = (Estimate - mean(.$Estimate))/sd(.$Estimate),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = gender,
+         age = (age - mean(.$age))/sd(.$age)
+         ) %>%
+  lm(formula = Estimate ~ confidence_factor_m + disruption_factor_m + gender + age) %>% 
+  tidy(x = .,
+       conf.int = TRUE) %>% 
+  mutate(term = case_when(term == "confidence_factor_m" ~ "confidence Factor",
+                              term == "disruption_factor_m" ~ "Disruption Factor",
+                              term == "genderfemale" ~ "Weiblich\n(Ref.: Männlich)",
+                              term == "age" ~ "Alter",
+                              TRUE ~ "Intercept"
+                           ),
+         term = fct_rev(as_factor(term))
+         ) %>% 
+  filter(term != "Intercept") %>% 
+  ggplot(mapping = aes(y = term)) +
+    geom_point(aes(x = estimate)) +
+  geom_vline(xintercept = 0) +
+  geom_segment(mapping = aes(x = conf.low,
+                             xend = conf.high,
+                             y = term,
+                             yend = term
+                             ),
+               color = "#440154"
+               ) +
+  labs(x = "Effect",
+       y = "",
+       title = "Subsequent Phase",
+       subtitle = paste0("Dependend Variable: Standardized Estimate\n(M = ", 
+                         mean(df_corr_sub$Estimate) %>% round(.,2),
+                         ")"
+                         )
+       ) +
+  theme_apa() 
+```
+
+- Nach der Erhebung fällt die HR der Personen, die sich stärker gestört gefühlt haben, *signifikant stärker* ab
+
+## Main Phase vs. Interview Phase
+
+- Main Phase = 10 Minuten ab Lektionsbeginn 
+- Interview Phase = 10 Minuten mittig vom Interview (Differenz vom Ende der Unterrichtseinheit und von take off watch - die Länge des Zeitraumes, wo die 10 Minuten mittig reinlegt werden --> diese Länge wurde nochmals halbiert, um zur Mitte des Intervalls zu kommen und 5 Minuten abgezogen, um am Start des 10-Minuten-Intervalls zu landen)
+
+Plan:
+
+- Partielle Korrelation (mittlere HR x ...)
+- Mittelwertvergleich
+
+### Partielle Korrelationen
+
+#### Main Phase
+
+```{r}
+main %>% 
+  filter(time_span == "main") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            age = age,
+            gender = gender
+            ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          age = (age - mean(.$age))/sd(.$age)
+         ) %>% 
+  pcor()  -> pcor_main
+ 
+knitr::kable(x = list(pcor_main$estimate, pcor_main$p.value), format = "simple")  
+```
+
+#### Interview Phase
+
+```{r}
+main %>% 
+  filter(time_span == "interview") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            age = age,
+            gender = gender
+            ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          age = (age - mean(.$age))/sd(.$age)
+         ) %>% 
+  pcor()  -> pcor_interview
+ 
+knitr::kable(x = list(pcor_interview$estimate, pcor_interview$p.value), format = "simple")  
+```
+
+### t-Test
+
+- Paired t-Test
+- Idee: Vorher standardisieren anhand von allen Herzraten-Daten
+  - Mittlere Herzrate über alle Datenpunkte = beste Schätzung für den realen Mittelwert
+
+$$z_{Phase}=\frac{x_{Phase}-M_{overall}}{SD_{overall}} $$  
+
+```{r}
+
+main %>% 
+  filter(time_span == "overall") %>% 
+  group_by(ID) %>% 
+  summarize(heart_rate_m_oa = mean(heart_rate),
+            heart_rate_sd_oa = sd(heart_rate)) %>% 
+  ungroup() %>% 
+  left_join(.,
+            y = main,
+            by = "ID") %>% 
+  filter(time_span == "interview" | time_span == "main") %>% 
+  select("time", "heart_rate", "ID", "time_span", "heart_rate_m_oa", "heart_rate_sd_oa") %>% 
+  distinct() %>% 
+  mutate(heart_rate_m = (heart_rate - heart_rate_m_oa)/heart_rate_sd_oa) %>% 
+  select("heart_rate_m","time_span","ID") %>% 
+  group_by(ID, time_span) %>% 
+  summarise(heart_rate_m = mean(heart_rate_m)) %>% 
+  ungroup() %>% 
+  pivot_wider(id_cols = ID,
+              names_from = time_span,
+              values_from = heart_rate_m) -> tib_test
+  
+t.test(x = tib_test$interview,
+       y = tib_test$main,
+       paired = TRUE)
+```
+
+Ohne Standardisierung:
+
+```{r}
+main %>% 
+  filter(time_span == "interview" | time_span == "main") %>% 
+  select("ID","time","time_span","heart_rate") %>% 
+  distinct() %>% 
+  group_by(ID, time_span) %>% 
+  summarize(heart_rate_m = mean(heart_rate)) %>% 
+  ungroup() %>% 
+  pivot_wider(id_cols = ID,
+              names_from = time_span,
+              values_from = heart_rate_m) -> tib_test_einfach
+  
+t.test(x = tib_test_einfach$interview,
+       y = tib_test_einfach$main,
+       paired = TRUE)
+```
+
+- Beide Testresultate zeigen einen signifikanten Unterschied

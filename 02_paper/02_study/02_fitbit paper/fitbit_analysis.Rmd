@@ -3,14 +3,20 @@ title: "fitbit analysis"
 output: html_notebook
 ---
 
+```{r setup}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+
 # Install packages
 ```{r include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
 # Packages
 # install.packages("needs")
 # Choose "No"
 library(needs)
-needs(tidyverse,
+needs(ltm,
+      lm.beta,
+      tidyverse,
       janitor,
       lubridate,
       readxl,
@@ -20,7 +26,8 @@ needs(tidyverse,
       DescTools,
       cowplot,
       rstatix,
-      ggpubr)
+      ggpubr,
+      lme4)
 ```
 
 # Read in data
@@ -30,8 +37,17 @@ df_rating <-
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   select(ID, # select relevant columns 
-         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
-         confident_factor) 
+         disruption_factor, # -88 = actor did not perform the event; -99 = subject did not notice event; -100 = experimenter did not asked for event
+         confidence_factor,
+         event) %>% 
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
+                                    yes = NA,
+                                    no = disruption_factor
+                                    ),
+         confidence_factor = ifelse(confidence_factor < 0,
+                                   yes = NA,
+                                   no = confidence_factor)
+         )
 
 # demographic data
 df_demo <- 
@@ -44,10 +60,301 @@ df_demo <-
 # merge two data frames by ID 
 df_merge <- merge(df_demo,
                   df_rating,
-                  by="ID") %>% 
+                  by = "ID") %>% 
   filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
                     "132")
          )
 
+# rm(list = c("df_demo","df_rating"))
+```
+
+Get Data from Fitbit
+
+```{r}
+data_path <- "./data/heart_rate_data"
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(
+           str_detect(string = id, pattern = "_a") ~ "after",
+           str_detect(string = id, pattern = "_m") ~ "main",
+           str_detect(string = id, pattern = "_p") ~ "pre",
+           str_detect(string = id, pattern = "_s") ~ "subsequent",
+           str_detect(string = id, pattern = "_i") ~ "interview",
+           TRUE ~ "overall"
+           ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+      filter(time <= 600) %>%
+    select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+main <-
+  left_join(main, df_merge,
+            by = "ID")
+```
+
+# Analyses
+
+Check for disruptive factor
+ 
+```{r}
+df_rating %>% 
+  group_by(ID) %>% 
+  summarize(mean = mean(disruption_factor,
+                        na.rm = TRUE
+                        )
+            ) %>% 
+  ggplot(mapping = aes(x = mean)) +
+  geom_histogram()
+```
+
+confidence
+
+```{r}
+df_rating %>% 
+  group_by(ID) %>% 
+  summarize(mean = mean(confidence_factor,
+                        na.rm = TRUE
+                        )
+            ) %>% 
+  ggplot(mapping = aes(x = mean)) +
+  geom_histogram()
+```
+
+Age
+
+```{r}
+df_demo %>% 
+  ggplot(mapping = aes(x = age)) +
+  geom_histogram(binwidth = 5)
+
+df_demo %>% 
+  ggplot(mapping = aes(x = log(age))) +
+  geom_histogram(binwidth = 0.1)
+```
+
+```{r}
+df_demo %>% 
+  ggplot(mapping = aes(x = teaching_experience)) +
+  geom_histogram(binwidth = 2)
+
+df_demo %>% 
+  ggplot(mapping = aes(x = log(teaching_experience))) +
+  geom_histogram(binwidth = 0.3)
+
+cor(df_demo$teaching_experience, df_demo$age)
+```
+
+Just curious
+
+```{r}
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(teaching_experience = teaching_experience,
+            confidence_factor = mean(confidence_factor, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = teaching_experience,
+                       y = confidence_factor
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm")
+  
+```
+
+```{r}
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(teaching_experience = teaching_experience,
+            disruption_factor = mean(disruption_factor, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = teaching_experience,
+                       y = disruption_factor
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+# Modelfit
+
+```{r}
+main %>% 
+  filter(time_span == "pre") %>% 
+  select("time","ID","heart_rate","age") %>% 
+  distinct() %>% 
+  mutate(ID = as_factor(ID)) %>% 
+  lmer(formula = heart_rate ~ (1|ID) + ID * time) %>% 
+  summary() ->
+  fit_first
+
+as_tibble(fit_first$coefficients,
+          rownames = "Coefficient") %>%
+  filter(str_detect(.$Coefficient,
+                    pattern = "time")) %>% 
+  mutate(coefficient = case_when(Coefficient == "time" ~ "101",
+                                 TRUE ~ Coefficient),
+         ID = str_extract(string = coefficient,
+                                   pattern = "[:digit:]{3}"
+                                   ),
+         ID = as.numeric(ID)
+         ) %>% 
+  select("ID","Estimate") ->
+  df_estimates
+
+df_merge %>% 
+  group_by(ID) %>% 
+  summarize(confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            ID = ID,
+            t_exp = teaching_experience) %>% 
+  distinct() %>% 
+  left_join(., df_estimates,
+            by = "ID") ->
+  df_corr
+```
+
+```{r}
+main %>% 
+  filter(time_span == "pre") %>% 
+  select("ID","time","heart_rate") %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_line(mapping = aes(color = as_factor(ID)),
+            stat = "smooth", 
+            method = "lm",
+            alpha = 0.6) +
+  geom_point(mapping = aes(color = as_factor(ID)),
+             alpha = 0.1) +
+  geom_line(stat = "smooth",
+            method = "lm",
+            linetype = 2) +
+  labs(x = "Time (in seconds)",
+       y = "Heart Rate (in beats per minute)") +
+  theme(legend.position = "none",
+        text = element_text(family = "serif"))
+```
+
+```{r}
+cor.test(df_corr$confidence_factor_m,
+         df_corr$Estimate) ->
+  corr_conf
+
+df_corr %>% 
+  ggplot(mapping = aes(x = confidence_factor_m,
+                       y = Estimate
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  annotate(geom = "text",
+           label = paste0("r = ", round(corr_conf$estimate, 2)),
+           x = 5.5,
+           y = -0.025,
+           family = "serif"
+           ) +
+  theme(text = element_text(family = "serif"))
+
+
+cor.test(df_corr$disruption_factor_m,
+         df_corr$Estimate) ->
+  corr_disrup
+
+df_corr %>% 
+  ggplot(mapping = aes(x = disruption_factor_m,
+                       y = Estimate
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  annotate(geom = "text",
+           label = paste0("r = ", round(corr_disrup$estimate, 2)),
+           x = 5.5,
+           y = -0.025,
+           family = "serif"
+           ) +
+  theme(text = element_text(family = "serif"))
+```
+
+```{r}
+cor.test(df_corr$t_exp,
+          df_corr$Estimate) ->
+  corr_teach
+
+df_corr %>% 
+  ggplot(mapping = aes(x = t_exp,
+                       y = Estimate
+                       )
+         ) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              se = FALSE) +
+  annotate(geom = "text",
+           label = paste0("r = ", round(corr_teach$estimate, 2)),
+           x = 15,
+           y = -0.025,
+           family = "serif"
+           ) +
+  theme(text = element_text(family = "serif"))
+```
+
+```{r}
+df_merge %>% 
+  select("ID","disruption_factor") %>%
+  mutate(var_number = rep(letters[1:9],
+                          times = length(unique(.$ID))
+                          )
+         ) %>% 
+  pivot_wider(names_from = var_number,
+              values_from = disruption_factor,
+              id_cols = ID) %>% 
+  select(!"ID") %>% 
+  cronbach.alpha(na.rm = TRUE)
+```
+
+```{r}
+left_join(x = df_corr,
+          y = df_demo,
+          by = "ID") %>% 
+  mutate(gender = factor(gender,
+                         levels = 1:2,
+                         labels = c("male","female")
+                         ),
+         Estimate = Estimate * 1000
+         ) %>% 
+  lm(formula = Estimate ~ confidence_factor_m + disruption_factor_m + gender + age) ->
+  fit_whatever
+
+confint(fit_whatever)
+
+lm.beta(fit_whatever) %>% confint()
+```
+
+```{r}
+df_demo %>% 
+  ggplot(mapping = aes(x = gender)) +
+  geom_bar()
 ```
 

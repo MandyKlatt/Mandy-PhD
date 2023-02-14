@@ -12,8 +12,8 @@ needs(tidyverse,
       cowplot)
 
 # suppress "summarize" info. 
-# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
-options(dplyr.summarise.inform = FALSE)
+# if this line is omitted, each table using the summarize function will be accompanied with a warning from the console
+# options(dplyr.summarise.inform = FALSE)
 
 # read in data and combine multiple excel sheets into a single table 
 sri <- 
@@ -49,7 +49,9 @@ sri <-
   filter(!`Disruption Factor` == -100,
          !`Confident Factor` == -100,
          !`Disruption Factor`== -99,
-         !`Confident Factor` == -99)
+         !`Confident Factor` == -99,
+         !`Disruption Factor`== -88,
+         !`Confident Factor` == -88)
   
          
 # define expert and novice with ifelse function
@@ -356,14 +358,14 @@ ggsave(plot = confi_group_plot,
 # mean disrup_factor
 sri_disrup_mean <- sri_disrup %>%
   group_by(Group) %>%
-  summarise("M" = round(mean(Disruption_Factor), 2),
-            "SD" = round(sd(Disruption_Factor), 2))
+  summarise("M" = round(mean(`Disruption Factor`), 2),
+            "SD" = round(sd(`Disruption Factor`), 2))
 
 # mean confi_factor
 sri_confi_mean <- sri_confi %>%
   group_by(Group) %>%
-  summarise("M" = round(mean(Confident_Factor), 2),
-            "SD" = round(sd(Confident_Factor), 2))
+  summarise("M" = round(mean(`Confident Factor`), 2),
+            "SD" = round(sd(`Confident Factor`), 2))
 
 #################### T-TEST & EFFECT SIZE ############
 
