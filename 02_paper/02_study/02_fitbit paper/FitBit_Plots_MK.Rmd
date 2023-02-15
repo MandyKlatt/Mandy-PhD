@@ -65,7 +65,7 @@ All participants were given a FitBit Smart Watch to wear during the experiment.
 # aggregate data 
 
 df_heart_all <-
-  read_rds(file = "final_data/heart_all.rds") |> 
+  read_rds(file = "data/heart_all.rds") |> 
   mutate(status = factor(status,
                          levels = c("Expert","Novice"),
                          labels = c("Expert","Novice")
@@ -73,10 +73,10 @@ df_heart_all <-
          )
 
 df_heart_min <-
-  read_rds(file = "final_data/heart_min.rds")
+  read_rds(file = "data/heart_min.rds")
 
 df_heart_aggr <- 
-  read_rds(file = "final_data/heart_aggr.rds") |> 
+  read_rds(file = "data/heart_aggr.rds") |> 
   mutate(status = factor(status,
                          levels = c("Novice","Expert"),
                          labels = c("Novice","Expert")
@@ -320,78 +320,216 @@ ggsave(plot = plot_box,
 
 ```{r}
 
-# merge demo data and fitbit data
-df_anova <- merge(demo.data,
-                  df_heart_aggr,
-                  by="ID")
+# disruption & confidence rating
+df_rating <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  select(ID, # select relevant columns 
+         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         confidence_factor,
+         event
+         ) %>% 
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
+                                    yes = NA,
+                                    no = disruption_factor
+                                    ),
+         confidence_factor = ifelse(confidence_factor < 0,
+                                   yes = NA,
+                                   no = confidence_factor),
+         event = as_factor(event)
+         ) %>% 
+  na.omit() 
+  # group_by(ID) %>% 
+  # summarise("mean_disrup" = round(mean(disruption_factor), 2),
+  #           "mean_confi" = round(mean(confidence_factor), 2))
+
+# demographic data
+df_demo <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  transmute(ID = LI06_05, # select and rename relevant columns 
+            gender = factor(LI02_01_1,
+                            levels = 1:2,
+                            labels = c("male","female")
+                            ),
+            age = LI03_01, # 1 = male; 2 = female
+            teaching_experience = LI04_01)
+
+# merge two data frames by ID 
+df_merge <- merge(df_demo,
+                  df_rating,
+                  by = "ID") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132")
+         )
+
+# rm(list = c("df_demo","df_rating"))
+
+
+data_path <- "./data/heart_rate_data"
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "after",
+                               str_detect(string = id, pattern = "_m") ~ "main",
+                               str_detect(string = id, pattern = "_p") ~ "pre",
+                               str_detect(string = id, pattern = "_s") ~ "subsequent",
+                               str_detect(string = id, pattern = "_i") ~ "interview",
+                               TRUE ~ "overall"
+                               ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+      # filter(time <= 600) %>% # filter for 10min intervals
+    filter(time <= 9000) %>% # filter for 2 hours 30min (maximal duration of study)
+    select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+main <-
+  left_join(main, df_merge,
+            by = "ID")
+
+
+df_anova <-
+  main %>% 
+  filter(time_span != "overall") %>%   
+  select("ID",
+         "time_span",
+         "heart_rate",
+         "teaching_experience",
+         "disruption_factor",
+         "confidence_factor") %>% 
+  mutate(time_span = fct_recode(time_span,
+                                "Pre-Lehrphase" = "pre",
+                                "Lehrphase" = "main",
+                                "Post-Lehrphase" = "subsequent",
+                                "Interviewphase" = "interview",
+                                "Endphase" = "after"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-Lehrphase",
+                                       "Lehrphase",
+                                       "Post-Lehrphase",
+                                       "Interviewphase",
+                                       "Endphase"
+                                       )
+                            )
+         ) %>%
+  distinct() %>% 
+  group_by(ID, time_span) %>%
+  summarise(mean_hr = mean(heart_rate, na.rm = TRUE),
+            mean_confi = mean(disruption_factor, na.rm = TRUE),
+            mean_disrup = mean(disruption_factor, na.rm = TRUE),
+            mean_te = mean(teaching_experience, na.rm = TRUE)
+         )
+
+# # merge demo data and fitbit data
+# df_anova <- merge(df_anova,
+#                   df_heart_aggr,
+#                   by="ID")
 
 # clean variable names
-df_anova <- df_anova %>% clean_names()
+# df_anova <- df_anova %>% clean_names()
+
+# Visualization
+bxp <- ggboxplot(df_anova, x = "time_span", y = "mean_hr", add = "point")
+bxp
 
 # check for outliers
 outliers <-
   df_anova %>%
-  group_by(type) %>%
-  identify_outliers(mean)
+  group_by(time_span) %>%
+  identify_outliers(mean_hr)
 
 # check for normality assumption --> can be checked by computing Shapiro-Wilk test for each time point. If the data is normally distributed, the p-value should be greater than 0.05
 norm_assump <-
   df_anova %>%
-  group_by(type) %>%
-  shapiro_test(mean)
+  group_by(time_span) %>%
+  shapiro_test(mean_hr)
 
-ggqqplot(df_anova, "mean", facet.by = "type")
+# QQ plot draws the correlation between a given data and the normal distribution. 
+plot <- 
+  ggqqplot(df_anova, "mean_hr", facet.by = "time_span")
 
+df_anova_subset <- subset(df_anova, select = c(time_span, mean_hr))
+
+# # anova
+# res.aov <- rstatix::anova_test(data = df_anova_subset,
+#                                dv = mean_hr,
+#                                wid = ,
+#                                within = time_span)
+# get_anova_table(res.aov)
 
 # anova
-res.aov <- rstatix::anova_test(data = df_anova,
-                               dv = mean,
-                               wid = id,
-                               within = type)
-get_anova_table(res.aov)
-
-# anova expert novice
-res.aov2 <- rstatix::anova_test(data = df_anova,
-                               dv = mean,
-                               between = status,
-                               wid = id,
-                               within = type)
-get_anova_table(res.aov2)
-
+df_anova_phase <- 
+  aov(df_anova_subset$mean_hr~df_anova_subset$time_span)
+summary(df_anova_phase)
 
 # pairwise comparisons
-pwc <- df_anova %>%
-  pairwise_t_test(
-    mean ~ type, paired = TRUE,
-    p.adjust.method = "bonferroni"
-    )
-pwc
-
-# Visualization: box plots with p-values
 pwc <- 
-  pwc %>% 
-  add_xy_position(x = "type")
-
-# boxplot
-bxp_anova <- ggboxplot(data = df_anova, 
-                 x = "type", 
-                 y = "mean", 
-                 add = "point")
-
-bxp_anova + 
-  stat_pvalue_manual(pwc) +
-  labs(
-    subtitle = get_test_label(res.aov, detailed = TRUE),
-    caption = get_pwc_label(pwc)
-    )
+  pairwise.t.test(df_anova_subset$mean_hr, 
+                  df_anova_subset$time_span, 
+                  p.adjust="holm")
 
 
-# saving plot 
-ggsave(plot = bxp_anova,
-       filename = "Plots/bxp_anova.svg",
-       height = 5,
-       width = 8,
-       units = "in")
+# effect size of ANOVA
+install.packages("DescTools")
+library(DescTools)
+EtaSq(df_anova_phase)
+
+effect_size_anova <-
+  sqrt(0.3399757/(1-0.3399757))
+
+# effect size of pairwise comparisons
+library(dplyr)
+library(rstatix)
+df_anova_subset %>%
+cohens_d(mean_hr~time_span) %>% 
+as.data.frame()
+
+# # pairwise comparisons
+# pwc <- df_anova_subset %>%
+#   pairwise_t_test(
+#     mean_hr ~ time_span, paired = TRUE,
+#     p.adjust.method = "bonferroni"
+#     )
+# pwc
+
+# # Visualization: box plots with p-values
+# pwc <- 
+#   pwc %>% 
+#   add_xy_position(x = "time_span")
+# 
+# # boxplot
+# bxp_anova <- ggboxplot(data = df_anova, 
+#                  x = "type", 
+#                  y = "mean", 
+#                  add = "point")
+# 
+# bxp_anova + 
+#   stat_pvalue_manual(pwc) +
+#   labs(
+#     subtitle = get_test_label(res.aov, detailed = TRUE),
+#     caption = get_pwc_label(pwc)
+#     )
+
+
+# # saving plot 
+# ggsave(plot = bxp_anova,
+#        filename = "Plots/bxp_anova.svg",
+#        height = 5,
+#        width = 8,
+#        units = "in")
 
 ```
 

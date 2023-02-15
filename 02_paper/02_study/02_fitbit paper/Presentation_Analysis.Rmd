@@ -137,7 +137,39 @@ knitr::kable(main[1:10,], format = "simple")
   scale_linetype_manual(values = c(1, 6)) +
   labs(x = "Zeit (in Sekunden)",
        y = "Herzrate (in Schlägen pro Minute)") +
-  theme_apa()
+    theme_apa()
+
+############## neuer Plot für GEBF #################
+
+
+  plot_overall <-
+  main %>% 
+  filter(time_span == "overall") %>%
+  select("ID","time_span", "time","heart_rate") %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_smooth() +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  labs(x = "Zeit (in Sekunden)",
+       y = "Herzrate (in Schlägen pro Minute)") +
+  ggtitle("Gesamtverlauf der Herzrate in unterschiedlichen Phasen") +
+  theme(text = element_text(family = "serif"),
+        legend.text = element_text(size = 15),
+        legend.title = element_blank(),
+        axis.text.x = element_text(size = 20),
+        axis.text.y = element_text(size = 20),
+        strip.text = element_text(size = 16),
+        plot.title = element_text(size = 20, 
+                                  face = "bold")) + 
+    theme_apa() 
+    # facet_grid(cols = vars(time_span),
+    #          scales = "free_x")
+
 
 ```
 
