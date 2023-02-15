@@ -189,9 +189,9 @@ map(.x = dir(path = data_path,
     ) %>%
   bind_rows()
 
-# main <-
-#   left_join(main, df_merge,
-#             by = "ID")
+main <-
+  left_join(main, df_merge,
+            by = "ID")
 
 ```
 
