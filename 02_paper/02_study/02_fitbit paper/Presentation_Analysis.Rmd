@@ -33,7 +33,7 @@ needs(ltm,
 df_rating <- 
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
-  select(ID, # select relevant columns 
+  dplyr::select(ID, # select relevant columns 
          disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
          confidence_factor,
          event
@@ -96,7 +96,7 @@ map(.x = dir(path = data_path,
       ) %>%
       # filter(time <= 600) %>% # filter for 10min intervals
     filter(time <= 9000) %>% # filter for 2 hours 30min (maximal duration of study)
-    select(!c("Time","Heart Rate","id"))
+    dplyr::select(!c("Time","Heart Rate","id"))
     ) %>%
   bind_rows()
 
@@ -125,7 +125,7 @@ knitr::kable(main[1:10,], format = "simple")
 
   main %>% 
   filter(time_span == "overall") %>% 
-  select("ID","time_span", "time","heart_rate") %>% 
+  dplyr::select("ID","time_span", "time","heart_rate") %>% 
   distinct() %>% 
   ggplot(mapping = aes(x = time,
                        y = heart_rate
@@ -145,7 +145,7 @@ knitr::kable(main[1:10,], format = "simple")
   plot_overall <-
   main %>% 
   filter(time_span == "overall") %>%
-  select("ID","time_span", "time","heart_rate") %>% 
+  dplyr::select("ID","time_span", "time","heart_rate") %>% 
   distinct() %>% 
   ggplot(mapping = aes(x = time,
                        y = heart_rate

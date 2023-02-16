@@ -18,7 +18,9 @@ needs(tidyverse,
       DescTools,
       cowplot,
       rstatix,
-      ggpubr)
+      ggpubr,
+      psych)
+
 ```
 
 
@@ -320,11 +322,12 @@ ggsave(plot = plot_box,
 
 ```{r}
 
+# read in data
 # disruption & confidence rating
 df_rating <- 
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
-  select(ID, # select relevant columns 
+  dplyr::select(ID, # select relevant columns 
          disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
          confidence_factor,
          event
@@ -342,6 +345,7 @@ df_rating <-
   # group_by(ID) %>% 
   # summarise("mean_disrup" = round(mean(disruption_factor), 2),
   #           "mean_confi" = round(mean(confidence_factor), 2))
+
 
 # demographic data
 df_demo <- 
@@ -391,7 +395,7 @@ map(.x = dir(path = data_path,
       ) %>%
       # filter(time <= 600) %>% # filter for 10min intervals
     filter(time <= 9000) %>% # filter for 2 hours 30min (maximal duration of study)
-    select(!c("Time","Heart Rate","id"))
+    dplyr::select(!c("Time","Heart Rate","id"))
     ) %>%
   bind_rows()
 
@@ -400,10 +404,11 @@ main <-
             by = "ID")
 
 
+# data wrangling - preparing data for anova
 df_anova <-
   main %>% 
   filter(time_span != "overall") %>%   
-  select("ID",
+  dplyr::select("ID",
          "time_span",
          "heart_rate",
          "teaching_experience",
@@ -428,10 +433,18 @@ df_anova <-
   distinct() %>% 
   group_by(ID, time_span) %>%
   summarise(mean_hr = mean(heart_rate, na.rm = TRUE),
-            mean_confi = mean(disruption_factor, na.rm = TRUE),
+            mean_confi = mean(confidence_factor, na.rm = TRUE),
             mean_disrup = mean(disruption_factor, na.rm = TRUE),
             mean_te = mean(teaching_experience, na.rm = TRUE)
          )
+
+# counting participants in individual phases
+table(df_anova['time_span'])
+
+
+# descriptive analysis
+describeBy(df_anova$mean_hr,
+           df_anova$time_span)
 
 # # merge demo data and fitbit data
 # df_anova <- merge(df_anova,
@@ -483,19 +496,18 @@ pwc <-
 
 
 # effect size of ANOVA
-install.packages("DescTools")
-library(DescTools)
 EtaSq(df_anova_phase)
 
 effect_size_anova <-
-  sqrt(0.3399757/(1-0.3399757))
+  sqrt(0.3413791   /(1-0.3413791   ))
 
 # effect size of pairwise comparisons
 library(dplyr)
 library(rstatix)
-df_anova_subset %>%
-cohens_d(mean_hr~time_span) %>% 
-as.data.frame()
+effect_size_pwc <-
+  df_anova_subset %>%
+  cohens_d(mean_hr~time_span) %>% 
+  as.data.frame()
 
 # # pairwise comparisons
 # pwc <- df_anova_subset %>%
@@ -532,6 +544,30 @@ as.data.frame()
 #        units = "in")
 
 ```
+
+### Multiple Regression
+
+```{r}
+
+# AV = mittlere Herzrate in teaching phase; UV1 = Störfaktor, UV2 = Sicherheitsfaktor, UV3= Lehrerfahrung
+
+df_lm_subset <- df_anova %>% 
+  filter(time_span == "Lehrphase") %>% 
+  dplyr::select(mean_hr, 
+               mean_disrup, 
+               mean_confi,
+               mean_te)
+  
+modell <-   lm(mean_hr ~ mean_confi + mean_disrup + mean_te, 
+               data = df_lm_subset,
+               family = binomial)
+summary(modell)
+
+
+cor(df_lm_subset)
+
+```
+
 
 
 ## Steps

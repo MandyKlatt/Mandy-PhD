@@ -118,7 +118,7 @@ needs(ltm,
 df_rating <- 
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
-  select(ID, # select relevant columns 
+  dplyr::select(ID, # select relevant columns 
          disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
          confidence_factor,
          event
@@ -185,7 +185,7 @@ map(.x = dir(path = data_path,
          ID = as.numeric(ID)
       ) %>%
       filter(time <= 600) %>%
-    select(!c("Time","Heart Rate","id"))
+     dplyr::select(!c("Time","Heart Rate","id"))
     ) %>%
   bind_rows()
 
