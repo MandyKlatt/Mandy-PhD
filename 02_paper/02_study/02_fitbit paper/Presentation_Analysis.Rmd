@@ -142,7 +142,7 @@ knitr::kable(main[1:10,], format = "simple")
 ############## neuer Plot für GEBF #################
 
 
-  plot_overall <-
+  loess_plot_overall <-
   main %>% 
   filter(time_span == "overall") %>%
   dplyr::select("ID","time_span", "time","heart_rate") %>% 
@@ -151,27 +151,159 @@ knitr::kable(main[1:10,], format = "simple")
                        y = heart_rate
                        )
          ) +
-  geom_smooth() +
+  # geom_point(alpha = 0.05) + 
+  geom_smooth(se = FALSE,
+              size = 1,
+              colour = "red") +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
+  scale_x_continuous(expand = c(0, NA),
+                     breaks = seq(0, 9000, 600)) +
+  scale_y_continuous(breaks = seq(0, 160, 5)) + 
   labs(x = "Zeit (in Sekunden)",
        y = "Herzrate (in Schlägen pro Minute)") +
-  ggtitle("Gesamtverlauf der Herzrate in unterschiedlichen Phasen") +
-  theme(text = element_text(family = "serif"),
-        legend.text = element_text(size = 15),
+  ggtitle("Gesamtverlauf Herzrate in unterschiedlichen Phasen") +
+  theme_apa() + 
+  theme(text = element_text(family = "sans"),
+        legend.text = element_text(size = 20),
         legend.title = element_blank(),
-        axis.text.x = element_text(size = 20),
-        axis.text.y = element_text(size = 20),
-        strip.text = element_text(size = 16),
+        axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        strip.text = element_text(size = 15),
         plot.title = element_text(size = 20, 
-                                  face = "bold")) + 
-    theme_apa() 
-    # facet_grid(cols = vars(time_span),
-    #          scales = "free_x")
+                                  face = "bold"))
+loess_plot_overall
+
+# saving plot 
+ggsave(plot = loess_plot_overall,
+       filename = "plots/loess_plot_overall.svg",
+       height = 5,
+       width = 8,
+       units = "in")
 
 
 ```
+
+## Plot mit Mittelwerten und SDs
+
+```{r, fig.height = 8, fig.width = 15}
+
+# checking for outliers
+# df_outliers <-
+#   main %>% 
+#   filter(time_span != "overall") %>%   
+#   dplyr::select("ID",
+#          "time_span",
+#          "heart_rate",
+#          "teaching_experience",
+#          "disruption_factor",
+#          "confidence_factor") %>% 
+#   mutate(time_span = fct_recode(time_span,
+#                                 "Pre-Lehrphase" = "pre",
+#                                 "Lehrphase" = "main",
+#                                 "Post-Lehrphase" = "subsequent",
+#                                 "Interviewphase" = "interview",
+#                                 "Endphase" = "after"
+#                                 ),
+#          time_span = factor(time_span,
+#                             levels = c("Pre-Lehrphase",
+#                                        "Lehrphase",
+#                                        "Post-Lehrphase",
+#                                        "Interviewphase",
+#                                        "Endphase"
+#                                        )
+#                             )
+#          ) %>%
+#   distinct() %>% 
+#   group_by(ID, time_span) %>%
+#   summarise(mean_hr = mean(heart_rate, na.rm = TRUE),
+#             sd_hr = sd(heart_rate, na.rm = TRUE)
+#             ) %>% 
+#   group_by(time_span) %>%
+#   identify_outliers(mean_hr)
+# 
+# # exclude extreme outliers
+# df_plot_mean <-
+#   df_outliers %>% 
+#   filter(!mean_hr %in% c("131.7869",
+#                          "129.3250",
+#                          "137.8485",
+#                          "136.9259",
+#                          "109.2143",
+#                          "110.6800",
+#                          "107.0800"))
+
+# data wrangling - preparing data for plotting
+df_plot_mean <-
+  main %>% 
+  filter(time_span != "overall") %>%   
+  dplyr::select("time_span",
+                "heart_rate") %>% 
+  mutate(time_span = fct_recode(time_span,
+                                "(1) Pre-Lehrphase" = "pre",
+                                "(2) Lehrphase" = "main",
+                                "(3) Post-Lehrphase" = "subsequent",
+                                "(4) Interviewphase" = "interview",
+                                "(5) Endphase" = "after"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("(1) Pre-Lehrphase",
+                                       "(2) Lehrphase",
+                                       "(3) Post-Lehrphase",
+                                       "(4) Interviewphase",
+                                       "(5) Endphase"
+                                       )
+                            )
+         ) %>%
+  distinct() %>% 
+  group_by(time_span) %>%
+  summarise_at(vars(heart_rate),
+               list(mean_hr = mean,
+                    sd_hr = sd)
+               ) %>% 
+  as.data.frame()
+
+
+# plotting
+plot_mean_sd <- 
+  ggplot(df_plot_mean, 
+         aes(x = time_span, y = mean_hr)) + 
+  geom_point(size = 5,
+             colour = "red")+
+  geom_errorbar(aes(ymin = mean_hr - sd_hr, 
+                    ymax = mean_hr + sd_hr), 
+                width=.2,
+                position = position_dodge(0.05)) + 
+  scale_y_continuous(breaks = seq(0, 160, 10)) +
+  labs(x = "",
+       y = "Herzrate (in Schlägen pro Minute)") +
+  ggtitle("Herzrate (M, SD) in unterschiedlichen Phasen") +
+  theme_apa() + 
+  theme(text = element_text(family = "sans"),
+        legend.text = element_text(size = 20),
+        legend.title = element_blank(),
+        axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_text(size = 11, colour = "black"),
+        axis.text.y = element_text(size = 11),
+        strip.text = element_text(size = 15),
+        plot.title = element_text(size = 20, 
+                                  face = "bold"))
+plot_mean_sd
+
+# saving plot 
+ggsave(plot = plot_mean_sd,
+       filename = "plots/plot_mean_sd.svg",
+       height = 5,
+       width = 8,
+       units = "in")
+
+
+```
+
 
 ## Plot für einzelne Phasen 
 
