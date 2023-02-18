@@ -153,8 +153,8 @@ knitr::kable(main[1:10,], format = "simple")
          ) +
   # geom_point(alpha = 0.05) + 
   geom_smooth(se = FALSE,
-              size = 1,
-              colour = "red") +
+              size = 0.5,
+              colour = "black") +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
@@ -164,7 +164,6 @@ knitr::kable(main[1:10,], format = "simple")
   labs(x = "Zeit (in Sekunden)",
        y = "Herzrate (in Schlägen pro Minute)") +
   ggtitle("Gesamtverlauf Herzrate in unterschiedlichen Phasen") +
-  theme_apa() + 
   theme(text = element_text(family = "sans"),
         legend.text = element_text(size = 20),
         legend.title = element_blank(),
@@ -174,7 +173,9 @@ knitr::kable(main[1:10,], format = "simple")
         axis.text.y = element_text(size = 11),
         strip.text = element_text(size = 15),
         plot.title = element_text(size = 20, 
-                                  face = "bold"))
+                                  face = "bold")) +
+    theme_apa()
+
 loess_plot_overall
 
 # saving plot 
@@ -271,8 +272,8 @@ df_plot_mean <-
 plot_mean_sd <- 
   ggplot(df_plot_mean, 
          aes(x = time_span, y = mean_hr)) + 
-  geom_point(size = 5,
-             colour = "red")+
+  geom_point(size = 3,
+             colour = "black")+
   geom_errorbar(aes(ymin = mean_hr - sd_hr, 
                     ymax = mean_hr + sd_hr), 
                 width=.2,
@@ -280,18 +281,20 @@ plot_mean_sd <-
   scale_y_continuous(breaks = seq(0, 160, 10)) +
   labs(x = "",
        y = "Herzrate (in Schlägen pro Minute)") +
-  ggtitle("Herzrate (M, SD) in unterschiedlichen Phasen") +
-  theme_apa() + 
+  ggtitle("Mittlere Herzrate in unterschiedlichen Phasen") +
   theme(text = element_text(family = "sans"),
         legend.text = element_text(size = 20),
         legend.title = element_blank(),
         axis.title.x = element_text(size = 15),
         axis.title.y = element_text(size = 15),
-        axis.text.x = element_text(size = 11, colour = "black"),
+        axis.text.x = element_text(size = 11, 
+                                   colour = "black"),
         axis.text.y = element_text(size = 11),
         strip.text = element_text(size = 15),
         plot.title = element_text(size = 20, 
-                                  face = "bold"))
+                                  face = "bold")) + 
+  theme_apa()
+
 plot_mean_sd
 
 # saving plot 
