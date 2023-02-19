@@ -499,7 +499,7 @@ pwc <-
 EtaSq(df_anova_phase)
 
 effect_size_anova <-
-  sqrt(0.3413791   /(1-0.3413791   ))
+  round(sqrt(0.3413791   /(1-0.3413791   )), 2)
 
 # effect size of pairwise comparisons
 library(dplyr)
