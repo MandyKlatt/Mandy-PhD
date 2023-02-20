@@ -1,6 +1,9 @@
 ---
 title: "Fitbit & ET Glasses - Methods"
-output: html_notebook
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 ```{r include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -19,7 +22,9 @@ needs(tidyverse,
       cowplot,
       rstatix,
       ggpubr,
-      psych)
+      psych,
+      stargazer,
+      lmtest)
 
 ```
 
@@ -30,29 +35,29 @@ Run following Code only if new data is added to the initial data.
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 # fitbit data
-source(file = "data.wrangling.R")
-
-# demographic data
-# prepare data (selected from questionnaire data)
-demo.data <- readxl::read_xlsx("./Data/data_empschul_labor_lehrperson.xlsx") 
-
-# select relevant columns
-demo.data <- demo.data %>% select(LI02_01_1,
-                                  LI03_01,
-                                  LI04_01,
-                                  LI06_05)
-
-# rename columns
-demo.data <- rename(demo.data, c("ID" = "LI06_05",
-                                  "Gender" = "LI02_01_1",
-                                  "Age" = "LI03_01",
-                                  "Teaching Experience" = "LI04_01"))
-
-# exclude cases with no fitbit data
-demo.data <- demo.data %>% filter(!ID %in% c("126",
-                                             "132",
-                                             )
-                                  )
+# source(file = "data.wrangling.R")
+# 
+# # demographic data
+# # prepare data (selected from questionnaire data)
+# demo.data <- readxl::read_xlsx("./Data/data_empschul_labor_lehrperson.xlsx") 
+# 
+# # select relevant columns
+# demo.data <- demo.data %>% select(LI02_01_1,
+#                                   LI03_01,
+#                                   LI04_01,
+#                                   LI06_05)
+# 
+# # rename columns
+# demo.data <- rename(demo.data, c("ID" = "LI06_05",
+#                                   "Gender" = "LI02_01_1",
+#                                   "Age" = "LI03_01",
+#                                   "Teaching Experience" = "LI04_01"))
+# 
+# # exclude cases with no fitbit data
+# demo.data <- demo.data %>% filter(!ID %in% c("126",
+#                                              "132",
+#                                              )
+#                                   )
 
 
 ```
@@ -64,63 +69,63 @@ All participants were given a FitBit Smart Watch to wear during the experiment.
 ## Heart Rate
 
 ```{r}
-# aggregate data 
-
-df_heart_all <-
-  read_rds(file = "data/heart_all.rds") |> 
-  mutate(status = factor(status,
-                         levels = c("Expert","Novice"),
-                         labels = c("Expert","Novice")
-                         )
-         )
-
-df_heart_min <-
-  read_rds(file = "data/heart_min.rds")
-
-df_heart_aggr <- 
-  read_rds(file = "data/heart_aggr.rds") |> 
-  mutate(status = factor(status,
-                         levels = c("Novice","Expert"),
-                         labels = c("Novice","Expert")
-                         )
-         )
-
-
-# Mean, SD and Cohen D for experts & novices
-# novices
-mean_nov <- 
-  df_heart_aggr %>%
-  filter(status == "Novice" ) %>% 
-  pull(mean) %>% 
-  mean() %>% 
-  round(., digits = 0)
-
-sd_nov <- 
-  df_heart_aggr %>%
-  filter(status == "Novice") %>% 
-  pull(mean) %>% 
-  sd() %>% 
-  round(., digits = 0)
-
-# experts
-mean_exp <-
-  df_heart_aggr %>%
-  filter(status == "Expert") %>% 
-  pull(mean) %>% 
-  mean() %>% 
-  round(., digits = 0)
-
-sd_exp <- 
-  df_heart_aggr %>%
-  filter(status == "Expert") %>% 
-  pull(mean) %>% 
-  sd() %>% 
-  round(., digits = 0)
-
-# effect size for expertise differences
-d_heartrate <- CohenD(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
-               y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"],
-               na.rm = TRUE)
+# # aggregate data 
+# 
+# df_heart_all <-
+#   read_rds(file = "data/heart_all.rds") |> 
+#   mutate(status = factor(status,
+#                          levels = c("Expert","Novice"),
+#                          labels = c("Expert","Novice")
+#                          )
+#          )
+# 
+# df_heart_min <-
+#   read_rds(file = "data/heart_min.rds")
+# 
+# df_heart_aggr <- 
+#   read_rds(file = "data/heart_aggr.rds") |> 
+#   mutate(status = factor(status,
+#                          levels = c("Novice","Expert"),
+#                          labels = c("Novice","Expert")
+#                          )
+#          )
+# 
+# 
+# # Mean, SD and Cohen D for experts & novices
+# # novices
+# mean_nov <- 
+#   df_heart_aggr %>%
+#   filter(status == "Novice" ) %>% 
+#   pull(mean) %>% 
+#   mean() %>% 
+#   round(., digits = 0)
+# 
+# sd_nov <- 
+#   df_heart_aggr %>%
+#   filter(status == "Novice") %>% 
+#   pull(mean) %>% 
+#   sd() %>% 
+#   round(., digits = 0)
+# 
+# # experts
+# mean_exp <-
+#   df_heart_aggr %>%
+#   filter(status == "Expert") %>% 
+#   pull(mean) %>% 
+#   mean() %>% 
+#   round(., digits = 0)
+# 
+# sd_exp <- 
+#   df_heart_aggr %>%
+#   filter(status == "Expert") %>% 
+#   pull(mean) %>% 
+#   sd() %>% 
+#   round(., digits = 0)
+# 
+# # effect size for expertise differences
+# d_heartrate <- CohenD(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
+#                y = df_heart_aggr$mean[df_heart_aggr$status == "Novice"],
+#                na.rm = TRUE)
 
 ```
 
@@ -128,179 +133,179 @@ d_heartrate <- CohenD(x = df_heart_aggr$mean[df_heart_aggr$status == "Expert"],
 The heart rate of each participant were measured during the experiment.
 
 ```{r}
-# Plots
-
-############## FLOW PLOT #############
-plot_flow <-
-ggplot(data = df_heart_all,
-       mapping = aes(x = as.numeric(Time),
-                     y = `Heart Rate`,
-                     group = ID)
-       ) +
-  geom_line(mapping = aes(color = status),
-            size = 0.3,
-            alpha = 1
-            ) +
-  xlim(0, 600) +
-  scale_color_viridis_d(option = "A",
-                       end = 0.8)  +
-  scale_linetype_manual(values = c(1, 6)) +
-  labs(x = "Time (in Seconds)",
-       y = "Heart Rate\n(in Beats per Minute)") +
-  theme_minimal() +
-  theme(text = element_text(family = "serif"),
-        legend.position = "none",
-        strip.text = element_text(size = 16)) +
-  facet_grid(cols = vars(Type),
-             scales = "free_x")
-
-############### FLOW PLOT EXPERT NOVICE #############
-
-plot_flow_leg <-
-ggplot(data = df_heart_all,
-       mapping = aes(x = Time,
-                     y = `Heart Rate`
-                     )
-       ) +
-  xlim(0, 600) +
-  geom_smooth(mapping = aes(color = status),
-              method = "loess") +
-  scale_color_viridis_d(option = "A",
-                        end = 0.8) +
-  scale_linetype_manual(values = c(1, 6)) +
-  labs(x = "Time (in Seconds)",
-       y = "Heart Rate\n(in Beats per Minute)") +
-  ggtitle("Experts' and novices' heart rate per phase") +
-  theme_minimal() +
-  theme(text = element_text(family = "serif"),
-        legend.text = element_text(size = 15),
-        legend.title = element_blank(),
-        axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 10),
-        strip.text = element_text(size = 16),
-        plot.title = element_text(size = 20, 
-                                  face = "bold")) +
-  facet_grid(cols = vars(Type),
-             scales = "free_x")
-
-legend <- cowplot::get_legend(plot_flow_leg)
-
-# saving plot 
-ggsave(plot = plot_flow_leg,
-       filename = "Plots/plot_flow_leg.svg",
-       height = 5,
-       width = 8,
-       units = "in")
-
-############### LOESS PLOT #############
-
-plot_loess <-
-ggplot(data = filter(df_heart_all),
-       mapping = aes(x = as.numeric(Time),
-                     y = `Heart Rate`
-                     )
-       ) +
-  stat_smooth(geom = "line",
-              mapping = aes(color = status),
-              method = "loess",
-              se = FALSE) +
-  xlim(0,600) +
-  scale_color_viridis_d(option = "A",
-                        end = 0.8) +
-  scale_linetype_manual(values = c(1, 6)) +
-  labs(x = "Time (in Seconds)",
-       y = "Heart Rate\n(in Beats per Minute)") +
-  theme_minimal() +
-  facet_grid(cols = vars(Type),
-             scales = "free_x",
-             ) +
-  theme(text = element_text(family = "serif"),
-        legend.position = "none",
-        strip.background = element_blank(),
-        strip.text.x = element_blank()
-        )
-
-
-############### BOX PLOT #############
-
-##### Box 1 Plot ##### 
-plot_box1 <- 
-ggplot(data = df_heart_aggr,
-       mapping = aes(x = Type,
-                     y = mean,
-                     color = status
-                     )
-       ) +
-  geom_boxplot(color = "darkgrey",
-               fill = "grey") +
-  geom_line(data = filter(df_heart_aggr,
-                          status == "Novice"),
-            mapping = aes(x = Type,
-                          y = mean,
-                          group = as_factor(ID)
-                          ),
-            linetype = 1,
-            alpha = 0.5
-            ) +
-  geom_line(data = filter(df_heart_aggr,
-                          status == "Expert"),
-            mapping = aes(x = Type,
-                          y = mean,
-                          group = as_factor(ID)
-                          ),
-            linetype = 6,
-            alpha = 0.5
-            ) +
-  geom_point(size = 2,
-             alpha = 0.5) +
-  labs(x = "",
-       y = "Average Heart Rate\n(in Beats per Minute)") +
-  scale_color_viridis_d(option = "A",
-                       end = 0.8) +
-  theme_minimal() +
-  theme(text = element_text(family = "serif"),
-        strip.text = element_blank(),
-        legend.position = "none",
-        axis.text.x = element_blank()
-        ) +
-  aes(fill = Type)
-
-plot_box1
-
-##### Box 2 Plot ##### 
-plot_box <-
-  ggplot(data = df_heart_aggr,
-         mapping = aes(x = Type,
-                       y = mean)) + 
-  geom_boxplot(mapping = aes(fill = status),
-               outlier.shape = NA) +
-  geom_point(mapping = aes(shape = status),
-             alpha = 0.5,
-             position = position_jitter(seed = 1,
-                                        width = 0.1,
-                                        height = 0.1)) +
-  labs(x ="",
-       y = "Average Heart Rate\n(in Beats per Minute)") + 
-  ggtitle("Experts' and novices' heart rate per phase") +
-  scale_fill_brewer(palette  = "RdBu") +  
-  theme_minimal() +
-  theme(text = element_text(family = "serif"),
-        legend.text = element_text(size = 15),
-        legend.title = element_blank(),
-        axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 10),
-        strip.text = element_text(size = 16),
-        plot.title = element_text(size = 20, 
-                                  face = "bold"))
-
-plot_box
-
-# saving plot 
-ggsave(plot = plot_box,
-       filename = "Plots/plot_box.svg",
-       height = 5,
-       width = 8,
-       units = "in")
+# # Plots
+# 
+# ############## FLOW PLOT #############
+# plot_flow <-
+# ggplot(data = df_heart_all,
+#        mapping = aes(x = as.numeric(Time),
+#                      y = `Heart Rate`,
+#                      group = ID)
+#        ) +
+#   geom_line(mapping = aes(color = status),
+#             size = 0.3,
+#             alpha = 1
+#             ) +
+#   xlim(0, 600) +
+#   scale_color_viridis_d(option = "A",
+#                        end = 0.8)  +
+#   scale_linetype_manual(values = c(1, 6)) +
+#   labs(x = "Time (in Seconds)",
+#        y = "Heart Rate\n(in Beats per Minute)") +
+#   theme_minimal() +
+#   theme(text = element_text(family = "serif"),
+#         legend.position = "none",
+#         strip.text = element_text(size = 16)) +
+#   facet_grid(cols = vars(Type),
+#              scales = "free_x")
+# 
+# ############### FLOW PLOT EXPERT NOVICE #############
+# 
+# plot_flow_leg <-
+# ggplot(data = df_heart_all,
+#        mapping = aes(x = Time,
+#                      y = `Heart Rate`
+#                      )
+#        ) +
+#   xlim(0, 600) +
+#   geom_smooth(mapping = aes(color = status),
+#               method = "loess") +
+#   scale_color_viridis_d(option = "A",
+#                         end = 0.8) +
+#   scale_linetype_manual(values = c(1, 6)) +
+#   labs(x = "Time (in Seconds)",
+#        y = "Heart Rate\n(in Beats per Minute)") +
+#   ggtitle("Experts' and novices' heart rate per phase") +
+#   theme_minimal() +
+#   theme(text = element_text(family = "serif"),
+#         legend.text = element_text(size = 15),
+#         legend.title = element_blank(),
+#         axis.text.x = element_text(size = 12),
+#         axis.text.y = element_text(size = 10),
+#         strip.text = element_text(size = 16),
+#         plot.title = element_text(size = 20, 
+#                                   face = "bold")) +
+#   facet_grid(cols = vars(Type),
+#              scales = "free_x")
+# 
+# legend <- cowplot::get_legend(plot_flow_leg)
+# 
+# # saving plot 
+# ggsave(plot = plot_flow_leg,
+#        filename = "Plots/plot_flow_leg.svg",
+#        height = 5,
+#        width = 8,
+#        units = "in")
+# 
+# ############### LOESS PLOT #############
+# 
+# plot_loess <-
+# ggplot(data = filter(df_heart_all),
+#        mapping = aes(x = as.numeric(Time),
+#                      y = `Heart Rate`
+#                      )
+#        ) +
+#   stat_smooth(geom = "line",
+#               mapping = aes(color = status),
+#               method = "loess",
+#               se = FALSE) +
+#   xlim(0,600) +
+#   scale_color_viridis_d(option = "A",
+#                         end = 0.8) +
+#   scale_linetype_manual(values = c(1, 6)) +
+#   labs(x = "Time (in Seconds)",
+#        y = "Heart Rate\n(in Beats per Minute)") +
+#   theme_minimal() +
+#   facet_grid(cols = vars(Type),
+#              scales = "free_x",
+#              ) +
+#   theme(text = element_text(family = "serif"),
+#         legend.position = "none",
+#         strip.background = element_blank(),
+#         strip.text.x = element_blank()
+#         )
+# 
+# 
+# ############### BOX PLOT #############
+# 
+# ##### Box 1 Plot ##### 
+# plot_box1 <- 
+# ggplot(data = df_heart_aggr,
+#        mapping = aes(x = Type,
+#                      y = mean,
+#                      color = status
+#                      )
+#        ) +
+#   geom_boxplot(color = "darkgrey",
+#                fill = "grey") +
+#   geom_line(data = filter(df_heart_aggr,
+#                           status == "Novice"),
+#             mapping = aes(x = Type,
+#                           y = mean,
+#                           group = as_factor(ID)
+#                           ),
+#             linetype = 1,
+#             alpha = 0.5
+#             ) +
+#   geom_line(data = filter(df_heart_aggr,
+#                           status == "Expert"),
+#             mapping = aes(x = Type,
+#                           y = mean,
+#                           group = as_factor(ID)
+#                           ),
+#             linetype = 6,
+#             alpha = 0.5
+#             ) +
+#   geom_point(size = 2,
+#              alpha = 0.5) +
+#   labs(x = "",
+#        y = "Average Heart Rate\n(in Beats per Minute)") +
+#   scale_color_viridis_d(option = "A",
+#                        end = 0.8) +
+#   theme_minimal() +
+#   theme(text = element_text(family = "serif"),
+#         strip.text = element_blank(),
+#         legend.position = "none",
+#         axis.text.x = element_blank()
+#         ) +
+#   aes(fill = Type)
+# 
+# plot_box1
+# 
+# ##### Box 2 Plot ##### 
+# plot_box <-
+#   ggplot(data = df_heart_aggr,
+#          mapping = aes(x = Type,
+#                        y = mean)) + 
+#   geom_boxplot(mapping = aes(fill = status),
+#                outlier.shape = NA) +
+#   geom_point(mapping = aes(shape = status),
+#              alpha = 0.5,
+#              position = position_jitter(seed = 1,
+#                                         width = 0.1,
+#                                         height = 0.1)) +
+#   labs(x ="",
+#        y = "Average Heart Rate\n(in Beats per Minute)") + 
+#   ggtitle("Experts' and novices' heart rate per phase") +
+#   scale_fill_brewer(palette  = "RdBu") +  
+#   theme_minimal() +
+#   theme(text = element_text(family = "serif"),
+#         legend.text = element_text(size = 15),
+#         legend.title = element_blank(),
+#         axis.text.x = element_text(size = 12),
+#         axis.text.y = element_text(size = 10),
+#         strip.text = element_text(size = 16),
+#         plot.title = element_text(size = 20, 
+#                                   face = "bold"))
+# 
+# plot_box
+# 
+# # saving plot 
+# ggsave(plot = plot_box,
+#        filename = "Plots/plot_box.svg",
+#        height = 5,
+#        width = 8,
+#        units = "in")
 
 ##############
 
@@ -493,6 +498,7 @@ pwc <-
   pairwise.t.test(df_anova_subset$mean_hr, 
                   df_anova_subset$time_span, 
                   p.adjust="holm")
+pwc
 
 
 # effect size of ANOVA
@@ -557,245 +563,26 @@ df_lm_subset <- df_anova %>%
                mean_disrup, 
                mean_confi,
                mean_te)
-  
+
+# modell rechnen
 modell <-   lm(mean_hr ~ mean_confi + mean_disrup + mean_te, 
                data = df_lm_subset,
                family = binomial)
 summary(modell)
 
+# robuste Standardfehler 
+coeftest(modell, vcov = vcovHC(modell, type = "HC3"))
 
-cor(df_lm_subset)
+# standardisierten Koeffizienten
+zmodell <- lm(scale(mean_hr) ~ scale(mean_confi) + scale (mean_disrup) + scale(mean_te), 
+              data = df_lm_subset)
+summary(zmodell)
 
-```
 
-
-
-## Steps
-
-Using the FitBit we could also measure the steps a person walked. Unfortunately, the measurement was not as reliable as hoped. To confirm, we should simulate situations with a fixed number of steps.
-
-```{r}
-df_steps <- read_rds(file = "final_data/steps.rds")
-set.seed(5678)
-ggplot(data = df_steps,
-       mapping = aes(x = type,
-                     y = Steps
-                     )
-       ) +
-  geom_boxplot(mapping = aes(color = type),
-               fill = "grey",
-               alpha = 0.6) +
-  geom_jitter(mapping = aes(color = type),
-              alpha = 0.9,
-              width = 0.3) + 
-  scale_color_viridis_d(option = "A",
-                       end = 0.8) +
-  labs(x = "",
-       y = "Steps During\nMain Phase") +
-  theme_minimal() +
-  theme(text = element_text(family = "serif"),
-        legend.title = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()
-        ) 
-
-### Validation of steps 
-# selecting some rows at random with sample_n()
-sample_n(df_steps, 6)
-
-# Output:
-# Experts: 219, 218, 214
-# Novices: 108, 117, 110
+# cor(df_lm_subset)
 
 ```
 
-# Combined Analysis
-
-## Steps and Heart Rate
-
-```{r}
-ggplot(data = df_steps,
-       mapping = aes(x = Steps,
-                     y = mean)
-       ) +
-  geom_point(mapping = aes(shape = type,
-                           color = type),
-             alpha = 0.7,
-             size = 2.5) +
-    geom_smooth(mapping = aes(color = type),
-              method = "lm",
-              se = F) +
-  scale_color_viridis_d(option = "A",
-                       end = 0.8
-                       ) +
-  labs(x = "Steps",
-       y = "Average Heart Rate\n(in Beats per Minute)"
-       ) +
-  theme_minimal() +
-  theme(text = element_text(family = "serif"),
-        legend.title = element_blank(),
-        )
-```
-
-## Heart Rate and Pupil Dilation
-
-```{r}
-df_dil_aggr <- read_rds(file = "final_data/heart_dilation.rds")
-
-df_dil_aggr %>%
-  pivot_longer(cols = contains("dil"),
-               names_to = "left_right",
-               values_to = "Dilation") %>%
-  mutate(type = factor(type,
-                       levels = c("Expert","Novice"),
-                       labels = c("Expert","Novice")
-                       )
-         ) |> 
-  ggplot(mapping = aes(x = heart_rate_z,
-                       y = Dilation)) +
-  geom_point(mapping = aes(color = type),
-             alpha = 0.7) +
-  scale_color_viridis_d(option = "A",
-                       end = 0.8) +
-  geom_smooth(method = "lm",
-              linetype = 2,
-              color = "darkviolet") +
-  labs(x = "Heart Rate\n(z-standardized)") +
-  theme_minimal() +
-  theme(legend.title = element_blank(),
-        text = element_text(family = "serif")) +
-  facet_grid(cols = vars(factor(left_right,
-                                levels = c("dil_left_z","dil_right_z"),
-                                labels = c("Left Eye","Right Eye")
-                                )
-                         )
-             ) 
-```
-
-# Measuring 
-
-```{r, warning=FALSE, message=FALSE}
-df_heart_all %>% 
-  clean_names() %>% 
-  pivot_wider(names_from = time,
-              values_from = heart_rate,
-              names_prefix = "x")  %>%
-  select(!contains("x")) ->
-data_cache 
-
-df_heart_all %>% 
-  clean_names() %>% 
-  pivot_wider(names_from = time,
-              values_from = heart_rate,
-              names_prefix = "x")  %>%
-  filter(id == "101") %>% 
-  rowwise() %>%
-  na_mean() %>%
-  pivot_longer(cols = contains("x"),
-               names_to = "time",
-               values_to = "heart_rate") %>% 
-  mutate(time = str_remove_all(time, "x")) %>% 
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate
-                       )
-         ) +
-  geom_line()
-  
-  
- mutate(id = data_cache$id,
-        ) %>% 
- right_join(x = ., 
-            y = data_cache,
-            by = "id") %>% 
- pivot_longer(cols = contains("x"),
-               names_to = "time",
-               values_to = "heart_rate") %>%
-  mutate(time = str_remove_all(string = time,
-                               pattern = "x"),
-         time = as.numeric(time),
-         heart_rate = as.numeric(heart_rate),
-         id = as_factor(id)) %>%
-  filter(id == "101") %>% 
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate,
-                       group = id)
-       ) + 
-  geom_line(mapping = aes(color = status),
-            size = 0.3,
-            alpha = 1
-            ) +
-  xlim(0, min(df_heart_min$min)) +
-  facet_grid(cols = vars(type))
-
-  df_heart_all_wide
-
-for (i in colnames(df_heart_all_wide)[-1:-4]) {
-  
-  df_heart_all_wide %>% 
-    select(i)
-  
-}
-df_heart_all_wide %>% 
-  select(contains("x")) %>%
-  as.matrix() %>% 
-  rowwise() %>% 
-  na_kalman() %>% 
-  as_tibble() ->
-  imp
-
-imp$id <- data_cache$id
-
-left_join(data_cache, imp,
-          by = "id") %>% 
-   pivot_longer(cols = contains("x"),
-               names_to = "time",
-               values_to = "heart_rate") %>%
-  filter(id == "101") %>% 
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate,
-                       group = id)
-       ) + 
-  geom_line(mapping = aes(color = status),
-            size = 0.3,
-            alpha = 1
-            )
-
-df_heart_all %>% 
-  clean_names() %>% 
-  pivot_wider(names_from = time,
-              values_from = heart_rate,
-              names_prefix = "x")  %>%
-  filter(id == "101", type == "Post") %>% 
-  select(!c("id","type","status")) %>% 
-  pivot_longer()
-  na_kalman()
-
-
-imp <- na_kalman(tsAirgap)
-ggplot_na_imputations(tsAirgap, imp)
-
-
-
-df_heart_all %>% 
-  clean_names() %>% 
-  pivot_wider(names_from = time,
-              values_from = heart_rate,
-              names_prefix = "x") %>% 
-  pivot_longer(cols = contains("x"),
-               names_to = "time",
-               values_to = "heart_rate") %>% 
-  group_by(id, type) %>% 
-  mutate(heart_rate = na_kalman(heart_rate)) %>% 
-  ungroup() %>% 
-  ggplot(mapping = aes(x = time, 
-                       y = heart_rate,
-                       group = id
-                       )
-         ) +
-  geom_line()
-
-
-```
 
 
 
