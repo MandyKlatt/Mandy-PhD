@@ -27,7 +27,8 @@ needs(ltm,
       rstatix,
       ggpubr,
       lme4,
-      viridis)
+      viridis,
+      gridExtra)
 
 # disruption & confidence rating
 df_rating <- 
@@ -121,7 +122,7 @@ knitr::kable(main[1:10,], format = "simple")
 
 ## Plot für Gesamtverlauf 
 
-```{r, fig.height = 8, fig.width = 15}
+```{r, echo=true, fig.height = 8, fig.width = 15}
 
   main %>% 
   filter(time_span == "overall") %>% 
@@ -163,7 +164,7 @@ knitr::kable(main[1:10,], format = "simple")
   scale_y_continuous(breaks = seq(0, 160, 5)) + 
   labs(x = "Zeit (in Sekunden)",
        y = "Herzrate (in Schlägen pro Minute)") +
-  ggtitle("Gesamtverlauf Herzrate in unterschiedlichen Phasen") +
+  ggtitle("Gesamtverlauf der durchschnittlichen Herzraten") +
   theme(text = element_text(family = "sans"),
         legend.text = element_text(size = 20),
         legend.title = element_blank(),
@@ -177,6 +178,50 @@ knitr::kable(main[1:10,], format = "simple")
     theme_apa()
 
 loess_plot_overall
+
+lm_plot_phases <-
+  main %>% 
+  filter(time_span != "overall") %>%
+  dplyr::select("ID","time_span", "time","heart_rate") %>% 
+  mutate(time_span = factor(time_span,
+                            levels = c("pre","main","subsequent","interview","after"),
+                            labels = c("Pre-Phase","Unterrichtsphase","Subsequentphase","Interviewphase","Post-Phase"))) %>% 
+  distinct() %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  # geom_point(alpha = 0.05) + 
+  geom_smooth(method = "lm",
+              se = FALSE,
+              size = 0.5,
+              colour = "black") +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  # scale_x_continuous(expand = c(0, NA),
+  #                    breaks = seq(0, 9000, 600)) +
+  #scale_y_continuous(breaks = seq(0, 160, 5)) + 
+  labs(x = "Zeit (in Sekunden)",
+       y = "Durchschnittliche Herzrate (in Schlägen pro Minute)") +
+  ggtitle("Verlauf der durchschnittlichen Herzraten in unterschiedlichen Phasen\n(Lineare Schätzung)") +
+  theme(text = element_text(family = "sans"),
+        legend.text = element_text(size = 20),
+        legend.title = element_blank(),
+        axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        strip.text = element_text(size = 15),
+        plot.title = element_text(size = 20, 
+                                  face = "bold")) +
+    theme_apa() +
+  facet_grid(cols = vars(time_span),
+             scales = "free_x")
+
+grid.arrange(loess_plot_overall, lm_plot_phases,
+             ncol = 1)
+
 
 # saving plot 
 ggsave(plot = loess_plot_overall,
