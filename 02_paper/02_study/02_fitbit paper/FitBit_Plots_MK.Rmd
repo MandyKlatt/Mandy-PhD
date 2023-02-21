@@ -24,7 +24,9 @@ needs(tidyverse,
       ggpubr,
       psych,
       stargazer,
-      lmtest)
+      lmtest,
+      sandwich,
+      car)
 
 ```
 
@@ -570,10 +572,30 @@ modell <-   lm(mean_hr ~ mean_confi + mean_disrup + mean_te,
                family = binomial)
 summary(modell)
 
+# Voraussetzungen:
+# metrische AV
+# 0 Linearität --> nicht gegeben
+
+# 1 Normalverteilung Residuen = Unterschied zwischen geschätztem Wert der AV und beobachtetem Wert der AV
+plot(modell, 2)
+
+# 2a Homoskedastizität = gleichmäißge Streuung der Residuen
+plot(modell, 1) # Hetereoskedastizität, da Residuen nicht gleichmäßig streuen --> verzerrte Standardfehler
+bptest(modell) # Breusch-Pagan test --> Homoskedastizität liegt vor, da p-Wert unter 0.05; Nullhypothese wird nicht verworfen
+
+# 2b Autokorrelation = Residuen korrelieren miteinander
+# nicht erfüllt, da Wellenlinien bei Plot
+
+# keine Multikollinearität = starke Korrelation der UVs = UV messen das Gleiche
+vif(modell) # konservativ: unter 10 --> check
+
+# 4 keine einflussreiche Fälle (Ausreißer)
+plot(modell, 4)
+
 # robuste Standardfehler 
 coeftest(modell, vcov = vcovHC(modell, type = "HC3"))
 
-# standardisierten Koeffizienten
+# standardisierte Koeffizienten
 zmodell <- lm(scale(mean_hr) ~ scale(mean_confi) + scale (mean_disrup) + scale(mean_te), 
               data = df_lm_subset)
 summary(zmodell)
