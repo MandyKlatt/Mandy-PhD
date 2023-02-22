@@ -410,6 +410,20 @@ main <-
   left_join(main, df_merge,
             by = "ID")
 
+main %>% 
+  select("time", "heart_rate", "ID", "time_span") %>% 
+  distinct() %>% 
+  filter(time_span == "overall") %>% 
+  group_by(ID) %>% 
+  summarize(mean_heart = mean(heart_rate),
+            sd_heart = sd(heart_rate)) %>%
+  ungroup() %>% 
+  right_join(x = .,
+             y = main,
+             by = "ID") %>% 
+  mutate(heart_rate_std = (heart_rate - mean_heart)/
+           sd_heart) -> main
+
 
 # data wrangling - preparing data for anova
 df_anova <-
