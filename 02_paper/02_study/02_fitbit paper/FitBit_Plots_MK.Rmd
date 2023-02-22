@@ -425,13 +425,14 @@ main %>%
            sd_heart) -> main
 
 
+
 # data wrangling - preparing data for anova
 df_anova <-
   main %>% 
   filter(time_span != "overall") %>%   
   dplyr::select("ID",
          "time_span",
-         "heart_rate",
+         "heart_rate_std",
          "teaching_experience",
          "disruption_factor",
          "confidence_factor") %>% 
@@ -453,7 +454,7 @@ df_anova <-
          ) %>%
   distinct() %>% 
   group_by(ID, time_span) %>%
-  summarise(mean_hr = mean(heart_rate, na.rm = TRUE),
+  summarise(mean_hr_std = mean(heart_rate_std, na.rm = TRUE),
             mean_confi = mean(confidence_factor, na.rm = TRUE),
             mean_disrup = mean(disruption_factor, na.rm = TRUE),
             mean_te = mean(teaching_experience, na.rm = TRUE)
@@ -462,9 +463,8 @@ df_anova <-
 # counting participants in individual phases
 table(df_anova['time_span'])
 
-
 # descriptive analysis
-describeBy(df_anova$mean_hr,
+describeBy(df_anova$mean_hr_std,
            df_anova$time_span)
 
 # # merge demo data and fitbit data
@@ -476,14 +476,14 @@ describeBy(df_anova$mean_hr,
 # df_anova <- df_anova %>% clean_names()
 
 # Visualization
-bxp <- ggboxplot(df_anova, x = "time_span", y = "mean_hr", add = "point")
+bxp <- ggboxplot(df_anova, x = "time_span", y = "mean_hr_std", add = "point")
 bxp
 
 # check for outliers
 outliers <-
   df_anova %>%
   group_by(time_span) %>%
-  identify_outliers(mean_hr)
+  identify_outliers(mean_hr_std)
 
 # check for normality assumption --> can be checked by computing Shapiro-Wilk test for each time point. If the data is normally distributed, the p-value should be greater than 0.05
 norm_assump <-
@@ -493,9 +493,9 @@ norm_assump <-
 
 # QQ plot draws the correlation between a given data and the normal distribution. 
 plot <- 
-  ggqqplot(df_anova, "mean_hr", facet.by = "time_span")
+  ggqqplot(df_anova, "mean_hr_std", facet.by = "time_span")
 
-df_anova_subset <- subset(df_anova, select = c(time_span, mean_hr))
+df_anova_subset <- subset(df_anova, select = c(time_span, mean_hr_std))
 
 # # anova
 # res.aov <- rstatix::anova_test(data = df_anova_subset,
@@ -506,12 +506,12 @@ df_anova_subset <- subset(df_anova, select = c(time_span, mean_hr))
 
 # anova
 df_anova_phase <- 
-  aov(df_anova_subset$mean_hr~df_anova_subset$time_span)
+  aov(df_anova_subset$mean_hr_std ~ df_anova_subset$time_span)
 summary(df_anova_phase)
 
 # pairwise comparisons
 pwc <- 
-  pairwise.t.test(df_anova_subset$mean_hr, 
+  pairwise.t.test(df_anova_subset$mean_hr_std, 
                   df_anova_subset$time_span, 
                   p.adjust="holm")
 pwc
@@ -521,14 +521,14 @@ pwc
 EtaSq(df_anova_phase)
 
 effect_size_anova <-
-  round(sqrt(0.3413791   /(1-0.3413791   )), 2)
+  round(sqrt(0.6533274/(1-0.6533274)), 2)
 
 # effect size of pairwise comparisons
 library(dplyr)
 library(rstatix)
 effect_size_pwc <-
   df_anova_subset %>%
-  cohens_d(mean_hr~time_span) %>% 
+  cohens_d(mean_hr_std ~ time_span) %>% 
   as.data.frame()
 
 # # pairwise comparisons
@@ -575,13 +575,13 @@ effect_size_pwc <-
 
 df_lm_subset <- df_anova %>% 
   filter(time_span == "Lehrphase") %>% 
-  dplyr::select(mean_hr, 
+  dplyr::select(mean_hr_std, 
                mean_disrup, 
                mean_confi,
                mean_te)
 
 # modell rechnen
-modell <-   lm(mean_hr ~ mean_confi + mean_disrup + mean_te, 
+modell <-   lm(mean_hr_std ~ mean_confi + mean_disrup + mean_te, 
                data = df_lm_subset,
                family = binomial)
 summary(modell)
@@ -610,7 +610,7 @@ plot(modell, 4)
 coeftest(modell, vcov = vcovHC(modell, type = "HC3"))
 
 # standardisierte Koeffizienten
-zmodell <- lm(scale(mean_hr) ~ scale(mean_confi) + scale (mean_disrup) + scale(mean_te), 
+zmodell <- lm(scale(mean_hr_std) ~ scale(mean_confi) + scale (mean_disrup) + scale(mean_te), 
               data = df_lm_subset)
 summary(zmodell)
 
