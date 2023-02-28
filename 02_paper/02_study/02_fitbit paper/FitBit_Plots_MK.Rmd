@@ -877,7 +877,6 @@ summary(zmodell)
 ```{r}
 
 # AV = mittlere Herzrate in teaching phase; UV1 = Störfaktor, UV2 = Sicherheitsfaktor, UV3= Lehrerfahrung
-
 df_lm_subset <- df_anova %>% 
   filter(time_span == "Lehrphase") %>% 
   dplyr::select(mean_hr_std, 
