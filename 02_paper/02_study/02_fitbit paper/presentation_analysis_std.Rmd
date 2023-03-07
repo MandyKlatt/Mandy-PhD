@@ -340,7 +340,7 @@ heart_rate_regression <-
                             labels = c("Pre-Phase","Unterrichtsphase","Subsequentphase","Interviewphase","Post-Phase")),
          ID = factor(ID)) %>% 
   distinct() %>% 
-  mutate(time = time / 60) %>% 
+  mutate(time = time / 60) %>%                  # Zeit in Minuten umrechnen, um Effekte besser sichtbar zu machen
   split(.$time_span) %>% 
   map(~ lm(formula = heart_rate_std ~ time * ID,
            data = .)) %>% 
@@ -427,5 +427,37 @@ heart_rate_regression %>%
                        intercept.top = T,
                        )
 ```
+
+
+- Nur pre und subsequent (lineare Regression mit slopes als av)
+- 7200 sek kürzen (gesamtverlauf)
+- Unterrichtsphase kürzen auf 600 sek
+- für jede Phase intercept + slope (SD) growth curve model 
+  - frage: individual slope + allover slope (+ intercept)
+  - ist der mitterlwert aus slopes = allover slope?
+- individuellen Intercepts -> Mittelwertunterschied
+
+- t-test über 
+
+
+1. rohwert-kurve neben z-std.-kurve (untereinander)
+2. Slope und Intercept mit je Mean und SD (overall aus individuell?) -> sign?
+3. Unterricht vs. Post (t-test über Intercepts), d und p
+4. Intercept (Teaching, interview, Post) vorhersage (4 Modelle)
+5. Unterscheiden sich slopes in pre und subsequent signifikant (Betrag?)
+6. Slopes (pre-Phase und subsequent) vorhersagen (4 Modelle)
+7. slope und intercept correlation?
+
+
+1. Pre Phase
+2. Teaching Phase
+3. Post Phase
+4. Interview Phase
+5. End Phase
+
+
+
+
+
 
 
