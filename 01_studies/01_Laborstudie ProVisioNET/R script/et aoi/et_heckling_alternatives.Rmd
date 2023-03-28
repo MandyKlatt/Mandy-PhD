@@ -1,0 +1,337 @@
+---
+title: "Professional vision - link between eye tracking parameters and the ability
+  to generate action alternatives"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+# Load packages and read in data
+```{r}
+library(needs)
+needs(tidyverse,
+      psych,
+      moments,
+      sjPlot,
+      DescTools,
+      irr,
+      readxl, 
+      gridExtra,
+      janitor,
+      RColorBrewer,
+      cowplot)
+
+# suppress "summarize" info. 
+# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
+options(dplyr.summarise.inform = FALSE)
+
+### EYE TRACKING DATA 
+
+# return a character vector with names of .tsv data in data folder
+file_names <- list.files(path = "data",
+                         pattern = "interval_complete.tsv")
+
+# read every object names in file_names and save it as a tibble
+for (i in file_names) {
+  
+  work_data <- 
+    read_tsv(file = paste0("data/", i),
+             locale = locale(decimal_mark = ","))
+  
+  assign(value = work_data,
+         x = str_remove(paste0("tib_", i),
+                        pattern = ".tsv"
+         )
+  )
+  
+}
+
+# Bind every tibble that contains "interval_complete" to a new tible
+df_aoi <- 
+  mget(ls(pattern = "interval_complete")) %>%
+  bind_rows()
+
+# Remove temporary data for a cleaner workspace
+rm(list = ls(pattern = "^tib_ProVisio"))
+rm(work_data)
+rm(file_names)
+rm(i)
+
+### TIME TO FIRST FIXATION 
+df_aoi %>% 
+  filter(TOI == "Chatting_with_neighbour") %>% 
+  select (Participant, 
+          "Time_to_first_fixation.Disruptive_Person") %>% 
+  rowwise() %>% 
+  mutate(ID = str_extract(string = Participant,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+         
+         # Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person / 1000,digits = 2)#changing milliseconds into seconds
+         ) %>% 
+  select(ID,
+         Time_to_first_fixation.Disruptive_Person) %>% 
+  janitor::clean_names() -> df_ttff_disrup
+  # filter(!ID %in% c(204)) 
+
+# df_ttff_disrup$id = ifelse(df_ttff_disrup$id < 200, "Novice","Expert")
+
+
+# SELF-REPORT DATA
+df_sri <- 
+  excel_sheets("data/coding_sri.xlsx") %>% 
+  map_df(~read_xlsx("data/coding_sri.xlsx",.)) %>% 
+  dplyr::select(ID, Event, `Confidence Factor`) %>% 
+  filter(
+    # ID %in% c(101:125, 202:217),
+         Event %in% c("chatting")) %>%
+  janitor::clean_names()
+
+# df_sri$id = ifelse(df_sri$id < 200, "Novice","Expert")
+
+# ACTION ALTERNATIVES
+df_alternatives <- read_excel("data/coding_action_alternatives.xlsx") %>% 
+  janitor::clean_names()
+
+# df_alternatives$id = ifelse(df_alternatives$id < 200, "Novice","Expert")
+
+
+# merge data frames
+# put all data frames into list
+df_list <- list(df_ttff_disrup, df_sri, df_alternatives)
+
+# merge all data frames in list
+main <-
+  df_list %>% reduce(full_join, by='ID') %>%
+  janitor::clean_names() %>%
+  select(!event) %>% # select relevant columns
+  na.omit()
+
+main$id = ifelse(main$id < 200, "Novice","Expert")
+
+```
+
+
+# Descriptives: Mean & SDs
+```{r}
+main %>%
+  distinct() %>%
+  group_by(id) %>%
+  summarize(mean_ttff = round(mean(time_to_first_fixation_disruptive_person), digits = 0),
+            sd_ttff = round(sd(time_to_first_fixation_disruptive_person), digits = 0),
+            mean_sri = round(mean(confidence_factor), digits = 0),
+            sd_sri = round(sd(confidence_factor), digits = 0),
+            mean_aa_count = round(mean(count), digits = 0),
+            sd_aa_count = round(sd(count), digits = 0),
+            mean_aa_code = round(mean(code), digits = 0),
+            sd_aa_code = round(sd(code), digits = 0)) %>%
+  ungroup() -> df_descriptives
+```
+
+# t-test and effect size
+
+```{r}
+### time to first fixation on disruptive person
+# t-test for expertise differences
+ttest_ttff <- t.test(x = df_ttff_disrup$time_to_first_fixation_disruptive_person[df_ttff_disrup$id == "Expert"],
+                     y = df_ttff_disrup$time_to_first_fixation_disruptive_person[df_ttff_disrup$id == "Novice"])
+
+
+# effect size for expertise differences
+d_ttff <- CohenD(x = df_ttff_disrup$time_to_first_fixation_disruptive_person[df_ttff_disrup$id == "Expert"],
+                 y = df_ttff_disrup$time_to_first_fixation_disruptive_person[df_ttff_disrup$id == "Novice"],
+                 na.rm = TRUE)
+
+#### sri - confidence factor
+# t-test for expertise differences
+ttest_sri <- t.test(x = df_sri$confidence_factor[df_sri$id == "Expert"],
+                    y = df_sri$confidence_factor[df_sri$id == "Novice"])
+
+# effect size for expertise differences
+d_sri <- CohenD(x = df_sri$confidence_factor[df_sri$id == "Expert"],
+                y = df_sri$confidence_factor[df_sri$id == "Novice"],
+                na.rm = TRUE)
+
+### action alternatives count
+# t-test for expertise differences
+ttest_aa_count <- t.test(x = df_alternatives$count[df_alternatives$id == "Expert"],
+                         y = df_alternatives$count[df_alternatives$id == "Novice"])
+
+# effect size for expertise differences
+d_aa_count <- CohenD(x = df_alternatives$count[df_alternatives$id == "Expert"],
+                     y = df_alternatives$count[df_alternatives$id == "Novice"],
+                     na.rm = TRUE)
+
+### action alternatives code
+# t-test for expertise differences
+ttest_aa_code <- t.test(x = df_alternatives$code[df_alternatives$id == "Expert"],
+                        y = df_alternatives$code[df_alternatives$id == "Novice"])
+
+# effect size for expertise differences
+d_aa_code <- CohenD(x = df_alternatives$code[df_alternatives$id == "Expert"],
+                    y = df_alternatives$code[df_alternatives$id == "Novice"],
+                    na.rm = TRUE)
+```
+
+# confidence factor x count of action alternatives
+```{r}
+# Novices
+main %>% 
+  filter(!is.na(confidence_factor) | !is.na(count)) %>% 
+  filter(id %in% c("Novice")) %>% 
+  ggplot(mapping = aes(x = confidence_factor,
+                       y = count
+                       )
+         ) +
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Novices - Confidence Factor",
+       y = "Count")
+
+# Experts
+main %>% 
+  filter(!is.na(confidence_factor) | !is.na(count)) %>% 
+  filter(id %in% c("Expert")) %>% 
+  ggplot(mapping = aes(x = confidence_factor,
+                       y = count
+                       )
+         ) +
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Experts - Confidence Factor",
+       y = "Count")
+
+```
+# confidence factor x quality of action alternatives
+
+```{r}
+# Novices
+main %>% 
+  filter(!is.na(confidence_factor) | !is.na(code)) %>% 
+  filter(id %in% c("Novice")) %>% 
+  ggplot(mapping = aes(x = confidence_factor,
+                       y = code
+                       )
+         ) +
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Novices - Confidence Factor",
+       y = "Quality (Code1-6)")
+
+# Experts
+main %>% 
+  filter(!is.na(confidence_factor) | !is.na(code)) %>% 
+  filter(id %in% c("Expert")) %>% 
+  ggplot(mapping = aes(x = confidence_factor,
+                       y = code
+                       )
+         ) +
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Experts - Confidence Factor",
+       y = "Quality (Code1-6)")
+```
+
+
+# time to first fixation x count of action alternatives
+```{r}
+# Novices
+main %>% 
+  filter(!is.na(time_to_first_fixation_disruptive_person) | !is.na(count)) %>% 
+  filter(id %in% c("Novice")) %>% 
+  ggplot(mapping = aes(x = time_to_first_fixation_disruptive_person,
+                       y = count
+                       )
+         ) +
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Novices - Time to first fixation on disruptive person",
+       y = "Count")
+
+# Experts
+main %>% 
+  filter(!is.na(time_to_first_fixation_disruptive_person) | !is.na(count)) %>% 
+  filter(id %in% c("Expert")) %>% 
+  ggplot(mapping = aes(x = time_to_first_fixation_disruptive_person,
+                       y = count
+                       )
+         ) +
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Experts - Time to first fixation on disruptive person",
+       y = "Count")
+```
+
+# time to first fixation x quality of action alternatives
+```{r}
+# Novices
+main %>% 
+  filter(!is.na(time_to_first_fixation_disruptive_person) | !is.na(code)) %>% 
+  filter(id %in% c("Novice")) %>% 
+  ggplot(mapping = aes(x = time_to_first_fixation_disruptive_person,
+                       y = code
+                       )
+         ) +
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Novices - Time to first fixation on disruptive person",
+       y = "Quality(Code1-6)")
+
+# Experts
+main %>% 
+  filter(!is.na(time_to_first_fixation_disruptive_person) | !is.na(code)) %>% 
+  filter(id %in% c("Expert")) %>% 
+  ggplot(mapping = aes(x = time_to_first_fixation_disruptive_person,
+                       y = code
+                       )
+         ) +
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Experts - Time to first fixation on disruptive person",
+       y = "Quality(Code1-6)")
+```
+
+# pearson & spearman correlation
+
+```{r}
+# novices: correlation between confidence factor and count
+main %>% 
+  filter(id %in% c("Novice")) -> corr.nov
+
+cor.test(corr.nov$confidence_factor, corr.nov$count, method=c("pearson"))
+
+# experts: correlation between confidence factor and count
+main %>% 
+  filter(id %in% c("Expert")) -> corr.exp
+
+cor.test(corr.exp$confidence_factor, corr.exp$count, method=c("pearson"))
+
+# novices: correlation between confidence factor and quality
+cor.test(corr.nov$confidence_factor, corr.nov$code, method=c("spearman"))
+
+# experts: correlation between confidence factor and quality
+cor.test(corr.exp$confidence_factor, corr.exp$code, method=c("spearman"))
+
+# novices: correlation between time to first fixation and count
+cor.test(corr.nov$time_to_first_fixation_disruptive_person, corr.nov$count, method=c("pearson"))
+
+# experts: correlation between time to first fixation and count
+cor.test(corr.exp$time_to_first_fixation_disruptive_person, corr.exp$count, method=c("pearson"))
+
+# novices: correlation between time to first fixation and quality
+cor.test(corr.nov$time_to_first_fixation_disruptive_person, corr.nov$code, method=c("spearman"))
+
+# experts: correlation between time to first fixation and quality
+cor.test(corr.exp$time_to_first_fixation_disruptive_person, corr.exp$code, method=c("spearman"))
+
+```
+
