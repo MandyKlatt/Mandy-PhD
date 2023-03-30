@@ -224,7 +224,7 @@ CohenD(x = main$nd[main$id == "Expert"],
        na.rm = TRUE)
 ```
 
-# pearson & spearman correlation
+# pearson correlation
 
 ```{r}
 # novices: correlation between confidence factor and count
@@ -282,6 +282,32 @@ full_confi_nd_corr <- corr.test(main$confidence_factor,
                                 adjust="holm")
 print(full_confi_nd_corr,
       short = F)  
+
+###################################################
+
+# novices: correlation between count and non-disruptive alternatives
+nov_count_nd_corr <- cor.test(corr.nov$count,
+                              corr.nov$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(nov_count_nd_corr, 
+      short = F)
+
+# experts: correlation between count and non-disruptive alternatives
+exp_count_nd_corr <- cor.test(corr.exp$count,
+                              corr.exp$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(exp_count_nd_corr,
+      short = F)
+
+# full sample: correlation between confidence factor and non-disruptive alternatives
+full_count_nd_corr <- corr.test(main$count, 
+                                main$nd, 
+                                method=c("pearson"),
+                                adjust="holm")
+print(full_count_nd_corr,
+      short = F)
 
 ###################################################
 
