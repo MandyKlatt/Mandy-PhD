@@ -601,7 +601,7 @@ Bei der Fixed Effects Regression werden die Größen unabhängig voneinander mod
 3. t-Test
 
 ```{r}
-df_ttest <- 
+cache1 <- 
   main %>% 
   dplyr::select("ID","time","heart_rate_std","time_span") %>% 
   distinct() %>% 
@@ -617,8 +617,9 @@ df_ttest <-
       ) %>% 
   bind_rows(.,
             .id = "time_span")
-  
-main %>% 
+
+cache2 <-  
+  main %>% 
   dplyr::select("ID","time","heart_rate_std","time_span") %>% 
   distinct() %>% 
   mutate(ID = as_factor(ID)) %>% 
@@ -632,19 +633,23 @@ main %>%
             .id = "time_span") %>% 
   pivot_longer(
   cols = everything(),
-  names_to = c("diagnosis", "gender"),
-  names_pattern = "new_?(.*)_(.)",
-  values_to = "count"
-)
+  names_to = "time_span",
+  values_to = "mean_value"
+  )
+
+df_ttest <- 
+  tibble(mean_intercept = cache2$mean_value[1:6],
+         mean_time = cache2$mean_value[7:12],
+         time_span = cache2$time_span[1:6]) %>% 
+  right_join(x = .,
+             y = cache1) %>% 
+  transmute(time_span,
+            intercept = mean_intercept + intercept,
+            time = mean_time + time)
   
 
-t.test(df_ttest$`(Intercept)`[df_ttest$time_span == "main"],
-       df_ttest$`(Intercept)`[df_ttest$time_span == "subsequent"],
+t.test(df_ttest$intercept[df_ttest$time_span == "main"],
+       df_ttest$intercept[df_ttest$time_span == "subsequent"],
        paired = TRUE)
-
-df_ttest %>% 
-  filter(time_span == "main") %>% 
-  ggplot(mapping = aes(x = intercept)) +
-  geom_histogram()
 ```
 
