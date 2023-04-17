@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FA
 ```{r}
 library(needs)
 needs(ltm,
+      xtable,
       broom,
       ppcor,
       jtools,
@@ -441,215 +442,77 @@ heart_rate_regression %>%
 - t-test über 
 
 
-1. rohwert-kurve neben z-std.-kurve (untereinander)
-2. Slope und Intercept mit je Mean und SD (overall aus individuell?) -> sign?
-3. Unterricht vs. Post (t-test über Intercepts), d und p
-4. Intercept (Teaching, interview, Post) vorhersage (4 Modelle)
-5. Unterscheiden sich slopes in pre und subsequent signifikant (Betrag?)
-6. Slopes (pre-Phase und subsequent) vorhersagen (4 Modelle)
-7. slope und intercept correlation?
 
 
-1. Pre Phase (pre)
-2. Teaching Phase (main)
-3. Post Phase (subsequent)
-4. Interview Phase (interview)
-5. End Phase (after)
 
 
-1. Rohwertekurve und z-Str. Kurve untereinander
+## Interview 
 
 ```{r}
-loess_plot_overall <-
-  main %>% 
-  filter(time_span == "overall") %>%
-  dplyr::select("ID","time_span", "time","heart_rate") %>% 
-  distinct() %>% 
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate
-                       )
-         ) +
-  # geom_point(alpha = 0.05) + 
-  geom_smooth(se = FALSE,
-              size = 0.5,
-              colour = "black") +
-  scale_color_viridis_d(option = "A",
-                        end = 0.8) +
- # scale_linetype_manual(values = c(1, 6)) +
-  scale_x_continuous(expand = c(0, NA),
-                     breaks = seq(0, 9000, 600)) +
- # scale_y_continuous(breaks = seq(-1, 1, 0.5)) + 
-  labs(x = "Time (in seconds)",
-       y = "",
-       title = "Overall trend of heartrate",
-       subtitle = "Unstandardized") +
-  theme_apa() + 
-  theme(axis.title.y = element_blank())
+fit_interview_1 <-
+  df_test_reg %>% 
+  filter(time_span == "interview") %$% 
+  lm(intercept ~ mean_disruption)
 
+fit_interview_2 <-
+  df_test_reg %>% 
+  filter(time_span == "interview") %$% 
+  lm(intercept ~ mean_confidence)
 
-loess_plot_overall_std <-
-  main %>% 
-  filter(time_span == "overall") %>%
-  dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
-  distinct() %>% 
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate_std
-                       )
-         ) +
-  # geom_point(alpha = 0.05) + 
-  geom_smooth(se = FALSE,
-              size = 0.5,
-              colour = "black") +
-  scale_color_viridis_d(option = "A",
-                        end = 0.8) +
-  scale_linetype_manual(values = c(1, 6)) +
-  scale_x_continuous(expand = c(0, NA),
-                     breaks = seq(0, 9000, 600)) +
-  scale_y_continuous(breaks = seq(-1, 1, 0.5)) + 
-  labs(x = "Time (in seconds)",
-       y = "",
-       subtitle = "Standardized") +
-  theme_apa() + 
-  theme(axis.title.y = element_blank())
+fit_interview_3 <-
+  df_test_reg %>% 
+  filter(time_span == "interview") %$% 
+  lm(intercept ~ mean_confidence + mean_disruption)
 
+fit_interview_4 <-
+  df_test_reg %>% 
+  filter(time_span == "interview") %$% 
+  lm(intercept ~ mean_confidence + mean_disruption + teaching_experience)
 
-
-grid.arrange(loess_plot_overall, loess_plot_overall_std,
-             nrow = 2)
+stargazer::stargazer(fit_interview_1, fit_interview_2, fit_interview_3, fit_interview_4,
+                     type = "latex",
+                     dep.var.labels = "Intercept",
+                     order = c(1, 3, 2),
+                     covariate.labels = c("Disruption Factor",
+                                          "Confidence Factor",
+                                          "Teaching Experience"),
+                     keep.stat = c("n","rsq","adj.rsq")
+                     )
 ```
 
-2. Slope und Intercept mit SD und M
-
-2 Optionen: 
-
-1. Fixed Intercept - Fixed Slope
+## Post
 
 ```{r}
-df_regression <- 
-  main %>% 
-  filter(time_span == "pre") %>%
-  dplyr::select("ID","time","heart_rate_std") %>% 
-  distinct() %>% 
-  mutate(ID = as_factor(ID))
+fit_post_1 <-
+  df_test_reg %>% 
+  filter(time_span == "subsequent") %$% 
+  lm(intercept ~ mean_disruption)
 
-fit_ff <- 
-  lm(heart_rate_std ~ 0 + ID + time:ID,
-  data = df_regression) 
+fit_post_2 <-
+  df_test_reg %>% 
+  filter(time_span == "subsequent") %$% 
+  lm(intercept ~ mean_confidence)
 
-summary(fit_ff)
+fit_post_3 <-
+  df_test_reg %>% 
+  filter(time_span == "subsequent") %$% 
+  lm(intercept ~ mean_confidence + mean_disruption)
 
-fit_ff$coefficients %>%
-  tibble(id = names(.),
-         values = .) %>% 
-  mutate(kind = if_else(condition = str_detect(string = id,
-                                               pattern = ":"),
-                        true = "Slope",
-                        false = "Intercept"
-                        )
-         ) %>% 
-  group_by(kind) %>% 
-  summarize(mean_value = mean(values),
-            sd_value = sd(values)
-            ) %>% 
-  ungroup()
+fit_post_4 <-
+  df_test_reg %>% 
+  filter(time_span == "subsequent") %$% 
+  lm(intercept ~ mean_confidence + mean_disruption + teaching_experience)
+
+stargazer::stargazer(fit_post_1, fit_post_2, fit_post_3, fit_post_4,
+                     type = "latex",
+                     dep.var.labels = "Intercept",
+                     order = c(1, 3, 2),
+                     covariate.labels = c("Disruption Factor",
+                                          "Confidence Factor",
+                                          "Teaching Experience"),
+                     keep.stat = c("n","rsq","adj.rsq")
+                     )
 ```
 
-2. Random Intercept - Random Slope Modell
 
-```{r}
-fit_rr <-
-  lmer(formula = heart_rate_std ~ 1 + time + (1 + time | ID),
-       data = df_regression
-       )
-
-summary(fit_rr)$coefficients[1]
-
-
-ranef(fit_rr)$ID 
-```
-
-Vergleich:
-
-```{r}
-df_regression %>% 
- # filter(ID %in% c("101","102","103","104")) %>% 
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate_std,
-                       group = ID)) +
-  geom_line(mapping = aes(y = fitted(fit_ff)),
-            color = "blue",
-            size = 1) +
-  geom_line(mapping = aes(y = fitted(fit_rr)),
-            color = "red",
-            size = 1,
-            alpha = 0.5) +
-  geom_point(alpha = 0.5,
-             size = 0.5 ) +
-  facet_wrap(~ID, nrow = 6) +
-  theme_bw()
-ggsave(filename = "plots/regression.pdf",
-       width = 20,
-       height = 15,
-       units = "cm")
-```
-
-Beide Verfahren führen zu ähnlichen Schätzern, aber zu Unterschieden in den Verteilungen der Parameter.
-
-Bei der Random Effects Regression werden Intercepts und Slopes nicht unabhängig voneinander modeliert. Die Modelierung erfolgt auf Basis einer bivariaten Normalverteilung.
-Bei der Fixed Effects Regression werden die Größen unabhängig voneinander modelliert.
-
-3. t-Test
-
-```{r}
-cache1 <- 
-  main %>% 
-  dplyr::select("ID","time","heart_rate_std","time_span") %>% 
-  distinct() %>% 
-  mutate(ID = as_factor(ID)) %>% 
-  split(.$time_span) %>% 
-  map(~ lmer(formula = heart_rate_std ~ 1 + time + (1 + time | ID),
-             data = .)) %>% 
-  map(~ ranef(.)$ID %>% 
-        as_tibble(., 
-                  rownames = "ID"
-                  ) %>% 
-        clean_names()
-      ) %>% 
-  bind_rows(.,
-            .id = "time_span")
-
-cache2 <-  
-  main %>% 
-  dplyr::select("ID","time","heart_rate_std","time_span") %>% 
-  distinct() %>% 
-  mutate(ID = as_factor(ID)) %>% 
-  split(.$time_span) %>% 
-  map(~ lmer(formula = heart_rate_std ~ 1 + time + (1 + time | ID),
-             data = .)) %>% 
-  map(~ summary(.) %>% 
-        .$coefficients %>% 
-        .[c(1,2)]) %>% 
-  bind_rows(.,
-            .id = "time_span") %>% 
-  pivot_longer(
-  cols = everything(),
-  names_to = "time_span",
-  values_to = "mean_value"
-  )
-
-df_ttest <- 
-  tibble(mean_intercept = cache2$mean_value[1:6],
-         mean_time = cache2$mean_value[7:12],
-         time_span = cache2$time_span[1:6]) %>% 
-  right_join(x = .,
-             y = cache1) %>% 
-  transmute(time_span,
-            intercept = mean_intercept + intercept,
-            time = mean_time + time)
-  
-
-t.test(df_ttest$intercept[df_ttest$time_span == "main"],
-       df_ttest$intercept[df_ttest$time_span == "subsequent"],
-       paired = TRUE)
-```
 
