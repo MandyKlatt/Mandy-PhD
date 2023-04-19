@@ -619,4 +619,6 @@ print(xtable(df_corr))
 
 - unterschiedliche "Enden" setzen für Robustness-Check (Wie viel Prozent erreichen die zwei Stunden?) -> 80% und 90%
 - p werte, mean, sd für alle slopes und intercepts über alle Phasen
-
+- im 4. Punkt end statt post (Vertagt!)
+- Übersicht aus 2. für alle Phasen
+- Korrelation über disr conf hr alter te (std und normal)
