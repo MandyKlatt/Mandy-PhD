@@ -135,9 +135,9 @@ main %>%
 7. slope und intercept correlation?
 
 
-1. Pre Phase (pre)
+1. Preparation Phase (pre)
 2. Teaching Phase (main)
-3. Post Phase (subsequent)
+3. Post Teaching Phase (subsequent)
 4. Interview Phase (interview)
 5. End Phase (after)
 
@@ -202,8 +202,11 @@ grid.arrange(loess_plot_overall, loess_plot_overall_std,
              nrow = 2)
 ```
 
+- Bei 7200 kappen
 - Kurve zieht am Ende hoch
 - Wenig Fälle, kleine Streuung
+
+
 
 # 2. Slope und Intercept mit SD und M
 
@@ -212,8 +215,8 @@ grid.arrange(loess_plot_overall, loess_plot_overall_std,
 1. Fixed Intercept - Fixed Slope
 
 ```{r}
-# heart_rate_var <- "heart_rate_std"
-heart_rate_var <- "heart_rate"
+heart_rate_var <- "heart_rate_std"
+# heart_rate_var <- "heart_rate"
 
 df_regression <- 
   main %>% 
@@ -255,7 +258,7 @@ fit_rr <-
 summary(fit_rr)$coefficients[1]
 
 
-ranef(fit_rr)$ID 
+ranef(fit_rr)$ID
 ```
 
 Vergleich:
@@ -287,9 +290,9 @@ Beide Verfahren führen zu ähnlichen Schätzern, aber zu Unterschieden in den V
 
 Bei der Random Effects Regression werden Intercepts und Slopes nicht unabhängig voneinander modeliert. Die Modelierung erfolgt auf Basis einer bivariaten Normalverteilung.
 Bei der Fixed Effects Regression werden die Größen unabhängig voneinander modelliert.
-Aus strategischer Sicht die die Fixed Effects Regression vorzuziehen. Modellierung impliziert eine Normalverteilung der Effekte in der Grundgesamtheit. Das ist nicht zwingend notwendig, aber erzeugt automatisch einen schönen Modell-Fit.
+Aus strategischer Sicht die die Random Effects Regression vorzuziehen. Modellierung impliziert eine Normalverteilung der Effekte in der Grundgesamtheit. Das ist nicht zwingend notwendig, aber erzeugt automatisch einen schönen Modell-Fit.
 
-# 3. t-Test zwischen Post-Phase und 
+# 3. t-Test zwischen Teaching und Pre-Phase
 
 ```{r}
 heart_rate_var <- "heart_rate_std"
@@ -344,16 +347,16 @@ df_test <-
             id = id)
 
 t.test(df_test$intercept[df_test$time_span == "main"],
-       df_test$intercept[df_test$time_span == "subsequent"],
+       df_test$intercept[df_test$time_span == "interview"],
        paired = TRUE)
 
 CohenD(x = df_test$intercept[df_test$time_span == "main"],
-       y = df_test$intercept[df_test$time_span == "subsequent"],
+       y = df_test$intercept[df_test$time_span == "interview"],
        pooled = T
        )
 ```
 
-# 4. Intercept (Teaching, interview, Post) vorhersage (4 Modelle)
+# 4. Intercept (Teaching, interview, End) vorhersage (4 Modelle)
 
 ```{r}
 df_test_reg <- 
@@ -461,17 +464,17 @@ stargazer::stargazer(fit_interview_1, fit_interview_2, fit_interview_3, fit_inte
 ```{r}
 fit_post_1 <-
   df_test_reg %>% 
-  filter(time_span == "subsequent") %$% 
+  filter(time_span == "after") %$% 
   lm(intercept ~ mean_disruption)
 
 fit_post_2 <-
   df_test_reg %>% 
-  filter(time_span == "subsequent") %$% 
+  filter(time_span == "after") %$% 
   lm(intercept ~ mean_confidence)
 
 fit_post_3 <-
   df_test_reg %>% 
-  filter(time_span == "subsequent") %$% 
+  filter(time_span == "after") %$% 
   lm(intercept ~ mean_confidence + mean_disruption)
 
 fit_post_4 <-
@@ -611,3 +614,9 @@ df_corr <-
 
 print(xtable(df_corr))
 ```
+
+# To Do
+
+- unterschiedliche "Enden" setzen für Robustness-Check (Wie viel Prozent erreichen die zwei Stunden?) -> 80% und 90%
+- p werte, mean, sd für alle slopes und intercepts über alle Phasen
+
