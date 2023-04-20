@@ -1,0 +1,369 @@
+---
+title: "Action alternatives & confidence factor"
+output: html_document
+date: "2023-03-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# load packages and read in data
+```{r}
+
+library(needs)
+needs(tidyverse,
+      psych,
+      moments,
+      sjPlot,
+      DescTools,
+      irr,
+      readxl, 
+      gridExtra,
+      janitor,
+      RColorBrewer,
+      cowplot)
+
+# suppress "summarize" info. 
+# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
+options(dplyr.summarise.inform = FALSE)
+
+# SELF-REPORT DATA
+df_sri <- 
+  excel_sheets("data/coding_sri.xlsx") %>% 
+  map_df(~read_xlsx("data/coding_sri.xlsx",.)) %>% 
+  dplyr::select(ID, Event, `Confidence Factor`) %>% 
+  filter(
+    ID %in% c(101:126, 201:228),
+    !ID %in% c(204, 226),
+    Event %in% c("chatting")) %>%
+  janitor::clean_names()
+
+# SJT CM
+df_sjt <- read_csv2(file = "data/SJT.csv",
+                    locale = locale(decimal_mark = ",")) %>% 
+  select(UI06_05,
+         SJT_KF_gek) %>%
+  filter(UI06_05 %in% c(101:126, 201:228),
+         !UI06_05 %in% c(204, 226)
+         ) %>% 
+  na.omit() %>% 
+  rename("id" = "UI06_05",
+         "sjt" = "SJT_KF_gek")
+
+
+# ACTION ALTERNATIVES count
+df_alternatives_count <- read_excel("data/coding_action_alternatives.xlsx") %>% 
+  janitor::clean_names() %>% 
+  group_by(id) %>% 
+  # mutate(mean_code = mean(code)) %>% 
+  distinct(count)
+
+# ACTION ALTERNATIVES non-disruptive 
+df_alternatives_nd <- read_excel("data/coding_action_alternatives.xlsx") %>% 
+  janitor::clean_names() %>% 
+  select(id, code) %>% 
+  filter(code %in% c(1:3)) %>%
+  group_by(id) %>%
+  count() %>% 
+  transmute(nd = n)
+
+
+# merge data frames
+# put all data frames into list
+df_list <- list(df_sri,
+                df_sjt,
+                df_alternatives_count,
+                df_alternatives_nd)
+
+# merge all data frames in list
+main <-
+  df_list %>% reduce(full_join, by='id') %>%
+  janitor::clean_names() %>%
+  select(!event)
+
+# replace NA with 0
+main[is.na(main)] <- 0
+
+main$id = ifelse(main$id < 200, "Novice","Expert")
+
+```
+
+# descriptives & plots
+```{r}
+# confidence factor
+describeBy(main$confidence_factor, main$id)
+plot_confi <- boxplot(confidence_factor ~ id, data = main)
+
+# sjt cm
+describeBy(main$sjt, main$id)
+plot_confi <- boxplot(sjt ~ id, data = main)
+
+# action alternatives - count
+describeBy(main$count, main$id)
+plot_action_count <- boxplot(count ~ id, data = main)
+
+# action alternatives - non disruptive alternatives  
+describeBy(main$nd, main$id)
+plot_action_quality <- boxplot(nd ~ id, data = main)
+
+```
+
+# confidence factor x count of action alternatives
+```{r}
+main %>% 
+  filter(!is.na(confidence_factor) | !is.na(count)) %>% 
+  # filter(id %in% c("Novice")) %>% 
+  ggplot(mapping = aes(x = confidence_factor,
+                       y = count,
+                       colour = id
+                       )
+         ) +
+  geom_point() + 
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Confidence Factor",
+       y = "Count of action alternatives") +
+  theme_cowplot()
+
+```
+
+# confidence factor x non-disruptive action alternatives
+```{r}
+main %>% 
+  filter(!is.na(confidence_factor) | !is.na(nd)) %>% 
+  # filter(id %in% c("Novice")) %>% 
+  ggplot(mapping = aes(x = confidence_factor,
+                       y = nd,
+                       colour = id
+                       )
+         ) +
+  geom_point() + 
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "Confidence Factor",
+       y = "Non-disruptive action alternatives") + 
+  theme_cowplot()
+
+```
+
+# sjt x count of action alternatives
+```{r}
+main %>% 
+  filter(!is.na(sjt) | !is.na(count)) %>% 
+  # filter(id %in% c("Novice")) %>% 
+  ggplot(mapping = aes(x = sjt,
+                       y = count,
+                       colour = id
+                       )
+         ) +
+  geom_point() + 
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "SJT Classroom Management",
+       y = "Count of action alternatives") +
+  theme_cowplot()
+
+```
+
+# sjt x non-disruptive action alternatives
+```{r}
+main %>% 
+  filter(!is.na(sjt) | !is.na(nd)) %>% 
+  # filter(id %in% c("Novice")) %>% 
+  ggplot(mapping = aes(x = sjt,
+                       y = nd,
+                       colour = id
+                       )
+         ) +
+  geom_point() + 
+  geom_smooth(method = "lm",
+              se = TRUE) +
+  scale_color_viridis_d() +
+  labs(x = "SJT Classroom Management",
+       y = "Non-disruptive action alternatives") + 
+  theme_cowplot()
+
+```
+
+# t-test and effect size
+```{r}
+
+#### confidence factor
+# t-test for expertise differences
+t.test(x = main$confidence_factor[main$id == "Expert"],
+       y = main$confidence_factor[main$id == "Novice"])
+
+# effect size for expertise differences
+CohenD(x = main$confidence_factor[main$id == "Expert"],
+       y = main$confidence_factor[main$id == "Novice"],
+       na.rm = TRUE)
+
+### action alternatives count
+# t-test for expertise differences
+t.test(x = main$count[main$id == "Expert"],
+       y = main$count[main$id == "Novice"])
+
+# effect size for expertise differences
+CohenD(x = main$count[main$id == "Expert"],
+       y = main$count[main$id == "Novice"],
+       na.rm = TRUE)
+
+### action alternatives non-disruptive
+# t-test for expertise differences
+t.test(x = main$nd[main$id == "Expert"],
+       y = main$nd[main$id == "Novice"])
+
+# effect size for expertise differences
+CohenD(x = main$nd[main$id == "Expert"],
+       y = main$nd[main$id == "Novice"],
+       na.rm = TRUE)
+```
+
+# pearson correlation
+
+```{r}
+# novices: correlation between confidence factor and count
+main %>% 
+  filter(id %in% c("Novice")) -> corr.nov
+
+nov_confi_count_corr <- cor.test(corr.nov$confidence_factor, 
+                                 corr.nov$count, 
+                                 method=c("pearson"),
+                                 adjust="holm")
+print(nov_confi_count_corr, 
+      short = F)
+
+# experts: correlation between confidence factor and count
+main %>% 
+  filter(id %in% c("Expert")) -> corr.exp
+
+exp_confi_count_corr <- cor.test(corr.exp$confidence_factor, 
+                                 corr.exp$count, 
+                                 method=c("pearson"),
+                                 adjust="holm")
+print(exp_confi_count_corr, 
+      short = F)
+
+# full sample: correlation between confidence factor and count
+full_confi_count_corr <- corr.test(main$confidence_factor, 
+                                   main$count, 
+                                   method=c("pearson"), 
+                                   adjust="holm")
+print(full_confi_count_corr,
+      short = F)
+
+
+###################################################
+
+# novices: correlation between confidence factor and non-disruptive alternatives
+nov_confi_nd_corr <- cor.test(corr.nov$confidence_factor,
+                              corr.nov$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(nov_confi_nd_corr, 
+      short = F)
+
+# experts: correlation between confidence factor and non-disruptive alternatives
+exp_confi_nd_corr <- cor.test(corr.exp$confidence_factor,
+                              corr.exp$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(exp_confi_nd_corr,
+      short = F)
+
+# full sample: correlation between confidence factor and non-disruptive alternatives
+full_confi_nd_corr <- corr.test(main$confidence_factor, 
+                                main$nd, method=c("pearson"),
+                                adjust="holm")
+print(full_confi_nd_corr,
+      short = F)  
+
+###################################################
+
+# novices: correlation between count and non-disruptive alternatives
+nov_count_nd_corr <- cor.test(corr.nov$count,
+                              corr.nov$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(nov_count_nd_corr, 
+      short = F)
+
+# experts: correlation between count and non-disruptive alternatives
+exp_count_nd_corr <- cor.test(corr.exp$count,
+                              corr.exp$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(exp_count_nd_corr,
+      short = F)
+
+# full sample: correlation between confidence factor and non-disruptive alternatives
+full_count_nd_corr <- corr.test(main$count, 
+                                main$nd, 
+                                method=c("pearson"),
+                                adjust="holm")
+print(full_count_nd_corr,
+      short = F)
+
+###################################################
+
+
+# novices: correlation between sjt and count
+nov_sjt_count_corr <- cor.test(corr.nov$sjt,
+                              corr.nov$count, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(nov_sjt_count_corr, 
+      short = F)
+
+# experts: correlation between sjt and count
+exp_sjt_count_corr <- cor.test(corr.exp$sjt,
+                              corr.exp$count, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(exp_sjt_count_corr,
+      short = F)
+
+# full sample: correlation between sjt and count
+full_sjt_count_corr <- corr.test(main$sjt, 
+                                 main$count, 
+                                 method=c("pearson"), 
+                                 adjust="holm")
+print(full_sjt_count_corr, 
+      short = F)
+
+
+###################################################
+
+# novices: correlation between sjt and non-disruptive alternatives
+nov_sjt_nd_corr <- cor.test(corr.nov$sjt,
+                              corr.nov$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(nov_sjt_nd_corr, 
+      short = F)
+
+# experts: correlation between sjt and non-disruptive alternatives
+exp_sjt_nd_corr <- cor.test(corr.exp$sjt,
+                              corr.exp$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(exp_sjt_nd_corr,
+      short = F)
+
+
+# full sample: correlation between sjt and non-disruptive alternatives
+full_sjt_nd_corr <- corr.test(main$sjt,
+                              main$nd,
+                              method=c("pearson"),
+                              adjust="holm")
+print(full_sjt_nd_corr,
+      short = F)
+
+```
+
+
