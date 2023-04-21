@@ -89,12 +89,19 @@ dist_group_plot <-
   theme_cowplot() + 
   theme(
     legend.position="none",
+<<<<<<< Updated upstream
     axis.text.x = element_text(size = 23),
     axis.text.y = element_text(size = 18),
     axis.title.y = element_text(size = 25),
     plot.title = element_text(size = 25, 
                               face = "bold"),
     )
+=======
+    axis.text.x = element_text(size = 15),
+    plot.title = element_text(size = 19, face = "bold"),
+    axis.text.y = element_text(size = 15),
+    axis.title.y = element_text(size = 15))
+>>>>>>> Stashed changes
 
 dist_group_plot
 
@@ -105,6 +112,7 @@ ggsave(plot = dist_group_plot,
        units = "in")
 
 
+<<<<<<< Updated upstream
 # # plotting Disruption factor for 3 disruptions sum up
 # sri_disrup$Event[sri_disrup$Event == "chatting" |
 #                    sri_disrup$Event == "heckling" |
@@ -154,6 +162,55 @@ ggsave(plot = dist_group_plot,
 # 
 # sri_disrup_sum
 # 
+=======
+# plotting Disruption factor for all disruptions
+dist_plot <- 
+  sri_disrup %>% 
+  mutate(Event = factor(Event,
+                      levels = c("chatting",
+                                 "whispering",
+                                 "heckling",
+                                 "snipping",
+                                 "drumming",
+                                 "clicking",
+                                 "looking at phone",
+                                 "head on table",
+                                 "drawing"
+                      ),
+                      labels = c("Chatting",
+                                 "Whispering",
+                                 "Heckling",
+                                 "Snipping",
+                                 "Drumming",
+                                 "Clicking pen",
+                                 "Looking at phone",
+                                 "Head on table",
+                                 "Drawing"
+                      )
+  )) %>%
+  ggplot(data = sri_disrup,
+         mapping = aes(x = Group,
+                       y = Disruption_Factor)) +
+  geom_boxplot(mapping = aes(fill = Group)) +
+  geom_point(size = 2, 
+             alpha = 0.4,
+             position = position_jitter(seed = 1, 
+                                        width = 0.1,
+                                        height = 0)) +
+  labs(x = "",
+       y = "Disruption Factor") + 
+  ylim(0,10)+
+  scale_fill_brewer(palette = "Set1") +
+  facet_wrap(vars(Event), 
+             nrow = 1, strip.position = "bottom") +
+  ggtitle("How disruptive was the event for you?") +
+  theme_classic() + 
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        strip.text.x = element_text(size = 8, 
+                                    angle = 90),
+        plot.title = element_text(size = 15, face = "bold"))
+>>>>>>> Stashed changes
 
 
 # # plotting Disruption factor for all disruptions

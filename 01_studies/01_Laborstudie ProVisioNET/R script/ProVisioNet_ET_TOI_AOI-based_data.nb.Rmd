@@ -1,0 +1,808 @@
+---
+title: "AOI and TOI based analyses ProVisioNet"
+output: html_notebook
+---
+
+# Install Packages
+
+```{r}
+library(needs)
+needs(tidyverse,
+      psych,
+      moments,
+      sjPlot,
+      DescTools,
+      irr,
+      readxl,
+      gridExtra)
+```
+
+# Read In Data sets
+
+```{r, include = FALSE}
+AOI_AP_01 <- read_tsv(file = "data/01_01_AP_ProVisioNET_study_glasses_Metrics_Intervall based.tsv")
+
+AOI_MK_01 <- read_tsv(file = "data/01_01_MK_ProVisioNET_study_glasses_Metrics_Intervall based.tsv")
+
+AOI_AP_04 <- read_tsv(file = "data/04_04_AP_ProVisioNET_study_glasses_Metrics_Intervall based.tsv")
+
+AOI_MK_04 <- read_tsv(file = "data/04_04_MK_ProVisioNET_study_glasses_Metrics_Intervall based.tsv")
+
+```
+
+# AOI based analyses 
+# Data Wrangling - Total Duration and Proportional Duration of looking at AOIs
+
+```{r, include = TRUE, cache = TRUE, echo=TRUE}
+
+# select relevant columns
+AOI_AP_01 <- AOI_AP_01 %>% 
+  select(TOI,
+         starts_with("Total_duration_of_fixation"))
+
+AOI_MK_01 <- AOI_MK_01 %>% 
+  select(TOI,
+         starts_with("Total_duration_of_fixation"))
+
+AOI_AP_04 <- AOI_AP_04 %>% 
+  select(TOI,
+         starts_with("Total_duration_of_fixation"))
+
+AOI_MK_04 <- AOI_MK_04 %>% 
+  select(TOI,
+         starts_with("Total_duration_of_fixation"))
+
+
+# filter only for TOIs
+AOI_AP_01 <- AOI_AP_01 %>% 
+  filter(  TOI == "Chatting_with_neighbour" |
+           TOI == "Clicking_pen" |
+           TOI == "Drawing" | 
+           TOI == "Drumming_with_hands" |
+           TOI == "Head_on_table" |
+           TOI == "Looking_at_phone" |
+           TOI == "Heckling"| 
+           TOI == "Lesson" | 
+           TOI == "Snipping_with_fingers" |
+           TOI == "Whispering" |
+          TOI == "Entire Recording")
+
+AOI_MK_01 <- AOI_MK_01 %>% 
+  filter(  TOI == "Chatting_with_neighbour" |
+           TOI == "Clicking_pen" |
+           TOI == "Drawing" | 
+           TOI == "Drumming_with_hands" |
+           TOI == "Head_on_table" |
+           TOI == "Looking_at_phone" |
+           TOI == "Heckling"| 
+           TOI == "Lesson" | 
+           TOI == "Snipping_with_fingers" |
+           TOI == "Whispering" |
+          TOI == "Entire Recording")
+
+AOI_AP_04 <- AOI_AP_04 %>% 
+  filter(  TOI == "Chatting_with_neighbour" |
+           TOI == "Clicking_pen" |
+           TOI == "Drawing" | 
+           TOI == "Drumming_with_hands" |
+           TOI == "Head_on_table" |
+           TOI == "Looking_at_phone" |
+           TOI == "Heckling"| 
+           TOI == "Lesson" | 
+           TOI == "Snipping_with_fingers" |
+           TOI == "Whispering"|
+          TOI == "Entire Recording")
+
+AOI_MK_04 <- AOI_MK_04 %>% 
+  filter(  TOI == "Chatting_with_neighbour" |
+           TOI == "Clicking_pen" |
+           TOI == "Drawing" | 
+           TOI == "Drumming_with_hands" |
+           TOI == "Head_on_table" |
+           TOI == "Looking_at_phone" |
+           TOI == "Heckling"| 
+           TOI == "Lesson" | 
+           TOI == "Snipping_with_fingers" |
+           TOI == "Whispering"|
+          TOI == "Entire Recording")
+
+# create new column names that give total duration of looking at all AOIs
+AOI_AP_01 <- AOI_AP_01  %>% 
+  rename (Anna = Total_duration_of_fixations.Anna,
+          Bianca = Total_duration_of_fixations.Bianca,
+          Carl_a = `Total_duration_of_fixations.Carl(a)`,
+          Disruptive_Person = Total_duration_of_fixations.Disruptive_Person,
+          Board_Screen = Total_duration_of_fixations.Board_Screen,
+          Classroom_Others = Total_duration_of_fixations.Classroom_Others,
+          Material = Total_duration_of_fixations.Material,
+          Nametag_Anna = Total_duration_of_fixations.Nametag_Anna,
+          Nametag_Bianca = Total_duration_of_fixations.Nametag_Bianca,
+          Nametage_Carl_a = `Total_duration_of_fixations.Nametag_Carl(a)`)
+
+AOI_MK_01 <- AOI_MK_01  %>% 
+  rename (Anna = Total_duration_of_fixations.Anna,
+          Bianca = Total_duration_of_fixations.Bianca,
+          Carl_a = `Total_duration_of_fixations.Carl(a)`,
+          Disruptive_Person = Total_duration_of_fixations.Disruptive_Person,
+          Board_Screen = Total_duration_of_fixations.Board_Screen,
+          Classroom_Others = Total_duration_of_fixations.Classroom_Others,
+          Teacher_Material = Total_duration_of_fixations.Material_Teacher,
+          Students_Material = Total_duration_of_fixations.Material_Students,
+          Nametag_Anna = Total_duration_of_fixations.Nametag_Anna,
+          Nametag_Bianca = Total_duration_of_fixations.Nametag_Bianca,
+          Nametage_Carl_a = `Total_duration_of_fixations.Nametag_Carl(a)`)
+
+AOI_AP_04 <- AOI_AP_04  %>% 
+  rename (Anna = Total_duration_of_fixations.Anna,
+          Bianca = Total_duration_of_fixations.Bianca,
+          Carl_a = `Total_duration_of_fixations.Carl(a)`,
+          Disruptive_Person = Total_duration_of_fixations.Disruptive_Person,
+          Board_Screen = Total_duration_of_fixations.Board_Screen,
+          Classroom_Others = Total_duration_of_fixations.Classroom_Others,
+          Material = Total_duration_of_fixations.Material,
+          Nametag_Anna = Total_duration_of_fixations.Nametag_Anna,
+          Nametag_Bianca = Total_duration_of_fixations.Nametag_Bianca,
+          Nametage_Carl_a = `Total_duration_of_fixations.Nametag_Carl(a)`)
+
+
+AOI_MK_04 <- AOI_MK_04  %>% 
+  rename (Anna = Total_duration_of_fixations.Anna,
+          Bianca = Total_duration_of_fixations.Bianca,
+          Carl_a = `Total_duration_of_fixations.Carl(a)`,
+          Disruptive_Person = Total_duration_of_fixations.Disruptive_Person,
+          Board_Screen = Total_duration_of_fixations.Board_Screen,
+          Classroom_Others = Total_duration_of_fixations.Classroom_Others,
+          Students_Material = Total_duration_of_fixations.Students_material,
+          Teacher_Material = Total_duration_of_fixations.Teacher_material,
+          Nametag_Anna = Total_duration_of_fixations.Nametag_Anna,
+          Nametag_Bianca = Total_duration_of_fixations.Nametag_Bianca,
+          Nametage_Carl_a = `Total_duration_of_fixations.Nametag_Carl(a)`)
+
+# replace NAs with 0
+AOI_AP_01 <- AOI_AP_01 %>%
+  mutate_all(~replace(., is.na(.), 0))
+
+AOI_AP_04 <- AOI_AP_04 %>%
+  mutate_all(~replace(., is.na(.), 0))
+
+AOI_MK_01 <- AOI_MK_01 %>%
+  mutate_all(~replace(., is.na(.), 0))
+
+AOI_MK_04 <- AOI_MK_04 %>%
+  mutate_all(~replace(., is.na(.), 0))
+
+
+# create data set of total durations in long format for plotting --> for later
+AOI_AP_01_long <- gather(AOI_AP_01, TOI, Duration)
+
+AOI_MK_01_long <- gather(AOI_MK_01, TOI, Duration)
+
+AOI_AP_04_long <- gather(AOI_AP_04, TOI, Duration)
+
+AOI_MK_04_long <- gather(AOI_MK_04, TOI, Duration)
+
+# create a new column with name sum_aois that gives the sum of looking at all AOIs
+AOI_AP_01 <- AOI_AP_01  %>% mutate(Sum_AOI = Anna + 
+                                              Bianca +
+                                              Carl_a + 
+                                              Disruptive_Person + 
+                                              Board_Screen + 
+                                              Classroom_Others + 
+                                              Material + 
+                                              Nametag_Anna +
+                                              Nametag_Bianca + 
+                                              Nametage_Carl_a)
+
+AOI_MK_01 <- AOI_MK_01  %>% mutate(Sum_AOI = Anna + 
+                                              Bianca +
+                                              Carl_a + 
+                                              Disruptive_Person + 
+                                              Board_Screen + 
+                                              Classroom_Others + 
+                                              Teacher_Material +
+                                              Students_Material + 
+                                              Nametag_Anna +
+                                              Nametag_Bianca + 
+                                              Nametage_Carl_a)
+
+AOI_AP_04 <- AOI_AP_04  %>% mutate(Sum_AOI = Anna + 
+                                              Bianca +
+                                              Carl_a + 
+                                              Disruptive_Person + 
+                                              Board_Screen + 
+                                              Classroom_Others + 
+                                              Material + 
+                                              Nametag_Anna +
+                                              Nametag_Bianca + 
+                                              Nametage_Carl_a)
+
+AOI_MK_04 <- AOI_MK_04  %>% mutate(Sum_AOI = Anna + 
+                                              Bianca +
+                                              Carl_a + 
+                                              Disruptive_Person + 
+                                              Board_Screen + 
+                                              Classroom_Others + 
+                                              Teacher_Material +
+                                              Students_Material + 
+                                              Nametag_Anna +
+                                              Nametag_Bianca + 
+                                              Nametage_Carl_a)
+
+
+# create new columns that give proportion of the duration of looking at all AOIs
+# the proportion is the relative duration divided by total duration 
+prop_AP_01 <- AOI_AP_01  %>% 
+  mutate(Anna = Anna/Sum_AOI)   %>% 
+  mutate(Bianca = Bianca/Sum_AOI)   %>% 
+  mutate (Carl_a = Carl_a/Sum_AOI) %>%
+  mutate(Disruptive_Person = Disruptive_Person/Sum_AOI)   %>% 
+  mutate(Board_Screen = Board_Screen/Sum_AOI) %>%
+  mutate(Classroom_Others = Classroom_Others/Sum_AOI) %>%
+  mutate (Material = Material/Sum_AOI) %>%
+  mutate (Nametag_Anna = Nametag_Anna/Sum_AOI) %>%
+  mutate (Nametag_Bianca = Nametag_Bianca/Sum_AOI) %>%
+  mutate (Nametage_Carl_a = Nametage_Carl_a/Sum_AOI)
+
+# chose all columns exept the last one (Sum_AOI)
+prop_AP_01 <- prop_AP_01 %>% filter(TOI == "Lesson") %>%
+                              select(,1:11)
+
+prop_MK_01 <- AOI_MK_01  %>% 
+  mutate(Anna = Anna/Sum_AOI)   %>% 
+  mutate(Bianca = Bianca/Sum_AOI)   %>% 
+  mutate (Carl_a = Carl_a/Sum_AOI) %>%
+  mutate(Disruptive_Person = Disruptive_Person/Sum_AOI)   %>% 
+  mutate(Board_Screen = Board_Screen/Sum_AOI) %>%
+  mutate(Classroom_Others = Classroom_Others/Sum_AOI) %>%
+  mutate (Teacher_Material = Teacher_Material/Sum_AOI) %>%
+  mutate (Nametag_Anna = Nametag_Anna/Sum_AOI) %>%
+  mutate (Nametag_Bianca = Nametag_Bianca/Sum_AOI) %>%
+  mutate (Nametage_Carl_a = Nametage_Carl_a/Sum_AOI) %>%
+  rename(Material = Teacher_Material)
+
+prop_MK_01 <- prop_MK_01 %>% filter(TOI == "Lesson") %>%
+                              select(!"Students_Material")
+
+prop_AP_04 <- AOI_AP_04  %>% 
+  mutate(Anna = Anna/Sum_AOI)   %>% 
+  mutate(Bianca = Bianca/Sum_AOI)   %>% 
+  mutate (Carl_a = Carl_a/Sum_AOI) %>%
+  mutate(Disruptive_Person = Disruptive_Person/Sum_AOI)   %>% 
+  mutate(Board_Screen = Board_Screen/Sum_AOI) %>%
+  mutate(Classroom_Others = Classroom_Others/Sum_AOI) %>%
+  mutate (Material = Material/Sum_AOI) %>%
+  mutate (Nametag_Anna = Nametag_Anna/Sum_AOI) %>%
+  mutate (Nametag_Bianca = Nametag_Bianca/Sum_AOI) %>%
+  mutate (Nametage_Carl_a = Nametage_Carl_a/Sum_AOI)
+
+prop_AP_04 <- prop_AP_04 %>% filter(TOI == "Lesson") %>%
+                              select(,1:11)
+
+prop_MK_04 <- AOI_MK_04  %>% 
+  mutate(Anna = Anna/Sum_AOI)   %>% 
+  mutate(Bianca = Bianca/Sum_AOI)   %>% 
+  mutate (Carl_a = Carl_a/Sum_AOI) %>%
+  mutate(Disruptive_Person = Disruptive_Person/Sum_AOI)   %>% 
+  mutate(Board_Screen = Board_Screen/Sum_AOI) %>%
+  mutate(Classroom_Others = Classroom_Others/Sum_AOI) %>%
+  mutate (Teacher_Material = Teacher_Material/Sum_AOI) %>%
+  mutate(Students_Material = Students_Material/Sum_AOI) %>%
+  mutate (Nametag_Anna = Nametag_Anna/Sum_AOI) %>%
+  mutate (Nametag_Bianca = Nametag_Bianca/Sum_AOI) %>%
+  mutate (Nametage_Carl_a = Nametage_Carl_a/Sum_AOI) %>%
+  mutate (Material = Students_Material + Teacher_Material)
+
+prop_MK_04 <- prop_MK_04 %>% filter(TOI == "Lesson") %>%
+                              select(!"Students_Material") %>%
+                              select(!"Teacher_Material") %>%
+                              select (!"Sum_AOI")
+
+
+# create data set of proportions in long format for plotting
+prop_AP_01_long  <- prop_AP_01 %>% gather(TOI, Duration)
+
+prop_MK_01_long <- prop_MK_01 %>% gather (TOI, Duration)
+
+prop_AP_04_long <- prop_AP_04 %>% gather (TOI, Duration)
+
+prop_MK_04_long <- prop_MK_04 %>% gather (TOI, Duration)
+
+################################################
+
+```
+
+### Ploting data - Total Duration and Proportional Data of Video 01 and 04, coded by AP and MK
+
+```{r echo = TRUE, include=TRUE}
+total_AP_01 <- AOI_AP_01_long %>%
+            ggplot( aes(x=TOI, y=Duration, fill=TOI)) +
+            geom_boxplot() +
+            geom_jitter(color="black", size=0.4, alpha=0.9) +
+            geom_point() + ylim (0,1000) + 
+          theme(
+            axis.text.x = element_text(angle=80, hjust=1),
+            legend.position="none",
+            plot.title = element_text(size=11)) +
+          ggtitle("Total Duration of Looking at AOIs in ms - Video 01 Rater AP") +
+             xlab("AOI")
+
+total_AP_01
+
+total_MK_01 <- AOI_MK_01_long %>%
+            ggplot( aes(x=TOI, y=Duration, fill=TOI)) +
+            geom_boxplot() +
+            geom_jitter(color="black", size=0.4, alpha=0.9) +
+            geom_point() + ylim (0,1000) + 
+          theme(
+            axis.text.x = element_text(angle=80, hjust=1),
+            legend.position="none",
+            plot.title = element_text(size=11)) +
+          ggtitle("Total Duration of Looking at AOIs in ms - Video 01 Rater MK") +
+             xlab("AOI")
+
+total_MK_01
+
+### Plot data TOTAL DURATION video 04
+total_AP_04 <- AOI_AP_04_long %>%
+            ggplot( aes(x=TOI, y=Duration, fill=TOI)) +
+            geom_boxplot() +
+            geom_jitter(color="black", size=0.4, alpha=0.9) +
+            geom_point() + ylim (0,1000) + 
+          theme(
+            axis.text.x = element_text(angle=80, hjust=1),
+            legend.position="none",
+            plot.title = element_text(size=11)) +
+          ggtitle("Total Duration of Looking at AOIs in ms - Video 04 Rater AP") +
+             xlab("AOI")
+
+total_AP_04
+
+
+total_MK_04 <- AOI_MK_04_long %>%
+            ggplot( aes(x=TOI, y=Duration, fill=TOI)) +
+            geom_boxplot() +
+            geom_jitter(color="black", size=0.4, alpha=0.9) +
+            geom_point() + ylim (0,1000) + 
+          theme(
+            axis.text.x = element_text(angle=80, hjust=1),
+            legend.position="none",
+            plot.title = element_text(size=11)) +
+          ggtitle("Total Duration of Looking at AOIs in ms - Video 04 Rater MK") +
+             xlab("AOI")
+
+total_MK_04
+
+
+### Plot data PROPORTIONAL DURATION video 01
+prop_AP_01 <- prop_AP_01_long %>%
+            ggplot( aes(x=TOI, y=Duration, fill=TOI)) +
+            geom_boxplot() +
+          theme(
+            axis.text.x = element_text(angle=80, hjust=1),
+            legend.position="none",
+            plot.title = element_text(size=11)) +
+          ggtitle("Proportional Duration of Looking at AOIs - Video 01 Rater AP") +
+             xlab("AOI")
+
+prop_AP_01
+
+prop_MK_01 <- prop_MK_01_long %>%
+            ggplot( aes(x=TOI, y=Duration, fill=TOI)) +
+            geom_boxplot() + 
+          theme(
+            axis.text.x = element_text(angle=80, hjust=1),
+            legend.position="none",
+            plot.title = element_text(size=11)) +
+          ggtitle("Proportional Duration of Looking at AOIs in ms") +
+             xlab("AOI")
+
+prop_MK_01
+
+
+### Plot data PROPORTIONAL DURATION video 04
+prop_AP_04 <- prop_AP_04_long %>%
+            ggplot( aes(x=TOI, y=Duration, fill=TOI)) +
+            geom_boxplot() +
+          theme(
+            axis.text.x = element_text(angle=80, hjust=1),
+            legend.position="none",
+            plot.title = element_text(size=11)) +
+          ggtitle("Proportional Duration of Looking at AOIs - Video 04 Rater AP") +
+             xlab("AOI")
+
+prop_AP_04
+
+prop_MK_04 <- prop_MK_04_long %>%
+            ggplot( aes(x=TOI, y=Duration, fill=TOI)) +
+            geom_boxplot() + 
+          theme(
+            axis.text.x = element_text(angle=80, hjust=1),
+            legend.position="none",
+            plot.title = element_text(size=11)) +
+          ggtitle("Proportional Duration of Looking at AOIs - Video 04 Rater MK") +
+             xlab("AOI")
+
+prop_MK_04
+
+```
+
+# Reliabilty for Hits in AOIs
+# Read in Data Sets
+```{r, include=TRUE}
+AOI_hit_AP_01 <- read_tsv(file = "data/01_01_AP_ProVisioNET_study_glasses_Metrics_Event-based.tsv"
+                   )
+
+AOI_hit_MK_01 <- read_tsv(file = "data/01_01_MK_ProVisioNET_study_glasses_Metrics_Event-based.tsv"
+                  )
+
+AOI_hit_AP_04 <- read_tsv(file = "data/04_04_AP_ProVisioNET_study_glasses Metrics_event-based.tsv")
+
+AOI_hit_MK_04 <- read_tsv(file = "data/04_04_MK_ProVisioNET_study_glasses Metrics_event-based.tsv")
+```
+
+# Data Wrangling
+```{r echo=FALSE, include=TRUE}
+# filter only rows lesson
+AOI_hit_AP_01 <- AOI_hit_AP_01 %>% filter(TOI == "Lesson")
+
+AOI_hit_MK_01 <- AOI_hit_MK_01 %>% filter(TOI == "Lesson")
+
+AOI_hit_AP_04 <- AOI_hit_AP_04 %>% filter(TOI == "Lesson")
+
+AOI_hit_MK_04 <- AOI_hit_MK_04 %>% filter(TOI == "Lesson")
+
+
+# select variable AOI + Hit_proportion
+AOI_hit_AP_01 <- AOI_hit_AP_01 %>% select(AOI, Hit_proportion)
+
+AOI_hit_MK_01 <- AOI_hit_MK_01 %>% select(AOI, Hit_proportion)
+
+AOI_hit_AP_04 <- AOI_hit_AP_04 %>% select(AOI, Hit_proportion)
+
+AOI_hit_MK_04 <- AOI_hit_MK_04 %>% select(AOI, Hit_proportion)
+
+
+# changing character to numeric
+AOI_hit_AP_01$Hit_proportion <- as.numeric(AOI_hit_AP_01$Hit_proportion)
+
+AOI_hit_MK_01$Hit_proportion <- as.numeric(AOI_hit_MK_01$Hit_proportion)
+
+AOI_hit_AP_04$Hit_proportion <- as.numeric(AOI_hit_AP_04$Hit_proportion)
+
+AOI_hit_MK_04$Hit_proportion <- as.numeric(AOI_hit_MK_04$Hit_proportion)
+
+# round Hit_proportion to 1
+AOI_hit_AP_01$Hit_proportion <- round(AOI_hit_AP_01$Hit_proportion, digits = 0)
+
+AOI_hit_MK_01$Hit_proportion <- round(AOI_hit_MK_01$Hit_proportion, digits = 0)
+
+AOI_hit_AP_04$Hit_proportion <- round(AOI_hit_AP_04$Hit_proportion, digits = 0)
+
+AOI_hit_MK_04$Hit_proportion <- round(AOI_hit_MK_04$Hit_proportion, digits = 0)
+
+
+
+#delete NAs
+AOI_hit_AP_01 <- na.omit(AOI_hit_AP_01)
+
+AOI_hit_MK_01 <- na.omit(AOI_hit_MK_01)
+
+AOI_hit_AP_04 <- na.omit(AOI_hit_AP_04)
+
+AOI_hit_MK_04 <- na.omit(AOI_hit_MK_04)
+
+
+# group data by AOI and summarise Hit_prop
+Hit_AP_01_aggr <- group_by(.data = AOI_hit_AP_01,
+                    AOI) %>% summarise(Hit_count = length(Hit_proportion))
+
+Hit_MK_01_aggr <- group_by(.data = AOI_hit_MK_01,
+                    AOI) %>% summarise(Hit_count = length(Hit_proportion))
+
+
+Hit_AP_04_aggr <- group_by(.data = AOI_hit_AP_04,
+                    AOI) %>% summarise(Hit_count = length(Hit_proportion))
+
+
+Hit_MK_04_aggr <- group_by(.data = AOI_hit_MK_04,
+                    AOI) %>% summarise(Hit_count = length(Hit_proportion))
+
+
+###### filter only for identical rows for both rater
+
+AP_01_filter <- Hit_AP_01_aggr %>% filter(
+                    AOI != "Nametag_Anna",
+                    AOI != "Nametag_Bianca",
+                    AOI != "Nametag_Carl(a)")
+
+AP_01_filter
+
+MK_01_filter <- Hit_MK_01_aggr %>% filter( 
+                    AOI != "Bianca,Classroom_Others")
+
+MK_01_filter$AOI[MK_01_filter$AOI == "Material_Teacher"] <- "Material"
+  
+MK_01_filter
+
+
+# merge two data frames --> adding Columns, don't forget to merge BY AOI !
+
+r3 <- merge(AP_01_filter, MK_01_filter, by = 'AOI')
+
+# create a new df with only the ratings 
+r3_agree <- r3 %>% select(Hit_count.x, Hit_count.y)
+
+# function agree() with a tolerance
+agree(r3_agree, tolerance=50)
+
+#################### CohenKappa ##############################
+
+# first, create a xtab and specify who is rater1 and rater2
+ratertab <- xtabs(~r3$Hit_count.x + r3$Hit_count.y)
+ratertab
+
+# now you can calculate CohenKappa
+CohenKappa(ratertab)
+
+
+#################### ICC ##############################
+
+# build a subset that contains the two AOI hit variables  
+data_icc <- subset(r3, select = c(Hit_count.x, Hit_count.y))
+
+# calculate the ICC for two raters with new subset
+ICC(data_icc)
+
+```
+
+ 
+# TOI based analyses 
+# Data Wrangling - TOIs classified by disruptions
+
+```{r, echo=TRUE, include=TRUE}
+
+df_AP_01 <- df_AP_01 %>% 
+  select(TOI, Duration_of_interval)
+
+df_MK_01 <- df_MK_01 %>% 
+  select(TOI, Duration_of_interval)
+
+df_AP_04 <- df_AP_04 %>% 
+  select(TOI, Duration_of_interval)
+
+df_MK_04 <- df_MK_04 %>% 
+  select(TOI, Duration_of_interval)
+
+
+# Duration
+
+df_cappa_dur <- matrix(ncol = 3,
+                       nrow = 11)
+
+colnames(df_cappa_dur) <- c("TOI","Duration_of_interval_AP_01","Duration_of_interval_MK_01")
+
+df_cappa_dur <- as_tibble(df_cappa_dur)
+
+TOI_names <- c("Calibration_phase",
+               "Chatting_with_neighbour",
+               "Clicking_pen",
+               "Drawing",
+               "Drumming_with_hands",
+               "Head_on_table",
+               "Looking_at_phone",
+               "Heckling","Lesson",
+               "Snipping_with_fingers",
+               "Whispering")
+
+df_cappa_dur$TOI <- TOI_names
+
+# AP_01 Duration TOI
+for (i in TOI_names) {
+  
+  val <- df_AP_01$Duration_of_interval[df_AP_01 == i]
+  
+  df_cappa_dur$Duration_of_interval_AP_01[df_cappa_dur$TOI == i] <- val
+}
+
+# MK_01 Duration TOI
+for (i in TOI_names) {
+  
+  val <- df_MK_01$Duration_of_interval[df_MK_01 == i]
+  
+  df_cappa_dur$Duration_of_interval_MK_01[df_cappa_dur$TOI == i] <- val
+}
+
+# AP_04 Duration TOI
+for (i in TOI_names) {
+  
+  val <- df_AP_04$Duration_of_interval[df_AP_04 == i]
+  
+  df_cappa_dur$Duration_of_interval_AP_04[df_cappa_dur$TOI == i] <- val
+}
+
+# MK_04 Duration TOI
+for (i in TOI_names) {
+  
+  val <- df_MK_04$Duration_of_interval[df_MK_04 == i]
+  
+  df_cappa_dur$Duration_of_interval_MK_04[df_cappa_dur$TOI == i] <- val
+}
+
+```
+
+# Creating TOI classes
+```{r, include=TRUE}
+df_cappa_dur$TOI_class[df_cappa_dur$TOI == "Calibration_phase"] <- "Calibration_phase"
+
+df_cappa_dur$TOI_class[df_cappa_dur$TOI == "Chatting_with_neighbour" |
+                         df_cappa_dur$TOI == "Heckling" |
+                         df_cappa_dur$TOI == "Whispering"] <- "Verbal_disruption"
+
+df_cappa_dur$TOI_class[df_cappa_dur$TOI == "Head_on_table" |
+                         df_cappa_dur$TOI == "Looking_at_phone" |
+                         df_cappa_dur$TOI == "Drawing"] <- "Lack_of_eagerness"
+
+df_cappa_dur$TOI_class[df_cappa_dur$TOI == "Lesson"] <- "Lesson"
+
+df_cappa_dur$TOI_class[is.na(df_cappa_dur$TOI_class)] <- "Agitation"
+
+df_cappa_dur$TOI_class <- as_factor(df_cappa_dur$TOI_class)
+
+df_cappa_dur_aggr <- df_cappa_dur %>%
+  group_by(TOI_class) %>%
+  summarise(Duration_mean_AP_01 = mean(Duration_of_interval_AP_01),
+            Duration_mean_MK_01 = mean(Duration_of_interval_MK_01),
+            Duration_mean_AP_04 = mean(Duration_of_interval_AP_04),
+            Duration_mean_MK_04 = mean(Duration_of_interval_MK_04)
+            )
+
+```
+
+
+#
+```{r}
+fun_1 <- function(x) {
+    y <- x
+    return(y)
+  }
+```
+
+
+# TOI Reliability
+# Start and Duration
+
+# Data Wrangling
+
+```{r, include=TRUE}
+df_AP <- df_AP %>% 
+  select(TOI, Duration_of_interval, Start_of_interval)
+
+df_MK <- df_MK %>% 
+  select(TOI, Duration_of_interval, Start_of_interval)
+
+# Start
+
+df_cappa_start <- matrix(ncol = 3,
+                         nrow = 8)
+
+colnames(df_cappa_start) <- c("TOI","Start_of_interval_EH","Start_of_interval_RD")
+
+df_cappa_start <- as_tibble(df_cappa_start)
+
+TOI_names <- c("Calibration_phase","Clicking_pen","Drumming_with_hands",
+               "Head_on_table","Heckling","Lesson","Snipping_with_fingers",
+               "Whispering")
+
+df_cappa_start$TOI <- TOI_names
+
+# AP Start TOI
+for (i in TOI_names) {
+  
+  val <- df_AP$Start_of_interval[df_AP == i]
+  
+  df_cappa_start$Start_of_interval_AP[df_cappa_start$TOI == i] <- val
+}
+
+# MK Start TOI
+for (i in TOI_names) {
+  
+  val <- df_MK$Start_of_interval[df_MK == i]
+  
+  df_cappa_start$Start_of_interval_MK[df_cappa_start$TOI == i] <- val
+}
+
+# Duration
+
+df_cappa_dur <- matrix(ncol = 3,
+                       nrow = 8)
+
+colnames(df_cappa_dur) <- c("TOI","Duration_of_interval_EH","Duration_of_interval_RD")
+
+df_cappa_dur <- as_tibble(df_cappa_dur)
+
+TOI_names <- c("Calibration_phase","Clicking_pen","Drumming_with_hands",
+               "Head_on_table","Heckling","Lesson","Snipping_with_fingers",
+               "Whispering")
+
+df_cappa_dur$TOI <- TOI_names
+
+# AP Duration TOI
+for (i in TOI_names) {
+  
+  val <- df_AP$Duration_of_interval[df_AP == i]
+  
+  df_cappa_dur$Duration_of_interval_AP[df_cappa_dur$TOI == i] <- val
+}
+
+# MK Duration TOI
+for (i in TOI_names) {
+  
+  val <- df_MK$Duration_of_interval[df_MK == i]
+  
+  df_cappa_dur$Duration_of_interval_MK[df_cappa_dur$TOI == i] <- val
+}
+
+# In seconds
+
+df_cappa_dur$Duration_of_interval_AP <- round(df_cappa_dur$Duration_of_interval_AP/1000,
+                                              digits = 2
+                                              )
+
+df_cappa_dur$Duration_of_interval_MK <- round(df_cappa_dur$Duration_of_interval_MK/1000,
+                                              digits = 2
+                                              )
+
+df_cappa_start$Start_of_interval_AP <- round(df_cappa_start$Start_of_interval_AP/1000,
+                                              digits = 2
+                                              )
+
+df_cappa_start$Start_of_interval_MK <- round(df_cappa_start$Start_of_interval_MK/1000,
+                                              digits = 2
+                                             )
+```
+
+```{r, include=FALSE}
+fun_1 <- function(x) {
+    y <- x
+    return(y)
+  }
+```
+
+
+# Reliabiltät
+
+## Plotting Duration
+
+```{r, echo=TRUE}
+cor.test(x = df_cappa_dur$Duration_of_interval_AP,
+     y = df_cappa_dur$Duration_of_interval_MK,
+          method = "pearson")
+
+ICC(x = select(df_cappa_dur,
+               Duration_of_interval_AP,
+               Duration_of_interval_MK
+               )
+    )
+
+# Lesson is significant longer and gives a biased view on the points.
+
+ggplot(data = filter(df_cappa_dur,
+                     TOI != "Lesson"),
+       mapping = aes(x = Duration_of_interval_AP,
+                     y = Duration_of_interval_MK
+                     )
+       ) +
+  geom_point(size = 2) +
+  geom_text(mapping = aes(label = TOI)
+            ) +
+  geom_abline(intercept = 0,
+              slope = 1,
+              color = "red",
+              linetype = 3
+              ) +
+  labs(x = "Duration coded by AP",
+       y = "Duration coded by MK",
+       title = "Inter-coder reliability"
+       ) +
+  theme_minimal()
+```

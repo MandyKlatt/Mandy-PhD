@@ -15,6 +15,7 @@ needs(tidyverse,
 options(dplyr.summarise.inform = FALSE)
 
 
+<<<<<<< Updated upstream
 # Return a character vector with names of .tsv data in data folder
 
 file_names <- list.files(path = "data",
@@ -48,7 +49,78 @@ rm(list = ls(pattern = "^tib_ProVisio"))
 rm(work_data)
 rm(file_names)
 rm(i)
+=======
+# read in expert data
+expert_toi1 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_202_203_204_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
 
+expert_toi2 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_205_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+expert_toi3 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_206_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+expert_toi4 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_207_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+# combine the expert df
+expert_toi <- rbind(expert_toi1, 
+                    expert_toi2, 
+                    expert_toi3, 
+                    expert_toi4)
+
+
+
+# read in novice data
+novice_toi1 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_101_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+novice_toi2 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_102_103_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+novice_toi3 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_104_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+novice_toi4 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_105_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+novice_toi5 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_106_107_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+
+novice_toi6 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_108-111_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+novice_toi7 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_112_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+novice_toi8 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_113-115_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+novice_toi9 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_116_interval_complete.tsv",
+                        locale = locale(decimal_mark = ","))
+
+novice_toi10 <- read_tsv(file = "data/ProVisioNET_study_glasses_metrics_117_interval_complete.tsv",
+                         locale = locale(decimal_mark = ","))
+
+
+# combine the novice df
+novice_toi <- rbind(novice_toi1, 
+                    novice_toi2, 
+                    novice_toi3, 
+                    novice_toi4, 
+                    novice_toi5, 
+                    novice_toi6, 
+                    novice_toi7,
+                    novice_toi8,
+                    novice_toi9,
+                    novice_toi10)
+
+>>>>>>> Stashed changes
+
+# combine the both df
+toi <- rbind(novice_toi,
+                expert_toi)
 
 ############### TIME TO FIRST REACTION ####################
 
@@ -130,6 +202,7 @@ react_group_plot <-
 react_group_plot
 
 # plotting time to first reaction for all disruptions
+<<<<<<< Updated upstream
 # react_plot <- 
 #   toi_react %>% 
 #   mutate(TOI = factor(TOI,
@@ -220,6 +293,26 @@ toi_react$`Time to first reaction in seconds`<- round(toi_react$Time_to_first_Re
 react_plot_sum <-
   ggplot(data = toi_react,
          mapping = aes(x = Group,
+=======
+react_plot <- 
+  toi_react %>% 
+  mutate(TOI = factor(TOI,
+                        levels = c("Chatting_with_neighbour","Whispering",
+                                  "Heckling","Snipping_with_fingers",
+                                  "Drumming_with_hands","Clicking_pen",
+                                  "Head_on_table","Looking_at_phone",
+                                  "Drawing"
+                                  ),
+                        labels = c("Chatting with neighbour","Whispering",
+                                   "Heckling","Snipping with fingers",
+                                   "Drumming with hands","Clicking pen",
+                                   "Head on table","Looking at phone",
+                                   "Drawing"
+                        )
+                        )
+         ) %>% 
+  ggplot(mapping = aes(x = Group,
+>>>>>>> Stashed changes
                        y = `Time to first reaction in seconds`)) +
   geom_boxplot(mapping = aes(fill = Group)) +
   # geom_point(size = 2, 
@@ -238,6 +331,7 @@ react_plot_sum <-
     legend.text = element_text(size=14), #change legend text font size
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
+<<<<<<< Updated upstream
     strip.text.x = element_text(size = 15),
     plot.title = element_text(size = 20, face = "bold"),
     axis.title.y = element_text(size = 16),
@@ -249,6 +343,17 @@ react_plot_sum <-
              strip.position = "bottom")
 
 react_plot_sum
+=======
+    strip.text.x = element_text(size = 8,
+                                angle = 90),
+    plot.title = element_text(size = 15, face = "bold")
+    ) +
+  facet_wrap(facets = vars(TOI),
+             nrow = 1,
+             strip.position = "bottom")
+    
+react_plot
+>>>>>>> Stashed changes
 
 
 
@@ -404,6 +509,7 @@ fix_plot_sum <-
     legend.text = element_text(size=14), #change legend text font size
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
+<<<<<<< Updated upstream
     strip.text.x = element_text(size = 15),
     plot.title = element_text(size = 20, face = "bold"),
     axis.title.y = element_text(size = 16),
@@ -415,6 +521,11 @@ fix_plot_sum <-
              strip.position = "bottom")
 
 fix_plot_sum
+=======
+    strip.text.x = element_text(size = 6,
+                                angle = 90),
+    plot.title = element_text(size = 15, face = "bold"))
+>>>>>>> Stashed changes
 
 
 # # plotting number of fixations for disruptive person

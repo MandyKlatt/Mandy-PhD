@@ -9686,6 +9686,7 @@ Recording073	ProVisioNET_study_114_06	Male	Novice	Clicking_pen_fix	1	fullstream	
 Recording073	ProVisioNET_study_114_06	Male	Novice	Clicking_pen_fix	1	fullstream	Fixation	Whole	33	26959	27219	260	Board_Screen	1	0,3934	0,52655	4,69948
 Recording073	ProVisioNET_study_114_06	Male	Novice	Clicking_pen_fix	1	fullstream	Fixation	Whole	34	27259	27878	620	Board_Screen	1	0,48538	0,45465	4,70015
 Recording073	ProVisioNET_study_114_06	Male	Novice	Clicking_pen_fix	1	fullstream	Fixation	Partial	35	27898	30000	2102	Board_Screen	1	0,442	0,65975	4,77738
+<<<<<<< Updated upstream
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing	1	fullstream	Fixation	Partial	1	0	310	310	Bianca	1	0,45545	0,18948	5,18957
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing	1	fullstream	Fixation	Whole	2	450	2189	1739	Carl(a)	0,9885	0,65123	0,13664	5,27727
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing	1	fullstream	Fixation	Whole	3	2289	2529	240	Carl(a)	1	0,63519	0,09972	5,37065
@@ -9719,6 +9720,8 @@ Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing	1	fullstream	Fixation	
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing	1	fullstream	Fixation	Whole	31	28833	29073	240	Board_Screen	1	0,39088	0,49957	5,01502
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing	1	fullstream	Fixation	Whole	32	29353	29673	320	Bianca	1	0,78211	0,09808	4,84809
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing	1	fullstream	Fixation	Partial	33	29932	30000	67	Board_Screen	1	0,37967	0,25932	5,11172
+=======
+>>>>>>> Stashed changes
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing_fix	1	fullstream	Fixation	Partial	1	0	310	310	Bianca	1	0,45545	0,18948	5,18957
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing_fix	1	fullstream	Fixation	Whole	2	450	2189	1739	Carl(a)	0,9885	0,65123	0,13664	5,27727
 Recording073	ProVisioNET_study_114_06	Male	Novice	Drawing_fix	1	fullstream	Fixation	Whole	3	2289	2529	240	Carl(a)	1	0,63519	0,09972	5,37065
@@ -16848,7 +16851,11 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	237	116963	117563	600	Material_Teacher	1	0,49532	0,85779	3,82832
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	238	119142	119282	140	Material_Teacher	1	0,47011	0,93668	3,71899
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	239	119302	120741	1439	Material_Teacher	0,98611	0,48121	0,51321	3,7793
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	240	120861	121280	420	Anna,Disruptive_Person	1	0,41021	0,11091	3,60151
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	240	120861	121280	420	Anna	1	0,41021	0,11091	3,60151
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	241	121340	121520	180	Bianca	1	0,5774	0,10153	3,68267
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	242	121580	121880	300	Carl(a)	1	0,73722	0,22877	3,77875
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	243	122040	122180	140	Material_Teacher	1	0,36979	0,65469	3,81735
@@ -16865,11 +16872,19 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	254	129975	130575	600	Bianca	1	0,55753	0,21655	3,53362
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	255	130655	130815	160	Carl(a)	1	0,80086	0,29593	3,43886
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	256	130835	131015	180	Carl(a)	1	0,75045	0,33652	3,39537
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	257	131115	131295	180	Anna,Disruptive_Person	1	0,35382	0,32289	3,44881
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	258	131514	133533	2019	Material_Teacher	1	0,48431	0,46323	3,64992
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	259	133553	134533	979	Material_Teacher	1	0,49219	0,50868	3,73552
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	260	134693	135392	700	Bianca	1	0,48736	0,35847	3,60808
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	261	135452	136392	939	Anna,Disruptive_Person	1	0,37003	0,40685	3,48735
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	257	131115	131295	180	Anna	1	0,35382	0,32289	3,44881
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	258	131514	133533	2019	Material_Teacher	1	0,48431	0,46323	3,64992
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	259	133553	134533	979	Material_Teacher	1	0,49219	0,50868	3,73552
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	260	134693	135392	700	Bianca	1	0,48736	0,35847	3,60808
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	261	135452	136392	939	Anna	1	0,37003	0,40685	3,48735
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	262	136452	136951	500	Bianca	1	0,5462	0,33292	3,49732
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	263	137131	137251	120	Material_Teacher	0,66676	0,24034	0,72627	3,61566
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	264	137291	137531	240	Material_Teacher	1	0,40094	0,5838	3,79509
@@ -16877,6 +16892,7 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	266	137911	138031	120	Material_Teacher	1	0,50343	0,36233	3,90426
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	267	138310	138410	100	Board_Screen	1	0,13395	0,14464	3,9338
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	268	138450	138590	140	Board_Screen	1	0,33524	0,15464	3,93252
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	269	138790	139210	420	Anna,Disruptive_Person	0,90475	0,56651	0,38065	3,80055
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	270	139250	139390	140	Bianca	1	0,59335	0,30984	3,83397
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	271	139430	139710	280	Carl(a)	1	0,67604	0,37142	3,89442
@@ -16884,16 +16900,33 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	273	140929	141449	520	Bianca	1	0,55359	0,27418	3,91899
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	274	141529	141688	160	Anna,Disruptive_Person	1	0,36955	0,38298	3,94674
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	275	141708	141848	140	Anna,Disruptive_Person	1	0,35515	0,28926	3,95577
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	269	138790	139210	420	Anna	0,90475	0,56651	0,38065	3,80055
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	270	139250	139390	140	Bianca	1	0,59335	0,30984	3,83397
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	271	139430	139710	280	Carl(a)	1	0,67604	0,37142	3,89442
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	272	139810	140869	1059	Anna	1	0,36501	0,32706	4,03283
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	273	140929	141449	520	Bianca	1	0,55359	0,27418	3,91899
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	274	141529	141688	160	Anna	1	0,36955	0,38298	3,94674
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Partial	275	141708	141848	140	Anna	1	0,35515	0,28926	3,95577
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	276	141968	142488	520	Bianca	1	0,53467	0,26661	3,9343
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	277	142568	142908	340	Carl(a)	1	0,81048	0,2975	3,97652
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	278	142928	143128	200	Carl(a)	1	0,75003	0,41478	3,89216
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	279	143208	143547	340	Bianca	1	0,51528	0,25839	3,83319
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	280	143607	143927	320	Anna,Disruptive_Person	1	0,28887	0,36518	3,90837
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	280	143607	143927	320	Anna	1	0,28887	0,36518	3,90837
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	281	143987	144127	140	Bianca	1	0,5231	0,2688	3,78294
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	282	144207	144367	160	Carl(a)	1	0,78111	0,31758	3,82646
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	283	144407	144687	280	Carl(a)	1	0,74525	0,44917	3,88808
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	284	144767	144867	100	Classroom_Others	1	0,46325	0,37399	3,96081
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	285	144907	145186	280	Anna,Disruptive_Person	1	0,42029	0,32956	3,94115
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	285	144907	145186	280	Anna	1	0,42029	0,32956	3,94115
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	286	145546	145626	80	Board_Screen	1	0,31365	0,25253	3,91557
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	287	145646	145926	280	Board_Screen	1	0,37452	0,14472	3,88951
 Recording075	ProVisioNET_study_115_07	Female	Novice	Lesson	1	fullstream	Fixation	Whole	288	145946	146186	240	Board_Screen	1	0,43268	0,24672	3,64869
@@ -18593,7 +18626,11 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstrea
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	2	212	812	600	Material_Teacher	1	0,49532	0,85779	3,82832
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	3	2391	2531	140	Material_Teacher	1	0,47011	0,93668	3,71899
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	4	2551	3990	1439	Material_Teacher	0,98611	0,48121	0,51321	3,7793
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	5	4110	4530	420	Anna,Disruptive_Person	1	0,41021	0,11091	3,60151
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	5	4110	4530	420	Anna	1	0,41021	0,11091	3,60151
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	6	4590	4770	180	Bianca	1	0,5774	0,10153	3,68267
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	7	4830	5129	300	Carl(a)	1	0,73722	0,22877	3,77875
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	8	5289	5429	140	Material_Teacher	1	0,36979	0,65469	3,81735
@@ -18610,11 +18647,19 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstrea
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	19	13225	13824	600	Bianca	1	0,55753	0,21655	3,53362
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	20	13904	14064	160	Carl(a)	1	0,80086	0,29593	3,43886
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	21	14084	14264	180	Carl(a)	1	0,75045	0,33652	3,39537
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	22	14364	14544	180	Anna,Disruptive_Person	1	0,35382	0,32289	3,44881
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	23	14764	16783	2019	Material_Teacher	1	0,48431	0,46323	3,64992
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	24	16803	17782	979	Material_Teacher	1	0,49219	0,50868	3,73552
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	25	17942	18642	700	Bianca	1	0,48736	0,35847	3,60808
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	26	18702	19641	939	Anna,Disruptive_Person	1	0,37003	0,40685	3,48735
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	22	14364	14544	180	Anna	1	0,35382	0,32289	3,44881
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	23	14764	16783	2019	Material_Teacher	1	0,48431	0,46323	3,64992
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	24	16803	17782	979	Material_Teacher	1	0,49219	0,50868	3,73552
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	25	17942	18642	700	Bianca	1	0,48736	0,35847	3,60808
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	26	18702	19641	939	Anna	1	0,37003	0,40685	3,48735
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	27	19701	20201	500	Bianca	1	0,5462	0,33292	3,49732
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	28	20381	20501	120	Material_Teacher	0,66676	0,24034	0,72627	3,61566
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	29	20540	20780	240	Material_Teacher	1	0,40094	0,5838	3,79509
@@ -18622,6 +18667,7 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstrea
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	31	21160	21280	120	Material_Teacher	1	0,50343	0,36233	3,90426
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	32	21560	21660	100	Board_Screen	1	0,13395	0,14464	3,9338
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	33	21700	21840	140	Board_Screen	1	0,33524	0,15464	3,93252
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	34	22040	22459	420	Anna,Disruptive_Person	0,90475	0,56651	0,38065	3,80055
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	35	22499	22639	140	Bianca	1	0,59335	0,30984	3,83397
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	36	22679	22959	280	Carl(a)	1	0,67604	0,37142	3,89442
@@ -18629,16 +18675,33 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstrea
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	38	24178	24698	520	Bianca	1	0,55359	0,27418	3,91899
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	39	24778	24938	160	Anna,Disruptive_Person	1	0,36955	0,38298	3,94674
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	40	24958	25098	140	Anna,Disruptive_Person	1	0,35515	0,28926	3,95577
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	34	22040	22459	420	Anna	0,90475	0,56651	0,38065	3,80055
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	35	22499	22639	140	Bianca	1	0,59335	0,30984	3,83397
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	36	22679	22959	280	Carl(a)	1	0,67604	0,37142	3,89442
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	37	23059	24118	1059	Anna	1	0,36501	0,32706	4,03283
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	38	24178	24698	520	Bianca	1	0,55359	0,27418	3,91899
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	39	24778	24938	160	Anna	1	0,36955	0,38298	3,94674
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Partial	40	24958	25098	140	Anna	1	0,35515	0,28926	3,95577
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	41	25218	25737	520	Bianca	1	0,53467	0,26661	3,9343
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	42	25817	26157	340	Carl(a)	1	0,81048	0,2975	3,97652
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	43	26177	26377	200	Carl(a)	1	0,75003	0,41478	3,89216
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	44	26457	26797	340	Bianca	1	0,51528	0,25839	3,83319
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	45	26857	27177	320	Anna,Disruptive_Person	1	0,28887	0,36518	3,90837
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	45	26857	27177	320	Anna	1	0,28887	0,36518	3,90837
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	46	27237	27377	140	Bianca	1	0,5231	0,2688	3,78294
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	47	27456	27616	160	Carl(a)	1	0,78111	0,31758	3,82646
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	48	27656	27936	280	Carl(a)	1	0,74525	0,44917	3,88808
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	49	28016	28116	100	Classroom_Others	1	0,46325	0,37399	3,96081
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	50	28156	28436	280	Anna,Disruptive_Person	1	0,42029	0,32956	3,94115
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	50	28156	28436	280	Anna	1	0,42029	0,32956	3,94115
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	51	28796	28876	80	Board_Screen	1	0,31365	0,25253	3,91557
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	52	28896	29175	280	Board_Screen	1	0,37452	0,14472	3,88951
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone	1	fullstream	Fixation	Whole	53	29195	29435	240	Board_Screen	1	0,43268	0,24672	3,64869
@@ -18648,7 +18711,11 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fulls
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	2	212	812	600	Material_Teacher	1	0,49532	0,85779	3,82832
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	3	2391	2531	140	Material_Teacher	1	0,47011	0,93668	3,71899
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	4	2551	3990	1439	Material_Teacher	0,98611	0,48121	0,51321	3,7793
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	5	4110	4530	420	Anna,Disruptive_Person	1	0,41021	0,11091	3,60151
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	5	4110	4530	420	Anna	1	0,41021	0,11091	3,60151
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	6	4590	4770	180	Bianca	1	0,5774	0,10153	3,68267
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	7	4830	5129	300	Carl(a)	1	0,73722	0,22877	3,77875
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	8	5289	5429	140	Material_Teacher	1	0,36979	0,65469	3,81735
@@ -18665,11 +18732,19 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fulls
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	19	13225	13824	600	Bianca	1	0,55753	0,21655	3,53362
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	20	13904	14064	160	Carl(a)	1	0,80086	0,29593	3,43886
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	21	14084	14264	180	Carl(a)	1	0,75045	0,33652	3,39537
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	22	14364	14544	180	Anna,Disruptive_Person	1	0,35382	0,32289	3,44881
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	23	14764	16783	2019	Material_Teacher	1	0,48431	0,46323	3,64992
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	24	16803	17782	979	Material_Teacher	1	0,49219	0,50868	3,73552
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	25	17942	18642	700	Bianca	1	0,48736	0,35847	3,60808
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	26	18702	19641	939	Anna,Disruptive_Person	1	0,37003	0,40685	3,48735
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	22	14364	14544	180	Anna	1	0,35382	0,32289	3,44881
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	23	14764	16783	2019	Material_Teacher	1	0,48431	0,46323	3,64992
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	24	16803	17782	979	Material_Teacher	1	0,49219	0,50868	3,73552
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	25	17942	18642	700	Bianca	1	0,48736	0,35847	3,60808
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	26	18702	19641	939	Anna	1	0,37003	0,40685	3,48735
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	27	19701	20201	500	Bianca	1	0,5462	0,33292	3,49732
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	28	20381	20501	120	Material_Teacher	0,66676	0,24034	0,72627	3,61566
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	29	20540	20780	240	Material_Teacher	1	0,40094	0,5838	3,79509
@@ -18677,6 +18752,7 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fulls
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	31	21160	21280	120	Material_Teacher	1	0,50343	0,36233	3,90426
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	32	21560	21660	100	Board_Screen	1	0,13395	0,14464	3,9338
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	33	21700	21840	140	Board_Screen	1	0,33524	0,15464	3,93252
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	34	22040	22459	420	Anna,Disruptive_Person	0,90475	0,56651	0,38065	3,80055
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	35	22499	22639	140	Bianca	1	0,59335	0,30984	3,83397
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	36	22679	22959	280	Carl(a)	1	0,67604	0,37142	3,89442
@@ -18684,16 +18760,33 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fulls
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	38	24178	24698	520	Bianca	1	0,55359	0,27418	3,91899
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	39	24778	24938	160	Anna,Disruptive_Person	1	0,36955	0,38298	3,94674
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	40	24958	25098	140	Anna,Disruptive_Person	1	0,35515	0,28926	3,95577
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	34	22040	22459	420	Anna	0,90475	0,56651	0,38065	3,80055
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	35	22499	22639	140	Bianca	1	0,59335	0,30984	3,83397
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	36	22679	22959	280	Carl(a)	1	0,67604	0,37142	3,89442
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	37	23059	24118	1059	Anna	1	0,36501	0,32706	4,03283
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	38	24178	24698	520	Bianca	1	0,55359	0,27418	3,91899
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	39	24778	24938	160	Anna	1	0,36955	0,38298	3,94674
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Partial	40	24958	25098	140	Anna	1	0,35515	0,28926	3,95577
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	41	25218	25737	520	Bianca	1	0,53467	0,26661	3,9343
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	42	25817	26157	340	Carl(a)	1	0,81048	0,2975	3,97652
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	43	26177	26377	200	Carl(a)	1	0,75003	0,41478	3,89216
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	44	26457	26797	340	Bianca	1	0,51528	0,25839	3,83319
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	45	26857	27177	320	Anna,Disruptive_Person	1	0,28887	0,36518	3,90837
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	45	26857	27177	320	Anna	1	0,28887	0,36518	3,90837
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	46	27237	27377	140	Bianca	1	0,5231	0,2688	3,78294
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	47	27456	27616	160	Carl(a)	1	0,78111	0,31758	3,82646
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	48	27656	27936	280	Carl(a)	1	0,74525	0,44917	3,88808
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	49	28016	28116	100	Classroom_Others	1	0,46325	0,37399	3,96081
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	50	28156	28436	280	Anna,Disruptive_Person	1	0,42029	0,32956	3,94115
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	50	28156	28436	280	Anna	1	0,42029	0,32956	3,94115
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	51	28796	28876	80	Board_Screen	1	0,31365	0,25253	3,91557
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	52	28896	29175	280	Board_Screen	1	0,37452	0,14472	3,88951
 Recording075	ProVisioNET_study_115_07	Female	Novice	Looking_at_phone_fix	1	fullstream	Fixation	Whole	53	29195	29435	240	Board_Screen	1	0,43268	0,24672	3,64869
@@ -20387,6 +20480,7 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_classroom_others	45
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_classroom_others	45	snapshot_classroom_others	Fixation	Partial	19	12213	12513	300		0	0,45339	0,27803	4,24962
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_classroom_others	45	snapshot_classroom_others	Fixation	Partial	20	12553	13072	520	Classroom_Others	1	0,51535	0,11758	4,07904
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_classroom_others	46	snapshot_classroom_others	Fixation	Partial	1	0	220	220	Classroom_Others	1	0,46191	0,09418	4,32862
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	1	0	420	420	Disruptive_Person	1	0,41021	0,11091	3,60151
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	2	snapshot_disruptive_person	Fixation	Partial	1	0	180	180	Disruptive_Person	1	0,35382	0,32289	3,44881
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	2	snapshot_disruptive_person	Fixation	Partial	2	400	2419	2019		0	0,48431	0,46323	3,64992
@@ -20520,6 +20614,111 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	11	snapshot_disruptive_person	Fixation	Partial	11	4777	4857	80		0	0,59434	0,59657	4,05655
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	11	snapshot_disruptive_person	Fixation	Partial	12	4917	5037	120	Disruptive_Person	1	0,55573	0,35523	4,03658
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	11	snapshot_disruptive_person	Fixation	Partial	13	5117	5517	400	Disruptive_Person	1	0,3949	0,33568	4,13804
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	1	0	300	300	Disruptive_Person	1	0,45399	0,21394	4,41285
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	2	400	520	120		0	0,21382	0,26385	4,44332
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	3	580	700	120		0	0,45932	0,1249	4,48598
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	4	1239	1419	180		0	0,44126	0,57485	4,34309
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	5	1499	1619	120	Disruptive_Person	1	0,40729	0,31968	4,52532
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	6	1839	1959	120		0	0,48986	0,07471	4,34769
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	7	2279	2359	80		0	0,65852	0,43408	4,23409
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	8	2419	2638	220	Disruptive_Person	1	0,45267	0,45146	4,29859
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	9	2678	3018	340	Disruptive_Person	1	0,42335	0,29729	4,30611
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	10	3058	3158	100	Disruptive_Person	1	0,43754	0,4576	4,24683
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	11	3358	3478	120	Disruptive_Person	1	0,43578	0,48921	4,16137
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	12	3538	3778	240	Disruptive_Person	1	0,46523	0,35067	4,31101
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	13	3798	3958	160		0	0,38257	0,32895	4,39563
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	14	4158	4357	200		0	0,54166	0,67098	4,11257
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	15	5037	5277	240		0	0,58673	0,26673	4,43923
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	16	5477	5657	180		0	0,4676	0,36323	4,14741
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	17	6036	6176	140		0	0,44323	0,82762	4,07116
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	18	6376	6636	260		0	0,34146	0,17736	4,48446
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	19	7016	7256	240		0	0,61692	0,37104	4,3341
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	20	7416	7695	280	Disruptive_Person	1	0,42111	0,36539	4,30972
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	21	7735	8015	280	Disruptive_Person	1	0,37483	0,45902	4,29702
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	22	8055	8295	240		0	0,24453	0,42467	4,29292
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	23	8355	8755	400	Disruptive_Person	1	0,49691	0,45437	4,13437
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	24	9255	9674	420	Disruptive_Person	1	0,47871	0,61044	4,25134
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	25	9734	10274	540		0	0,32127	0,46302	3,96227
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	26	10354	11173	820	Disruptive_Person	1	0,49114	0,41607	3,99803
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	27	11193	12273	1079	Disruptive_Person	1	0,4638	0,48007	4,29059
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	28	12293	12533	240	Disruptive_Person	1	0,49424	0,39614	4,23644
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	29	12553	13452	899		0	0,4842	0,51838	4,13764
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	30	13512	13732	220	Disruptive_Person	1	0,49311	0,25301	4,23347
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	1	snapshot_disruptive_person	Fixation	Partial	31	13752	14412	660	Disruptive_Person	1	0,46391	0,43675	4,29296
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	2	snapshot_disruptive_person	Fixation	Partial	1	0	2618	2618	Disruptive_Person	1	0,59228	0,35065	4,14465
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	2	snapshot_disruptive_person	Fixation	Partial	2	2658	2978	320	Disruptive_Person	1	0,49298	0,44708	4,24121
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	2	snapshot_disruptive_person	Fixation	Partial	3	3018	3518	500	Disruptive_Person	1	0,54065	0,32032	4,19464
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	2	snapshot_disruptive_person	Fixation	Partial	4	3558	4018	460	Disruptive_Person	1	0,4447	0,45712	4,23789
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	2	snapshot_disruptive_person	Fixation	Partial	5	4058	5437	1379	Disruptive_Person	1	0,49727	0,30989	4,36944
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	2	snapshot_disruptive_person	Fixation	Partial	6	5577	5677	100	Disruptive_Person	1	0,62874	0,35194	4,50324
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	3	snapshot_disruptive_person	Fixation	Partial	1	0	360	360	Disruptive_Person	1	0,29772	0,40724	4,27379
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	1	0	100	100	Disruptive_Person	1	0,52052	0,2505	4,22659
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	2	300	520	220		0	0,574	0,30155	4,21413
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	3	600	800	200	Disruptive_Person	1	0,38733	0,4638	4,03499
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	4	839	999	160	Disruptive_Person	1	0,47931	0,38052	3,91353
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	5	1039	1199	160		0	0,54503	0,51032	3,92856
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	6	1239	1599	360	Disruptive_Person	1	0,40811	0,35743	4,0588
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	7	1639	2019	380	Disruptive_Person	1	0,49166	0,34993	4,05103
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	8	2039	2199	160	Disruptive_Person	1	0,4171	0,36407	4,09731
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	9	2239	2519	280		0	0,35468	0,50417	4,052
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	10	2578	2958	380		0	0,58694	0,49725	4,14227
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	11	3018	3258	240		0	0,37142	0,44326	4,27637
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	12	3298	3438	140	Disruptive_Person	1	0,52369	0,28796	4,2845
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	13	3458	4757	1299	Disruptive_Person	1	0,53347	0,29642	4,32062
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	4	snapshot_disruptive_person	Fixation	Partial	14	4797	4957	160	Disruptive_Person	1	0,46597	0,33731	4,2586
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	5	snapshot_disruptive_person	Fixation	Partial	1	0	120	120	Disruptive_Person	1	0,61399	0,42056	4,23436
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	5	snapshot_disruptive_person	Fixation	Partial	2	180	280	100		0	0,46002	0,25711	4,12466
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	5	snapshot_disruptive_person	Fixation	Partial	3	320	1719	1399	Disruptive_Person	1	0,58137	0,35032	4,25519
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	5	snapshot_disruptive_person	Fixation	Partial	4	1759	2079	320	Disruptive_Person	1	0,56684	0,49838	4,19474
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	5	snapshot_disruptive_person	Fixation	Partial	5	2119	3238	1119	Disruptive_Person	1	0,57945	0,31444	4,31431
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	5	snapshot_disruptive_person	Fixation	Partial	6	3498	3978	480	Disruptive_Person	1	0,62798	0,32756	4,39732
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	1	0	2758	2758	Disruptive_Person	1	0,47282	0,31084	3,979
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	2	2778	3058	280	Disruptive_Person	1	0,42881	0,30442	4,04682
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	3	3098	3518	420	Disruptive_Person	1	0,44295	0,20829	4,11264
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	4	3678	4957	1279	Disruptive_Person	1	0,47554	0,32629	4,15981
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	5	4997	5137	140		0	0,45412	0,51058	4,15888
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	6	5197	5637	440	Disruptive_Person	1	0,44376	0,23055	4,26207
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	7	5657	6136	480	Disruptive_Person	1	0,39081	0,08239	4,45261
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	8	6296	6436	140		0	0,55809	0,30803	4,48275
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	9	6496	7056	560	Disruptive_Person	1	0,43615	0,28557	4,37719
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	10	7096	7376	280		0	0,46336	0,51149	4,13673
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	11	7416	9674	2259	Disruptive_Person	1	0,48811	0,29602	4,05499
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	12	9794	10734	939	Disruptive_Person	1	0,49382	0,35095	4,1807
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	13	10794	11033	240		0	0,29579	0,3733	4,18526
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	6	snapshot_disruptive_person	Fixation	Partial	14	11093	11853	760	Disruptive_Person	1	0,52507	0,37158	4,08891
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	1	0	420	420	Disruptive_Person	1	0,72732	0,49466	4,2839
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	2	460	740	280		0	0,60696	0,5673	4,30318
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	3	780	1399	620	Disruptive_Person	1	0,61556	0,32608	4,29244
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	4	1419	1959	540	Disruptive_Person	1	0,60561	0,35482	4,34395
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	5	1999	2339	340		0	0,5995	0,55308	4,39854
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	6	2359	2499	140	Disruptive_Person	1	0,63189	0,37842	4,42606
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	7	2618	2778	160		0	0,43529	0,3253	4,37928
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	8	2838	2998	160		0	0,66817	0,50839	4,52617
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	9	3018	3158	140		0	0,59236	0,55626	4,40765
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	10	3638	4477	839	Disruptive_Person	1	0,59298	0,3159	4,54478
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	11	4517	4777	260		0	0,53425	0,51135	4,51852
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	12	4817	5617	800	Disruptive_Person	1	0,60376	0,42004	4,60018
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	13	5737	7356	1619	Disruptive_Person	1	0,45593	0,22242	4,24015
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	14	7376	7675	300	Disruptive_Person	1	0,52867	0,22885	4,29856
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	7	snapshot_disruptive_person	Fixation	Partial	15	7735	7915	180	Disruptive_Person	1	0,53484	0,33814	4,32207
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	8	snapshot_disruptive_person	Fixation	Partial	1	0	1619	1619	Disruptive_Person	1	0,42101	0,20937	4,18636
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	8	snapshot_disruptive_person	Fixation	Partial	2	1859	1979	120		0	0,54783	0,42013	4,4093
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	8	snapshot_disruptive_person	Fixation	Partial	3	2099	2299	200	Disruptive_Person	1	0,40057	0,28787	4,45953
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	1	0	1459	1459	Disruptive_Person	1	0,50716	0,32872	4,00684
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	2	1499	1659	160		0	0,46612	0,53009	3,94263
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	3	1699	2079	380	Disruptive_Person	1	0,46571	0,32436	3,98276
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	4	2119	2439	320		0	0,45617	0,54936	3,89824
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	5	2558	2878	320	Disruptive_Person	1	0,465	0,32409	4,04838
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	6	2978	3638	660	Disruptive_Person	1	0,82922	0,3097	3,9791
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	7	3658	3758	100		0	0,89069	0,18588	4,07998
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	8	3858	3998	140	Disruptive_Person	1	0,45852	0,35989	3,93243
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	9	4038	4257	220		0	0,45076	0,5468	4,01942
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	10	4297	4637	340	Disruptive_Person	1	0,45355	0,35411	4,12108
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	11	4777	4857	80		0	0,59434	0,59657	4,05655
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	12	4917	5037	120	Disruptive_Person	1	0,55573	0,35523	4,03658
+Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_disruptive_person	9	snapshot_disruptive_person	Fixation	Partial	13	5117	5517	400	Disruptive_Person	1	0,3949	0,33568	4,13804
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_material_teacher	1	snapshot_material_teacher	Fixation	Partial	1	0	300	300	Material_Teacher	1	0,34911	0,46816	4,34578
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_material_teacher	1	snapshot_material_teacher	Fixation	Partial	2	340	500	160	Material_Teacher	1	0,50728	0,60764	4,29498
 Recording075	ProVisioNET_study_115_07	Female	Novice	snapshot_material_teacher	1	snapshot_material_teacher	Fixation	Partial	3	600	820	220	Material_Teacher	1	0,46395	0,66688	4,31166
@@ -23604,7 +23803,11 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstrea
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1080	626349	626949	600	Material_Teacher	1	0,49532	0,85779	3,82832
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1081	628528	628668	140	Material_Teacher	1	0,47011	0,93668	3,71899
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1082	628688	630127	1439	Material_Teacher	0,98611	0,48121	0,51321	3,7793
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1083	630247	630666	420	Anna,Disruptive_Person	1	0,41021	0,11091	3,60151
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1083	630247	630666	420	Anna	1	0,41021	0,11091	3,60151
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1084	630726	630906	180	Bianca	1	0,5774	0,10153	3,68267
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1085	630966	631266	300	Carl(a)	1	0,73722	0,22877	3,77875
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1086	631426	631566	140	Material_Teacher	1	0,36979	0,65469	3,81735
@@ -23621,11 +23824,19 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstrea
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1097	639361	639961	600	Bianca	1	0,55753	0,21655	3,53362
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1098	640041	640201	160	Carl(a)	1	0,80086	0,29593	3,43886
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1099	640221	640401	180	Carl(a)	1	0,75045	0,33652	3,39537
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1100	640501	640681	180	Anna,Disruptive_Person	1	0,35382	0,32289	3,44881
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1101	640900	642919	2019	Material_Teacher	1	0,48431	0,46323	3,64992
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1102	642939	643919	979	Material_Teacher	1	0,49219	0,50868	3,73552
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1103	644079	644778	700	Bianca	1	0,48736	0,35847	3,60808
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1104	644838	645778	939	Anna,Disruptive_Person	1	0,37003	0,40685	3,48735
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1100	640501	640681	180	Anna	1	0,35382	0,32289	3,44881
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1101	640900	642919	2019	Material_Teacher	1	0,48431	0,46323	3,64992
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1102	642939	643919	979	Material_Teacher	1	0,49219	0,50868	3,73552
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1103	644079	644778	700	Bianca	1	0,48736	0,35847	3,60808
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1104	644838	645778	939	Anna	1	0,37003	0,40685	3,48735
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1105	645838	646337	500	Bianca	1	0,5462	0,33292	3,49732
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1106	646517	646637	120	Material_Teacher	0,66676	0,24034	0,72627	3,61566
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1107	646677	646917	240	Material_Teacher	1	0,40094	0,5838	3,79509
@@ -23633,6 +23844,7 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstrea
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1109	647297	647417	120	Material_Teacher	1	0,50343	0,36233	3,90426
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1110	647697	647796	100	Board_Screen	1	0,13395	0,14464	3,9338
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1111	647836	647976	140	Board_Screen	1	0,33524	0,15464	3,93252
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1112	648176	648596	420	Anna,Disruptive_Person	0,90475	0,56651	0,38065	3,80055
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1113	648636	648776	140	Bianca	1	0,59335	0,30984	3,83397
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1114	648816	649096	280	Carl(a)	1	0,67604	0,37142	3,89442
@@ -23640,16 +23852,33 @@ Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstrea
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1116	650315	650835	520	Bianca	1	0,55359	0,27418	3,91899
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1117	650915	651075	160	Anna,Disruptive_Person	1	0,36955	0,38298	3,94674
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1118	651095	651235	140	Anna,Disruptive_Person	1	0,35515	0,28926	3,95577
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1112	648176	648596	420	Anna	0,90475	0,56651	0,38065	3,80055
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1113	648636	648776	140	Bianca	1	0,59335	0,30984	3,83397
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1114	648816	649096	280	Carl(a)	1	0,67604	0,37142	3,89442
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1115	649196	650255	1059	Anna	1	0,36501	0,32706	4,03283
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1116	650315	650835	520	Bianca	1	0,55359	0,27418	3,91899
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1117	650915	651075	160	Anna	1	0,36955	0,38298	3,94674
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Partial	1118	651095	651235	140	Anna	1	0,35515	0,28926	3,95577
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1119	651354	651874	520	Bianca	1	0,53467	0,26661	3,9343
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1120	651954	652294	340	Carl(a)	1	0,81048	0,2975	3,97652
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1121	652314	652514	200	Carl(a)	1	0,75003	0,41478	3,89216
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1122	652594	652934	340	Bianca	1	0,51528	0,25839	3,83319
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1123	652993	653313	320	Anna,Disruptive_Person	1	0,28887	0,36518	3,90837
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1123	652993	653313	320	Anna	1	0,28887	0,36518	3,90837
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1124	653373	653513	140	Bianca	1	0,5231	0,2688	3,78294
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1125	653593	653753	160	Carl(a)	1	0,78111	0,31758	3,82646
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1126	653793	654073	280	Carl(a)	1	0,74525	0,44917	3,88808
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1127	654153	654253	100	Classroom_Others	1	0,46325	0,37399	3,96081
+<<<<<<< Updated upstream
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1128	654293	654573	280	Anna,Disruptive_Person	1	0,42029	0,32956	3,94115
+=======
+Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1128	654293	654573	280	Anna	1	0,42029	0,32956	3,94115
+>>>>>>> Stashed changes
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1129	654932	655012	80	Board_Screen	1	0,31365	0,25253	3,91557
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1130	655032	655312	280	Board_Screen	1	0,37452	0,14472	3,88951
 Recording075	ProVisioNET_study_115_07	Female	Novice	Entire Recording	1	fullstream	Fixation	Whole	1131	655332	655572	240	Board_Screen	1	0,43268	0,24672	3,64869

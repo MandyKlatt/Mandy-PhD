@@ -1,0 +1,322 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  english,
+  man]{apa6}
+\title{The title}
+\author{First Author\textsuperscript{1} \& Ernst-August Doelle\textsuperscript{1,2}}
+\date{}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={The title},
+  pdfauthor={First Author1 \& Ernst-August Doelle1,2},
+  pdflang={en-EN},
+  pdfkeywords={keywords},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+% Manuscript styling
+\usepackage{upgreek}
+\captionsetup{font=singlespacing,justification=justified}
+
+% Table formatting
+\usepackage{longtable}
+\usepackage{lscape}
+% \usepackage[counterclockwise]{rotating}   % Landscape page setup for large tables
+\usepackage{multirow}		% Table styling
+\usepackage{tabularx}		% Control Column width
+\usepackage[flushleft]{threeparttable}	% Allows for three part tables with a specified notes section
+\usepackage{threeparttablex}            % Lets threeparttable work with longtable
+
+% Create new environments so endfloat can handle them
+% \newenvironment{ltable}
+%   {\begin{landscape}\begin{center}\begin{threeparttable}}
+%   {\end{threeparttable}\end{center}\end{landscape}}
+\newenvironment{lltable}{\begin{landscape}\begin{center}\begin{ThreePartTable}}{\end{ThreePartTable}\end{center}\end{landscape}}
+
+% Enables adjusting longtable caption width to table width
+% Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
+\makeatletter
+\newcommand\LastLTentrywidth{1em}
+\newlength\longtablewidth
+\setlength{\longtablewidth}{1in}
+\newcommand{\getlongtablewidth}{\begingroup \ifcsname LT@\roman{LT@tables}\endcsname \global\longtablewidth=0pt \renewcommand{\LT@entry}[2]{\global\advance\longtablewidth by ##2\relax\gdef\LastLTentrywidth{##2}}\@nameuse{LT@\roman{LT@tables}} \fi \endgroup}
+
+% \setlength{\parindent}{0.5in}
+% \setlength{\parskip}{0pt plus 0pt minus 0pt}
+
+% Overwrite redefinition of paragraph and subparagraph by the default LaTeX template
+% See https://github.com/crsh/papaja/issues/292
+\makeatletter
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries\itshape\typesectitle}}
+
+\renewcommand{\subparagraph}[1]{\@startsection{subparagraph}{5}{1em}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-\z@\relax}%
+  {\normalfont\normalsize\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
+\makeatother
+
+% \usepackage{etoolbox}
+\makeatletter
+\patchcmd{\HyOrg@maketitle}
+  {\section{\normalfont\normalsize\abstractname}}
+  {\section*{\normalfont\normalsize\abstractname}}
+  {}{\typeout{Failed to patch abstract.}}
+\patchcmd{\HyOrg@maketitle}
+  {\section{\protect\normalfont{\@title}}}
+  {\section*{\protect\normalfont{\@title}}}
+  {}{\typeout{Failed to patch title.}}
+\makeatother
+
+\usepackage{xpatch}
+\makeatletter
+\xapptocmd\appendix
+  {\xapptocmd\section
+    {\addcontentsline{toc}{section}{\appendixname\ifoneappendix\else~\theappendix\fi\\: #1}}
+    {}{\InnerPatchFailed}%
+  }
+{}{\PatchFailed}
+\keywords{keywords\newline\indent Word count: X}
+\DeclareDelayedFloatFlavor{ThreePartTable}{table}
+\DeclareDelayedFloatFlavor{lltable}{table}
+\DeclareDelayedFloatFlavor*{longtable}{table}
+\makeatletter
+\renewcommand{\efloat@iwrite}[1]{\immediate\expandafter\protected@write\csname efloat@post#1\endcsname{}}
+\makeatother
+\usepackage{lineno}
+
+\linenumbers
+\usepackage{csquotes}
+\ifXeTeX
+  % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
+  \usepackage{polyglossia}
+  \setmainlanguage[]{english}
+\else
+  \usepackage[main=english]{babel}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+
+\shorttitle{Title}
+
+\authornote{
+
+Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+
+Enter author note here.
+
+The authors made the following contributions. First Author: Conceptualization, Writing - Original Draft Preparation, Writing - Review \& Editing; Ernst-August Doelle: Writing - Review \& Editing.
+
+Correspondence concerning this article should be addressed to First Author, Postal address. E-mail: \href{mailto:my@email.com}{\nolinkurl{my@email.com}}
+
+}
+
+\affiliation{\vspace{0.5cm}\textsuperscript{1} Wilhelm-Wundt-University\\\textsuperscript{2} Konstanz Business School}
+
+\abstract{%
+One or two sentences providing a \textbf{basic introduction} to the field, comprehensible to a scientist in any discipline.
+
+Two to three sentences of \textbf{more detailed background}, comprehensible to scientists in related disciplines.
+
+One sentence clearly stating the \textbf{general problem} being addressed by this particular study.
+
+One sentence summarizing the main result (with the words ``\textbf{here we show}'' or their equivalent).
+
+Two or three sentences explaining what the \textbf{main result} reveals in direct comparison to what was thought to be the case previously, or how the main result adds to previous knowledge.
+
+One or two sentences to put the results into a more \textbf{general context}.
+
+Two or three sentences to provide a \textbf{broader perspective}, readily comprehensible to a scientist in any discipline.
+}
+
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{methods}{%
+\section{Methods}\label{methods}}
+
+We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study.
+
+\hypertarget{participants}{%
+\subsection{Participants}\label{participants}}
+
+\hypertarget{material}{%
+\subsection{Material}\label{material}}
+
+\hypertarget{procedure}{%
+\subsection{Procedure}\label{procedure}}
+
+\hypertarget{data-analysis}{%
+\subsection{Data analysis}\label{data-analysis}}
+
+We used R (Version 4.1.2; R Core Team, 2020) and the R-packages \emph{ARTofR} (Version 0.3.3; Zhang, 2021), \emph{cowplot} (Version 1.1.1; Wilke, 2020), \emph{dplyr} (Version 1.0.8; Wickham, François, Henry, \& Müller, 2020), \emph{forcats} (Version 0.5.1; Wickham, 2020a), \emph{ggplot2} (Version 3.3.5; Wickham, 2016), \emph{gridExtra} (Version 2.3; Auguie, 2017), \emph{lubridate} (Version 1.8.0; Grolemund \& Wickham, 2011), \emph{needs} (Version 0.0.3; Katz, 2016), \emph{papaja} (Version 0.1.0.9997; Aust \& Barth, 2020), \emph{purrr} (Version 0.3.4; Henry \& Wickham, 2020), \emph{readr} (Version 2.1.1; Wickham \& Hester, 2020), \emph{readxl} (Version 1.3.1; Wickham \& Bryan, 2019), \emph{stringr} (Version 1.4.0; Wickham, 2019), \emph{tibble} (Version 3.1.6; Müller \& Wickham, 2020), \emph{tidyr} (Version 1.2.0; Wickham, 2020b), \emph{tidyverse} (Version 1.3.1; Wickham et al., 2019), \emph{tinylabels} (Version 0.2.3; Barth, 2022), \emph{viridis} (Version 0.6.2; Garnier, 2018a, 2018b), and \emph{viridisLite} (Version 0.4.0; Garnier, 2018b) for all our analyses.
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+\newpage
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-R-gridExtra}{}}%
+Auguie, B. (2017). \emph{gridExtra: Miscellaneous functions for "grid" graphics}. Retrieved from \url{https://CRAN.R-project.org/package=gridExtra}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-papaja}{}}%
+Aust, F., \& Barth, M. (2020). \emph{{papaja}: {Create} {APA} manuscripts with {R Markdown}}. Retrieved from \url{https://github.com/crsh/papaja}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-tinylabels}{}}%
+Barth, M. (2022). \emph{{tinylabels}: Lightweight variable labels}. Retrieved from \url{https://cran.r-project.org/package=tinylabels}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-viridis}{}}%
+Garnier, S. (2018a). \emph{Viridis: Default color maps from 'matplotlib'}. Retrieved from \url{https://CRAN.R-project.org/package=viridis}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-viridisLite}{}}%
+Garnier, S. (2018b). \emph{viridisLite: Default color maps from 'matplotlib' (lite version)}. Retrieved from \url{https://CRAN.R-project.org/package=viridisLite}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-lubridate}{}}%
+Grolemund, G., \& Wickham, H. (2011). Dates and times made easy with {lubridate}. \emph{Journal of Statistical Software}, \emph{40}(3), 1--25. Retrieved from \url{https://www.jstatsoft.org/v40/i03/}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-purrr}{}}%
+Henry, L., \& Wickham, H. (2020). \emph{Purrr: Functional programming tools}. Retrieved from \url{https://CRAN.R-project.org/package=purrr}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-needs}{}}%
+Katz, J. (2016). \emph{Needs: Attaches and installs packages}. Retrieved from \url{https://CRAN.R-project.org/package=needs}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-tibble}{}}%
+Müller, K., \& Wickham, H. (2020). \emph{Tibble: Simple data frames}. Retrieved from \url{https://CRAN.R-project.org/package=tibble}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-base}{}}%
+R Core Team. (2020). \emph{R: A language and environment for statistical computing}. Vienna, Austria: R Foundation for Statistical Computing. Retrieved from \url{https://www.R-project.org/}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-ggplot2}{}}%
+Wickham, H. (2016). \emph{ggplot2: Elegant graphics for data analysis}. Springer-Verlag New York. Retrieved from \url{https://ggplot2.tidyverse.org}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-stringr}{}}%
+Wickham, H. (2019). \emph{Stringr: Simple, consistent wrappers for common string operations}. Retrieved from \url{https://CRAN.R-project.org/package=stringr}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-forcats}{}}%
+Wickham, H. (2020a). \emph{Forcats: Tools for working with categorical variables (factors)}. Retrieved from \url{https://CRAN.R-project.org/package=forcats}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-tidyr}{}}%
+Wickham, H. (2020b). \emph{Tidyr: Tidy messy data}. Retrieved from \url{https://CRAN.R-project.org/package=tidyr}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-tidyverse}{}}%
+Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., \ldots{} Yutani, H. (2019). Welcome to the {tidyverse}. \emph{Journal of Open Source Software}, \emph{4}(43), 1686. \url{https://doi.org/10.21105/joss.01686}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-readxl}{}}%
+Wickham, H., \& Bryan, J. (2019). \emph{Readxl: Read excel files}. Retrieved from \url{https://CRAN.R-project.org/package=readxl}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-dplyr}{}}%
+Wickham, H., François, R., Henry, L., \& Müller, K. (2020). \emph{Dplyr: A grammar of data manipulation}. Retrieved from \url{https://CRAN.R-project.org/package=dplyr}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-readr}{}}%
+Wickham, H., \& Hester, J. (2020). \emph{Readr: Read rectangular text data}. Retrieved from \url{https://CRAN.R-project.org/package=readr}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-cowplot}{}}%
+Wilke, C. O. (2020). \emph{Cowplot: Streamlined plot theme and plot annotations for 'ggplot2'}. Retrieved from \url{https://CRAN.R-project.org/package=cowplot}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-ARTofR}{}}%
+Zhang, H. (2021). \emph{ARTofR: Who ever care about the {[}art of r{]} scripts?} Retrieved from \url{https://CRAN.R-project.org/package=ARTofR}
+
+\end{CSLReferences}
+
+
+\end{document}
