@@ -77,8 +77,9 @@ tablelist         : no
 footnotelist      : no
 
 classoption       : "man"
-output            : papaja::apa6_pdf
-# bookdown::word_document2 
+output            : bookdown::word_document2 
+# papaja::apa6_pdf
+
 ---
 
 ```{r setup, include = FALSE}
@@ -154,7 +155,8 @@ df_merge <- merge(df_demo_all,
                   df_rating,
                   by = "ID") %>% 
   filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
-                    "132")
+                    "132",
+                    "236")
          )
 
 # rm(list = c("df_demo","df_rating"))
@@ -251,7 +253,8 @@ We report how we determined our sample size, all data exclusions (if any), all m
 # exclude cases with no fitbit data
 df_demo <- df_demo_all %>% 
   filter(!ID %in% c("126",
-                     "132"
+                     "132",
+                    "236"
                      )
           )
 

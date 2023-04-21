@@ -1,3 +1,45 @@
+@article{gagnon2022comparing,
+  title={Comparing a Fitbit Wearable to an Electrocardiogram Gold Standard as a Measure of Heart Rate Under Psychological Stress: A Validation Study},
+  author={Gagnon, Joel and Khau, Michelle and Lavoie-Hudon, L{\'e}andre and Vachon, Fran{\c{c}}ois and Drapeau, Vicky and Tremblay, S{\'e}bastien},
+  journal={JMIR Formative Research},
+  volume={6},
+  number={12},
+  pages={e37885},
+  year={2022},
+  publisher={JMIR Publications Toronto, Canada}
+}
+
+@article{jo2016validation,
+  title={Validation of biofeedback wearables for photoplethysmographic heart rate tracking},
+  author={Jo, Edward and Lewis, Kiana and Directo, Dean and Kim, Michael J and Dolezal, Brett A},
+  journal={Journal of sports science \& medicine},
+  volume={15},
+  number={3},
+  pages={540},
+  year={2016},
+  publisher={Dept. of Sports Medicine, Medical Faculty of Uludag University}
+}
+
+@article{hajj2022wrist,
+  title={Wrist-worn devices for the measurement of heart rate and energy expenditure: A validation study for the Apple Watch 6, Polar Vantage V and Fitbit Sense},
+  author={Hajj-Boutros, Guy and Landry-Duval, Marie-Anne and Comtois, Alain Steve and Gouspillou, Gilles and Karelis, Antony D},
+  journal={European Journal of Sport Science},
+  pages={1--13},
+  year={2022},
+  publisher={Taylor \& Francis}
+}
+
+@article{chalmers2021stress,
+  title={Stress watch: The use of heart rate and heart rate variability to detect stress: A pilot study using smart watch wearables},
+  author={Chalmers, Taryn and Hickey, Blake Anthony and Newton, Phillip and Lin, Chin-Teng and Sibbritt, David and McLachlan, Craig S and Clifton-Bligh, Roderick and Morley, John and Lal, Sara},
+  journal={Sensors},
+  volume={22},
+  number={1},
+  pages={151},
+  year={2021},
+  publisher={MDPI}
+}
+
 @article{liu2020anxiety,
   title={Anxiety and Stress in In-Service Chinese University Teachers of Arts.},
   author={Liu, Meihua and Yan, Yi},
