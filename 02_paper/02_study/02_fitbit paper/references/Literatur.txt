@@ -1,3 +1,13 @@
+@incollection{blascovich1996biopsychosocial,
+  title={The biopsychosocial model of arousal regulation},
+  author={Blascovich, Jim and Tomaka, Joe},
+  booktitle={Advances in experimental social psychology},
+  volume={28},
+  pages={1--51},
+  year={1996},
+  publisher={Elsevier}
+}
+
 @article{gagnon2022comparing,
   title={Comparing a Fitbit Wearable to an Electrocardiogram Gold Standard as a Measure of Heart Rate Under Psychological Stress: A Validation Study},
   author={Gagnon, Joel and Khau, Michelle and Lavoie-Hudon, L{\'e}andre and Vachon, Fran{\c{c}}ois and Drapeau, Vicky and Tremblay, S{\'e}bastien},
