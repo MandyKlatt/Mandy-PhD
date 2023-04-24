@@ -12,11 +12,11 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FA
 ```{r}
 library(needs)
 needs(ltm,
-      xtable,
       broom,
       ppcor,
       jtools,
       lm.beta,
+      tidyverse,
       janitor,
       lubridate,
       readxl,
@@ -30,9 +30,7 @@ needs(ltm,
       lme4,
       viridis,
       gridExtra,
-      gridtext,
-      magrittr,
-      tidyverse)
+      gridtext)
 
 # disruption & confidence rating
 df_rating <- 
@@ -442,77 +440,24 @@ heart_rate_regression %>%
 - t-test über 
 
 
+1. rohwert-kurve neben z-std.-kurve (untereinander)
+2. Slope und Intercept mit je Mean und SD (overall aus individuell?) -> sign?
+3. Unterricht vs. Post (t-test über Intercepts), d und p
+4. Intercept (Teaching, interview, Post) vorhersage (4 Modelle)
+5. Unterscheiden sich slopes in pre und subsequent signifikant (Betrag?)
+6. Slopes (pre-Phase und subsequent) vorhersagen (4 Modelle)
+7. slope und intercept correlation?
+
+
+1. Pre Phase
+2. Teaching Phase
+3. Post Phase
+4. Interview Phase
+5. End Phase
 
 
 
 
-## Interview 
-
-```{r}
-fit_interview_1 <-
-  df_test_reg %>% 
-  filter(time_span == "interview") %$% 
-  lm(intercept ~ mean_disruption)
-
-fit_interview_2 <-
-  df_test_reg %>% 
-  filter(time_span == "interview") %$% 
-  lm(intercept ~ mean_confidence)
-
-fit_interview_3 <-
-  df_test_reg %>% 
-  filter(time_span == "interview") %$% 
-  lm(intercept ~ mean_confidence + mean_disruption)
-
-fit_interview_4 <-
-  df_test_reg %>% 
-  filter(time_span == "interview") %$% 
-  lm(intercept ~ mean_confidence + mean_disruption + teaching_experience)
-
-stargazer::stargazer(fit_interview_1, fit_interview_2, fit_interview_3, fit_interview_4,
-                     type = "latex",
-                     dep.var.labels = "Intercept",
-                     order = c(1, 3, 2),
-                     covariate.labels = c("Disruption Factor",
-                                          "Confidence Factor",
-                                          "Teaching Experience"),
-                     keep.stat = c("n","rsq","adj.rsq")
-                     )
-```
-
-## Post
-
-```{r}
-fit_post_1 <-
-  df_test_reg %>% 
-  filter(time_span == "subsequent") %$% 
-  lm(intercept ~ mean_disruption)
-
-fit_post_2 <-
-  df_test_reg %>% 
-  filter(time_span == "subsequent") %$% 
-  lm(intercept ~ mean_confidence)
-
-fit_post_3 <-
-  df_test_reg %>% 
-  filter(time_span == "subsequent") %$% 
-  lm(intercept ~ mean_confidence + mean_disruption)
-
-fit_post_4 <-
-  df_test_reg %>% 
-  filter(time_span == "subsequent") %$% 
-  lm(intercept ~ mean_confidence + mean_disruption + teaching_experience)
-
-stargazer::stargazer(fit_post_1, fit_post_2, fit_post_3, fit_post_4,
-                     type = "latex",
-                     dep.var.labels = "Intercept",
-                     order = c(1, 3, 2),
-                     covariate.labels = c("Disruption Factor",
-                                          "Confidence Factor",
-                                          "Teaching Experience"),
-                     keep.stat = c("n","rsq","adj.rsq")
-                     )
-```
 
 
 
