@@ -410,7 +410,7 @@ ggsave(plot = confi_group_plot,
 # 
 
 
-#################### MEAN, SD ############
+#################### MEAN, SD, N ############
 
 # mean disrup_factor
 sri_disrup_mean <- sri_disrup %>%

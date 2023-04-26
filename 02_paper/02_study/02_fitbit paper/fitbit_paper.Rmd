@@ -315,15 +315,15 @@ df_demo_table <- df_demo %>%
             "Max Teaching Experience in years" = max(teaching_experience)
             )
 
-# format and insert table in manuscript
-df_demo_table %>%
-papaja::apa_table(
-  caption = "Demographic Information",
-  # note = "Write Note here",
-  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
-  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
-  font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
-  )
+# # format and insert table in manuscript
+# df_demo_table %>%
+# papaja::apa_table(
+#   caption = "Demographic Information",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+#   )
       
 
 ```
