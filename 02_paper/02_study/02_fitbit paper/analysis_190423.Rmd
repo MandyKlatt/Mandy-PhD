@@ -27,7 +27,7 @@ needs(ltm,
       cowplot,
       rstatix,
       ggpubr,
-    #  lme4,
+      lme4,
       lmerTest,
       viridis,
       gridExtra,
@@ -288,15 +288,15 @@ table_data <-
   df_regression %>% 
 #  mutate(time = time * 60) %>% 
   split(.$Phase) %>% 
-  map(~ lmer(formula = heart_rate_std ~ 1 + time + (1 + time | ID),
+  map(~ lmerTest::lmer(formula = heart_rate_std ~ 1 + time + (1 + time | ID),
        data = .
        )
       ) %>%
   map(~ tibble(time_span = names(.),
-               intercept = fixef(.)[[1]],
+               intercept = fixef(.)[1],
                intercept_sd = VarCorr(.) %>% as_tibble() %>% .[1,5],
                intercept_p = coef(summary(.))[1, 5],
-               slope = fixef(.)[[2]],
+               slope = fixef(.)[2],
                slope_sd = VarCorr(.) %>% as_tibble() %>% .[2,5],
                slope_p = coef(summary(.))[2, 5]
                )
@@ -324,6 +324,16 @@ table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase 
 table_data %>% 
   arrange(Phase) %>% 
 knitr::kable(., caption = "Overview")
+
+model_hurensohn <- 
+  df_regression %>% 
+  filter(time_span == "teaching") %$% 
+  lmer(formula = heart_rate_std ~ 1 + time + (1 + time | ID),
+       data = .) %>% 
+  fixef(.)[2]
+
+fixef(model_hurensohn)[2]
+
 ```
 
 # t-Test (Teaching Phase vs. Interview Phase)
