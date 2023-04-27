@@ -1,1 +1,0 @@
-was weiß ich
