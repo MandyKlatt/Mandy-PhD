@@ -41,18 +41,18 @@ df_rating <-
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   dplyr::select(ID, # select relevant columns 
-         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
-         confidence_factor,
-         event
+         "Disruption Factor", # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         "Confidence Factor",
+         "Event"
          ) %>% 
-  mutate(disruption_factor = ifelse(disruption_factor < 0,
+  mutate(disruption_factor = ifelse(`Disruption Factor` < 0,
                                     yes = NA,
-                                    no = disruption_factor
+                                    no = `Disruption Factor`
                                     ),
-         confidence_factor = ifelse(confidence_factor < 0,
+         confidence_factor = ifelse(`Confidence Factor` < 0,
                                    yes = NA,
-                                   no = confidence_factor),
-         event = as_factor(event)
+                                   no = `Confidence Factor`),
+         event = as_factor(Event)
          )
 
 # demographic data
@@ -439,38 +439,111 @@ df_ttest %$%
 # Pre Teaching Phase
 
 ```{r}
-
+df_multi <- 
+  main %>% 
+  select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  summarize(disruption = mean(disruption_factor, na.rm = T),
+            confidence = mean(confidence_factor, na.rm = T),
+            teaching_experience) %>% 
+  ungroup() %>% 
+  mutate(id = as.character(ID)) %>% 
+  distinct() %>% 
+  right_join(x = .,
+            y = fix_models,
+            by = "id")
 
 fit_pre_1 <-
-   %>% 
-  filter(time_span == "pre") %$% 
-  lm(slope ~ mean_disruption)
+  df_multi %>% 
+  filter(Phase == "Pre Teaching Phase") %$% 
+  lm(slope ~ disruption)
 
 fit_pre_2 <-
-  df_test_reg %>% 
-  filter(time_span == "pre") %$% 
-  lm(time ~ mean_confidence)
+  df_multi %>% 
+  filter(Phase == "Pre Teaching Phase") %$% 
+  lm(slope ~ confidence)
 
 fit_pre_3 <-
-  df_test_reg %>% 
-  filter(time_span == "pre") %$% 
-  lm(time ~ mean_confidence + mean_disruption)
+  df_multi %>% 
+  filter(Phase == "Pre Teaching Phase") %$% 
+  lm(slope ~ teaching_experience)
 
 fit_pre_4 <-
-  df_test_reg %>% 
-  filter(time_span == "pre") %$% 
-  lm(time ~ mean_confidence + mean_disruption + teaching_experience)
+  df_multi %>% 
+  filter(Phase == "Pre Teaching Phase") %$% 
+  lm(slope ~ confidence + disruption)
 
-stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4,
+fit_pre_5 <-
+  df_multi %>% 
+  filter(Phase == "Pre Teaching Phase") %$% 
+  lm(slope ~ confidence + disruption + teaching_experience)
+
+stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4, fit_pre_5,
                      type = "latex",
-                     caption = "Pre Phase",
+                     caption = "Pre Teaching Phase",
                      dep.var.labels = "Slope",
-                     order = c(1, 3, 2),
+                     order = c(1, 2, 3),
                      covariate.labels = c("Disruption Factor",
                                           "Confidence Factor",
                                           "Teaching Experience"),
                      keep.stat = c("n","rsq","adj.rsq")
                      )
 ```
+
+
+# Post Teaching Phase
+
+```{r}
+df_multi <- 
+  main %>% 
+  select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  summarize(disruption = mean(disruption_factor, na.rm = T),
+            confidence = mean(confidence_factor, na.rm = T),
+            teaching_experience) %>% 
+  ungroup() %>% 
+  mutate(id = as.character(ID)) %>% 
+  distinct() %>% 
+  right_join(x = .,
+            y = fix_models,
+            by = "id")
+
+fit_post_1 <-
+  df_multi %>% 
+  filter(Phase == "Post Teaching Phase") %$% 
+  lm(slope ~ disruption)
+
+fit_post_2 <-
+  df_multi %>% 
+  filter(Phase == "Post Teaching Phase") %$% 
+  lm(slope ~ confidence)
+
+fit_post_3 <-
+  df_multi %>% 
+  filter(Phase == "Post Teaching Phase") %$% 
+  lm(slope ~ teaching_experience)
+
+fit_post_4 <-
+  df_multi %>% 
+  filter(Phase == "Post Teaching Phase") %$% 
+  lm(slope ~ confidence + disruption)
+
+fit_post_5 <-
+  df_multi %>% 
+  filter(Phase == "Post Teaching Phase") %$% 
+  lm(slope ~ confidence + disruption + teaching_experience)
+
+stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
+                     type = "latex",
+                #     caption = "Post Teaching Phase",
+                     dep.var.labels = "Slope",
+                     order = c(1, 2, 3),
+                     covariate.labels = c("Disruption Factor",
+                                          "Confidence Factor",
+                                          "Teaching Experience"),
+                     keep.stat = c("n","rsq","adj.rsq")
+                     )
 ```
 
