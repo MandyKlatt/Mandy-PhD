@@ -1,3 +1,13 @@
+@article{donker2020associations,
+  title={Associations between teachers’ interpersonal behavior, physiological arousal, and lesson-focused emotions},
+  author={Donker, Monika H and van Gog, Tamara and Goetz, Thomas and Roos, Anna-Lena and Mainhard, Tim},
+  journal={Contemporary Educational Psychology},
+  volume={63},
+  pages={101906},
+  year={2020},
+  publisher={Elsevier}
+
+
 @incollection{blascovich1996biopsychosocial,
   title={The biopsychosocial model of arousal regulation},
   author={Blascovich, Jim and Tomaka, Joe},
