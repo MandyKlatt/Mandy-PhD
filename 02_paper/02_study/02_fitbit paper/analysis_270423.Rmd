@@ -452,43 +452,65 @@ df_multi <-
   distinct() %>% 
   right_join(x = .,
             y = fix_models,
-            by = "id")
+            by = "id") %>% 
+  mutate(posneg = if_else(condition = slope < 0,
+                          true = "negative",
+                          false = "positive"))
 
 fit_pre_1 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ disruption)
+  lm(slope ~ disruption * posneg)
 
 fit_pre_2 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ confidence)
+  lm(slope ~ confidence:posneg)
 
 fit_pre_3 <-
   df_multi %>% 
+  mutate(teaching_experience = log(teaching_experience + 1)) %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ teaching_experience)
+  lm(slope ~ teaching_experience:posneg)
 
 fit_pre_4 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ confidence + disruption)
+  lm(slope ~ confidence:posneg + disruption:posneg)
 
 fit_pre_5 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ confidence + disruption + teaching_experience)
+  lm(slope ~ posneg:confidence + posneg:disruption + posneg:teaching_experience)
 
 stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4, fit_pre_5,
                      type = "latex",
                      caption = "Pre Teaching Phase",
                      dep.var.labels = "Slope",
-                     order = c(1, 2, 3),
-                     covariate.labels = c("Disruption Factor",
-                                          "Confidence Factor",
-                                          "Teaching Experience"),
+                     # order = c(1, 2, 3),
+                     # covariate.labels = c("Disruption Factor",
+                     #                      "Confidence Factor",
+                     #                      "Teaching Experience"),
                      keep.stat = c("n","rsq","adj.rsq")
                      )
+
+fit_pre_3$model %>%
+  mutate(fitted.values = fit_pre_3$fitted.values) %>% 
+  ggplot(mapping = aes(x = teaching_experience,
+                       y = slope
+                       )
+         ) +
+  geom_point(mapping = aes(group = posneg)) +
+          geom_line(mapping = aes(y = fitted.values,
+                                  group = posneg)) +
+  geom_smooth(method = "lm",
+              se = F,
+              linetype = "dashed") +
+        # geom_point(alpha = 0.5,
+        #            size = 0.5) +
+        theme_apa()
+      
+
 ```
 
 
@@ -512,8 +534,14 @@ df_multi <-
 
 fit_post_1 <-
   df_multi %>% 
+  filter(Phase == "Post Teaching Phase") %>% 
+  split(.$posneg) %>% 
+  map(~ lm(slope ~ disruption,
+           data = .))
+  
+df_multi %>% 
   filter(Phase == "Post Teaching Phase") %$% 
-  lm(slope ~ disruption)
+  lm(slope ~ disruption:posneg)
 
 fit_post_2 <-
   df_multi %>% 
