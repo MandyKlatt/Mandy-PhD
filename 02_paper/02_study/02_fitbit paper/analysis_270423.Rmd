@@ -41,18 +41,18 @@ df_rating <-
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   dplyr::select(ID, # select relevant columns 
-         "Disruption Factor", # -99 = subject did not notice event; -100 = experimenter did not asked for event
-         "Confidence Factor",
-         "Event"
+         "disruption_factor", # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         "confidence_factor",
+         "event"
          ) %>% 
-  mutate(disruption_factor = ifelse(`Disruption Factor` < 0,
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
                                     yes = NA,
-                                    no = `Disruption Factor`
+                                    no = disruption_factor
                                     ),
-         confidence_factor = ifelse(`Confidence Factor` < 0,
+         confidence_factor = ifelse(confidence_factor < 0,
                                    yes = NA,
-                                   no = `Confidence Factor`),
-         event = as_factor(Event)
+                                   no = confidence_factor),
+         event = as_factor(event)
          )
 
 # demographic data
@@ -116,7 +116,7 @@ main <-
   dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(mean_heart = mean(heart_rate),
+  dplyr::summarize(mean_heart = mean(heart_rate),
             sd_heart = sd(heart_rate)) %>%
   ungroup() %>% 
   right_join(x = .,
@@ -162,7 +162,7 @@ lm_plot_phases <-
   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("Pre Teaching Phase","Teaching Phase","Post Teaching Phase","Interview Phase","End Phase"))) %>% 
+                            labels = c("(1) Pre-teaching phase","(2) Teaching phase","(3) Post-teaching phase","(4) Interview phase","(5) End phase"))) %>% 
   distinct() %>% 
   ggplot(mapping = aes(x = time,
                        y = heart_rate_std
@@ -193,7 +193,7 @@ ki_plot_phases <-
   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("Pre Teaching Phase","Teaching Phase","Post Teaching Phase","Interview Phase","End Phase"))) %>% 
+                            labels = c("(1) Pre-teaching phase","(2) Teaching phase","(3) Post-teaching phase","(4) Interview phase","(5) End phase"))) %>% 
   distinct() %>%
   group_by(time_span) %>% 
   summarise(z_mean = mean(heart_rate_std),
@@ -299,7 +299,7 @@ p.values_intercept <-
 sd_mean <-
   fix_models %>%
   group_by(Phase) %>%
-  summarize(
+  dplyr::summarize(
     mean_slope = mean(slope),
     sd_slope = sd(slope),
     mean_intercept = mean(intercept),
