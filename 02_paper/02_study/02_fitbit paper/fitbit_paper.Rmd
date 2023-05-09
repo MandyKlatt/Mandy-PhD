@@ -77,8 +77,7 @@ tablelist         : no
 footnotelist      : no
 
 classoption       : "man"
-output            : bookdown::word_document2 
-# papaja::apa6_pdf
+output            : papaja::apa6_pdf
 
 ---
 
@@ -282,18 +281,22 @@ df_demo <- df_demo_all %>%
                      )
           )
 
-# changing gender to count female gender (male = 2 --> 0)
-df_demo$gender = ifelse(df_demo$gender == 2, "1","0")
+# changing gender to count female gender (female = 2 --> 1, male --> 0)
+df_demo$gender = ifelse(test = df_demo$gender == 2,
+                        yes = 1,
+                        no = 0)
 
 # changing character Gender into numeric
-df_demo$gender <- as.numeric(df_demo$gender)
+# df_demo$gender <- as.numeric(df_demo$gender)
+
+# recoding gender - Freddy
 
 # creating new column with total participants to calculate percent of gender
 df_demo <- df_demo %>%
   mutate(sum_participants = sum(n()))
 
 # replacing 2 to 1 (Oberschule = Gymnasisium --> Secondary school)
-df_demo$school_type[df_demo$school_type == 2] <- "1"
+df_demo$school_type[df_demo$school_type == 2] <- 1
 
 # creating new column to calculate percent of school type
 df_demo <- 
@@ -304,7 +307,7 @@ df_demo <-
          digits = 2))
 
 # changing character Percent_schooltype into numeric
-df_demo$percent_schooltype <- as.numeric(df_demo$percent_schooltype)
+# df_demo$percent_schooltype <- as.numeric(df_demo$percent_schooltype)
 
 #changing type of school into character
 # LI18:
@@ -322,7 +325,8 @@ df_demo$school_type <- factor(x = df_demo$school_type,
 # create a basic table (tibble) using tidyverse functions
 df_demo_table <- df_demo %>%
   ungroup() %>%
-  summarise(N=n(),
+  summarise('N' = round(mean(sum_participants),
+                             digits = 0),
             "Gender female in percent" = round(sum(gender/sum_participants) * 100,
                                                digits = 2),
             "M Age in years" = round(mean(age),
@@ -339,15 +343,20 @@ df_demo_table <- df_demo %>%
             "Max Teaching Experience in years" = max(teaching_experience)
             )
 
+df_demo_table_long <- pivot_longer(data = df_demo_table,
+                              cols = everything(),
+                              names_to = 'Variable',
+                              values_to = 'values')
+
 # # format and insert table in manuscript
-# df_demo_table %>%
-# papaja::apa_table(
-#   caption = "Demographic Information",
+ df_demo_table_long %>%
+ papaja::apa_table(
+   caption = "Demographic Information",
 #   # note = "Write Note here",
-#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
-#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
-#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
-#   )
+   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+   )
       
 
 ```
