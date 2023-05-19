@@ -147,7 +147,7 @@ CohenD(x = main$reaction[main$id == "Expert"],
        y = main$reaction[main$id == "Novice"],
        na.rm = TRUE)
 
-### action alternatives count (sum score)
+### action alternatives count
 # t-test for expertise differences
 t.test(x = main$count[main$id == "Expert"],
        y = main$count[main$id == "Novice"])
@@ -176,4 +176,5 @@ t.test(x = main$percent_nd[main$id == "Expert"],
 CohenD(x = main$nd[main$id == "Expert"],
        y = main$nd[main$id == "Novice"],
        na.rm = TRUE)
+
 ```
