@@ -103,7 +103,6 @@ needs(tidyverse,
 
 
 # Methods
-We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
 
 ## Participants
 
@@ -123,13 +122,9 @@ demo.data <- demo.data %>% select(LI02_01_1,
 demo.data <- rename(demo.data, c("Group" = "LI06_05",
                                   "Gender" = "LI02_01_1",
                                   "Age" = "LI03_01",
-<<<<<<< Updated upstream
                                   "Teaching Experience" = "LI04_01")) %>% 
-    filter(Group %in% c(101:136, 202:217))# filter relevant rows
-
-=======
-                                  "Teaching Experience" = "LI04_01"))
->>>>>>> Stashed changes
+  filter(Group %in% c(101:126, 201:228),
+         !Group %in% c(204)) # filter relevant rows
 
 # define expert and novice with ifelse function
 demo.data$Group = ifelse(demo.data$Group < 200, "Novice","Expert")
@@ -165,9 +160,7 @@ apa_table(
   font_size = "small" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
   )
 
-<<<<<<< Updated upstream
 ```
-=======
 ```
 
 ## Material
