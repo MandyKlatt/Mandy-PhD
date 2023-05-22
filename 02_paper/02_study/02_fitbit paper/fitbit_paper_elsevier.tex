@@ -1,0 +1,305 @@
+\documentclass[]{elsarticle} %review=doublespace preprint=single 5p=2 column
+%%% Begin My package additions %%%%%%%%%%%%%%%%%%%
+
+\usepackage[hyphens]{url}
+
+
+\usepackage{graphicx}
+%%%%%%%%%%%%%%%% end my additions to header
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+% TODO: Currently lineno needs to be loaded after amsmath because of conflict
+% https://github.com/latex-lineno/lineno/issues/5
+\usepackage{lineno} % add
+  \linenumbers % turns line numbering on
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
+
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={New approaches to teachers' experience of stress: Do heart rate measurements with fitness trackers provide an efficient, inexpensive, and robust measurement method?},
+            colorlinks=false,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+
+\setcounter{secnumdepth}{0}
+% Pandoc toggle for numbering sections (defaults to be off)
+\setcounter{secnumdepth}{0}
+
+% Pandoc syntax highlighting
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+
+% tightlist command for lists without linebreak
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+
+
+
+
+\begin{document}
+
+
+\begin{frontmatter}
+
+  \title{New approaches to teachers' experience of stress: Do heart rate
+measurements with fitness trackers provide an efficient, inexpensive,
+and robust measurement method?}
+    \author[1]{Mandy Klatt%
+  %
+  }
+   \ead{mandy.klatt@uni-leipzig.de} 
+    \author[1]{Peer Keßler%
+  %
+  }
+  
+    \author[1,2]{Gregor Kachel%
+  %
+  }
+  
+    \author[1]{Christin Lotz%
+  %
+  }
+  
+    \author[1]{Anne Deiglmayr%
+  %
+  }
+  
+      \cortext[cor1]{Corresponding author}
+  
+  \begin{abstract}
+  One or two sentences providing a \textbf{basic introduction} to the
+  field, comprehensible to a scientist in any discipline.
+
+  Two to three sentences of \textbf{more detailed background},
+  comprehensible to scientists in related disciplines.
+
+  One sentence clearly stating the \textbf{general problem} being
+  addressed by this particular study.
+
+  One sentence summarizing the main result (with the words
+  ``\textbf{here we show}'' or their equivalent).
+
+  Two or three sentences explaining what the \textbf{main result}
+  reveals in direct comparison to what was thought to be the case
+  previously, or how the main result adds to previous knowledge.
+
+  One or two sentences to put the results into a more \textbf{general
+  context}.
+
+  Two or three sentences to provide a \textbf{broader perspective},
+  readily comprehensible to a scientist in any discipline.
+
+  XXX In this proof-of-concept study, we aimed to advance the field of
+  teacher stress by collecting heart rate data with wrist-worn devices
+  and testing a methodology that has the potential to provide more
+  insights on the non-invasive assessment of teacher stress. XXX
+  \end{abstract}
+    \begin{keyword}
+    heart rate; photoplethysmography; wearable electronic device;
+teaching \sep 
+    heart rate; photoplethysmography; wearable electronic device;
+teaching
+  \end{keyword}
+  
+ \end{frontmatter}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Seed for random number generation}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+\NormalTok{knitr}\SpecialCharTok{::}\NormalTok{opts\_chunk}\SpecialCharTok{$}\FunctionTok{set}\NormalTok{(}\AttributeTok{cache.extra =}\NormalTok{ knitr}\SpecialCharTok{::}\NormalTok{rand\_seed)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Physiological data such as heart rate are becoming increasingly
+important in research on stress experience. They represent an important
+indicator of physical or emotional stress, as increased workload is
+associated with increased heart rate \citep{sachs2014physiologische}.
+Furthermore, they allow a more objective recording of stress than
+self-reports \citep{rungeusing}. However, capturing heart rate in an
+educational context requires the use of low-cost and non-invasive
+instruments. Fitness trackers worn on the wrist have the potential to be
+such a useful tool \citep{ferguson2015validity}.
+
+To date, there is still little evidence on the usefulness of heart rate
+measurements using fitness trackers in teaching and learning settings
+\citep{ertzberger2016use, lowe2016educational}. \citet{rungeusing} alone
+examined teacher stress in a relatively small sample (\emph{N} = 4
+teachers) and showed that high heart rate indicates more stress in
+teachers.
+
+Thus, there remains a lack of robust studies on whether fitness trackers
+are an efficient, low-cost, and robust measurement method for assessing
+teachers' experience of arousal during teaching.
+
+\hypertarget{theoretical-background}{%
+\section{Theoretical Background}\label{theoretical-background}}
+
+\hypertarget{stress-in-teaching-profession}{%
+\subsection{Stress in Teaching
+Profession}\label{stress-in-teaching-profession}}
+
+--\textgreater{} teacher profession is one of the most stressful
+professions.
+
+Teacher stress can be defined as ``{[}\ldots{]} the experience by a
+teacher of unpleasant, negative emotions, such as anger, anxiety,
+tension, frustration or depression, resulting from some aspect of their
+work as a teacher.'' \citep{kyriacou2001teacher}.
+
+Teachers' individual perceptions of student misbehavior in the classroom
+are closely related to their well-being \citep{ALDRUP2018126}.
+
+--\textgreater{} wie entsteht Stress
+
+--\textgreater{} wie wurde Stress bisher gemessen
+
+\hypertarget{heart-rate-as-an-indicator-for-stress-or-arousal}{%
+\subsection{Heart rate as an indicator for stress or
+arousal}\label{heart-rate-as-an-indicator-for-stress-or-arousal}}
+
+Heart rate is physiologically regulated by the autonomic nervous system.
+An increase in the activity of the sympathetic as part of the autonomic
+nervous system results in the heart rate being speeded up (``fight or
+flight''). On the other hand, an increased activity of the
+parasympathetic as the counterpart has the effect of slowing down the
+heart rate (``rest and digest'') \citep{Battipaglia2015}. In addition to
+the autonomic nervous system and genetic factors, heart rate is
+influenced by numerous external factors such as social, personal,
+psychological, environmental and behavioural factors
+\citep{wang2022using}.
+
+\hypertarget{wrist-worn-devices-as-a-new-approach-to-assess-physiological-measures}{%
+\subsection{Wrist-worn devices as a new approach to assess physiological
+measures}\label{wrist-worn-devices-as-a-new-approach-to-assess-physiological-measures}}
+
+\citet{fuller2020reliability} showed in their review article that
+wearable devices such as Fitbit watches are accurate and reliable for
+measuring heart rate in controlled settings.
+
+``The use of physiological measures enabled us to get some insight into
+teachers' affective responses without disrupting the teaching process
+(Mauss \& Robinson, 2009) and to reduce issues with social desirability,
+retrospective bias, and high cognitive load (Becker et al., 2015; Goetz
+et al., 2015; Scollon et al.,2009; Wilhelm \& Grossman, 2010). Moreover,
+we found that heart rate measures discriminated between both teachers,
+even when their interpersonal behavior during the lesson start was
+relatively similar.''
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\setcounter{enumi}{19}
+\tightlist
+\item
+  (PDF) A Quantitative Exploration of Two Teachers with Contrasting
+  Emotions: Intra-Individual Process Analyses of Physiology and
+  Interpersonal Behavior. Available from:
+  https://www.researchgate.net/publication/329787434\_A\_Quantitative\_Exploration\_of\_Two\_Teachers\_with\_Contrasting\_Emotions\_Intra-Individual\_Process\_Analyses\_of\_Physiology\_and\_Interpersonal\_Behavior
+  {[}accessed Dec 07 2022{]}.
+\end{enumerate}
+
+\hypertarget{aim-of-the-study}{%
+\subsection{Aim of the study}\label{aim-of-the-study}}
+
+In the present study, we assessed HR measures and self-report data of
+pre- and in-service teachers in a controlled teaching-learning setting.
+The aim was to investigate whether heart rate measurements using
+wrist-worn fitness trackers are a suitable and effective method
+\textbf{(1)} to map differences in states of arousal between five
+different phases (pre-teaching phase, teaching phase, post-teaching
+phase, interview phase and end phase) and \textbf{(2)} to evaluate the
+correlation between self-reported evaluations and HR measures.
+
+\textbf{(H1)} We expected heart rates to be higher during the teaching
+phase than during the pre- and the three post-teaching phases, and that
+the HR measures would decrease over the course of the study.
+\textbf{(H2)} We also predicted that HR and a high ranking on the
+negative scale on our survey (feeling disturbed by disruptions) would
+correlate positively and a high ranking on the positive scale (feeling
+confident in dealing with disruptions) would follow the inverse pattern.
+
+\hypertarget{methods}{%
+\section{Methods}\label{methods}}
+
+We report how we determined our sample size, all data exclusions (if
+any), all manipulations, and all measures in the study.
+
+\hypertarget{participants}{%
+\subsection{Participants}\label{participants}}
+
+\bibliography{r-references.bib}
+
+
+\end{document}

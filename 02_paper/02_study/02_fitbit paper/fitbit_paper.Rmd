@@ -95,7 +95,7 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```{r data wrangling, include=FALSE}
 
 # install.packages("pak")
-install.packages("rticles")
+# install.packages("papaja")
 
 library(needs)
 needs(ltm,

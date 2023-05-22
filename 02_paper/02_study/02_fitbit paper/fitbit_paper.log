@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.4.26)  9 MAY 2023 17:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.5.22)  22 MAY 2023 17:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **fitbit_paper.tex
 (./fitbit_paper.tex
 LaTeX2e <2022-11-01> patch level 1
-L3 programming layer <2023-04-20> (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/apa6/apa6.cls
+L3 programming layer <2023-05-15> (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/apa6/apa6.cls
 Document Class: apa6 2020/01/13 v2.34 APA formatting (6th edition)
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
@@ -309,7 +309,7 @@ LaTeX Info: Redefining \addtolength on input line 81.
 \calc@Ccount=\count290
 \calc@Cskip=\skip80
 ) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/babel.sty
-Package: babel 2023/04/18 3.88 The Babel package
+Package: babel 2023/05/11 v3.89 The Babel package
 \babel@savecnt=\count291
 \U@D=\dimen183
 \l@unhyphenated=\language3
@@ -317,9 +317,9 @@ Package: babel 2023/04/18 3.88 The Babel package
 \bbl@readstream=\read2
 \bbl@dirlevel=\count292
 Package babel Info: You haven't specified a language as a class or package
-(babel)             option. I'll load 'nil'. Reported on input line 4444.
+(babel)             option. I'll load 'nil'. Reported on input line 4262.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/nil.ldf
-Language: nil 2023/04/18 3.88 Nil language
+Language: nil 2023/05/11 v3.89 Nil language
 \l@nil=\language4
 ))
 \everypar=\toks27
@@ -390,7 +390,7 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 Failed to patch abstract.
 Failed to patch title.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xpatch/xpatch.sty (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty
-Package: expl3 2023-04-20 L3 programming layer (loader) 
+Package: expl3 2023-05-15 L3 programming layer (loader) 
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2023-04-19 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count300
@@ -400,7 +400,14 @@ Package: xpatch 2020/03/25 v0.3a Extending etoolbox patching commands
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
 Package: xparse 2023-02-02 L3 Experimental document command parser
 )) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lineno/lineno.sty
-Package: lineno 2023/01/19 line numbers on paragraphs v5.1
+Package: lineno 2023/05/20 line numbers on paragraphs v5.3
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
+) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+))
 \linenopenalty=\count301
 \output=\toks31
 \linenoprevgraf=\count302
@@ -416,7 +423,7 @@ Package: lineno 2023/01/19 line numbers on paragraphs v5.1
 \bframesep=\dimen197
 \bframebox=\box65
 \linenoamsmath@ams@eqpen=\count308
-LaTeX Info: Redefining \\ on input line 3131.
+LaTeX Info: Redefining \\ on input line 3180.
 ) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.sty
 Package: csquotes 2022-09-14 v5.2n context-sensitive quotations (JAW)
 \csq@reset=\count309
@@ -435,9 +442,7 @@ Package csquotes Info: ... configuration file loaded successfully.
 File: csquotes.cfg 
 )) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2023-04-22 v7.00x Hypertext links for LaTeX
-(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
-Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
-) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
 Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO)
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
@@ -445,8 +450,6 @@ Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
-) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
-Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 ) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
 ) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty
@@ -463,9 +466,7 @@ Package: nameref 2022-05-17 v2.50 Cross-referencing by name of section
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
-(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty
-Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
-))
+)
 \c@section@level=\count315
 )
 \@linkdim=\dimen198
@@ -669,7 +670,7 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 35
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [9{c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [10] [11] [12]
-Underfull \vbox (badness 8000) has occurred while \output is active []
+Underfull \vbox (badness 1521) has occurred while \output is active []
 
 [13]
 <fitbit_paper_files/figure-latex/overall_plot-1.pdf, id=182, 1084.05pt x 578.16pt>
@@ -711,23 +712,26 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [18]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[19] AED endfloat: Processing end Figures and Tables [20] (./fitbit_paper.aux)
+[19]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[20] AED endfloat: Processing end Figures and Tables [21] (./fitbit_paper.aux)
 Package rerunfilecheck Info: File `fitbit_paper.out' has not changed.
 (rerunfilecheck)             Checksum: A47F1DA31A5E3C33E12CC1897161155C;4537.
  ) 
 Here is how much of TeX's memory you used:
- 16229 strings out of 477961
- 267530 string characters out of 5836922
- 1865068 words of memory out of 5000000
- 36028 multiletter control sequences out of 15000+600000
+ 16373 strings out of 478056
+ 270985 string characters out of 5838839
+ 1865845 words of memory out of 5000000
+ 36075 multiletter control sequences out of 15000+600000
  564067 words of font info for 78 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 75i,11n,77p,2299b,613s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,11n,77p,2367b,613s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
-Output written on fitbit_paper.pdf (20 pages, 238711 bytes).
+Output written on fitbit_paper.pdf (21 pages, 239335 bytes).
 PDF statistics:
- 389 PDF objects out of 1000 (max. 8388607)
- 344 compressed objects within 4 object streams
- 121 named destinations out of 1000 (max. 500000)
+ 395 PDF objects out of 1000 (max. 8388607)
+ 349 compressed objects within 4 object streams
+ 123 named destinations out of 1000 (max. 500000)
  187 words of extra memory for PDF output out of 10000 (max. 10000000)
 

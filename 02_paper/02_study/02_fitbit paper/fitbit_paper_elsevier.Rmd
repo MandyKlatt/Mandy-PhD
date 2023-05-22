@@ -1,0 +1,275 @@
+---
+title             : "New approaches to teachers' experience of stress: Do heart rate measurements with fitness trackers provide an efficient, inexpensive, and robust measurement method?"
+shorttitle        : "Using fitbit to measure teachers' heart rate"
+
+author: 
+  - name          : "Mandy Klatt"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Dittrichring 5-7, 04109 Leipzig"
+    email         : "mandy.klatt@uni-leipzig.de"
+    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+      - "Conceptualization"
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - name          : "Peer Keßler"
+    affiliation   : "1"
+    role:
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - name          : "Gregor Kachel"
+    affiliation   : "1,2"
+    role:
+      - "Conceptualization"
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - name          : "Christin Lotz"
+    affiliation   : "1"
+    role:
+      - "Conceptualization"
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - name          : "Anne Deiglmayr"
+    affiliation   : "1"
+    role:
+      - "Supervision"
+
+affiliation:
+  - id            : "1"
+    institution   : "Leipzig University"
+  - id            : "2"
+    institution   : "Max Planck Institute for Evolutionary Anthropology"
+
+authornote: |
+  We received funding from QualiFond of University Leipzig. We have no conflicts of interest to disclose. This article is based on data used at conference presentations (DACH-Nachwuchsakademie, 2022; EARLI SIG 11, 2022; EARLI SIG 27, 2022). 
+ 
+abstract: |
+  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
+  
+  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
+  
+  One sentence clearly stating the **general problem** being addressed by  this particular study.
+  
+  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
+  
+  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
+  
+  One or two sentences to put the results into a more **general context**.
+  
+  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+  
+  XXX In this proof-of-concept study, we aimed to advance the field of teacher stress by collecting heart rate data with wrist-worn devices and testing a methodology that has the potential to provide more insights on the non-invasive assessment of teacher stress. XXX
+  
+  <!-- https://tinyurl.com/ybremelq -->
+  
+keywords          : "heart rate; photoplethysmography; wearable electronic device; teaching"
+wordcount         : "X"
+
+bibliography      : "r-references.bib" # Dateipfad einfügen
+
+floatsintext      : yes
+linenumbers       : yes  # Da hatten wir ja mal drüber gesprochen. Kann perspektivisch sicherlich geändert werden
+draft             : no
+mask              : no
+
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+
+# classoption       : "man" # unused global option. Was soll das tun?
+output            : 
+  rticles::elsevier_article:
+  bibliography: "r-references.bib"
+
+---
+
+```{r setup, include = FALSE}
+library("rticles")
+library("papaja")
+r_refs("r-references.bib") # -> ist ein Befehl aus dem Papaja_package. Funktioniert im rticles_Package etwas anders. Muss besprochen werden
+```
+
+```{r analysis-preferences}
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+```{r data wrangling, include=FALSE}
+
+library(needs)
+needs(ltm,
+      broom,
+      ppcor,
+      jtools,
+      lm.beta,
+      tidyverse,
+      janitor,
+      lubridate,
+      readxl,
+      ggthemes,
+      gridExtra,
+      imputeTS,
+      DescTools,
+      cowplot,
+      rstatix,
+      ggpubr,
+      lme4,
+      viridis,
+      bibtex)
+
+# disruption & confidence rating
+df_rating <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  dplyr::select(ID, # select relevant columns 
+         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         confidence_factor,
+         event
+         ) %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132",
+                    "236")
+         ) %>% 
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
+                                    yes = NA,
+                                    no = disruption_factor
+                                    ),
+         confidence_factor = ifelse(confidence_factor < 0,
+                                   yes = NA,
+                                   no = confidence_factor),
+         event = as_factor(event)
+         )
+
+# demographic data
+df_demo_all <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  transmute(ID = LI06_05, # select and rename relevant columns 
+            # gender = factor(LI02_01_1,
+            #                 levels = 1:2,
+            #                 labels = c("male","female")
+            #                 ),
+            gender = LI02_01_1, # 1 = male; 2 = female
+            age = LI03_01, 
+            teaching_experience = LI04_01,
+            school_type = LI18,
+            term = LI11_01,
+            extracurricular_teaching_experience = LI14,
+            secondary_teaching_activities = LI17) %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132",
+                    "236")
+        )
+
+# merge two data frames by ID 
+df_merge <- merge(df_demo_all,
+                  df_rating,
+                  by = "ID")
+
+# rm(list = c("df_demo","df_rating"))
+
+
+data_path <- "./data/heart_rate_data"
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "end_phase",
+                               str_detect(string = id, pattern = "_m") ~ "teaching_phase",
+                               str_detect(string = id, pattern = "_p") ~ "pre-teaching_phase",
+                               str_detect(string = id, pattern = "_s") ~ "post-teaching_phase",
+                               str_detect(string = id, pattern = "_i") ~ "interview_phase",
+                               TRUE ~ "overall"
+                               ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+      # filter(time <= 600) %>% # filter for 10min intervals
+    filter(time <= 7200) %>% # filter for 2 hours 30min (maximal duration of study)
+    dplyr::select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+main <-
+  left_join(main, df_merge,
+            by = "ID")
+
+main <- 
+  main %>% 
+  dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132",
+                    "236")
+        ) %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  summarize(mean_heart = mean(heart_rate),
+            sd_heart = sd(heart_rate)) %>%
+  ungroup() %>% 
+  right_join(x = .,
+             y = main,
+             by = "ID") %>% 
+  mutate(heart_rate_std = (heart_rate - mean_heart)/
+           sd_heart) %>% 
+  filter(!(time_span == "teaching" & time > 600))
+
+```
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+
+# Introduction
+Physiological data such as heart rate are becoming increasingly important in research on stress experience. They represent an important indicator of physical or emotional stress, as increased workload is associated with increased heart rate [@sachs2014physiologische]. Furthermore, they allow a more objective recording of stress than self-reports [@rungeusing]. However, capturing heart rate in an educational context requires the use of low-cost and non-invasive instruments. Fitness trackers worn on the wrist have the potential to be such a useful tool [@ferguson2015validity].
+
+To date, there is still little evidence on the usefulness of heart rate measurements using fitness trackers in teaching and learning settings [@ertzberger2016use; @lowe2016educational]. @rungeusing alone examined teacher stress in a relatively small sample (*N* = 4 teachers) and showed that high heart rate indicates more stress in teachers.
+
+Thus, there remains a lack of robust studies on whether fitness trackers are an efficient, low-cost, and robust measurement method for assessing teachers' experience of arousal during teaching.
+
+# Theoretical Background
+
+## Stress in Teaching Profession
+
+--> teacher profession is one of the most stressful professions. 
+
+Teacher stress can be defined as "[...] the experience by a teacher of unpleasant, negative emotions, such as anger, anxiety, tension, frustration or depression, resulting from some aspect of their work as a teacher." [@kyriacou2001teacher].
+
+Teachers' individual perceptions of student misbehavior in the classroom are closely related to their well-being [@ALDRUP2018126].
+
+--> wie entsteht Stress
+
+
+--> wie wurde Stress bisher gemessen  
+
+
+
+## Heart rate as an indicator for stress or arousal
+Heart rate is physiologically regulated by the autonomic nervous system. An increase in the activity of the sympathetic as part of the autonomic nervous system results in the heart rate being speeded up ("fight or flight"). On the other hand, an increased activity of the parasympathetic as the counterpart has the effect of slowing down the heart rate ("rest and digest") [@Battipaglia2015]. In addition to the autonomic nervous system and genetic factors, heart rate is influenced by numerous external factors such as social, personal, psychological, environmental and behavioural factors [@wang2022using]. 
+
+## Wrist-worn devices as a new approach to assess physiological measures
+
+@fuller2020reliability showed in their review article that wearable devices such as Fitbit watches are accurate and reliable for measuring heart rate in controlled settings.
+
+"The use of physiological measures enabled us to get some insight into teachers’ affective responses without disrupting the teaching process (Mauss & Robinson, 2009) and to reduce issues with social desirability, retrospective bias, and high cognitive load (Becker et al., 2015; Goetz et al., 2015; Scollon et al.,2009; Wilhelm & Grossman, 2010). Moreover, we found that heart rate measures discriminated between both teachers, even when their interpersonal behavior during the lesson start was relatively similar."
+
+(20) (PDF) A Quantitative Exploration of Two Teachers with Contrasting Emotions: Intra-Individual Process Analyses of Physiology and Interpersonal Behavior. Available from: https://www.researchgate.net/publication/329787434_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting_Emotions_Intra-Individual_Process_Analyses_of_Physiology_and_Interpersonal_Behavior [accessed Dec 07 2022].
+
+## Aim of the study
+In the present study, we assessed HR measures and self-report data of pre- and in-service teachers in a controlled teaching-learning setting. The aim was to investigate whether heart rate measurements using wrist-worn fitness trackers are a suitable and effective method __(1)__ to map differences in states of arousal between five different phases (pre-teaching phase, teaching phase, post-teaching phase, interview phase and end phase) and __(2)__ to evaluate the correlation between self-reported evaluations and HR measures. 
+
+__(H1)__ We expected heart rates to be higher during the teaching phase than during the pre- and the three post-teaching phases, and that the HR measures would decrease over the course of the study. __(H2)__ We also predicted that HR and a high ranking on the negative scale on our survey (feeling disturbed by disruptions) would correlate positively and a high ranking on the positive scale (feeling confident in dealing with disruptions) would follow the inverse pattern. 
+
+
+# Methods
+We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+## Participants
