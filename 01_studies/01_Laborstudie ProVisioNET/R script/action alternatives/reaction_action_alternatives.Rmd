@@ -173,8 +173,8 @@ t.test(x = main$percent_nd[main$id == "Expert"],
        y = main$percent_nd[main$id == "Novice"])
 
 # effect size for expertise differences
-CohenD(x = main$nd[main$id == "Expert"],
-       y = main$nd[main$id == "Novice"],
+CohenD(x = main$percent_nd[main$id == "Expert"],
+       y = main$percent_nd[main$id == "Novice"],
        na.rm = TRUE)
 
 ```
