@@ -22,23 +22,27 @@ options(dplyr.summarise.inform = FALSE)
 ################## RATER 1 ################
 
 # read in data from rater1 while specifying locale allows to set "," 
-r1 <-read_excel ("./data/coding_handlungsalternativen_JG.xlsx", col_names = TRUE)
+r1 <-read_excel ("./data/coding_reactions_MK.xlsx", col_names = TRUE)
 
 
 ################## RATER 2 ################
 
 # read in data from rater1 while specifying locale allows to set "," 
-r2 <-read_excel ("./data/coding_handlungsalternativen_MK.xlsx", col_names = TRUE)
+r2 <-read_excel ("./data/coding_reactions_GS.xlsx", col_names = TRUE)
 
-r4 <-read_excel ("./data/coding_handlungsalternativen_JG_MK_nur_ratings.xlsx", col_names = TRUE)
+# read in data from two ratings
+r3 <-read_excel ("./data/coding_handlungsalternativen_JG_MK_nur_ratings.xlsx", col_names = TRUE) %>% 
+  select(code1, code2)
+
+# read in data from two rating 
 
 ################## DATA WRANGLING video 01 ################
 
 # filter relevant rows and select relevant columns
-r1 <- r1 %>% select(number) %>% 
+r1 <- r1 %>% select(code) %>% 
   na.omit(r1)
   
-r2 <- r2 %>% select(number) %>% 
+r2 <- r2 %>% select(code) %>% 
   na.omit(r2)
 
 # # reshape data frame in long format 
@@ -52,14 +56,14 @@ r2 <- r2 %>% select(number) %>%
 #                names_to = "Event", 
 #                values_to = "Value")
 
-r1$number <- as.numeric(r1$number)
-r2$number <- as.numeric(r2$number)
+r1$code <- as.numeric(r1$code)
+r2$code <- as.numeric(r2$code)
 
 
-r3 <- bind_cols(r1$number, r2$number)
+r3 <- bind_cols(r1$code, r2$code)
 
 #################### Percentage Agreement ##############################
-agree(r3, tolerance = 0)
+agree(r3, tolerance = 1)
 
 r4 <- subset(r4, select = c(code1, code2))
 agree(r4, tolerance = 0)
