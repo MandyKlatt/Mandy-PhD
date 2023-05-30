@@ -87,8 +87,8 @@ main_novice <- main %>%
   filter(id %in% c("Novice")) %>% 
   mutate(reaction_sum = sum(reaction),
          nd_sum = sum(nd),
-         sum = sum(n()),
-         percent_reaction = round((reaction_sum/sum),
+         sum_participants = sum(n()),
+         percent_reaction = round((reaction_sum/sum_participants),
                                   digits = 2),
          percent_nd = round((nd/count),
                             digits = 2)
@@ -99,8 +99,8 @@ main_expert <- main %>%
   filter(id %in% c("Expert")) %>% 
   mutate(reaction_sum = sum(reaction),
          nd_sum = sum(nd),
-         sum = sum(n()),
-         percent_reaction = round((reaction_sum/sum),
+         sum_participants = sum(n()),
+         percent_reaction = round((reaction_sum/sum_participants),
                                   digits = 2),
   
          percent_nd = round((nd/count),
@@ -178,3 +178,7 @@ CohenD(x = main$percent_nd[main$id == "Expert"],
        na.rm = TRUE)
 
 ```
+
+
+# correlation: count x efficacy 
+
