@@ -180,5 +180,33 @@ CohenD(x = main$percent_nd[main$id == "Expert"],
 ```
 
 
-# correlation: count x efficacy 
+# correlation: count x quality 
+```{r}
 
+# filter for novices
+main %>% 
+  filter(id %in% c("Novice")) -> corr.nov
+
+# filter for novices
+main %>% 
+  filter(id %in% c("Expert")) -> corr.exp
+
+# novices: correlation between count and quality
+cor.test(corr.nov$count, corr.nov$nd, method=c("spearman"))
+
+# experts: correlation between count and quality
+cor.test(corr.exp$count, corr.exp$nd, method=c("spearman"))
+
+```
+
+
+# correlation: reaction x count 
+```{r}
+
+# novices: correlation between reaction and count
+cor.test(corr.nov$count, corr.nov$reaction, method=c("spearman"))
+
+# experts: correlation between count and quality
+cor.test(corr.exp$count, corr.exp$nd, method=c("spearman"))
+
+```
