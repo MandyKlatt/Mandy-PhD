@@ -19,64 +19,38 @@ needs(tidyverse,
 options(dplyr.summarise.inform = FALSE)
 
 
-################## RATER 1 ################
+# read in data for numbers of action alternatives
+df_number <- read_excel ("./data/coding_handlungsalternativen_JG_MK_number.xlsx", col_names = TRUE) %>% 
+  select(rater1, rater2)
 
-# read in data from rater1 while specifying locale allows to set "," 
-r1 <-read_excel ("./data/coding_reactions_MK.xlsx", col_names = TRUE)
-
-
-################## RATER 2 ################
-
-# read in data from rater1 while specifying locale allows to set "," 
-r2 <-read_excel ("./data/coding_reactions_GS.xlsx", col_names = TRUE)
-
-# read in data from two ratings
-r3 <-read_excel ("./data/coding_handlungsalternativen_JG_MK_nur_ratings.xlsx", col_names = TRUE) %>% 
-  select(code1, code2)
-
-# read in data from two rating 
-
-################## DATA WRANGLING video 01 ################
-
-# filter relevant rows and select relevant columns
-r1 <- r1 %>% select(code) %>% 
-  na.omit(r1)
-  
-r2 <- r2 %>% select(code) %>% 
-  na.omit(r2)
-
-# # reshape data frame in long format 
-# r1_long <- r1 %>% 
-#   pivot_longer(!ID, 
-#                names_to = "Event", 
-#                values_to = "Value")
-# 
-# r2_long <- r2 %>% 
-#   pivot_longer(!ID, 
-#                names_to = "Event", 
-#                values_to = "Value")
-
-r1$code <- as.numeric(r1$code)
-r2$code <- as.numeric(r2$code)
-
-
-r3 <- bind_cols(r1$code, r2$code)
+# read in data for rating of action alternatives
+df_rating <- read_excel ("./data/coding_handlungsalternativen_JG_MK_ratings.xlsx", col_names = TRUE) %>% 
+  mutate(rater1 = as.numeric(case_when(rater1 > 3 ~ '0',
+                                       rater1 <= 3 ~ '1',
+                                       TRUE ~ 'F')
+                             ),
+         rater2 = as.numeric(case_when(rater2 > 3 ~ '0',
+                                       rater2 <= 3 ~ '1',
+                                       TRUE ~ 'F')
+                             )
+         ) %>%
+  select(rater1, rater2)
 
 #################### Percentage Agreement ##############################
-agree(r3, tolerance = 1)
 
-r4 <- subset(r4, select = c(code1, code2))
-agree(r4, tolerance = 0)
+# number of alternatives
+agree(df_number, tolerance = 1)
+
+# rating of alternatives
+agree(df_rating, tolerance = 0)
+
 
 #################### CohenKappa ##############################
-kappa <- psych::cohen.kappa(x = as.matrix(r3))
-kappa <- psych::cohen.kappa(x = as.matrix(r4))
 
+# number of alternatives
+psych::cohen.kappa(x = as.matrix(df_number))
 
-################## ICC ###########################
-ICC(r3)
-
-
-
+# rating of alternatives
+psych::cohen.kappa(x = as.matrix(df_rating))
 
 
