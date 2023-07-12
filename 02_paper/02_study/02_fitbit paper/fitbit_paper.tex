@@ -5,16 +5,19 @@
 \documentclass[
   man,floatsintext]{apa6}
 \usepackage{amsmath,amssymb}
-\usepackage{lmodern}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -165,7 +168,7 @@
 \fi
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={New approaches to teachers' experience of stress: Do heart rate measurements with fitness trackers provide an efficient, inexpensive, and robust measurement method?},
   pdfauthor={Mandy Klatt1, Peer Keßler1, Gregor Kachel1,2, Christin Lotz1, \& Anne Deiglmayr1},
@@ -289,14 +292,14 @@ We report how we determined our sample size, all data exclusions (if any), all m
 \toprule
 Variable & \multicolumn{1}{c}{values}\\
 \midrule
-N & 76.00\\
-Gender female in percent & 63.16\\
-M Age in years & 30.26\\
-SD Age in years & 10.52\\
+N & 81.00\\
+Gender female in percent & 64.20\\
+M Age in years & 30.95\\
+SD Age in years & 10.87\\
 Min Age in years & 19.00\\
-Max Age in years & 59.00\\
-M Teaching Experience in years & 5.17\\
-SD Teaching Experience in years & 9.12\\
+Max Age in years & 60.00\\
+M Teaching Experience in years & 5.64\\
+SD Teaching Experience in years & 9.46\\
 Min Teaching Experience in years & 0.00\\
 Max Teaching Experience in years & 37.00\\
 \bottomrule
@@ -309,11 +312,11 @@ Max Teaching Experience in years & 37.00\\
 
 \end{table}
 
-The sample consisted in total of \emph{N} = 76 pre- and in-service teachers. The subjects were recruited from the Leipzig University or from German schools in Saxony via personal contact, e-mail lists and flyers. Data of two participants were excluded from the analyses due to insufficient data quality, yielding data from \emph{N} = 76 subjects.
+The sample consisted in total of \emph{N} = 81 pre- and in-service teachers. The subjects were recruited from the Leipzig University or from German schools in Saxony via personal contact, e-mail lists and flyers. Data of two participants were excluded from the analyses due to insufficient data quality, yielding data from \emph{N} = 81 subjects.
 
-The subjects (48 women; 63.16 \%) had a mean age of 30.30 years (\emph{SD} = 10.50; range: 19-59) and an average teaching experience of 5.17 years (\emph{SD} = 9.12; range: 0-37).
+The subjects (52 women; 64.20 \%) had a mean age of 31 years (\emph{SD} = 10.90; range: 19-60) and an average teaching experience of 5.64 years (\emph{SD} = 9.46; range: 0-37).
 
-15.79\% of the subjects were (studying to become) teachers for primary school, 71.05\% were (studying to become) teachers for secondary school and 10.53\% were (studying to become) teachers for special education needs.
+14.81\% of the subjects were (studying to become) teachers for primary school, 70.37\% were (studying to become) teachers for secondary school and 9.88\% were (studying to become) teachers for special education needs.
 
 All study procedures were carried out in accordance with the ethical standards of the University's Institutional Review Board and the authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
@@ -391,14 +394,14 @@ The Fitbit watch was removed only after the last questionnaire to obtain heart r
 \hypertarget{data-analysis}{%
 \subsection{Data analysis}\label{data-analysis}}
 
-We used R (Version 4.2.2; R Core Team, 2022) and the R-packages \emph{broom} (Version 1.0.1; Robinson, Hayes, \& Couch, 2022), \emph{cowplot} (Version 1.1.1; Wilke, 2020), \emph{DescTools} (Version 0.99.48; Andri et mult. al., 2022), \emph{dplyr} (Version 1.0.10; Wickham, François, Henry, \& Müller, 2022), \emph{forcats} (Version 0.5.2; Wickham, 2021), \emph{ggplot2} (Version 3.3.6; Wickham, 2016), \emph{ggpubr} (Version 0.4.0; Kassambara, 2020), \emph{ggthemes} (Version 4.2.4; Arnold, 2021), \emph{gridExtra} (Version 2.3; Auguie, 2017), \emph{imputeTS} (Version 3.3; Moritz \& Bartz-Beielstein, 2017), \emph{janitor} (Version 2.2.0; Firke, 2021), \emph{jtools} (Version 2.2.1; Long, 2022), \emph{lm.beta} (Version 1.7.2; Behrendt, 2022), \emph{lme4} (Version 1.1.31; Bates, Mächler, Bolker, \& Walker, 2015), \emph{ltm} (Version 1.2.0; Rizopoulos, 2006), \emph{lubridate} (Version 1.8.0; Grolemund \& Wickham, 2011), \emph{MASS} (Version 7.3.58.1; Venables \& Ripley, 2002), \emph{Matrix} (Version 1.5.1; Bates, Maechler, \& Jagan, 2022), \emph{msm} (Version 1.7; Jackson, 2011), \emph{needs} (Version 0.0.3; Katz, 2016), \emph{papaja} (Version 0.1.1.9001; Aust \& Barth, 2020), \emph{polycor} (Version 0.8.1; Fox, 2022), \emph{ppcor} (Version 1.1; Kim, 2015), \emph{psych} (Version 2.3.3; Revelle, 2022), \emph{purrr} (Version 0.3.5; Henry \& Wickham, 2020), \emph{readr} (Version 2.1.3; Wickham, Hester, \& Bryan, 2022), \emph{readxl} (Version 1.4.1; Wickham \& Bryan, 2022), \emph{rstatix} (Version 0.7.1; Kassambara, 2021), \emph{rticles} (Version 0.25; Allaire et al., 2023), \emph{stringr} (Version 1.4.1; Wickham, 2019), \emph{tibble} (Version 3.1.8; Müller \& Wickham, 2021), \emph{tidyr} (Version 1.2.1; Wickham \& Girlich, 2022), \emph{tidyverse} (Version 1.3.2; Wickham et al., 2019), \emph{tinylabels} (Version 0.2.3; Barth, 2022), \emph{viridis} (Version 0.6.2; Garnier et al., 2021a, 2021b), \emph{viridisLite} (Version 0.4.1; Garnier et al., 2021b), and \emph{xfun} (Version 0.38; Xie, 2022) for all our analyses (descriptive statistics, correlations, and multilevel regression). Statistical assumptions including linearity, homogeneity of variance, and normal distribution of residuals were tested and confirmed with RStudio {[}palmeri2020{]}. An alpha level of 0.05 was used for the statistical tests.
+We used R (Version 4.1.3; R Core Team, 2022) and the R-packages \emph{broom} (Version 1.0.1; Robinson, Hayes, \& Couch, 2022), \emph{corrplot2021} (Wei \& Simko, 2021), \emph{cowplot} (Version 1.1.1; Wilke, 2020a), \emph{DescTools} (Version 0.99.45; Andri et mult. al., 2022), \emph{dplyr} (Version 1.0.10; Wickham, François, Henry, \& Müller, 2022), \emph{forcats} (Version 0.5.1; Wickham, 2021), \emph{ggplot2} (Version 3.3.5; Wickham, 2016), \emph{ggpubr} (Version 0.4.0; Kassambara, 2020), \emph{ggthemes} (Version 4.2.4; Arnold, 2021), \emph{gridExtra} (Version 2.3; Auguie, 2017), \emph{gridtext} (Version 0.1.4; Wilke, 2020b), \emph{Hmisc} (Version 5.0.1; Harrell Jr, 2023), \emph{imputeTS} (Version 3.2; Moritz \& Bartz-Beielstein, 2017), \emph{janitor} (Version 2.1.0; Firke, 2021), \emph{jtools} (Version 2.2.0; Long, 2022), \emph{lm.beta} (Version 1.6.2; Behrendt, 2022), \emph{lme4} (Version 1.1.30; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lmerTest} (Version 3.1.3; Kuznetsova, Brockhoff, \& Christensen, 2017), \emph{ltm} (Version 1.2.0; Rizopoulos, 2006), \emph{lubridate} (Version 1.8.0; Grolemund \& Wickham, 2011), \emph{magrittr} (Version 2.0.3; Bache \& Wickham, 2022), \emph{MASS} (Version 7.3.55; Venables \& Ripley, 2002), \emph{Matrix} (Version 1.5.1; Bates, Maechler, \& Jagan, 2022), \emph{msm} (Version 1.6.9; Jackson, 2011), \emph{needs} (Version 0.0.3; Katz, 2016), \emph{papaja} (Version 0.1.0.9999; Aust \& Barth, 2020), \emph{PerformanceAnalytics} (Version 2.0.4; Peterson \& Carl, 2020), \emph{polycor} (Version 0.8.1; Fox, 2022), \emph{ppcor} (Version 1.1; Kim, 2015), \emph{psych} (Version 2.2.9; Revelle, 2022), \emph{purrr} (Version 0.3.4; Henry \& Wickham, 2020), \emph{readr} (Version 2.1.3; Wickham, Hester, \& Bryan, 2022), \emph{readxl} (Version 1.4.0; Wickham \& Bryan, 2022), \emph{rstatix} (Version 0.7.0; Kassambara, 2021), \emph{rticles} (Version 0.25; Allaire et al., 2023), \emph{stringr} (Version 1.4.0; Wickham, 2019), \emph{tibble} (Version 3.1.6; Müller \& Wickham, 2021), \emph{tidyr} (Version 1.2.0; Wickham \& Girlich, 2022), \emph{tidyverse} (Version 1.3.1; Wickham et al., 2019), \emph{tinylabels} (Version 0.2.3; Barth, 2022), \emph{viridis} (Version 0.6.2; Garnier et al., 2021a, 2021b), \emph{viridisLite} (Version 0.4.1; Garnier et al., 2021b), \emph{xfun} (Version 0.36; Xie, 2022), \emph{xtable} (Version 1.8.4; Dahl, Scott, Roosen, Magnusson, \& Swinton, 2019), \emph{xts} (Version 0.12.1; Ryan \& Ulrich, 2020), and \emph{zoo} (Version 1.8.10; Zeileis \& Grothendieck, 2005) for all our analyses (descriptive statistics, correlations, and multilevel regression). Statistical assumptions including linearity, homogeneity of variance, and normal distribution of residuals were tested and confirmed with RStudio {[}palmeri2020{]}. An alpha level of 0.05 was used for the statistical tests.
 
 \hypertarget{descriptive-statistics}{%
 \subsubsection{Descriptive statistics}\label{descriptive-statistics}}
 
 Means, standard deviations and the range of teachers' heart rate and the self-reported data are shown in Table 2.
 
-Teachers' average heart rate during the entire course of the study was approximately 90.40 bpm with a standard deviation of 15.82 and a range from 51 to 164 bpm.
+Teachers' average heart rate during the entire course of the study was approximately 90.09 bpm with a standard deviation of 15.76 and a range from 51 to 164 bpm.
 
 Means, standard deviations and the range of teachers' heart rate for the different phases and the self-reported data are shown in Table 2.
 
@@ -456,6 +459,9 @@ Auguie, B. (2017). \emph{gridExtra: Miscellaneous functions for "grid" graphics}
 \leavevmode\vadjust pre{\hypertarget{ref-R-papaja}{}}%
 Aust, F., \& Barth, M. (2020). \emph{{papaja}: {Prepare} reproducible {APA} journal articles with {R Markdown}}. Retrieved from \url{https://github.com/crsh/papaja}
 
+\leavevmode\vadjust pre{\hypertarget{ref-R-magrittr}{}}%
+Bache, S. M., \& Wickham, H. (2022). \emph{Magrittr: A forward-pipe operator for r}. Retrieved from \url{https://CRAN.R-project.org/package=magrittr}
+
 \leavevmode\vadjust pre{\hypertarget{ref-R-tinylabels}{}}%
 Barth, M. (2022). \emph{{tinylabels}: Lightweight variable labels}. Retrieved from \url{https://cran.r-project.org/package=tinylabels}
 
@@ -473,6 +479,9 @@ Behrendt, S. (2022). \emph{Lm.beta: Add standardized regression coefficients to 
 
 \leavevmode\vadjust pre{\hypertarget{ref-claessens2017positive}{}}%
 Claessens, L. C., Tartwijk, J. van, Want, A. C. van der, Pennings, H. J., Verloop, N., Brok, P. J. den, \& Wubbels, T. (2017). Positive teacher--student relationships go beyond the classroom, problematic ones stay inside. \emph{The Journal of Educational Research}, \emph{110}(5), 478--493.
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-xtable}{}}%
+Dahl, D. B., Scott, D., Roosen, C., Magnusson, A., \& Swinton, J. (2019). \emph{Xtable: Export tables to LaTeX or HTML}. Retrieved from \url{https://CRAN.R-project.org/package=xtable}
 
 \leavevmode\vadjust pre{\hypertarget{ref-donker2018quantitative}{}}%
 Donker, M. H., Van Gog, T., \& Mainhard, M. T. (2018). A quantitative exploration of two teachers with contrasting emotions: Intra-individual process analyses of physiology and interpersonal behavior. \emph{Frontline Learning Research}, \emph{6}(3), 162--184.
@@ -510,6 +519,9 @@ Gold, B., \& Holodynski, M. (2015). Development and construct validation of a si
 \leavevmode\vadjust pre{\hypertarget{ref-R-lubridate}{}}%
 Grolemund, G., \& Wickham, H. (2011). Dates and times made easy with {lubridate}. \emph{Journal of Statistical Software}, \emph{40}(3), 1--25. Retrieved from \url{https://www.jstatsoft.org/v40/i03/}
 
+\leavevmode\vadjust pre{\hypertarget{ref-R-Hmisc}{}}%
+Harrell Jr, F. E. (2023). \emph{Hmisc: Harrell miscellaneous}. Retrieved from \url{https://CRAN.R-project.org/package=Hmisc}
+
 \leavevmode\vadjust pre{\hypertarget{ref-helmke2014unterrichtsdiagnostik}{}}%
 Helmke, A., Helmke, T., Lenske, G., Pham, G., Praetorius, A.-K., Schrader, F.-W., \& AdeThurow, M. (2014). Unterrichtsdiagnostik mit EMU. \emph{Aus-Und Fortbildung Der Lehrkr{ä}fte in Hinblick Auf Verbesserung Der Diagnosef{ä}higkeit, Umgang Mit Heterogenit{ä}t Und Individuelle F{ö}rderung}, 149--163.
 
@@ -531,6 +543,9 @@ Katz, J. (2016). \emph{Needs: Attaches and installs packages}. Retrieved from \u
 \leavevmode\vadjust pre{\hypertarget{ref-R-ppcor}{}}%
 Kim, S. (2015). \emph{Ppcor: Partial and semi-partial (part) correlation}. Retrieved from \url{https://CRAN.R-project.org/package=ppcor}
 
+\leavevmode\vadjust pre{\hypertarget{ref-R-lmerTest}{}}%
+Kuznetsova, A., Brockhoff, P. B., \& Christensen, R. H. B. (2017). {lmerTest} package: Tests in linear mixed effects models. \emph{Journal of Statistical Software}, \emph{82}(13), 1--26. \url{https://doi.org/10.18637/jss.v082.i13}
+
 \leavevmode\vadjust pre{\hypertarget{ref-kyriacou2001teacher}{}}%
 Kyriacou, C. (2001). Teacher stress: Directions for future research. \emph{Educational Review}, \emph{53}(1), 27--35.
 
@@ -549,6 +564,9 @@ Moritz, S., \& Bartz-Beielstein, T. (2017). {imputeTS: Time Series Missing Value
 \leavevmode\vadjust pre{\hypertarget{ref-R-tibble}{}}%
 Müller, K., \& Wickham, H. (2021). \emph{Tibble: Simple data frames}. Retrieved from \url{https://CRAN.R-project.org/package=tibble}
 
+\leavevmode\vadjust pre{\hypertarget{ref-R-PerformanceAnalytics}{}}%
+Peterson, B. G., \& Carl, P. (2020). \emph{PerformanceAnalytics: Econometric tools for performance and risk analysis}. Retrieved from \url{https://CRAN.R-project.org/package=PerformanceAnalytics}
+
 \leavevmode\vadjust pre{\hypertarget{ref-R-base}{}}%
 R Core Team. (2022). \emph{R: A language and environment for statistical computing}. Vienna, Austria: R Foundation for Statistical Computing. Retrieved from \url{https://www.R-project.org/}
 
@@ -564,6 +582,9 @@ Robinson, D., Hayes, A., \& Couch, S. (2022). \emph{Broom: Convert statistical o
 \leavevmode\vadjust pre{\hypertarget{ref-rungeusing}{}}%
 Runge, N., Haarman, S., \& Fisher, M. H. (n.d.). \emph{Using fitbit fitness trackers to measure teacher stress and coping}.
 
+\leavevmode\vadjust pre{\hypertarget{ref-R-xts}{}}%
+Ryan, J. A., \& Ulrich, J. M. (2020). \emph{Xts: eXtensible time series}. Retrieved from \url{https://CRAN.R-project.org/package=xts}
+
 \leavevmode\vadjust pre{\hypertarget{ref-sachs2014physiologische}{}}%
 Sachs, S. (2014). \emph{Physiologische parameter zur bewertung der lernwirksamkeit von lernsituationen} (PhD thesis). Universit{ä}t Ulm.
 
@@ -572,6 +593,9 @@ Venables, W. N., \& Ripley, B. D. (2002). \emph{Modern applied statistics with s
 
 \leavevmode\vadjust pre{\hypertarget{ref-wang2022using}{}}%
 Wang, C., Lizardo, O., \& Hachen, D. S. (2022). Using fitbit data to monitor the heart rate evolution patterns of college students. \emph{Journal of American College Health}, \emph{70}(3), 875--882.
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-corrplot2021}{}}%
+Wei, T., \& Simko, V. (2021). \emph{R package 'corrplot': Visualization of a correlation matrix}. Retrieved from \url{https://github.com/taiyun/corrplot}
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-ggplot2}{}}%
 Wickham, H. (2016). \emph{ggplot2: Elegant graphics for data analysis}. Springer-Verlag New York. Retrieved from \url{https://ggplot2.tidyverse.org}
@@ -598,10 +622,16 @@ Wickham, H., \& Girlich, M. (2022). \emph{Tidyr: Tidy messy data}. Retrieved fro
 Wickham, H., Hester, J., \& Bryan, J. (2022). \emph{Readr: Read rectangular text data}. Retrieved from \url{https://CRAN.R-project.org/package=readr}
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-cowplot}{}}%
-Wilke, C. O. (2020). \emph{Cowplot: Streamlined plot theme and plot annotations for 'ggplot2'}. Retrieved from \url{https://CRAN.R-project.org/package=cowplot}
+Wilke, C. O. (2020a). \emph{Cowplot: Streamlined plot theme and plot annotations for 'ggplot2'}. Retrieved from \url{https://CRAN.R-project.org/package=cowplot}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-gridtext}{}}%
+Wilke, C. O. (2020b). \emph{Gridtext: Improved text rendering support for 'grid' graphics}. Retrieved from \url{https://CRAN.R-project.org/package=gridtext}
 
 \leavevmode\vadjust pre{\hypertarget{ref-R-xfun}{}}%
 Xie, Y. (2022). \emph{Xfun: Supporting functions for packages maintained by 'yihui xie'}. Retrieved from \url{https://CRAN.R-project.org/package=xfun}
+
+\leavevmode\vadjust pre{\hypertarget{ref-R-zoo}{}}%
+Zeileis, A., \& Grothendieck, G. (2005). Zoo: S3 infrastructure for regular and irregular time series. \emph{Journal of Statistical Software}, \emph{14}(6), 1--27. \url{https://doi.org/10.18637/jss.v014.i06}
 
 \end{CSLReferences}
 

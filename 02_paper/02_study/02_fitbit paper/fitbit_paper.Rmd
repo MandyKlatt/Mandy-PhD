@@ -360,7 +360,6 @@ df_demo_table_long <- pivot_longer(data = df_demo_table,
    placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
    font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
    )
-      
 
 ```
 
