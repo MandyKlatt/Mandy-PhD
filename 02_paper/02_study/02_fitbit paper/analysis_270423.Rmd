@@ -4,7 +4,12 @@ output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, error = FALSE, warning = FALSE)
+knitr::opts_chunk$set(
+	echo = TRUE,
+	error = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
 ```
 
 ```{r}
@@ -317,11 +322,11 @@ table_data <-
                            levels = c("Pre Teaching Phase","Teaching Phase","Post Teaching Phase","Interview Phase","End Phase")
                            ),
             n = NA,
-            `Mean(Intercept)` = mean_intercept,
-            `SD(Intercept)` = sd_intercept,
+            `Mean(Intercept)` = round(mean_intercept, digits = 3),
+            `SD(Intercept)` = round(sd_intercept, digits = 3),
             `p-Value (Intercept)` = p.value_intercept,
-            `Mean(Slope)` = mean_slope, 
-            `SD(Slope)` = sd_slope,
+            `Mean(Slope)` = round(mean_slope, digits = 3), 
+            `SD(Slope)` = round(sd_slope,digits = 3),
             `p-Value (Slope)` = p.value_slope, 
             ) %>% 
   arrange(Phase)
@@ -438,7 +443,7 @@ df_ttest %$%
 
 # Pre Teaching Phase
 
-```{r}
+```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
@@ -484,7 +489,7 @@ fit_pre_5 <-
   lm(slope ~ posneg:confidence + posneg:disruption + posneg:teaching_experience)
 
 stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4, fit_pre_5,
-                     type = "latex",
+                     type = "html",
                      caption = "Pre Teaching Phase",
                      dep.var.labels = "Slope",
                      # order = c(1, 2, 3),
@@ -513,10 +518,9 @@ fit_pre_3$model %>%
 
 ```
 
+# Teaching Phase
 
-# Post Teaching Phase
-
-```{r}
+```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
@@ -530,7 +534,74 @@ df_multi <-
   distinct() %>% 
   right_join(x = .,
             y = fix_models,
-            by = "id")
+            by = "id") %>% 
+  mutate(posneg = if_else(condition = slope < 0,
+                          true = "negative",
+                          false = "positive"))
+fit_teach_1 <-
+  df_multi %>% 
+  filter(Phase == "Teaching Phase") %>% 
+  split(.$posneg) %>% 
+  map(~ lm(slope ~ disruption,
+           data = .))
+  
+df_multi %>% 
+  filter(Phase == "Teaching Phase") %$% 
+  lm(slope ~ disruption:posneg)
+
+fit_teach_2 <-
+  df_multi %>% 
+  filter(Phase == "Teaching Phase") %$% 
+  lm(slope ~ confidence)
+
+fit_teach_3 <-
+  df_multi %>% 
+  filter(Phase == "Post Teaching Phase") %$% 
+  lm(slope ~ teaching_experience)
+
+fit_teach_4 <-
+  df_multi %>% 
+  filter(Phase == "Teaching Phase") %$% 
+  lm(slope ~ confidence + disruption)
+
+fit_teach_5 <-
+  df_multi %>% 
+  filter(Phase == "Teaching Phase") %$% 
+  lm(slope ~ confidence + disruption + teaching_experience)
+
+stargazer::stargazer(fit_teach_1, fit_teach_2,fit_teach_3, fit_teach_4, fit_teach_5,
+                     type = "html",
+                     caption = "Teaching Phase",
+                     dep.var.labels = "Slope",
+                     order = c(1, 2, 3),
+                     covariate.labels = c("Disruption Factor",
+                                          "Confidence Factor",
+                                          "Teaching Experience"),
+                     keep.stat = c("n","rsq","adj.rsq")
+                     )
+```
+
+
+# Post Teaching Phase
+
+```{r echo = FALSE, results='asis'}
+df_multi <- 
+  main %>% 
+  select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  summarize(disruption = mean(disruption_factor, na.rm = T),
+            confidence = mean(confidence_factor, na.rm = T),
+            teaching_experience) %>% 
+  ungroup() %>% 
+  mutate(id = as.character(ID)) %>% 
+  distinct() %>% 
+  right_join(x = .,
+            y = fix_models,
+            by = "id") %>% 
+  mutate(posneg = if_else(condition = slope < 0,
+                          true = "negative",
+                          false = "positive"))
 
 fit_post_1 <-
   df_multi %>% 
@@ -564,8 +635,8 @@ fit_post_5 <-
   lm(slope ~ confidence + disruption + teaching_experience)
 
 stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
-                     type = "latex",
-                #     caption = "Post Teaching Phase",
+                     type = "html",
+                     caption = "Post Teaching Phase",
                      dep.var.labels = "Slope",
                      order = c(1, 2, 3),
                      covariate.labels = c("Disruption Factor",
@@ -575,3 +646,132 @@ stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
                      )
 ```
 
+
+# Interview Phase
+
+```{r echo = FALSE, results='asis'}
+df_multi <- 
+  main %>% 
+  select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  summarize(disruption = mean(disruption_factor, na.rm = T),
+            confidence = mean(confidence_factor, na.rm = T),
+            teaching_experience) %>% 
+  ungroup() %>% 
+  mutate(id = as.character(ID)) %>% 
+  distinct() %>% 
+  right_join(x = .,
+            y = fix_models,
+            by = "id") %>% 
+  mutate(posneg = if_else(condition = slope < 0,
+                          true = "negative",
+                          false = "positive"))
+
+fit_inter_1 <-
+  df_multi %>% 
+  filter(Phase == "Interview Phase") %>% 
+  split(.$posneg) %>% 
+  map(~ lm(slope ~ disruption,
+           data = .))
+  
+df_multi %>% 
+  filter(Phase == "Interview Phase") %$% 
+  lm(slope ~ disruption:posneg)
+
+fit_inter_2 <-
+  df_multi %>% 
+  filter(Phase == "Interview Phase") %$% 
+  lm(slope ~ confidence)
+
+fit_inter_3 <-
+  df_multi %>% 
+  filter(Phase == "Interview Phase") %$% 
+  lm(slope ~ teaching_experience)
+
+fit_inter_4 <-
+  df_multi %>% 
+  filter(Phase == "Interview Phase") %$% 
+  lm(slope ~ confidence + disruption)
+
+fit_inter_5 <-
+  df_multi %>% 
+  filter(Phase == "Interview Phase") %$% 
+  lm(slope ~ confidence + disruption + teaching_experience)
+
+stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
+                     type = "html",
+                     caption = "Interview Phase",
+                     dep.var.labels = "Slope",
+                     order = c(1, 2, 3),
+                     covariate.labels = c("Disruption Factor",
+                                          "Confidence Factor",
+                                          "Teaching Experience"),
+                     keep.stat = c("n","rsq","adj.rsq")
+                     )
+```
+
+
+# End Phase
+
+```{r echo = FALSE, results='asis'}
+df_multi <- 
+  main %>% 
+  select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  summarize(disruption = mean(disruption_factor, na.rm = T),
+            confidence = mean(confidence_factor, na.rm = T),
+            teaching_experience) %>% 
+  ungroup() %>% 
+  mutate(id = as.character(ID)) %>% 
+  distinct() %>% 
+  right_join(x = .,
+            y = fix_models,
+            by = "id") %>% 
+  mutate(posneg = if_else(condition = slope < 0,
+                          true = "negative",
+                          false = "positive"))
+
+fit_end_1 <-
+  df_multi %>% 
+  filter(Phase == "End Phase") %>% 
+  split(.$posneg) %>% 
+  map(~ lm(slope ~ disruption,
+           data = .))
+  
+df_multi %>% 
+  filter(Phase == "End Phase") %$% 
+  lm(slope ~ disruption:posneg)
+
+fit_end_2 <-
+  df_multi %>% 
+  filter(Phase == "End Phase") %$% 
+  lm(slope ~ confidence)
+
+fit_end_3 <-
+  df_multi %>% 
+  filter(Phase == "End Phase") %$% 
+  lm(slope ~ teaching_experience)
+
+fit_end_4 <-
+  df_multi %>% 
+  filter(Phase == "End Phase") %$% 
+  lm(slope ~ confidence + disruption)
+
+fit_end_5 <-
+  df_multi %>% 
+  filter(Phase == "End Phase") %$% 
+  lm(slope ~ confidence + disruption + teaching_experience)
+
+stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
+                     type = "html",
+                     caption = "End Phase",
+                     dep.var.labels = "Slope",
+                     order = c(1, 2, 3),
+                     covariate.labels = c("Disruption Factor",
+                                          "Confidence Factor",
+                                          "Teaching Experience"),
+                     keep.stat = c("n","rsq","adj.rsq")
+                     )
+```

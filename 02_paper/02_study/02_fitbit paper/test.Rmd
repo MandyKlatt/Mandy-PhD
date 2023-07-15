@@ -1,0 +1,79 @@
+---
+title: "Getting familiar with Rmarkdown PDF"
+author: |
+  | Arimitra Maiti
+  | Author-2
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document:
+    keep_tex: yes
+    latex_engine: pdflatex
+    fig_caption: yes
+    highlight: haddock
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+    citation_package: natbib
+abstract: This is the section for abstract with a limit of 150 words.\par \textbf{Keywords:}
+  Keyword-1, Keyword-2, Keyword-3, Keyword-4
+subtitle: |
+  | Examples for Towards Data Science
+  | Focussing on Metadata
+  | Reviewed by: Towards Data Science Team
+geometry: left=2.5cm,right=2.5cm,top=2cm,bottom=2cm
+fontfamily: mathpazo
+thanks: |
+  This is the section for acknoledgement with a limit of 150 words
+header-includes:
+- \usepackage{graphicx}
+- \usepackage{float}
+- \usepackage{amsmath}
+- \nocite{*}
+bibliography: example.bib
+biblio-style: apalike
+natbiboptions: round
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r echo=FALSE, results='asis'}
+library("rmarkdown")
+library("tinytex")
+library("stargazer")
+library("sandwich")
+
+m1 = lm(y~ lag.quarterly.revenue, data = freeny)
+m2 = lm(y~ lag.quarterly.revenue + price.index, data = freeny)
+m3 = lm(y~ lag.quarterly.revenue + price.index + income.level, data = freeny)
+m4 = lm(y~ lag.quarterly.revenue + price.index + income.level + market.potential, data = freeny)
+
+model.lst = list(m1, m2, m3, m4)
+
+stargazer(m1,
+          m2,
+          m3,
+          m4,
+          title="How quarterly revenue is affected by revenue, price index, inccome and market potential?",
+          type = "latex",
+          float = TRUE,
+          report = "vcs*",
+          se=lapply(model.lst, function(x) sqrt(diag(vcovHC(x, type = "HC1")))),
+          no.space = TRUE,
+          header=FALSE,
+          single.row = TRUE,
+          font.size = "small",
+          intercept.bottom = F,
+          column.labels = c("Iteration-1", "Iteration-2", "Iteration-3", "Iteration-4"),
+          column.separate = c(1,1, 1, 1),
+          digits = 2,
+          t.auto = F,
+          p.auto = F,
+          notes.align = "l",
+          notes = c("datasets::freeny", "lm() function", "vcovHC(type = 'HC1')-Robust SE"),
+          notes.append = TRUE
+          )
+
+```
