@@ -469,10 +469,15 @@ fit_pre_1 <-
   filter(Phase == "Pre Teaching Phase") %$% 
   lm(slope ~ disruption * posneg)
 
+summary(fit_pre_1)
+
 fit_pre_2 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
   lm(slope ~ confidence:posneg)
+
+summary(fit_pre_2)
+
 
 fit_pre_3 <-
   df_multi %>% 
@@ -480,15 +485,24 @@ fit_pre_3 <-
   filter(Phase == "Pre Teaching Phase") %$% 
   lm(slope ~ teaching_experience:posneg)
 
+summary(fit_pre_3)
+
+
 fit_pre_4 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
   lm(slope ~ confidence:posneg + disruption:posneg)
 
+summary(fit_pre_4)
+
+
 fit_pre_5 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
   lm(slope ~ posneg:confidence + posneg:disruption + posneg:teaching_experience)
+
+summary(fit_pre_5)
+
 
 stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4, fit_pre_5,
                      type = "html",
