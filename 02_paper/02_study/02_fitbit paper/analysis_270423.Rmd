@@ -39,7 +39,9 @@ needs(ltm,
       PerformanceAnalytics,
       Hmisc,
       corrplot,
-      tidyverse)
+      tidyverse,
+      ggplot2)
+
 
 # disruption & confidence rating
 df_rating <- 
