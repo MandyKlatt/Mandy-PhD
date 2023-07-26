@@ -247,6 +247,54 @@ plot_overall <-
                )
 
 plot_overall
+
+
+
+lm_plot <-
+  main %>%
+  filter(time_span != "overall") %>%
+  dplyr::select("ID","time_span", "time","heart_rate_std") %>%
+  mutate(time_span = factor(time_span,
+                            levels = c("preparation","teaching","post","interview","end"),
+                            labels = c("(1) Pre Teaching\nPhase","(2) Teaching\nPhase","(3) Post Teaching\nPhase","(4) Interview\nPhase","(5) End\nPhase")
+                            ),
+         time = time / 60
+         ) %>%
+  distinct() %>%
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate_std
+                       )
+         ) +
+  # geom_point(alpha = 0.05) +
+  geom_smooth(method = "lm",
+              se = T,
+              size = 0.5,
+              colour = "black",
+              level = 0.99) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  #scale_linetype_manual(values = c(1, 6)) +
+  scale_x_continuous(breaks = seq(0, 10, 2)) +
+  #scale_y_continuous(breaks = seq(0, 160, 5)) +
+  labs(x = "Time (in Minutes)",
+       y = "Average Standardized Heart Rate",
+       caption = expression(paste(italic("Note: "),
+                                  "The shadow around the line represents the 99% confidence interval."
+                                  )
+                            )
+       ) +
+  theme_apa() +
+  theme(plot.subtitle = element_text(face = "italic"),
+        plot.caption = element_text(hjust = 0)) +
+  facet_grid(cols = vars(time_span),
+             scales = "free_x")
+ggsave(filename = "plots_publication/lm_plot.png",
+       plot = lm_plot,
+       width = 20,
+       height = 12,
+       units = "cm")
+
+```
 ```
 
 # Slopes and Intercepts
@@ -403,6 +451,34 @@ df_ttest <-
   ungroup()
 ```
 
+## Teaching vs. Pre-Teaching (mean HR)
+
+```{r}
+df_ttest %$% 
+  t.test(x = .$mean_heart_rate[.$time_span == "teaching"],
+         y = .$mean_heart_rate[.$time_span == "preparation"],
+         paired = T)
+
+df_ttest %$% 
+  CohenD(x = .$mean_heart_rate[.$time_span == "teaching"],
+         y = .$mean_heart_rate[.$time_span == "preparation"],
+         pooled = T)
+```
+
+## Teaching vs. Post-Teaching (mean HR)
+
+```{r}
+df_ttest %$% 
+  t.test(x = .$mean_heart_rate[.$time_span == "teaching"],
+         y = .$mean_heart_rate[.$time_span == "post"],
+         paired = T)
+
+df_ttest %$% 
+  CohenD(x = .$mean_heart_rate[.$time_span == "teaching"],
+         y = .$mean_heart_rate[.$time_span == "post"],
+         pooled = T)
+```
+
 
 ## Teaching vs. Interview (mean HR)
 
@@ -431,21 +507,6 @@ df_ttest %$%
          y = .$mean_heart_rate[.$time_span == "end"],
          pooled = T)
 ```
-
-## Interview vs. End (mean HR)
-
-```{r}
-df_ttest %$% 
-  t.test(x = .$mean_heart_rate[.$time_span == "interview"],
-         y = .$mean_heart_rate[.$time_span == "end"],
-         paired = T)
-
-df_ttest %$% 
-  CohenD(x = .$mean_heart_rate[.$time_span == "interview"],
-         y = .$mean_heart_rate[.$time_span == "end"],
-         pooled = T)
-```
-
 
 # t-Tests 
 ## using mean Slope 
