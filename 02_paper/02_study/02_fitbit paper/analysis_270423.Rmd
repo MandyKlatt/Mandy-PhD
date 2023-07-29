@@ -40,7 +40,8 @@ needs(ltm,
       Hmisc,
       corrplot,
       tidyverse,
-      ggplot2)
+      ggplot2,
+      apaTables)
 
 
 # disruption & confidence rating
@@ -109,7 +110,7 @@ map(.x = dir(path = data_path,
          ID = as.numeric(ID)
       ) %>%
       # filter(time <= 600) %>% # filter for 10min intervals
-    filter(time <= 7200) %>% # filter for 2 hours 30min (maximal duration of study)
+    filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
     dplyr::select(!c("Time","Heart Rate","id"))
     ) %>%
   bind_rows()
@@ -295,7 +296,6 @@ ggsave(filename = "plots_publication/lm_plot.png",
        units = "cm")
 
 ```
-```
 
 # Slopes and Intercepts
 
@@ -439,7 +439,6 @@ list(`Preparation Phase` = list(name = "Preparation Phase", mod = mods$preparati
 ```
 
 
-
 # t-Tests 
 ## using heart rate means
 
@@ -560,6 +559,159 @@ df_ttest_slope %$%
   CohenD(x = .$mean_slope[.$Phase == "Interview Phase"],
          y = .$mean_slope[.$Phase == "End Phase"],
          pooled = T)
+```
+
+### Correlation 
+
+## Pr-teaching phase
+
+```{r}
+main %>% 
+  filter(time_span == "preparation") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_pre
+ 
+# knitr::kable(x = list(pcor_main$estimate, pcor_main$p.value), format = "simple") 
+
+```
+
+## Teaching phase
+
+```{r}
+main %>% 
+  filter(time_span == "teaching") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_teaching
+ 
+# knitr::kable(x = list(pcor_main$estimate, pcor_main$p.value), format = "simple") 
+
+```
+
+
+## Post-teaching phase
+
+```{r}
+main %>% 
+  filter(time_span == "post") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_post
+ 
+# knitr::kable(x = list(pcor_main$estimate, pcor_main$p.value), format = "simple") 
+
+```
+
+## Interview phase
+
+```{r}
+main %>% 
+  filter(time_span == "interview") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_interview
+ 
+# knitr::kable(x = list(pcor_main$estimate, pcor_main$p.value), format = "simple") 
+
+```
+
+## End phase
+
+```{r}
+main %>% 
+  filter(time_span == "end") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_end
+ 
+# knitr::kable(x = list(pcor_main$estimate, pcor_main$p.value), format = "simple") 
+
 ```
 
 
