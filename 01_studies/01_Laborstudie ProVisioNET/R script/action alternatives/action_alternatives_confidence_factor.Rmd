@@ -34,11 +34,12 @@ options(dplyr.summarise.inform = FALSE)
 df_sri <- 
   excel_sheets("data/coding_sri.xlsx") %>% 
   map_df(~read_xlsx("data/coding_sri.xlsx",.)) %>% 
-  dplyr::select(ID, Event, `Confidence Factor`) %>% 
-  filter(
-    ID %in% c(101:126, 201:228),
-    !ID %in% c(204, 226),
-    Event %in% c("chatting")) %>%
+  dplyr::select(ID, event, confidence_factor) %>% 
+  filter(!ID %in% c(141,
+                    142,
+                    204,
+                    226), # filter relevant rows
+         event %in% c("chatting")) %>%
   janitor::clean_names()
 
 # # SJT CM
@@ -98,6 +99,34 @@ main[is.na(main)] <- 0
 
 main$id = ifelse(main$id < 200, "Novice","Expert")
 
+# creating new column with total reactions
+main_novice <- main %>%
+  filter(id %in% c("Novice")) %>% 
+  mutate(
+    # reaction_sum = sum(reaction),
+         nd_sum = sum(nd),
+         sum_participants = sum(n()),
+    # percent_reaction = round((reaction_sum/sum_participants),digits = 2),
+         percent_nd = round((nd/count),
+                            digits = 2)
+         )
+
+# creating new column with total reactions
+main_expert <- main %>%
+  filter(id %in% c("Expert")) %>% 
+  mutate(
+    # reaction_sum = sum(reaction),
+         nd_sum = sum(nd),
+         sum_participants = sum(n()),
+    # percent_reaction = round((reaction_sum/sum_participants), digits = 2),
+         percent_nd = round((nd/count),
+                            digits = 2)
+         )
+
+# merge novice & expert data frame
+main <- rbind(main_expert, main_novice)
+
+
 ```
 
 # descriptives & plots
@@ -106,17 +135,18 @@ main$id = ifelse(main$id < 200, "Novice","Expert")
 describeBy(main$confidence_factor, main$id)
 plot_confi <- boxplot(confidence_factor ~ id, data = main)
 
-# sjt cm
-describeBy(main$sjt, main$id)
-plot_confi <- boxplot(sjt ~ id, data = main)
+# # sjt cm
+# describeBy(main$sjt, main$id)
+# plot_confi <- boxplot(sjt ~ id, data = main)
 
 # action alternatives - count
 describeBy(main$count, main$id)
 plot_action_count <- boxplot(count ~ id, data = main)
 
+
 # action alternatives - non disruptive alternatives  
-describeBy(main$nd, main$id)
-plot_action_quality <- boxplot(nd ~ id, data = main)
+describeBy(main$percent_nd, main$id)
+plot_action_quality <- boxplot(percent_nd ~ id, data = main)
 
 ```
 
@@ -143,10 +173,10 @@ main %>%
 # confidence factor x non-disruptive action alternatives
 ```{r}
 main %>% 
-  filter(!is.na(confidence_factor) | !is.na(nd)) %>% 
+  filter(!is.na(confidence_factor) | !is.na(percent_nd)) %>% 
   # filter(id %in% c("Novice")) %>% 
   ggplot(mapping = aes(x = confidence_factor,
-                       y = nd,
+                       y = percent_nd,
                        colour = id
                        )
          ) +
@@ -225,13 +255,14 @@ CohenD(x = main$count[main$id == "Expert"],
 
 ### action alternatives non-disruptive
 # t-test for expertise differences
-t.test(x = main$nd[main$id == "Expert"],
-       y = main$nd[main$id == "Novice"])
+t.test(x = main$percent_nd[main$id == "Expert"],
+       y = main$percent_nd[main$id == "Novice"])
 
 # effect size for expertise differences
-CohenD(x = main$nd[main$id == "Expert"],
-       y = main$nd[main$id == "Novice"],
+CohenD(x = main$percent_nd[main$id == "Expert"],
+       y = main$percent_nd[main$id == "Novice"],
        na.rm = TRUE)
+
 ```
 
 # pearson correlation
@@ -272,7 +303,7 @@ print(full_confi_count_corr,
 
 # novices: correlation between confidence factor and non-disruptive alternatives
 nov_confi_nd_corr <- cor.test(corr.nov$confidence_factor,
-                              corr.nov$nd, 
+                              corr.nov$percent_nd, 
                               method=c("pearson"),
                               adjust="holm")
 print(nov_confi_nd_corr, 
@@ -280,7 +311,7 @@ print(nov_confi_nd_corr,
 
 # experts: correlation between confidence factor and non-disruptive alternatives
 exp_confi_nd_corr <- cor.test(corr.exp$confidence_factor,
-                              corr.exp$nd, 
+                              corr.exp$percent_nd, 
                               method=c("pearson"),
                               adjust="holm")
 print(exp_confi_nd_corr,
@@ -288,7 +319,7 @@ print(exp_confi_nd_corr,
 
 # full sample: correlation between confidence factor and non-disruptive alternatives
 full_confi_nd_corr <- corr.test(main$confidence_factor, 
-                                main$nd, method=c("pearson"),
+                                main$percent_nd, method=c("pearson"),
                                 adjust="holm")
 print(full_confi_nd_corr,
       short = F)  
@@ -297,7 +328,7 @@ print(full_confi_nd_corr,
 
 # novices: correlation between count and non-disruptive alternatives
 nov_count_nd_corr <- cor.test(corr.nov$count,
-                              corr.nov$nd, 
+                              corr.nov$percent_nd, 
                               method=c("pearson"),
                               adjust="holm")
 print(nov_count_nd_corr, 
@@ -305,7 +336,7 @@ print(nov_count_nd_corr,
 
 # experts: correlation between count and non-disruptive alternatives
 exp_count_nd_corr <- cor.test(corr.exp$count,
-                              corr.exp$nd, 
+                              corr.exp$percent_nd, 
                               method=c("pearson"),
                               adjust="holm")
 print(exp_count_nd_corr,
@@ -313,7 +344,7 @@ print(exp_count_nd_corr,
 
 # full sample: correlation between confidence factor and non-disruptive alternatives
 full_count_nd_corr <- corr.test(main$count, 
-                                main$nd, 
+                                main$percent_nd, 
                                 method=c("pearson"),
                                 adjust="holm")
 print(full_count_nd_corr,
@@ -322,57 +353,57 @@ print(full_count_nd_corr,
 ###################################################
 
 
-# novices: correlation between sjt and count
-nov_sjt_count_corr <- cor.test(corr.nov$sjt,
-                              corr.nov$count, 
-                              method=c("pearson"),
-                              adjust="holm")
-print(nov_sjt_count_corr, 
-      short = F)
-
-# experts: correlation between sjt and count
-exp_sjt_count_corr <- cor.test(corr.exp$sjt,
-                              corr.exp$count, 
-                              method=c("pearson"),
-                              adjust="holm")
-print(exp_sjt_count_corr,
-      short = F)
-
-# full sample: correlation between sjt and count
-full_sjt_count_corr <- corr.test(main$sjt, 
-                                 main$count, 
-                                 method=c("pearson"), 
-                                 adjust="holm")
-print(full_sjt_count_corr, 
-      short = F)
-
-
-###################################################
-
-# novices: correlation between sjt and non-disruptive alternatives
-nov_sjt_nd_corr <- cor.test(corr.nov$sjt,
-                              corr.nov$nd, 
-                              method=c("pearson"),
-                              adjust="holm")
-print(nov_sjt_nd_corr, 
-      short = F)
-
-# experts: correlation between sjt and non-disruptive alternatives
-exp_sjt_nd_corr <- cor.test(corr.exp$sjt,
-                              corr.exp$nd, 
-                              method=c("pearson"),
-                              adjust="holm")
-print(exp_sjt_nd_corr,
-      short = F)
-
-
-# full sample: correlation between sjt and non-disruptive alternatives
-full_sjt_nd_corr <- corr.test(main$sjt,
-                              main$nd,
-                              method=c("pearson"),
-                              adjust="holm")
-print(full_sjt_nd_corr,
-      short = F)
+# # novices: correlation between sjt and count
+# nov_sjt_count_corr <- cor.test(corr.nov$sjt,
+#                               corr.nov$count, 
+#                               method=c("pearson"),
+#                               adjust="holm")
+# print(nov_sjt_count_corr, 
+#       short = F)
+# 
+# # experts: correlation between sjt and count
+# exp_sjt_count_corr <- cor.test(corr.exp$sjt,
+#                               corr.exp$count, 
+#                               method=c("pearson"),
+#                               adjust="holm")
+# print(exp_sjt_count_corr,
+#       short = F)
+# 
+# # full sample: correlation between sjt and count
+# full_sjt_count_corr <- corr.test(main$sjt, 
+#                                  main$count, 
+#                                  method=c("pearson"), 
+#                                  adjust="holm")
+# print(full_sjt_count_corr, 
+#       short = F)
+# 
+# 
+# ###################################################
+# 
+# # novices: correlation between sjt and non-disruptive alternatives
+# nov_sjt_nd_corr <- cor.test(corr.nov$sjt,
+#                               corr.nov$nd, 
+#                               method=c("pearson"),
+#                               adjust="holm")
+# print(nov_sjt_nd_corr, 
+#       short = F)
+# 
+# # experts: correlation between sjt and non-disruptive alternatives
+# exp_sjt_nd_corr <- cor.test(corr.exp$sjt,
+#                               corr.exp$nd, 
+#                               method=c("pearson"),
+#                               adjust="holm")
+# print(exp_sjt_nd_corr,
+#       short = F)
+# 
+# 
+# # full sample: correlation between sjt and non-disruptive alternatives
+# full_sjt_nd_corr <- corr.test(main$sjt,
+#                               main$nd,
+#                               method=c("pearson"),
+#                               adjust="holm")
+# print(full_sjt_nd_corr,
+#       short = F)
 
 ```
 
