@@ -29,7 +29,7 @@ needs(tidyverse,
 # if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
 options(dplyr.summarise.inform = FALSE)
 
-# REACTION 
+# REACTION ALTERNATIVE
 df_reaction <- read_excel("data/coding_reactions_MK.xlsx") %>% 
   janitor::clean_names() %>%
   mutate(reaction = as.numeric(case_when(code > 3 ~ '0',
