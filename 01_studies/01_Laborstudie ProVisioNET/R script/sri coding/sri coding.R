@@ -19,8 +19,11 @@ needs(tidyverse,
 sri <- 
   excel_sheets("data/Coding_SRI.xlsx") %>% 
   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% 
-  select(Group, Event, `Disruption Factor`, `Confident Factor`) %>% # select relevant columns 
-  filter(Group %in% c(101:125, 202:217))# filter relevant rows
+  select(ID, event, disruption_factor, confidence_factor) %>% # select relevant columns 
+  filter(!ID %in% c(141,
+                       142,
+                       204, 
+                       226)) # filter relevant rows
 
  
 # # counting drop outs (-99 not perceived, -100 not answered)
