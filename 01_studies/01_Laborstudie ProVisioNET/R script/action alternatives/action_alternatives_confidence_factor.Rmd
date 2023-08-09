@@ -141,10 +141,13 @@ plot_confi <- boxplot(confidence_factor ~ id, data = main)
 
 # action alternatives - count
 describeBy(main$count, main$id)
-plot_action_count <- boxplot(count ~ id, data = main)
+plot_action_count <- boxplot(count ~ id, data = main)^
+  
+# action alternatives - non disruptive alternatives (sum score)
+describeBy(main$nd, main$id)
+plot_action_quality <- boxplot(nd ~ id, data = main)
 
-
-# action alternatives - non disruptive alternatives  
+# action alternatives - non disruptive alternatives (relative score)
 describeBy(main$percent_nd, main$id)
 plot_action_quality <- boxplot(percent_nd ~ id, data = main)
 
@@ -253,7 +256,17 @@ CohenD(x = main$count[main$id == "Expert"],
        y = main$count[main$id == "Novice"],
        na.rm = TRUE)
 
-### action alternatives non-disruptive
+### action alternatives non-disruptive absolute score
+# t-test for expertise differences
+t.test(x = main$nd[main$id == "Expert"],
+       y = main$nd[main$id == "Novice"])
+
+# effect size for expertise differences
+CohenD(x = main$nd[main$id == "Expert"],
+       y = main$nd[main$id == "Novice"],
+       na.rm = TRUE)
+
+### action alternatives non-disruptive relative score
 # t-test for expertise differences
 t.test(x = main$percent_nd[main$id == "Expert"],
        y = main$percent_nd[main$id == "Novice"])
@@ -301,7 +314,33 @@ print(full_confi_count_corr,
 
 ###################################################
 
-# novices: correlation between confidence factor and non-disruptive alternatives
+# novices: correlation between confidence factor and non-disruptive alternatives (absolute score)
+nov_confi_abs.nd_corr <- cor.test(corr.nov$confidence_factor,
+                              corr.nov$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(nov_confi_abs.nd_corr, 
+      short = F)
+
+# experts: correlation between confidence factor and non-disruptive alternatives (absolute score)
+exp_confi_abs.nd_corr <- cor.test(corr.exp$confidence_factor,
+                              corr.exp$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(exp_confi_abs.nd_corr,
+      short = F)
+
+# full sample: correlation between confidence factor and non-disruptive alternatives (absolute score)
+full_confi_abs.nd_corr <- corr.test(main$confidence_factor, 
+                                main$nd, method=c("pearson"),
+                                adjust="holm")
+print(full_confi_abs.nd_corr,
+      short = F)  
+
+
+###################################################
+
+# novices: correlation between confidence factor and non-disruptive alternatives (relative score)
 nov_confi_nd_corr <- cor.test(corr.nov$confidence_factor,
                               corr.nov$percent_nd, 
                               method=c("pearson"),
@@ -309,7 +348,7 @@ nov_confi_nd_corr <- cor.test(corr.nov$confidence_factor,
 print(nov_confi_nd_corr, 
       short = F)
 
-# experts: correlation between confidence factor and non-disruptive alternatives
+# experts: correlation between confidence factor and non-disruptive alternatives (relative score)
 exp_confi_nd_corr <- cor.test(corr.exp$confidence_factor,
                               corr.exp$percent_nd, 
                               method=c("pearson"),
@@ -317,7 +356,7 @@ exp_confi_nd_corr <- cor.test(corr.exp$confidence_factor,
 print(exp_confi_nd_corr,
       short = F)
 
-# full sample: correlation between confidence factor and non-disruptive alternatives
+# full sample: correlation between confidence factor and non-disruptive alternatives (relative score)
 full_confi_nd_corr <- corr.test(main$confidence_factor, 
                                 main$percent_nd, method=c("pearson"),
                                 adjust="holm")
@@ -326,7 +365,33 @@ print(full_confi_nd_corr,
 
 ###################################################
 
-# novices: correlation between count and non-disruptive alternatives
+# novices: correlation between count and non-disruptive alternatives (absolute score)
+nov_count_abs.nd_corr <- cor.test(corr.nov$count,
+                              corr.nov$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(nov_count_abs.nd_corr, 
+      short = F)
+
+# experts: correlation between count and non-disruptive alternatives (absolute score)
+exp_count_abs.nd_corr <- cor.test(corr.exp$count,
+                              corr.exp$nd, 
+                              method=c("pearson"),
+                              adjust="holm")
+print(exp_count_abs.nd_corr,
+      short = F)
+
+# full sample: correlation between confidence factor and non-disruptive alternatives (absolute score)
+full_count_abs.nd_corr <- corr.test(main$count, 
+                                main$nd, 
+                                method=c("pearson"),
+                                adjust="holm")
+print(full_count_abs.nd_corr,
+      short = F)
+
+###################################################
+
+# novices: correlation between count and non-disruptive alternatives (relative score)
 nov_count_nd_corr <- cor.test(corr.nov$count,
                               corr.nov$percent_nd, 
                               method=c("pearson"),
@@ -334,7 +399,7 @@ nov_count_nd_corr <- cor.test(corr.nov$count,
 print(nov_count_nd_corr, 
       short = F)
 
-# experts: correlation between count and non-disruptive alternatives
+# experts: correlation between count and non-disruptive alternatives (relative score)
 exp_count_nd_corr <- cor.test(corr.exp$count,
                               corr.exp$percent_nd, 
                               method=c("pearson"),
@@ -342,7 +407,7 @@ exp_count_nd_corr <- cor.test(corr.exp$count,
 print(exp_count_nd_corr,
       short = F)
 
-# full sample: correlation between confidence factor and non-disruptive alternatives
+# full sample: correlation between confidence factor and non-disruptive alternatives (relative score)
 full_count_nd_corr <- corr.test(main$count, 
                                 main$percent_nd, 
                                 method=c("pearson"),
