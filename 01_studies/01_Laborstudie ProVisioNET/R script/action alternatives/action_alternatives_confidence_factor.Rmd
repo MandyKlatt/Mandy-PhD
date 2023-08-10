@@ -24,7 +24,8 @@ needs(tidyverse,
       janitor,
       RColorBrewer,
       cowplot,
-      zoo)
+      zoo,
+      apaTables)
 
 # suppress "summarize" info. 
 # if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
@@ -281,6 +282,22 @@ CohenD(x = main$percent_nd[main$id == "Expert"],
 # pearson correlation
 
 ```{r}
+
+# Korrelationstabelle nach APA-Standards
+
+head(main)
+
+# Subset anlegen nur mit Variablen
+main %>% 
+  select(confidence_factor, 
+         count, 
+         nd,
+         percent_nd) -> corr_subset
+
+apa.cor.table(corr_subset, filename = "Korrelationen.doc")
+
+###################################################
+
 # novices: correlation between confidence factor and count
 main %>% 
   filter(id %in% c("Novice")) -> corr.nov
