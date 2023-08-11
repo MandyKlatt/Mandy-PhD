@@ -1,5 +1,5 @@
 ---
-title: "Action alternatives & confidence factor"
+title: "Action alternatives & disruption factor"
 output: html_document
 date: "2023-03-28"
 ---
@@ -35,7 +35,7 @@ options(dplyr.summarise.inform = FALSE)
 df_sri <- 
   excel_sheets("data/coding_sri.xlsx") %>% 
   map_df(~read_xlsx("data/coding_sri.xlsx",.)) %>% 
-  dplyr::select(ID, event, confidence_factor) %>% 
+  dplyr::select(ID, event, disruption_factor) %>% 
   filter(!ID %in% c(141,
                     142,
                     204,
@@ -132,13 +132,13 @@ main <- rbind(main_expert, main_novice)
 
 # descriptives & plots
 ```{r}
-# confidence factor
-describeBy(main$confidence_factor, main$id)
-plot_confi <- boxplot(confidence_factor ~ id, data = main)
+# disruption factor
+describeBy(main$disruption_factor, main$id)
+plot_disrup <- boxplot(disruption_factor ~ id, data = main)
 
 # # sjt cm
 # describeBy(main$sjt, main$id)
-# plot_confi <- boxplot(sjt ~ id, data = main)
+# plot_disrup <- boxplot(sjt ~ id, data = main)
 
 # action alternatives - count
 describeBy(main$count, main$id)
@@ -154,12 +154,12 @@ plot_action_quality <- boxplot(percent_nd ~ id, data = main)
 
 ```
 
-# confidence factor x count of action alternatives
+# disruption factor x count of action alternatives
 ```{r}
 main %>% 
-  filter(!is.na(confidence_factor) | !is.na(count)) %>% 
+  filter(!is.na(disruption_factor) | !is.na(count)) %>% 
   # filter(id %in% c("Novice")) %>% 
-  ggplot(mapping = aes(x = confidence_factor,
+  ggplot(mapping = aes(x = disruption_factor,
                        y = count,
                        colour = id
                        )
@@ -168,18 +168,18 @@ main %>%
   geom_smooth(method = "lm",
               se = TRUE) +
   scale_color_viridis_d() +
-  labs(x = "Confidence Factor",
+  labs(x = "disruption Factor",
        y = "Count of action alternatives") +
   theme_cowplot()
 
 ```
 
-# confidence factor x non-disruptive action alternatives
+# disruption factor x non-disruptive action alternatives
 ```{r}
 main %>% 
-  filter(!is.na(confidence_factor) | !is.na(percent_nd)) %>% 
+  filter(!is.na(disruption_factor) | !is.na(percent_nd)) %>% 
   # filter(id %in% c("Novice")) %>% 
-  ggplot(mapping = aes(x = confidence_factor,
+  ggplot(mapping = aes(x = disruption_factor,
                        y = percent_nd,
                        colour = id
                        )
@@ -188,7 +188,7 @@ main %>%
   geom_smooth(method = "lm",
               se = TRUE) +
   scale_color_viridis_d() +
-  labs(x = "Confidence Factor",
+  labs(x = "disruption Factor",
        y = "Non-disruptive action alternatives") + 
   theme_cowplot()
 
@@ -237,14 +237,14 @@ main %>%
 # t-test and effect size
 ```{r}
 
-#### confidence factor
+#### disruption factor
 # t-test for expertise differences
-t.test(x = main$confidence_factor[main$id == "Expert"],
-       y = main$confidence_factor[main$id == "Novice"])
+t.test(x = main$disruption_factor[main$id == "Expert"],
+       y = main$disruption_factor[main$id == "Novice"])
 
 # effect size for expertise differences
-CohenD(x = main$confidence_factor[main$id == "Expert"],
-       y = main$confidence_factor[main$id == "Novice"],
+CohenD(x = main$disruption_factor[main$id == "Expert"],
+       y = main$disruption_factor[main$id == "Novice"],
        na.rm = TRUE)
 
 ### action alternatives count
@@ -289,7 +289,7 @@ head(main)
 
 # Subset anlegen nur mit Variablen
 main %>% 
-  select(confidence_factor, 
+  select(disruption_factor, 
          count, 
          nd,
          percent_nd) -> corr_subset
@@ -298,86 +298,86 @@ apa.cor.table(corr_subset, filename = "Korrelationen.doc")
 
 ###################################################
 
-# novices: correlation between confidence factor and count
+# novices: correlation between disruption factor and count
 main %>% 
   filter(id %in% c("Novice")) -> corr.nov
 
-nov_confi_count_corr <- cor.test(corr.nov$confidence_factor, 
+nov_disrup_count_corr <- cor.test(corr.nov$disruption_factor, 
                                  corr.nov$count, 
                                  method=c("pearson"),
                                  adjust="holm")
-print(nov_confi_count_corr, 
+print(nov_disrup_count_corr, 
       short = F)
 
-# experts: correlation between confidence factor and count
+# experts: correlation between disruption factor and count
 main %>% 
   filter(id %in% c("Expert")) -> corr.exp
 
-exp_confi_count_corr <- cor.test(corr.exp$confidence_factor, 
+exp_disrup_count_corr <- cor.test(corr.exp$disruption_factor, 
                                  corr.exp$count, 
                                  method=c("pearson"),
                                  adjust="holm")
-print(exp_confi_count_corr, 
+print(exp_disrup_count_corr, 
       short = F)
 
-# full sample: correlation between confidence factor and count
-full_confi_count_corr <- corr.test(main$confidence_factor, 
+# full sample: correlation between disruption factor and count
+full_disrup_count_corr <- corr.test(main$disruption_factor, 
                                    main$count, 
                                    method=c("pearson"), 
                                    adjust="holm")
-print(full_confi_count_corr,
+print(full_disrup_count_corr,
       short = F)
 
 
 ###################################################
 
-# novices: correlation between confidence factor and non-disruptive alternatives (absolute score)
-nov_confi_abs.nd_corr <- cor.test(corr.nov$confidence_factor,
+# novices: correlation between disruption factor and non-disruptive alternatives (absolute score)
+nov_disrup_abs.nd_corr <- cor.test(corr.nov$disruption_factor,
                               corr.nov$nd, 
                               method=c("pearson"),
                               adjust="holm")
-print(nov_confi_abs.nd_corr, 
+print(nov_disrup_abs.nd_corr, 
       short = F)
 
-# experts: correlation between confidence factor and non-disruptive alternatives (absolute score)
-exp_confi_abs.nd_corr <- cor.test(corr.exp$confidence_factor,
+# experts: correlation between disruption factor and non-disruptive alternatives (absolute score)
+exp_disrup_abs.nd_corr <- cor.test(corr.exp$disruption_factor,
                               corr.exp$nd, 
                               method=c("pearson"),
                               adjust="holm")
-print(exp_confi_abs.nd_corr,
+print(exp_disrup_abs.nd_corr,
       short = F)
 
-# full sample: correlation between confidence factor and non-disruptive alternatives (absolute score)
-full_confi_abs.nd_corr <- corr.test(main$confidence_factor, 
+# full sample: correlation between disruption factor and non-disruptive alternatives (absolute score)
+full_disrup_abs.nd_corr <- corr.test(main$disruption_factor, 
                                 main$nd, method=c("pearson"),
                                 adjust="holm")
-print(full_confi_abs.nd_corr,
+print(full_disrup_abs.nd_corr,
       short = F)  
 
 
 ###################################################
 
-# novices: correlation between confidence factor and non-disruptive alternatives (relative score)
-nov_confi_nd_corr <- cor.test(corr.nov$confidence_factor,
+# novices: correlation between disruption factor and non-disruptive alternatives (relative score)
+nov_disrup_nd_corr <- cor.test(corr.nov$disruption_factor,
                               corr.nov$percent_nd, 
                               method=c("pearson"),
                               adjust="holm")
-print(nov_confi_nd_corr, 
+print(nov_disrup_nd_corr, 
       short = F)
 
-# experts: correlation between confidence factor and non-disruptive alternatives (relative score)
-exp_confi_nd_corr <- cor.test(corr.exp$confidence_factor,
+# experts: correlation between disruption factor and non-disruptive alternatives (relative score)
+exp_disrup_nd_corr <- cor.test(corr.exp$disruption_factor,
                               corr.exp$percent_nd, 
                               method=c("pearson"),
                               adjust="holm")
-print(exp_confi_nd_corr,
+print(exp_disrup_nd_corr,
       short = F)
 
-# full sample: correlation between confidence factor and non-disruptive alternatives (relative score)
-full_confi_nd_corr <- corr.test(main$confidence_factor, 
+# full sample: correlation between disruption factor and non-disruptive alternatives (relative score)
+full_disrup_nd_corr <- corr.test(main$disruption_factor, 
                                 main$percent_nd, method=c("pearson"),
                                 adjust="holm")
-print(full_confi_nd_corr,
+print(full_disrup_nd_corr,
       short = F)  
 
 ###################################################
@@ -398,7 +398,7 @@ exp_count_abs.nd_corr <- cor.test(corr.exp$count,
 print(exp_count_abs.nd_corr,
       short = F)
 
-# full sample: correlation between confidence factor and non-disruptive alternatives (absolute score)
+# full sample: correlation between disruption factor and non-disruptive alternatives (absolute score)
 full_count_abs.nd_corr <- corr.test(main$count, 
                                 main$nd, 
                                 method=c("pearson"),
@@ -424,7 +424,7 @@ exp_count_nd_corr <- cor.test(corr.exp$count,
 print(exp_count_nd_corr,
       short = F)
 
-# full sample: correlation between confidence factor and non-disruptive alternatives (relative score)
+# full sample: correlation between disruption factor and non-disruptive alternatives (relative score)
 full_count_nd_corr <- corr.test(main$count, 
                                 main$percent_nd, 
                                 method=c("pearson"),

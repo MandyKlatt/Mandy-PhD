@@ -56,9 +56,9 @@
 \clvertalc\cellx5508 
 \clvertalc\cellx6732 
 \clvertalc\cellx7956 
-\pard\sa0\sb0\intbl\ql{1. confidence_factor}\cell
-\pard\sa0\sb0\intbl\tqdec\tldot\tx428{7.44}\cell
-\pard\sa0\sb0\intbl\tqdec\tldot\tx428{2.03}\cell
+\pard\sa0\sb0\intbl\ql{1. disruption_factor}\cell
+\pard\sa0\sb0\intbl\tqdec\tldot\tx428{7.45}\cell
+\pard\sa0\sb0\intbl\tqdec\tldot\tx428{2.40}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
@@ -91,7 +91,7 @@
 \pard\sa0\sb0\intbl\ql{2. count}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{4.74}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{1.89}\cell
-\pard\sa0\sb0\intbl\tqdec\tldot\tx428{.13}\cell
+\pard\sa0\sb0\intbl\tqdec\tldot\tx428{-.24*}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \row
@@ -107,7 +107,7 @@
 \pard\sa0\sb0\intbl\ql{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
-\pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[-.09, .34]}}\cell
+\pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[-.44, -.03]}}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \row
@@ -139,7 +139,7 @@
 \pard\sa0\sb0\intbl\ql{3. nd}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{2.02}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{1.68}\cell
-\pard\sa0\sb0\intbl\tqdec\tldot\tx428{.17}\cell
+\pard\sa0\sb0\intbl\tqdec\tldot\tx428{-.12}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{.61**}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \row
@@ -155,7 +155,7 @@
 \pard\sa0\sb0\intbl\ql{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
-\pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[-.05, .37]}}\cell
+\pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[-.34, .10]}}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[.44, .73]}}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \row
@@ -187,7 +187,7 @@
 \pard\sa0\sb0\intbl\ql{4. percent_nd}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{0.41}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{0.27}\cell
-\pard\sa0\sb0\intbl\tqdec\tldot\tx428{.17}\cell
+\pard\sa0\sb0\intbl\tqdec\tldot\tx428{-.09}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{.17}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{.84**}\cell
 \row
@@ -203,7 +203,7 @@
 \pard\sa0\sb0\intbl\ql{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{ }\cell
-\pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[-.05, .38]}}\cell
+\pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[-.30, .13]}}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[-.05, .38]}}\cell
 \pard\sa0\sb0\intbl\tqdec\tldot\tx428{{\fs20[.76, .89]}}\cell
 \row
