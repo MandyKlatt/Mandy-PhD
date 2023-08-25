@@ -35,7 +35,7 @@ options(dplyr.summarise.inform = FALSE)
 df_sri <- 
   excel_sheets("data/coding_sri.xlsx") %>% 
   map_df(~read_xlsx("data/coding_sri.xlsx",.)) %>% 
-  dplyr::select(ID, event, disruption_factor) %>% 
+  dplyr::select(ID, event, disruption_factor, confidence_factor) %>% 
   filter(!ID %in% c(141,
                     142,
                     204,
@@ -70,15 +70,14 @@ df_alternatives_nd <- read_excel("data/coding_action_alternatives.xlsx") %>%
   na.locf() %>% 
   janitor::clean_names() %>% 
   select(id, code) %>% 
-  mutate(nd = 
-           as.numeric(
-             case_when(code > 3 ~ '0',
-                       code <= 3 ~ '1',
-                       TRUE ~ 'F'
-                       )
-             )
-         ) %>%
-  group_by(id) %>% 
+  mutate(nd = as.numeric(case_when(code > 3 ~ '0',
+                                   code <= 3 ~ '1',
+                                   TRUE ~ 'F'
+                                   )
+                         )
+         ) %>% 
+  select(id, nd) %>% 
+  group_by(id) %>%
   summarise(nd = sum(nd))
 
 
@@ -100,27 +99,17 @@ main[is.na(main)] <- 0
 
 main$id = ifelse(main$id < 200, "Novice","Expert")
 
-# creating new column with total reactions
+# creating new column with absolute number of nd-alternatives
 main_novice <- main %>%
   filter(id %in% c("Novice")) %>% 
-  mutate(
-    # reaction_sum = sum(reaction),
-         nd_sum = sum(nd),
-         sum_participants = sum(n()),
-    # percent_reaction = round((reaction_sum/sum_participants),digits = 2),
-         percent_nd = round((nd/count),
+  mutate(percent_nd = round((nd/count),
                             digits = 2)
          )
 
-# creating new column with total reactions
+# creating new column with absolute number of nd-alternatives
 main_expert <- main %>%
   filter(id %in% c("Expert")) %>% 
-  mutate(
-    # reaction_sum = sum(reaction),
-         nd_sum = sum(nd),
-         sum_participants = sum(n()),
-    # percent_reaction = round((reaction_sum/sum_participants), digits = 2),
-         percent_nd = round((nd/count),
+  mutate(percent_nd = round((nd/count),
                             digits = 2)
          )
 
@@ -136,21 +125,40 @@ main <- rbind(main_expert, main_novice)
 describeBy(main$disruption_factor, main$id)
 plot_disrup <- boxplot(disruption_factor ~ id, data = main)
 
+# confidence factor
+describeBy(main$confidence_factor, main$id)
+plot_disrup <- boxplot(confidence_factor ~ id, data = main)
+
 # # sjt cm
 # describeBy(main$sjt, main$id)
 # plot_disrup <- boxplot(sjt ~ id, data = main)
 
 # action alternatives - count
 describeBy(main$count, main$id)
-plot_action_count <- boxplot(count ~ id, data = main)^
+plot_action_count <- boxplot(count ~ id, data = main)
   
-# action alternatives - non disruptive alternatives (sum score)
+# action alternatives - non disruptive alternatives (absolute score)
 describeBy(main$nd, main$id)
 plot_action_quality <- boxplot(nd ~ id, data = main)
 
 # action alternatives - non disruptive alternatives (relative score)
 describeBy(main$percent_nd, main$id)
 plot_action_quality <- boxplot(percent_nd ~ id, data = main)
+
+# 
+main %>% 
+  group_by(id) %>% 
+  summarise(disruption_factor = n(),
+            confidence_factor = n(),
+            count = n(),
+            nd = n(),
+            percent_nd = n())
+
+table(main$disruption_factor)
+table(main$confidence_factor)
+table(main$count)
+table(main$nd)
+table(main$percent_nd)
 
 ```
 
@@ -240,17 +248,30 @@ main %>%
 #### disruption factor
 # t-test for expertise differences
 t.test(x = main$disruption_factor[main$id == "Expert"],
-       y = main$disruption_factor[main$id == "Novice"])
+       y = main$disruption_factor[main$id == "Novice"],
+       var.equal = TRUE)
 
 # effect size for expertise differences
 CohenD(x = main$disruption_factor[main$id == "Expert"],
        y = main$disruption_factor[main$id == "Novice"],
        na.rm = TRUE)
 
+#### confidence factor
+# t-test for expertise differences
+t.test(x = main$confidence_factor[main$id == "Expert"],
+       y = main$confidence_factor[main$id == "Novice"],
+       var.equal = TRUE)
+
+# effect size for expertise differences
+CohenD(x = main$confidence_factor[main$id == "Expert"],
+       y = main$confidence_factor[main$id == "Novice"],
+       na.rm = TRUE)
+
 ### action alternatives count
 # t-test for expertise differences
 t.test(x = main$count[main$id == "Expert"],
-       y = main$count[main$id == "Novice"])
+       y = main$count[main$id == "Novice"],
+       var.equal = TRUE)
 
 # effect size for expertise differences
 CohenD(x = main$count[main$id == "Expert"],
@@ -260,7 +281,8 @@ CohenD(x = main$count[main$id == "Expert"],
 ### action alternatives non-disruptive absolute score
 # t-test for expertise differences
 t.test(x = main$nd[main$id == "Expert"],
-       y = main$nd[main$id == "Novice"])
+       y = main$nd[main$id == "Novice"],
+       var.equal = TRUE)
 
 # effect size for expertise differences
 CohenD(x = main$nd[main$id == "Expert"],
@@ -270,7 +292,8 @@ CohenD(x = main$nd[main$id == "Expert"],
 ### action alternatives non-disruptive relative score
 # t-test for expertise differences
 t.test(x = main$percent_nd[main$id == "Expert"],
-       y = main$percent_nd[main$id == "Novice"])
+       y = main$percent_nd[main$id == "Novice"],
+       var.equal = TRUE)
 
 # effect size for expertise differences
 CohenD(x = main$percent_nd[main$id == "Expert"],
