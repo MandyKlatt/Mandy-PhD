@@ -145,20 +145,20 @@ plot_action_quality <- boxplot(nd ~ id, data = main)
 describeBy(main$percent_nd, main$id)
 plot_action_quality <- boxplot(percent_nd ~ id, data = main)
 
+# # frequencies
+# main %>% 
+#   group_by(id) %>% 
+#   summarise(disruption_factor = n(),
+#             confidence_factor = n(),
+#             count = n(),
+#             nd = n(),
+#             percent_nd = n())
 # 
-main %>% 
-  group_by(id) %>% 
-  summarise(disruption_factor = n(),
-            confidence_factor = n(),
-            count = n(),
-            nd = n(),
-            percent_nd = n())
-
-table(main$disruption_factor)
-table(main$confidence_factor)
-table(main$count)
-table(main$nd)
-table(main$percent_nd)
+# table(main$disruption_factor)
+# table(main$confidence_factor)
+# table(main$count)
+# table(main$nd)
+# table(main$percent_nd)
 
 ```
 
@@ -245,28 +245,6 @@ main %>%
 # t-test and effect size
 ```{r}
 
-#### disruption factor
-# t-test for expertise differences
-t.test(x = main$disruption_factor[main$id == "Expert"],
-       y = main$disruption_factor[main$id == "Novice"],
-       var.equal = TRUE)
-
-# effect size for expertise differences
-CohenD(x = main$disruption_factor[main$id == "Expert"],
-       y = main$disruption_factor[main$id == "Novice"],
-       na.rm = TRUE)
-
-#### confidence factor
-# t-test for expertise differences
-t.test(x = main$confidence_factor[main$id == "Expert"],
-       y = main$confidence_factor[main$id == "Novice"],
-       var.equal = TRUE)
-
-# effect size for expertise differences
-CohenD(x = main$confidence_factor[main$id == "Expert"],
-       y = main$confidence_factor[main$id == "Novice"],
-       na.rm = TRUE)
-
 ### action alternatives count
 # t-test for expertise differences
 t.test(x = main$count[main$id == "Expert"],
@@ -300,6 +278,29 @@ CohenD(x = main$percent_nd[main$id == "Expert"],
        y = main$percent_nd[main$id == "Novice"],
        na.rm = TRUE)
 
+#### disruption factor
+# t-test for expertise differences
+t.test(x = main$disruption_factor[main$id == "Expert"],
+       y = main$disruption_factor[main$id == "Novice"],
+       var.equal = TRUE)
+
+# effect size for expertise differences
+CohenD(x = main$disruption_factor[main$id == "Expert"],
+       y = main$disruption_factor[main$id == "Novice"],
+       na.rm = TRUE)
+
+#### confidence factor
+# t-test for expertise differences
+t.test(x = main$confidence_factor[main$id == "Expert"],
+       y = main$confidence_factor[main$id == "Novice"],
+       var.equal = TRUE)
+
+# effect size for expertise differences
+CohenD(x = main$confidence_factor[main$id == "Expert"],
+       y = main$confidence_factor[main$id == "Novice"],
+       na.rm = TRUE)
+
+
 ```
 
 # pearson correlation
@@ -307,17 +308,41 @@ CohenD(x = main$percent_nd[main$id == "Expert"],
 ```{r}
 
 # Korrelationstabelle nach APA-Standards
-
 head(main)
 
-# Subset anlegen nur mit Variablen
-main %>% 
-  select(disruption_factor, 
-         count, 
+# Subset anlegen nur mit Variablen == Experts
+main %>%
+  filter(id == "Expert") %>% 
+  select(count, 
          nd,
-         percent_nd) -> corr_subset
+         percent_nd,
+         disruption_factor, 
+         confidence_factor) -> corr_subset_expert
 
-apa.cor.table(corr_subset, filename = "Korrelationen.doc")
+apa.cor.table(corr_subset_expert, filename = "correlation_experts.doc")
+
+# Subset anlegen nur mit Variablen == Novices
+main %>%
+  filter(id == "Novice") %>% 
+  select(count, 
+         nd,
+         percent_nd,
+         disruption_factor, 
+         confidence_factor) -> corr_subset_novice
+
+apa.cor.table(corr_subset_novice, filename = "correlation_novices.doc")
+
+# Subset anlegen nur mit Variablen overall
+main %>%
+  select(count, 
+         nd,
+         percent_nd,
+         disruption_factor, 
+         confidence_factor) -> corr_subset_overall
+
+apa.cor.table(corr_subset_overall, filename = "correlation_overall.doc")
+
+
 
 ###################################################
 
