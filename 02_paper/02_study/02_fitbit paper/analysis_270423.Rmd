@@ -438,7 +438,6 @@ list(`Preparation Phase` = list(name = "Preparation Phase", mod = mods$preparati
       )
 ```
 
-
 # t-Tests 
 ## using heart rate means
 

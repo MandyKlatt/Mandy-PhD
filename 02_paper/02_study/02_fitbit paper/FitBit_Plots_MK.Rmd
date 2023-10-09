@@ -762,27 +762,30 @@ df_anova_phase <-
   aov(df_anova_subset$mean_hr_std ~ df_anova_subset$time_span)
 summary(df_anova_phase)
 
-# pairwise comparisons
-pwc <- 
-  pairwise.t.test(df_anova_subset$mean_hr_std, 
-                  df_anova_subset$time_span, 
-                  p.adjust="holm")
-pwc
 
 
-# effect size of ANOVA
-EtaSq(df_anova_phase)
 
-effect_size_anova <-
-  round(sqrt(0.6829502   /(1-0.6829502   )), 2)
-
-# effect size of pairwise comparisons
-library(dplyr)
-library(rstatix)
-effect_size_pwc <-
-  df_anova_subset %>%
-  cohens_d(mean_hr_std ~ time_span) %>% 
-  as.data.frame()
+# # pairwise comparisons
+# pwc <- 
+#   pairwise.t.test(df_anova_subset$mean_hr_std, 
+#                   df_anova_subset$time_span, 
+#                   p.adjust="holm")
+# pwc
+# 
+# 
+# # effect size of ANOVA
+# EtaSq(df_anova_phase)
+# 
+# effect_size_anova <-
+#   round(sqrt(0.6829502   /(1-0.6829502   )), 2)
+# 
+# # effect size of pairwise comparisons
+# library(dplyr)
+# library(rstatix)
+# effect_size_pwc <-
+#   df_anova_subset %>%
+#   cohens_d(mean_hr_std ~ time_span) %>% 
+#   as.data.frame()
 
 # # pairwise comparisons
 # pwc <- df_anova_subset %>%
