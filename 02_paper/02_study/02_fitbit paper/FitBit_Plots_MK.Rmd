@@ -26,7 +26,8 @@ needs(tidyverse,
       stargazer,
       lmtest,
       sandwich,
-      car)
+      car,
+      stats)
 
 ```
 
@@ -742,7 +743,7 @@ outliers <-
 norm_assump <-
   df_anova %>%
   group_by(time_span) %>%
-  shapiro_test(mean_hr)
+  shapiro_test(mean_hr_std)
 
 # QQ plot draws the correlation between a given data and the normal distribution. 
 plot <- 
@@ -762,7 +763,35 @@ df_anova_phase <-
   aov(df_anova_subset$mean_hr_std ~ df_anova_subset$time_span)
 summary(df_anova_phase)
 
+# effektstärke für ANOVA
+DescTools::EtaSq(df_anova_phase)
+f = sqrt (0.7202944/ (1-0.7202944))
 
+# geplante Kontraste
+model <- aov(mean_hr_std ~ time_span, data = df_anova_subset)
+summary (model)
+
+contrast1 <- c(-1, 1, 0, 0, 0)
+contrast2 <- c(0, 1, -1, 0, 0)
+contrast3 <- c(0, 1, 0, -1, 0)
+contrast4 <- c(0, 1, 0, 0, -1)
+
+contrasts(df_anova_subset$time_span) <- cbind(contrast1,
+                                              contrast2,
+                                              contrast3,
+                                              contrast4)
+
+model2 <- aov(mean_hr_std ~ time_span, data = df_anova_subset)
+summary(model2)
+
+summary.aov(model2, 
+            split = list (time_span = list ("Lehrphase vs. Pre-Lehrphase" = 1,
+                                            "Lehrphase vs. Post-Lehrphase" = 2,
+                                            "Lehrphase vs. Interviewphase" = 3,
+                                            "Lehrphase vs. Endphase" = 4
+                                            )
+                          )
+            )
 
 
 # # pairwise comparisons
