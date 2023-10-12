@@ -765,10 +765,10 @@ for (i in unique(data_regression_mean$time_span)) {
 
 # Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
 
-summary(regr_teaching1)
-summary(regr_teaching2)
-summary(regr_teaching3)
-summary(regr_teaching4)
+summary(regr_preparation1)
+summary(regr_preparation2)
+summary(regr_preparation3)
+summary(regr_preparation4)
 
 ```
 
