@@ -176,7 +176,8 @@ ggsave(plot = plot_number_group,
 # NUMBER OF FIXATIONS on all AOIs 
 # t-test for expertise differences
 t.test(x = df_aoi_sum$Sum_number_fixation[df_aoi_sum$Group == "Expert"],
-       y = df_aoi_sum$Sum_number_fixation[df_aoi_sum$Group == "Novice"])
+       y = df_aoi_sum$Sum_number_fixation[df_aoi_sum$Group == "Novice"],
+       var.equal = TRUE)
 
 
 # NUMBER OF FIXATIONS on all AOIs
@@ -273,7 +274,8 @@ ggsave(plot = plot_number_disrup,
 # AVERAGE DURATION OF FIXATIONS on AOI disruptive person 
 # t-test for expertise differences
 t.test(x = df_aoi_disrup$Number_of_fixations.Disruptive_Person[df_aoi_disrup$Group == "Expert"],
-       y = df_aoi_disrup$Number_of_fixations.Disruptive_Person[df_aoi_disrup$Group == "Novice"])
+       y = df_aoi_disrup$Number_of_fixations.Disruptive_Person[df_aoi_disrup$Group == "Novice"],
+       var.equal = TRUE)
 
 
 # AVERAGE DURATION OF FIXATIONS 
@@ -385,7 +387,8 @@ ggsave(plot = plot_number_stud,
 # AVERAGE DURATION OF FIXATIONS on AOI Students 
 # t-test for expertise differences
 t.test(x = df_aoi_stud$Stud_number_fixation[df_aoi_stud$Group == "Expert"],
-       y = df_aoi_stud$Stud_number_fixation[df_aoi_stud$Group == "Novice"])
+       y = df_aoi_stud$Stud_number_fixation[df_aoi_stud$Group == "Novice"],
+       var.equal = TRUE)
 
 
 # AVERAGE DURATION OF FIXATIONS on AOI Students
@@ -498,7 +501,8 @@ ggsave(plot = plot_average_duration_group,
 # AVERAGE DURATION OF FIXATIONS on all AOIs 
 # t-test for expertise differences
 t.test(x = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Expert"],
-       y = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Novice"])
+       y = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Novice"],
+       var.equal = TRUE)
 
 
 # AVERAGE DURATION OF FIXATIONS on all AOIs
@@ -599,7 +603,8 @@ ggsave(plot = plot_average_duration_disrup,
 # AVERAGE DURATION OF FIXATIONS on AOI disruptive person 
 # t-test for expertise differences
 t.test(x = df_aoi_disrup$Average_duration_disrup[df_aoi_disrup$Group == "Expert"],
-       y = df_aoi_disrup$Average_duration_disrup[df_aoi_disrup$Group == "Novice"])
+       y = df_aoi_disrup$Average_duration_disrup[df_aoi_disrup$Group == "Novice"],
+       var.equal = TRUE)
 
 
 # AVERAGE DURATION OF FIXATIONS 
@@ -713,7 +718,8 @@ ggsave(plot = plot_average_duration_stud,
 # AVERAGE DURATION OF FIXATIONS on AOI Students 
 # t-test for expertise differences
 t.test(x = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Expert"],
-       y = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Novice"])
+       y = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Novice"],
+       var.equal = TRUE)
 
 
 # AVERAGE DURATION OF FIXATIONS on AOI Students
@@ -818,7 +824,8 @@ ggsave(plot = plot_time_group,
 # TIME TO FIRST FIXATIONS on all AOIs 
 # t-test for expertise differences
 t.test(x = df_ttff_sum$Sum_time_fixation_sec[df_ttff_sum$Group == "Expert"],
-       y = df_ttff_sum$Sum_time_fixation_sec[df_ttff_sum$Group == "Novice"])
+       y = df_ttff_sum$Sum_time_fixation_sec[df_ttff_sum$Group == "Novice"],
+       var.equal = TRUE)
 
 
 # TIME TO FIRST FIXATIONS on all AOIs 
@@ -920,15 +927,16 @@ ggsave(plot = plot_time_disrup,
        units = "in")
 
 
-# TIME TO FIRST FIXATIONS on all AOIs 
+# TIME TO FIRST FIXATIONS on disruptive person 
 # t-test for expertise differences
 t.test(x = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Expert"],
-       y = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Novice"])
+       y = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Novice"],
+       var.equal = TRUE)
 
 
-# TIME TO FIRST FIXATIONS on all AOIs 
+# TIME TO FIRST FIXATIONS on disruptive person 
 # effect size for expertise differences
-d_time_all <- CohenD(x = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Expert"],
+d_time_disrup <- CohenD(x = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Expert"],
                     y = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Novice"],
                     na.rm = TRUE)
 
