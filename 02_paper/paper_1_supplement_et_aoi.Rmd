@@ -1,0 +1,457 @@
+---
+title             : "Through the eyes of the teacher"
+shorttitle        : "Visual attention in teaching and learning processes"
+
+author: 
+  - name          : "Mandy Klatt"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Egelstraße 2a 04103 Leipzig"
+    email         : "mandy.klatt@uni-leipzig.de"
+  - name          : "Dr. Gregor Kachel"
+    affiliation   : "1, 2"
+  - name          : "Dr. Christin Lotz"
+    affiliation   : "1"
+  - name          : "Prof. Dr. Anne Deiglmayr"
+    affiliation   : "1"
+  
+affiliation:
+  - id            : "1"
+    institution   : "Leipzig University"
+  - id            : "2"
+    institution   : "Max-Planck University for Evolutionary Anthropology"
+
+authornote: |
+  The Ethics Advisory Board of Leipzig University has dealt with the research project and has come to the conclusion that there are no objections to the implementation of this research project. The Ethics Advisory Board points out that the scientific and ethical responsibilty for the implementation of the project remains with the project director.
+
+abstract: |
+  This document is a supplement to the paper and shows first graphs findings from the pilot study. 
+  
+keywords          : "Professional Vision, Expert-Novice-Paradigm, Eye-Tracking"
+wordcount         : "1949"
+
+bibliography      : ["r-references.bib"]
+
+floatsintext      : yes
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_pdf #bookdown::word_document2
+---
+
+```{r setup, include = FALSE}
+
+# if a package is not installed on the current machine, it will install it
+if(!"devtools" %in% rownames(installed.packages())) install.packages("devtools")
+if (!require(tidyverse)) install.packages('tidyverse'); library(tidyverse)
+if (!require(papaja)) install.packages("papaja"); library(papaja)
+if (!require(psych)) install.packages('psych'); library(psych) # stats
+if (!require(moments)) install.packages('moments'); library(moments) # skewness & kurtosis
+if (!require(sjPlot)) install.packages('sjPlot'); library(sjPlot) # item analysis of a scale or index
+
+# suppress "summarize" info. 
+# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
+options(dplyr.summarise.inform = FALSE)
+
+r_refs("r-references.bib")
+
+```
+
+```{r analysis-preferences, echo = FALSE}
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+# State of research
+
+Teaching and classroom management are multidimensional settings in which teachers have to respond immediately to events as they develop [@barnes2004significance]. The different interests and abilities of students must be managed in a way that maximizes the active learning time of students and minimizes disruptions whilst teaching. Learning to develop such classroom management skills and to teach effectively is a complicated and complex process [@wolff2017see]. 
+
+During teaching, teachers must be able to select from a variety of visual and acoustic impressions to focus their attention on the essential and to distinguish between relevant and irrelevant events. This ability is called professional vision and is a key component of teacher expertise and successful teaching [@barth2017professionelle]. Eye tracking technology has become a reliable means to study teachers’ visual focus of attention [@pouta2020student; @bogert2016visualperception; @wolff2017see]
+
+Educational research has repeatedly shown that there are differences between experienced and novice teachers in terms of perception and behavioral competencies [@barth2017professionelle; @bogert2016visualperception; @wolff2017see]. For example, experts direct their attention more often and more evenly to all students, whereas novices only direct their attention to some students. The frequency and duration of fixations as eye movement are decisive [@stuermer2017eye]. Mobile eye-tracking technology has also shown that experienced teachers distribute their focus more efficiently to solve tasks [@jarodzka2010eyes]. Furthermore, in contrast to novices, experts are able to focus their attention on the entire class and guide the class while giving feedback to individual students and answering questions [@cortina2015low].
+
+
+
+## Research questions
+
+The aim of the pilot study was to investigate whether there are differences in how expert and novice teachers manage scripted classroom disruptions. The disruptions were experimentally varied using a previously written script. Thus, our aim was to find out whether differences in the allocation of attention between expertise groups can be detected in this controlled context.
+
+In order to answer this question, the hypothesis was formulated that teachers with more professional experience not only notice more disruptions but also notice them faster. In the hypothesis, therefore, it is necessary to check what has already been shown in the research literature: In complex teaching situations, experts have a more structured and elaborate professional knowledge than novices in order to perceive and interpret relevant events and to act appropriately [@berliner2001learning; @lachner2016makes].
+
+
+# Methods
+We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+
+## Participants
+
+For the sample recruitment of the subjects (N = 8, experts n = 2, novices n = 6), schools in the city of Leipzig in Saxony were contacted. The institutions as well as the subjects were informed in detail about the aim and intention of the study in advance. Participation in the study was voluntary and only took place after written consent has been given.
+
+```{r demographicspilottable, echo = FALSE}
+
+# prepare data (selected from questionnaire data)
+quest.raw.data<-read.table("./data/short_questionnaire_data_2701211.txt", dec=",", sep="\t", header=T) 
+
+# knock out NAs
+quest.raw.data <- quest.raw.data  %>% filter(
+  personID != "NA")
+
+# create a basic table (tibble) using tidyverse functions
+demo.quest.table <- quest.raw.data %>%
+  filter(what == "head") %>%
+  group_by(group) %>%
+  summarise(N=n(),
+            "Male" = sum(gender),
+            "M age" = round(mean(age), 2),
+            "Min age" = min(age),
+            "Max age" = max(age),
+            "SD age" = round(sd(age), 2),
+            "M exp." = round(mean(experience), 2),
+            "Min exp." = min(experience),
+            "Max exp." = max(experience),
+            "SD exp." = round(sd(experience), 2),
+           )
+
+# format and insert table in manuscript
+apa_table(
+  demo.quest.table,
+  caption = "Demographic Information and Teaching Experience",
+  # note = "Write Note here", 
+  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+  font_size = "small" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+  )
+
+```
+
+The selection of the subjects was based on extreme groups, whereby professional experience is the crucial criterion for the selection of experts or novices. Novices were recruited as teachers who have been working in the teaching profession for no more than 3 years, whereas experts were considered to have professional experience of 10 years or more [@messner2000berufliche].
+
+## Procedure/ Data collection
+
+### Set up
+
+For this study, scripted mini-lessons with n = 2 experts and n = 6 novices were recorded in the mobile Lab of the Empirical School and Classroom Research at the University of Leipzig. The subjects were divided into groups of four, so the study was conducted on two different sessions. All participants were asked to hold a 10-minute lesson. The duration of each appointment was approximately 2h: per group 10min briefing, 4 x 10min mini-lessons, 10min technical preparation and follow-up and 4x 10min transition points between the lessons and answering questionnaires.
+
+One person from the group of 4 acted as a teacher, the other three subjects acted as the class. The subjects, who represented the class, were given behavioral instructions in a pre-written script to simulate typical events and disruptions in the classroom (e.g. putting their heads on the table, chatting, looking at their mobile phones, etc.).
+
+The lesson disruptions were displayed as instructions during the lesson for all "students" but not the teacher. In order to avoid learning effects, the disruptions in each lesson were distributed pseudo-randomly over the short teaching phase. In addition, the order of the data collection was taken into account in the analyses and variance caused by order was controlled.
+
+(ref:datacollection-caption) Example for set up during a mini-lesson
+
+```{r datacollection, fig.cap = "(ref:datacollection-caption)", fig.align = "center", echo = FALSE}
+
+knitr::include_graphics("./pictures/datacollection.png", dpi = 108)
+
+# # How to insert images in papaja
+# - pictures must be png
+# - I created a pictures folder in the main folder, just dumb pictures there
+# - you just need to hand the name and path of the picture to the knitr::: function (see above)
+# - the dpi argument is for adjusting the size on the page in pixels
+
+# in order to write the caption, you have to use the line just above the code chunk (ref:YOURTEXT-caption) and then just write behind it
+# the code chunk then opens and after "r" it needs to provide a name for the code chunk, must be unique in the document
+# the fig.cap = then calls the text from the line just above
+# fig.align allows to position the pic on page, center ist probablby best
+# echo = false ensures that the code chunk does not occur in the pdf
+# Now, go and try putting your own images in the paper 
+#
+# TIP = check line 46 in this manuscript. THis section ets global properties for how graphs are put in the paper. 
+#         if floatsintext      : yes  --> pics, graphs, tables will be put where the code chunk is
+#         if floatsintext      : no   --> pics, graphs, tables will be put at the end as is required by some journals
+# TIP: check the folder "papaja_example&tutorial" that I put in this folder for paper1
+# Tip: make a bookmark of this and skim through it: http://frederikaust.com/papaja_man/
+
+```
+
+### Eyetracking data
+
+A binocular Tobii Pro Glasses 2 eye-tracker consisting of a wearable head unit and a recording unit was used to record the eye movements of all 8 participants. The head unit is a measuring device with different sensitive sensors. A high-definition scene camera captures a full HD video and an integrated microphone records the surrounding sounds. Infrared light illuminators support the eye tracking sensors which record the eye orientation. The videos were recorded with a sampling rate of 50 Hz and a video resolution with 1920 x 1080 at 25 frames per second. The scene camera has a field of view of 90 deg. in 16:9 format (82 deg. horizontal and 52 deg. vertical) and has a frame dimension of 179 x 159 x 57mm (width x depth x height). The Tobii Pro Glasses Controller software was used to record and calibrate the eye movements.
+
+## Coding/ Data preparation/ Reliability 
+
+### Eyetracking Data
+
+The Tobii Pro Lab 2 software was used to analyze the teachers' visual attetion during each mini-lesson. The software allows for non-screen based recordings of a participants’ attention while moving in real-world settings. The recordings of the glasses contain both HD-video from the subjects' perspective as well as the respective gaze data mapped onto the video. In order to map multiple recordings to AOIs, we first imported the eye-tracking recordings into the Tobii Pro Analyzer software. Second, we created dynamic Areas of Interest (AOI) manually to plot the gaze data. Once the AOIs are created, the gaze recordings of multiple recordings can be mapped and analyzed in aggregated form. Tobii Pro does not allow to do AOI based analyses within Pro Lab. So we exported a tsv. file to do further analyses in the software R.
+
+#### DYNAMIC Areas of Interest (AOI)
+
+``` {r dAOIs, echo=FALSE} 
+if (!require(tidyverse)) install.packages('tidyverse'); library(tidyverse)
+if (!require(papaja)) install.packages('papaja'); library(papaja)
+if (!require(psych)) install.packages('psych'); library(psych) # stats
+if (!require(moments)) install.packages('moments'); library(moments) # skewness & kurtosis
+if (!require(sjPlot)) install.packages('sjPlot'); library(sjPlot) # item analysis of a scale or index
+
+# suppress "summarize" info. 
+# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
+options(dplyr.summarise.inform = FALSE)
+
+# prepare data (selected from AOI data)
+et.raw.data<-read.table("./data/Aperol_pilot_glasses_AOI.txt", dec=",", sep="\t", header=T) 
+
+# convert into numeric
+et.raw.data <- et.raw.data %>%  mutate(Total.duration.of.fixation.in.AOI..sec. = as.numeric(Total.duration.of.fixation.in.AOI..sec.),
+                                       Average.duration.of.fixation.in.AOI..sec. = as.numeric(Average.duration.of.fixation.in.AOI..sec.),
+                                       Number.of.fixations.in.AOI = as.numeric (Number.of.fixations.in.AOI),
+                                       Total.Time.of.Interest.Duration..sec. = as.numeric(Total.Time.of.Interest.Duration..sec.))
+
+
+# create a basic table (tibble) using tidyverse functions for all disruptions 
+# Change Number of Digits in Global R Options to reduce the number of digits after the decimal point to two
+options(digits = 2)              
+
+et.table <- et.raw.data %>%
+  group_by(Type.of.disruption, Group) %>%
+  filter(Type.of.disruption != "staring out the window") %>%
+  rename ('Type of Disruption' = Type.of.disruption) %>%
+  summarise("Mean Duration of Fixations" = mean(Total.duration.of.fixation.in.AOI..sec.),
+            "Number of Fixations" = mean(Number.of.fixations.in.AOI),
+            "TOI" = mean(Total.Time.of.Interest.Duration..sec.))
+  
+
+# create a new column with name Total that gives the sum duration in sec of looking at all AOIs
+et.raw.data <- et.raw.data %>% mutate(Total = sum(Total.duration.of.fixation.in.AOI..sec.))
+
+
+# create new columns that give proportion of the duration of looking at AOIs
+# relative duration divided by total duration is the proportion
+proportion.et.data <- et.raw.data %>% group_by(Group, Type.of.disruption) %>% 
+                                      mutate(Proportion = Total.duration.of.fixation.in.AOI..sec./Total)
+
+
+### Plot data TOTAL
+total.plot <- ggplot(et.raw.data, aes(x = Type.of.disruption, y = Total.duration.of.fixation.in.AOI..sec., fill = Type.of.disruption)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+  scale_x_discrete(guide = guide_axis(angle = 70)) +
+  geom_boxplot()+
+  geom_jitter(color="black", size=0.4, alpha=0.5) +
+  facet_wrap(~ Group, nrow = 1)+
+  theme_light() +
+  theme(legend.position="none")+
+  labs(y = "Total Duration of Looking at AOIs in sec", x = "AOI")
+
+total.plot
+
+
+
+### Plot data PROPORTIONS
+prop.plot <- ggplot(proportion.et.data, aes(x = Type.of.disruption, y = Proportion, fill = Type.of.disruption)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+  scale_x_discrete(guide = guide_axis(angle = 70)) +
+  geom_boxplot()+
+  facet_wrap(~ Group, nrow = 1)+
+  theme_light() +
+  theme(legend.position="none")+
+  labs(y = "Proportion of Looking at AOIs", x = "AOI")
+
+prop.plot
+
+
+### Plot Number of Fixations
+number.plot <- ggplot(et.raw.data, aes(x = Type.of.disruption, y = Number.of.fixations.in.AOI, fill = Type.of.disruption)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+  scale_x_discrete(guide = guide_axis(angle = 70)) +
+  geom_boxplot()+
+  geom_jitter(color="black", size=0.4, alpha=0.5) +
+  facet_wrap(~ Group, nrow = 1)+
+  theme_light() +
+  theme(legend.position="none")+
+  labs(y = "Number of Fixations in AOI", x = "AOI")
+
+number.plot
+
+# ### Plot Average duration of fixation
+# average.plot <- ggplot(et.table, aes(x = "Type of Disruption", y = "Mean Duration of Fixations", fill = "Type of Disruption")) +
+#   scale_x_discrete(guide = guide_axis(angle = 70)) +
+#   geom_bar(aes(y="Mean Duration of Fixations")) + 
+#   facet_wrap(~ Group)+
+#   theme_light() +
+#   theme(legend.position="none")+
+#   labs(y = "Average Duration of Looking at AOIs in sec", x = "AOI")
+# 
+# average.plot
+
+```
+
+#########################################
+
+#### MANUAL Areas of Interest (AOI)
+
+``` {r mAOIs, echo=FALSE} 
+if (!require(tidyverse)) install.packages('tidyverse'); library(tidyverse)
+if (!require(papaja)) install.packages('papaja'); library(papaja)
+if (!require(psych)) install.packages('psych'); library(psych) # stats
+if (!require(moments)) install.packages('moments'); library(moments) # skewness & kurtosis
+if (!require(sjPlot)) install.packages('sjPlot'); library(sjPlot) # item analysis of a scale or index
+
+# suppress "summarize" info. 
+# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
+options(dplyr.summarise.inform = FALSE)
+
+# prepare data (selected from AOI data)
+et.raw.data<-read.table("./data/Aperol_pilot_AOI_glasses_metrics_session01.txt", dec=",", sep="\t", header=T) 
+
+# convert into numeric
+et.raw.data <- et.raw.data %>%  mutate(Total_duration_of_fixations = as.numeric(Total_duration_of_fixations),
+                                       Average_duration_of_fixations = as.numeric(Average_duration_of_fixations),
+                                       Number_of_fixations = as.numeric (Number_of_fixations),
+                                       Total_duration_of_Visit = as.numeric(Total_duration_of_Visit))
+
+
+# create a basic table (tibble) using tidyverse functions for all disruptions 
+# Change Number of Digits in Global R Options to reduce the number of digits after the decimal point to two
+options(digits = 2)              
+
+et.table <- et.raw.data %>%
+  group_by(Group, AOI) %>%
+  summarise("Mean Duration of Fixations" = mean(Total_duration_of_fixations),
+            "Number of Fixations" = mean(Number_of_fixations),
+            "Mean Duration of Visits" = mean(Total_duration_of_Visit))
+
+view(et.table)  
+
+#FIXATIONS
+# create a new column with name Total that gives the sum duration in msec of looking at all AOIs
+et.fix.data <- et.raw.data %>% mutate(total_fixations = sum(Total_duration_of_fixations))
+
+
+# create new columns that give proportion of the duration of looking at AOIs
+# relative duration divided by total duration is the proportion
+proportion.et.data <- et.fix.data %>% group_by(Group, AOI) %>% 
+                                      mutate(proportion_fixations = Total_duration_of_fixations/total_fixations)
+
+
+#VISITS
+# create a new column with name Total that gives the sum duration in msec of visits in AOIs
+et.visit.data <- et.raw.data %>% mutate(total_visits = sum(Total_duration_of_Visit))
+
+
+# create new columns that give proportion of the duration of looking at AOIs
+# relative duration divided by total duration is the proportion
+proportion.et.data <- et.visit.data %>% group_by(Group, AOI) %>% 
+                                      mutate(proportion_visits = Total_duration_of_Visit/total_visits)
+
+
+
+### Plot data TOTAL FIXATIONS
+total.fix.plot <- ggplot(et.fix.data, aes(x = AOI, y = Total_duration_of_fixations, fill = AOI)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+  scale_x_discrete(guide = guide_axis(angle = 70)) +
+  geom_boxplot()+
+  geom_jitter(color="black", size=0.4, alpha=0.5) +
+  facet_wrap(~ Group, nrow = 1)+
+  theme_light() +
+  theme(legend.position="none")+
+  labs(y = "Total Duration of Looking at AOIs", x = "AOI")
+
+total.fix.plot
+
+
+# ### Plot data PROPORTIONS FIXATIONS
+# prop.fix.plot <- ggplot(proportion.et.data, aes(x = AOI, y = proportion_fixations, fill = AOI)) +
+#   scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+#   scale_x_discrete(guide = guide_axis(angle = 70)) +
+#   geom_boxplot()+
+#   facet_wrap(~ Group, nrow = 1)+
+#   theme_light() +
+#   theme(legend.position="none")+
+#   labs(y = "Proportion of Looking at AOIs", x = "AOI")
+# 
+# prop.fix.plot
+
+
+### Plot Number of Fixations
+number.fix.plot <- ggplot(et.fix.data, aes(x = AOI, y = Number_of_fixations, fill = AOI)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+  scale_x_discrete(guide = guide_axis(angle = 70)) +
+  geom_boxplot()+
+  geom_jitter(color="black", size=0.4, alpha=0.5) +
+  facet_wrap(~ Group, nrow = 1)+
+  theme_light() +
+  theme(legend.position="none")+
+  labs(y = "Number of Fixations in AOI", x = "AOI")
+
+number.fix.plot
+
+
+
+### Plot data TOTAL VISITS
+total.visit.plot <- ggplot(et.visit.data, aes(x = AOI, y = Total_duration_of_Visit, fill = AOI)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+  scale_x_discrete(guide = guide_axis(angle = 70)) +
+  geom_boxplot()+
+  geom_jitter(color="black", size=0.4, alpha=0.5) +
+  facet_wrap(~ Group, nrow = 1)+
+  theme_light() +
+  theme(legend.position="none")+
+  labs(y = "Total Duration of Visits in AOIs", x = "AOI")
+
+total.visit.plot
+
+
+### Plot Number of Saccades
+saccade.plot <- ggplot(et.fix.data, aes(x = AOI, y = Number_of_saccades_in_AOI, fill = AOI)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+  scale_x_discrete(guide = guide_axis(angle = 70)) +
+  geom_boxplot()+
+  geom_jitter(color="black", size=0.4, alpha=0.5) +
+  facet_wrap(~ Group, nrow = 1)+
+  theme_light() +
+  theme(legend.position="none")+
+  labs(y = "Number of Saccades in AOI", x = "AOI")
+
+saccade.plot
+
+
+
+# ### Plot data PROPORTIONS VISITS
+# prop.visit.plot <- ggplot(proportion.et.data, aes(x = AOI, y = proportion_visits, fill = AOI)) +
+#   scale_y_continuous(breaks = scales::pretty_breaks(n = 10))+
+#   scale_x_discrete(guide = guide_axis(angle = 70)) +
+#   geom_boxplot()+
+#   facet_wrap(~ Group, nrow = 1)+
+#   theme_light() +
+#   theme(legend.position="none")+
+#   labs(y = "Proportion of Visits in AOIs", x = "AOI")
+# 
+# prop.visit.plot
+
+```
+
+
+
+## Data analysis
+We used `r cite_r("r-references.bib")` for all our analyses.
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+### Eyetracking Data
+
+# Results
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+### Eyetracking Data
+
+
+# Discussion
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+\newpage
+
+# References
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+<div id="refs" custom-style="Bibliography"></div>
+\endgroup

@@ -415,7 +415,7 @@ graph_data <-
 example <- list(mod = mods$preparation, data = graph_data$preparation)
 
 
-list(`Preparation Phase` = list(name = "Preparation Phase", mod = mods$preparation, data = graph_data$preparation),
+list(`Preparation Phase` = list(name = "Pre-Teaching ", mod = mods$preparation, data = graph_data$preparation),
      `Teaching Phase` = list(name = "Teaching Phase", mod = mods$teaching, data = graph_data$teaching),
      `Post Teaching Phase` = list(name = "Post Teaching Phase",mod = mods$post, data = graph_data$post),
      `Interview Phase` = list(name = "Interview Phase",mod = mods$interview, data = graph_data$interview),
@@ -518,7 +518,7 @@ df_ttest_slope <-
 ```
 
 
-## Teaching vs. Interview
+## Teaching vs. Interview (mean slope)
 
 ```{r}
 df_ttest_slope %$% 
@@ -532,7 +532,7 @@ df_ttest_slope %$%
          pooled = T)
 ```
 
-## Teaching vs. End
+## Teaching vs. End (mean slope)
 
 ```{r}
 df_ttest_slope %$% 
@@ -546,7 +546,7 @@ df_ttest_slope %$%
          pooled = T)
 ```
 
-## Interview vs. End
+## Interview vs. End (mean slope)
 
 ```{r}
 df_ttest_slope %$% 
