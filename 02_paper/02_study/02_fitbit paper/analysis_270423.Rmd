@@ -109,7 +109,7 @@ map(.x = dir(path = data_path,
                           pattern = "[:digit:]{3}"),
          ID = as.numeric(ID)
       ) %>%
-      # filter(time <= 600) %>% # filter for 10min intervals
+    # filter(time <= 600) %>% # filter for 10min intervals
     filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
     dplyr::select(!c("Time","Heart Rate","id"))
     ) %>%
@@ -130,9 +130,99 @@ main <-
   right_join(x = .,
              y = main,
              by = "ID") %>% 
+  filter(!(time_span == "teaching" & time > 600)) %>%
   mutate(heart_rate_std = (heart_rate - mean_heart)/
-           sd_heart) %>% 
-  filter(!(time_span == "teaching" & time > 600)) 
+           sd_heart)
+   
+
+```
+
+# Descriptives
+```{r descriptive statistics}
+
+# Mean, SD and range for overall (unstandardized)
+descrip_hr_overall <- main %>%
+  filter(time_span %in% c("overall")) %>% 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
+
+# Mean, SD and range for overall (standardized)
+descrip_hr_overall_std <- main %>%
+  filter(time_span %in% c("overall")) %>% 
+  summarise(N = n_distinct(ID),
+            "M std heart rate in bpm" = round(mean(heart_rate_std),
+                                              digits = 2),
+            "SD std heart rate in bpm" = round(sd(heart_rate_std),
+                                               digits = 2),
+            "Min std heart rate in bpm" = round(min(heart_rate_std),
+                                                digits = 2),
+            "Max heart rate in bpm" = round(max(heart_rate_std),
+                                            digits = 2)
+            )
+
+# Mean, SD and range for individual phases (unstandardized)
+descrip_hr_phases <- main %>% 
+  filter(!time_span %in% c("overall")) %>% 
+  group_by(time_span) %>% 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
+
+# Mean, SD and range for individual phases (standardized)
+descrip_hr_phases_std <- main %>% 
+  filter(!time_span %in% c("overall")) %>% 
+  group_by(time_span) %>% 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate_std),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate_std),
+                                      digits = 2),
+            "Min heart rate in bpm" = round(min(heart_rate_std),
+                                            digits = 2),
+            "Max heart rate in bpm" = round(max(heart_rate_std),
+                                            digits = 2)
+  )
+
+# # format and insert table in manuscript
+# descrip_hr_phases %>%
+# papaja::apa_table(
+#   caption = "Mean, SD and range for teachers' heart rate in individual phases",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+#   )
+
+# Mean, SD and range for disruption and confidence factor
+rating_table <- 
+  df_rating %>% 
+  filter(!is.na(confidence_factor),
+         !is.na(disruption_factor)) %>% 
+   summarise(N = n_distinct(ID), 
+            "M disruption factor" = round(mean(disruption_factor),
+                                     digits = 2),
+            "SD disruption factor" = round(sd(disruption_factor),
+                                      digits = 2),
+            "Min disruption factor" = min(disruption_factor),
+            "Max disruption factor" = max(disruption_factor),
+            "M confidence factor" = round(mean(confidence_factor),
+                                     digits = 2),
+            "SD confidence factor" = round(sd(confidence_factor),
+                                      digits = 2),
+            "Min confidence factor" = min(confidence_factor),
+            "Max confidence factor" = max(confidence_factor)
+            )
 
 ```
 
@@ -160,7 +250,7 @@ loess_plot_overall <-
   scale_y_continuous(breaks = seq(-1, 1, 0.5)) + 
   labs(x = "Time (in Seconds)",
        y = "") +
-  ggtitle("Overall Course of Average Heartrate") +
+  ggtitle("Overall Course of Mean Heart Rate") +
   theme_apa() + 
   theme(axis.title.y = element_blank())
 
@@ -207,7 +297,7 @@ ki_plot_phases <-
   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("(1) Pre-teaching phase","(2) Teaching phase","(3) Post-teaching phase","(4) Interview phase","(5) End phase"))) %>% 
+                            labels = c("(1) Pre-teaching Interval","(2) Teaching Interval","(3) Post-teaching Interval","(4) Interview Interval","(5) End Interval"))) %>% 
   distinct() %>%
   group_by(time_span) %>% 
   summarise(z_mean = mean(heart_rate_std),
@@ -257,7 +347,7 @@ lm_plot <-
   dplyr::select("ID","time_span", "time","heart_rate_std") %>%
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("(1) Pre Teaching\nPhase","(2) Teaching\nPhase","(3) Post Teaching\nPhase","(4) Interview\nPhase","(5) End\nPhase")
+                            labels = c("(1) Pre-Teaching\nInteval","(2) Teaching\nInterval","(3) Post-Teaching\nInterval","(4) Interview\nInterval","(5) End\nInterval")
                             ),
          time = time / 60
          ) %>%
@@ -276,9 +366,9 @@ lm_plot <-
                         end = 0.8) +
   #scale_linetype_manual(values = c(1, 6)) +
   scale_x_continuous(breaks = seq(0, 10, 2)) +
-  #scale_y_continuous(breaks = seq(0, 160, 5)) +
+  scale_y_continuous(breaks = seq(from = -1, to = 1, by = 0.5)) +
   labs(x = "Time (in Minutes)",
-       y = "Average Standardized Heart Rate",
+       y = "Standardized Mean Heart Rate",
        caption = expression(paste(italic("Note: "),
                                   "The shadow around the line represents the 99% confidence interval."
                                   )
@@ -289,6 +379,7 @@ lm_plot <-
         plot.caption = element_text(hjust = 0)) +
   facet_grid(cols = vars(time_span),
              scales = "free_x")
+
 ggsave(filename = "plots_publication/lm_plot.png",
        plot = lm_plot,
        width = 20,
@@ -581,13 +672,14 @@ main %>%
   transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
          confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
          disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
-         gender = if_else(gender == "male",
-                           true = 0,
-                           false = 1),
+         # gender = if_else(gender == "male",
+         #                   true = 0,
+         #                   false = 1),
           teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
-         ) %>%
-  pcor()  -> pcor_pre
- 
+         ) -> cor_pre
+
+cor.test(cor_pre$heart_rate_m, cor_pre$confidence_factor_m)
+
 # knitr::kable(x = list(pcor_main$estimate, pcor_main$p.value), format = "simple") 
 
 ```
@@ -772,6 +864,72 @@ summary(regr_preparation4)
 
 ```
 
+# Multiple Linear Regression (Slope)
+
+```{r}
+df_multi <- 
+  main %>% 
+  select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  summarize(disruption = mean(disruption_factor, na.rm = T),
+            confidence = mean(confidence_factor, na.rm = T),
+            teaching_experience) %>% 
+  ungroup() %>% 
+  mutate(id = as.character(ID)) %>% 
+  distinct() %>% 
+  right_join(x = .,
+            y = fix_models,
+            by = "id") %>% 
+  mutate(slope = abs(slope))
+  # mutate(posneg = if_else(condition = slope < 0,
+  #                         true = "negative",
+  #                         false = "positive"))
+
+for (i in unique(data_regression_mean$time_span)) {
+  
+  cache <- data_regression_mean %>% 
+    filter(time_span == i)
+  
+  regr1 <-
+    lm(heart_rate ~ teaching_experience,
+    data = cache) 
+  
+  assign(value = regr1,
+         x = paste0("regr_", i, "1"))
+  
+  regr2 <-
+    lm(heart_rate ~ teaching_experience + disruption_factor,
+    data = cache) 
+  
+  assign(value = regr2,
+         x = paste0("regr_", i, "2"))
+  
+  regr3 <-
+    lm(heart_rate ~ teaching_experience + confidence_factor,
+    data = cache) 
+  
+  assign(value = regr3,
+         x = paste0("regr_", i, "3"))
+  
+  regr4 <-
+    lm(heart_rate ~ teaching_experience + disruption_factor + confidence_factor,
+    data = cache)
+  
+  assign(value = regr4,
+         x = paste0("regr_", i, "4"))
+
+}
+
+# Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
+
+summary(regr_preparation1)
+summary(regr_preparation2)
+summary(regr_preparation3)
+summary(regr_preparation4)
+
+```
+
 # Plot
 
 ```{r}
@@ -820,9 +978,8 @@ bind_rows(df_heart_rate,
        y = "",
        # title = "Figure #",
        # subtitle = "Overall Course of Average Heartrate",
-       # caption = expression(paste(italic("Note: "),
-       #                            "The shadow around the line represents the 99% confidence interval. 
-       #                            We used the ggplot2 package (v3.3.3; Wickham, 2016) to calculate the moving average of the course."))
+#        caption = expression(paste(italic("Note: "),
+# "The shadow around the line represents the 99% confidence interval. The confidence interval shown refers to the HR measurement points during the entire study period. We used the ggplot2 package (v3.3.3; Wickham, 2016) to calculate the moving average of the course."))
        ) +
   #ggtitle("Overall Course of Average Heartrate") +
   theme_apa() + 
@@ -845,12 +1002,13 @@ ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
 
 
 ```{r}
-  main %>% 
+
+main %>% 
   filter(time_span != "overall") %>%
   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("(1) Pre-teaching\nphase","(2) Teaching\nphase","(3) Post-teaching\nphase","(4) Interview\nphase","(5) End\nphase"))) %>% 
+                            labels = c("(1) Pre-teaching\nInterval","(2) Teaching\nInterval","(3) Post-teaching\nInterval","(4) Interview\nInterval","(5) End\nInterval"))) %>% 
   distinct() %>%
   group_by(time_span) %>% 
   summarise(z_mean = mean(heart_rate_std),
@@ -872,14 +1030,18 @@ ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
                 width = 0.2) +
   geom_hline(yintercept = 0,
              linetype = "dashed") +
-  labs(x = "",
-       y = "Standardized mean HR",
-       caption = expression(paste(italic("Note: "), 
-                                  "The dotted line represents the null effect; bars represent the 1% confidence interval. "
-                                  )
-                            )
+  ylim(-1, 1) + 
+  scale_y_continuous(breaks=seq(-1, 1, 0.5), 
+                     limits=c(-1, 1)) + 
+  labs(x = "Time (in Minutes)",
+       y = "Standardized Mean Heart Rate",
+       # caption = expression(paste(italic("Note: "),
+       #                            "The shadow around the line represents the 99% confidence interval."
+       #                            )
+       #                      )
        ) +
-  facet_grid(cols = vars(time_span)) +
+  facet_grid(cols = vars(time_span),
+             scales = "free_x") +
   theme_apa() +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
@@ -911,10 +1073,10 @@ df_multi <-
   distinct() %>% 
   right_join(x = .,
             y = fix_models,
-            by = "id") %>% 
-  mutate(posneg = if_else(condition = slope < 0,
-                          true = "negative",
-                          false = "positive"))
+            by = "id") %>%
+  # mutate(posneg = if_else(condition = slope < 0,
+  #                         true = "negative",
+  #                         false = "positive"))
 
 fit_pre_1 <-
   df_multi %>% 
@@ -1002,13 +1164,13 @@ df_multi <-
   right_join(x = .,
             y = fix_models,
             by = "id") %>% 
-  mutate(posneg = if_else(condition = slope < 0,
-                          true = "negative",
-                          false = "positive"))
+  # mutate(posneg = if_else(condition = slope < 0,
+  #                         true = "negative",
+  #                         false = "positive"))
 fit_teach_1 <-
   df_multi %>% 
   filter(Phase == "Teaching Phase") %>% 
-  split(.$posneg) %>% 
+  # split(.$posneg) %>% 
   map(~ lm(slope ~ disruption,
            data = .))
   
