@@ -41,7 +41,8 @@ needs(ltm,
       corrplot,
       tidyverse,
       ggplot2,
-      apaTables)
+      apaTables,
+      rockchalk)
 
 
 # disruption & confidence rating
@@ -654,9 +655,8 @@ df_ttest_slope %$%
 ### Correlation 
 
 ## Pr-teaching phase
-
 ```{r}
-main %>% 
+  main %>% 
   filter(time_span == "preparation") %>% 
   group_by(ID) %>% 
   transmute(heart_rate_m = mean(heart_rate_std),
@@ -685,7 +685,6 @@ cor.test(cor_pre$heart_rate_m, cor_pre$confidence_factor_m)
 ```
 
 ## Teaching phase
-
 ```{r}
 main %>% 
   filter(time_span == "teaching") %>% 
@@ -716,7 +715,6 @@ main %>%
 
 
 ## Post-teaching phase
-
 ```{r}
 main %>% 
   filter(time_span == "post") %>% 
@@ -746,7 +744,6 @@ main %>%
 ```
 
 ## Interview phase
-
 ```{r}
 main %>% 
   filter(time_span == "interview") %>% 
@@ -776,7 +773,6 @@ main %>%
 ```
 
 ## End phase
-
 ```{r}
 main %>% 
   filter(time_span == "end") %>% 
@@ -807,7 +803,6 @@ main %>%
 
 
 # Multiple Linear Regression (Mean)
-
 ```{r}
 main %>% 
   group_by(ID, time_span) %>% 
@@ -857,63 +852,61 @@ for (i in unique(data_regression_mean$time_span)) {
 
 # Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
 
-summary(regr_preparation1)
-summary(regr_preparation2)
-summary(regr_preparation3)
-summary(regr_preparation4)
+summary(regr_teaching1)
+summary(regr_teaching2)
+summary(regr_teaching3)
+summary(regr_teaching4)
 
 ```
 
 # Multiple Linear Regression (Slope)
-
 ```{r}
-df_multi <- 
+
   main %>% 
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption = mean(disruption_factor, na.rm = T),
-            confidence = mean(confidence_factor, na.rm = T),
+  # summarize(disruption_factor = mean(disruption_factor, na.rm = T),
+  #           confidence_factor = mean(confidence_factor, na.rm = T),
+  #           teaching_experience) %>% 
+  transmute(id = as.character(ID),
+            disruption_factor = mean(disruption_factor, na.rm = T),
+            confidence_factor = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
-  mutate(id = as.character(ID)) %>% 
   distinct() %>% 
   right_join(x = .,
             y = fix_models,
-            by = "id") %>% 
-  mutate(slope = abs(slope))
-  # mutate(posneg = if_else(condition = slope < 0,
-  #                         true = "negative",
-  #                         false = "positive"))
+            by = "id") -> data_regression_slope
 
-for (i in unique(data_regression_mean$time_span)) {
+for (i in unique(data_regression_slope$Phase)) {
   
-  cache <- data_regression_mean %>% 
-    filter(time_span == i)
+  cache <- data_regression_slope %>% 
+    filter(Phase == i)
   
   regr1 <-
-    lm(heart_rate ~ teaching_experience,
+    lm(slope ~ teaching_experience,
     data = cache) 
   
   assign(value = regr1,
          x = paste0("regr_", i, "1"))
   
   regr2 <-
-    lm(heart_rate ~ teaching_experience + disruption_factor,
+    lm(slope ~ teaching_experience + disruption_factor,
     data = cache) 
   
   assign(value = regr2,
          x = paste0("regr_", i, "2"))
   
   regr3 <-
-    lm(heart_rate ~ teaching_experience + confidence_factor,
+    lm(slope ~ teaching_experience + confidence_factor,
     data = cache) 
   
   assign(value = regr3,
          x = paste0("regr_", i, "3"))
   
   regr4 <-
-    lm(heart_rate ~ teaching_experience + disruption_factor + confidence_factor,
+    lm(slope ~ teaching_experience + disruption_factor + confidence_factor,
     data = cache)
   
   assign(value = regr4,
@@ -930,8 +923,7 @@ summary(regr_preparation4)
 
 ```
 
-# Plot
-
+# Overall Plot (unstd./std.)
 ```{r}
 df_heart_rate <- 
   main %>% 
@@ -1000,7 +992,7 @@ ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
        units = "cm")
 ```
 
-
+# Mean Plot
 ```{r}
 
 main %>% 
@@ -1058,22 +1050,21 @@ ggsave(filename = "plots_publication/mean_plot.png",
 # Multiple Linear Regression (Slope)
 
 # Pre Teaching Phase
-
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption = mean(disruption_factor, na.rm = T),
-            confidence = mean(confidence_factor, na.rm = T),
+  summarize(disruption_factor = mean(disruption_factor, na.rm = T),
+            confidence_factor = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
   mutate(id = as.character(ID)) %>% 
   distinct() %>% 
   right_join(x = .,
             y = fix_models,
-            by = "id") %>%
+            by = "id")
   # mutate(posneg = if_else(condition = slope < 0,
   #                         true = "negative",
   #                         false = "positive"))
@@ -1081,40 +1072,35 @@ df_multi <-
 fit_pre_1 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ disruption * posneg)
+  lm(slope ~ teaching_experience)
 
 summary(fit_pre_1)
 
 fit_pre_2 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ confidence:posneg)
+  lm(slope ~ teaching_experience + disruption_factor)
 
 summary(fit_pre_2)
 
+summary(fit_pre_1)$r.squared - summary(fit_pre_2)$r.squared 
 
 fit_pre_3 <-
   df_multi %>% 
   mutate(teaching_experience = log(teaching_experience + 1)) %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ teaching_experience:posneg)
+  lm(slope ~ teaching_experience + confidence_factor)
 
 summary(fit_pre_3)
 
+summary(fit_pre_1)$r.squared - summary(fit_pre_2)$r.squared - summary(fit_pre_3)$r.squared 
 
 fit_pre_4 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ confidence:posneg + disruption:posneg)
+  lm(slope ~ teaching_experience + confidence + disruption)
 
 summary(fit_pre_4)
-
-fit_pre_5 <-
-  df_multi %>% 
-  filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ posneg:confidence + posneg:disruption + posneg:teaching_experience)
-
-summary(fit_pre_5)
 
 
 stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4, fit_pre_5,
@@ -1176,7 +1162,7 @@ fit_teach_1 <-
   
 df_multi %>% 
   filter(Phase == "Teaching Phase") %$% 
-  lm(slope ~ disruption:posneg)
+  lm(slope ~ disruption)
 
 fit_teach_2 <-
   df_multi %>% 
