@@ -41,8 +41,7 @@ needs(ltm,
       corrplot,
       tidyverse,
       ggplot2,
-      apaTables,
-      rockchalk)
+      apaTables)
 
 
 # disruption & confidence rating
@@ -775,7 +774,6 @@ cor.test(cor_post$disruption_factor_m, cor_post$confidence_factor_m)
 ```
 
 ## Interview phase
-
 ```{r}
 main %>% 
   filter(time_span == "interview") %>% 
@@ -908,10 +906,13 @@ for (i in unique(data_regression_mean$time_span)) {
 
 # Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
 
-summary(regr_preparation1)
-summary(regr_preparation2)
-summary(regr_preparation3)
-summary(regr_preparation4)
+summary(regr_end1)
+summary(regr_end2)
+summary(regr_end3)
+summary(regr_end4)
+
+# delta R²
+summary(regr_end1)$r.squared - summary(regr_end2)$r.squared - summary(regr_end3)$r.squared - summary(regr_end4)$r.squared 
 
 ```
 
@@ -919,18 +920,42 @@ summary(regr_preparation4)
 ```{r}
 df_multi <- 
   main %>% 
-  select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
+  select("ID",
+         "disruption_factor",
+         "confidence_factor",
+         "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption = mean(disruption_factor, na.rm = T),
-            confidence = mean(confidence_factor, na.rm = T),
+  summarize(disruption_factor = mean(disruption_factor, na.rm = T),
+            confidence_factor = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
-  mutate(id = as.character(ID)) %>% 
+  mutate(id = as.character(ID),
+         ) %>% 
   distinct() %>% 
   right_join(x = .,
             y = fix_models,
-            by = "id") 
+            by = "id") %>%
+  mutate(time_span = factor(Phase,
+                             levels = c("Pre Teaching Phase",
+                                        "Teaching Phase",
+                                        "Post Teaching Phase",
+                                        "Interview Phase",
+                                        "End Phase"),
+                             labels = c("preparation",
+                                        "teaching",
+                                        "post",
+                                        "interview",
+                                        "end")
+                            )
+         ) %>%
+  select("id",
+         "disruption_factor",
+         "confidence_factor",
+         "teaching_experience",
+         "slope",
+         "time_span") 
+
   # %>% 
   # mutate(slope = abs(slope))
   # mutate(posneg = if_else(condition = slope < 0,
@@ -939,11 +964,11 @@ df_multi <-
 
 for (i in unique(df_multi$time_span)) {
   
-  cache <- df-multi %>% 
+  cache <- df_multi %>% 
     filter(time_span == i)
   
   regr1 <-
-    lm(heart_rate ~ teaching_experience,
+    lm(slope ~ teaching_experience,
     data = cache) 
   
   assign(value = regr1,
@@ -974,10 +999,13 @@ for (i in unique(df_multi$time_span)) {
 
 # Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
 
-summary(regr_preparation1)
-summary(regr_preparation2)
-summary(regr_preparation3)
-summary(regr_preparation4)
+summary(regr_post1)
+summary(regr_post2)
+summary(regr_post3)
+summary(regr_post4)
+
+summary(regr_end1)$r.squared - summary(regr_end2)$r.squared - summary(regr_end3)$r.squared - summary(regr_end4)$r.squared 
+
 
 ```
 
@@ -1108,22 +1136,21 @@ ggsave(filename = "plots_publication/mean_plot.png",
 # Multiple Linear Regression (Slope)
 
 # Pre Teaching Phase
-
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption = mean(disruption_factor, na.rm = T),
-            confidence = mean(confidence_factor, na.rm = T),
+  summarize(disruption_factor = mean(disruption_factor, na.rm = T),
+            confidence_factor = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
   mutate(id = as.character(ID)) %>% 
   distinct() %>% 
   right_join(x = .,
             y = fix_models,
-            by = "id") 
+            by = "id")
   # mutate(posneg = if_else(condition = slope < 0,
   #                         true = "negative",
   #                         false = "positive"))
@@ -1131,75 +1158,64 @@ df_multi <-
 fit_pre_1 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ teaching_experience + disruption)
+  lm(slope ~ teaching_experience)
 
 summary(fit_pre_1)
 
-getDeltaRsquare(fit_pre_1)
+fit_pre_2 <-
+  df_multi %>% 
+  filter(Phase == "Pre Teaching Phase") %$% 
+  lm(slope ~ teaching_experience + disruption_factor)
 
-dat1 <- genCorrelatedData(N=250, means=c(100,100),
-sds=c(30,20), rho=0.0,  stde = 7, beta=c(1.1, 2.4, 4.1, 0))
-m1 <- lm(y ~ x1 + x2, data=dat1)
-getDeltaRsquare(m1)
+summary(fit_pre_2)
 
-# fit_pre_2 <-
-#   df_multi %>% 
-#   filter(Phase == "Pre Teaching Phase") %$% 
-#   lm(slope ~ confidence)
-# 
-# summary(fit_pre_2)
-# 
-# 
-# fit_pre_3 <-
-#   df_multi %>% 
-#   mutate(teaching_experience = log(teaching_experience + 1)) %>% 
-#   filter(Phase == "Pre Teaching Phase") %$% 
-#   lm(slope ~ teaching_experience)
-# 
-# summary(fit_pre_3)
-# 
-# 
-# fit_pre_4 <-
-#   df_multi %>% 
-#   filter(Phase == "Pre Teaching Phase") %$% 
-#   lm(slope ~ confidence + disruption)
-# 
-# summary(fit_pre_4)
-# 
-# fit_pre_5 <-
-#   df_multi %>% 
-#   filter(Phase == "Pre Teaching Phase") %$% 
-#   lm(slope ~ confidence + disruption + teaching_experience)
-# 
-# summary(fit_pre_5)
-# 
-# 
-# stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4, fit_pre_5,
-#                      type = "html",
-#                      caption = "Pre Teaching Phase",
-#                      dep.var.labels = "Slope",
-#                      # order = c(1, 2, 3),
-#                      # covariate.labels = c("Disruption Factor",
-#                      #                      "Confidence Factor",
-#                      #                      "Teaching Experience"),
-#                      keep.stat = c("n","rsq","adj.rsq")
-#                      )
+summary(fit_pre_1)$r.squared - summary(fit_pre_2)$r.squared 
 
-# fit_pre_3$model %>%
-#   mutate(fitted.values = fit_pre_3$fitted.values) %>% 
-#   ggplot(mapping = aes(x = teaching_experience,
-#                        y = slope
-#                        )
-#          ) +
-#   geom_point(mapping = aes(group = posneg)) +
-#           geom_line(mapping = aes(y = fitted.values,
-#                                   group = posneg)) +
-#   geom_smooth(method = "lm",
-#               se = F,
-#               linetype = "dashed") +
-#         # geom_point(alpha = 0.5,
-#         #            size = 0.5) +
-#         theme_apa()
+fit_pre_3 <-
+  df_multi %>% 
+  mutate(teaching_experience = log(teaching_experience + 1)) %>% 
+  filter(Phase == "Pre Teaching Phase") %$% 
+  lm(slope ~ teaching_experience + confidence_factor)
+
+summary(fit_pre_3)
+
+summary(fit_pre_1)$r.squared - summary(fit_pre_2)$r.squared - summary(fit_pre_3)$r.squared 
+
+fit_pre_4 <-
+  df_multi %>% 
+  filter(Phase == "Pre Teaching Phase") %$% 
+  lm(slope ~ teaching_experience + confidence + disruption)
+
+summary(fit_pre_4)
+
+
+stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4, fit_pre_5,
+                     type = "html",
+                     caption = "Pre Teaching Phase",
+                     dep.var.labels = "Slope",
+                     # order = c(1, 2, 3),
+                     # covariate.labels = c("Disruption Factor",
+                     #                      "Confidence Factor",
+                     #                      "Teaching Experience"),
+                     keep.stat = c("n","rsq","adj.rsq")
+                     )
+
+fit_pre_3$model %>%
+  mutate(fitted.values = fit_pre_3$fitted.values) %>% 
+  ggplot(mapping = aes(x = teaching_experience,
+                       y = slope
+                       )
+         ) +
+  geom_point(mapping = aes(group = posneg)) +
+          geom_line(mapping = aes(y = fitted.values,
+                                  group = posneg)) +
+  geom_smooth(method = "lm",
+              se = F,
+              linetype = "dashed") +
+        # geom_point(alpha = 0.5,
+        #            size = 0.5) +
+        theme_apa()
+      
 
 ```
 
