@@ -40,8 +40,7 @@ needs(ltm,
       Hmisc,
       corrplot,
       tidyverse,
-      ggplot2,
-      apaTables)
+      ggplot2)
 
 
 # disruption & confidence rating
@@ -124,7 +123,7 @@ main <-
   dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  dplyr::summarize(mean_heart = mean(heart_rate),
+  dplyr::summarise(mean_heart = mean(heart_rate),
             sd_heart = sd(heart_rate)) %>%
   ungroup() %>% 
   right_join(x = .,
@@ -450,7 +449,7 @@ p.values_intercept <-
 sd_mean <-
   fix_models %>%
   group_by(Phase) %>%
-  dplyr::summarize(
+  dplyr::summarise(
     mean_slope = mean(slope),
     sd_slope = sd(slope),
     mean_intercept = mean(intercept),
@@ -534,7 +533,7 @@ list(`Preparation Phase` = list(name = "Pre-Teaching ", mod = mods$preparation, 
 df_ttest <- 
   df_regression %>% 
   group_by(ID, time_span) %>% 
-  summarize(mean_heart_rate = mean(heart_rate_std)) %>% 
+  summarise(mean_heart_rate = mean(heart_rate_std)) %>% 
   ungroup()
 ```
 
@@ -602,7 +601,7 @@ df_ttest %$%
 df_ttest_slope <- 
   fix_models %>% 
   group_by(id, Phase) %>% 
-  summarize(mean_slope = mean(slope)) %>% 
+  summarise(mean_slope = mean(slope)) %>% 
   ungroup()
 ```
 
@@ -860,7 +859,7 @@ cor.test(cor_end$disruption_factor_m, cor_end$confidence_factor_m)
 ```{r}
 main %>% 
   group_by(ID, time_span) %>% 
-  summarize(disruption_factor = mean(disruption_factor,
+  summarise(disruption_factor = mean(disruption_factor,
                                      na.rm = T),
             confidence_factor = mean(confidence_factor,
                                      na.rm = T),
@@ -920,13 +919,13 @@ summary(regr_end1)$r.squared - summary(regr_end2)$r.squared - summary(regr_end3)
 ```{r}
 df_multi <- 
   main %>% 
-  select("ID",
+  dplyr::select("ID",
          "disruption_factor",
          "confidence_factor",
          "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption_factor = mean(disruption_factor, na.rm = T),
+  summarise(disruption_factor = mean(disruption_factor, na.rm = T),
             confidence_factor = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
@@ -949,7 +948,7 @@ df_multi <-
                                         "end")
                             )
          ) %>%
-  select("id",
+  dplyr::select("id",
          "disruption_factor",
          "confidence_factor",
          "teaching_experience",
@@ -999,12 +998,15 @@ for (i in unique(df_multi$time_span)) {
 
 # Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
 
-summary(regr_post1)
-summary(regr_post2)
-summary(regr_post3)
-summary(regr_post4)
+summary(regr_interview1)
+summary(regr_interview2)
+summary(regr_interview3)
+summary(regr_interview4)
 
-summary(regr_end1)$r.squared - summary(regr_end2)$r.squared - summary(regr_end3)$r.squared - summary(regr_end4)$r.squared 
+summary(regr_teaching2)$r.squared - summary(regr_teaching1)$r.squared
+
+
+- summary(regr_end3)$r.squared - summary(regr_end4)$r.squared 
 
 
 ```
@@ -1054,7 +1056,7 @@ bind_rows(df_heart_rate,
   # scale_x_continuous(expand = c(0, NA),
   #                    breaks = seq(0, 120, 10)) +
   scale_x_continuous(expand = c(0.01,0)) + 
-  labs(x = "Time (in minutes)",
+  labs(x = "Time (in Minutes)",
        #y = "Heart Rate (in Beats per Minute)",
        y = "",
        # title = "Figure #",
@@ -1144,7 +1146,7 @@ df_multi <-
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption_factor = mean(disruption_factor, na.rm = T),
+  summarise(disruption_factor = mean(disruption_factor, na.rm = T),
             confidence_factor = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
@@ -1229,7 +1231,7 @@ df_multi <-
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption = mean(disruption_factor, na.rm = T),
+  summarise(disruption = mean(disruption_factor, na.rm = T),
             confidence = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
@@ -1293,7 +1295,7 @@ df_multi <-
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption = mean(disruption_factor, na.rm = T),
+  summarise(disruption = mean(disruption_factor, na.rm = T),
             confidence = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
@@ -1358,7 +1360,7 @@ df_multi <-
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption = mean(disruption_factor, na.rm = T),
+  summarise(disruption = mean(disruption_factor, na.rm = T),
             confidence = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
@@ -1423,7 +1425,7 @@ df_multi <-
   select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(disruption = mean(disruption_factor, na.rm = T),
+  summarise(disruption = mean(disruption_factor, na.rm = T),
             confidence = mean(confidence_factor, na.rm = T),
             teaching_experience) %>% 
   ungroup() %>% 
