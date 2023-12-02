@@ -295,7 +295,7 @@ ki_plot_phases <-
   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("(1) Pre-teaching Interval","(2) Teaching Interval","(3) Post-teaching Interval","(4) Interview Interval","(5) End Interval"))) %>% 
+                            labels = c("(1) Pre-teaching\nInterval","(2) Teaching\nInterval","(3) Post-teaching\nInterval","(4) Interview\nInterval","(5) End\nInterval"))) %>% 
   distinct() %>%
   group_by(time_span) %>% 
   summarise(z_mean = mean(heart_rate_std),
@@ -317,13 +317,18 @@ ki_plot_phases <-
                 width = 0.2) +
   geom_hline(yintercept = 0,
              linetype = "dashed") +
-  labs(subtitle = "1% Confidence Intervall",
+  labs(subtitle = "99% Confidence Intervall",
        x = "") +
   facet_grid(cols = vars(time_span)) +
   theme_apa() +
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.title.y = element_blank())
+
+ggsave(filename = "plots_publication/mean_plot_new.png",
+       width = 22,
+       height = 12,
+       units = "cm")
 
 
 text_y <- text_grob("Average Heart Rate (Standardized)",
@@ -1082,7 +1087,87 @@ ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
        height = 12,
        units = "cm")
 ```
+# Plot alternative
 
+```{r}
+
+df_heart_rate <- 
+  main %>% 
+  mutate(time = time / 60) %>% 
+  filter(time_span == "overall") %>%
+  dplyr::select("ID","time","heart_rate") %>% 
+  distinct() %>% 
+  mutate(type = "a. Heart Rate (in beats per minute)")
+
+df_heart_rate_std <- 
+  main %>% 
+  mutate(time = time / 60) %>% 
+  filter(time_span == "overall") %>%
+  dplyr::select("ID","time","heart_rate_std") %>% 
+  distinct() %>% 
+  transmute(ID,
+            time,
+            type = "b. Heart Rate (standardized)",
+            heart_rate = heart_rate_std)
+
+df_heart_rate %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_smooth(se = T,
+              size = 0.5,
+              colour = "black",
+              level = 0.99) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  scale_x_continuous(expand = c(0.01,0)) + 
+ labs(x = "",
+      y = "",
+      ) +
+  theme_apa() + 
+  facet_wrap(~ type,
+             ncol = 2,
+             scales = "free_y") -> loess_hr
+
+df_heart_rate_std %>% 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_smooth(se = T,
+              size = 0.5,
+              colour = "black",
+              level = 0.99) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  scale_x_continuous(expand = c(0.01,0)) +
+  scale_y_continuous(expand = c(0, 0.25)) +
+  labs(x = "",
+       y = "",
+       ) +
+  theme_apa() + 
+  facet_wrap(~ type,
+             ncol = 2,
+             scales = "free_y") -> loess_hr_std
+
+loess_comp <- grid.arrange(loess_hr, loess_hr_std,
+                           ncol = 2) 
+
+loess_comp <- annotate_figure(p = loess_comp,
+                              bottom = 'Time (in Minutes)')
+
+
+
+
+ggsave(loess_comp,
+       filename = "plots_publication/loess_plot_std_unstd_new.png",
+       width = 17,
+       height = 12,
+       units = "cm")
+```
 
 ```{r}
 
@@ -1116,7 +1201,7 @@ main %>%
   ylim(-1, 1) + 
   scale_y_continuous(breaks=seq(-1, 1, 0.5), 
                      limits=c(-1, 1)) + 
-  scale_x_continuous(breaks = seq(0, 10, 2)) +
+ # scale_x_continuous(breaks = seq(0, 10, 2)) +
   labs(x = "Time (in Minutes)",
        y = "Standardized Mean Heart Rate",
        # caption = expression(paste(italic("Note: "),
@@ -1136,6 +1221,7 @@ ggsave(filename = "plots_publication/mean_plot.png",
        height = 12,
        units = "cm")
 ```
+
 
 # Multiple Linear Regression (Slope)
 
