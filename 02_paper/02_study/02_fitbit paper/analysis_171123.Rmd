@@ -317,6 +317,8 @@ ki_plot_phases <-
                 width = 0.2) +
   geom_hline(yintercept = 0,
              linetype = "dashed") +
+  scale_y_continuous(expand = c(0, 0.3)
+                     ) +
   labs(subtitle = "99% Confidence Intervall",
        x = "") +
   facet_grid(cols = vars(time_span)) +
@@ -364,7 +366,7 @@ lm_plot <-
               se = T,
               size = 0.5,
               colour = "black",
-              level = 0.99) +
+              level = 0.95) +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   #scale_linetype_manual(values = c(1, 6)) +
@@ -373,7 +375,7 @@ lm_plot <-
   labs(x = "Time (in Minutes)",
        y = "Standardized Mean Heart Rate",
        caption = expression(paste(italic("Note: "),
-                                  "The shadow around the line represents the 99% confidence interval."
+                                  "The shadow around the line represents the 95% confidence interval."
                                   )
                             )
        ) +
@@ -1016,8 +1018,7 @@ summary(regr_teaching2)$r.squared - summary(regr_teaching1)$r.squared
 
 ```
 
-# Plot
-
+# Plot (alter Loess-Ploss)
 ```{r}
 df_heart_rate <- 
   main %>% 
@@ -1087,8 +1088,8 @@ ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
        height = 12,
        units = "cm")
 ```
-# Plot alternative
 
+# Plot neu (doppelter Loess-Plot)
 ```{r}
 
 df_heart_rate <- 
@@ -1097,7 +1098,7 @@ df_heart_rate <-
   filter(time_span == "overall") %>%
   dplyr::select("ID","time","heart_rate") %>% 
   distinct() %>% 
-  mutate(type = "a. Heart Rate (in beats per minute)")
+  mutate(type = "a. Heart Rate (in Beats per Minute)")
 
 df_heart_rate_std <- 
   main %>% 
@@ -1107,7 +1108,7 @@ df_heart_rate_std <-
   distinct() %>% 
   transmute(ID,
             time,
-            type = "b. Heart Rate (standardized)",
+            type = "b. Heart Rate (Standardized)",
             heart_rate = heart_rate_std)
 
 df_heart_rate %>% 
@@ -1118,7 +1119,7 @@ df_heart_rate %>%
   geom_smooth(se = T,
               size = 0.5,
               colour = "black",
-              level = 0.99) +
+              level = 0.95) +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
@@ -1139,7 +1140,7 @@ df_heart_rate_std %>%
   geom_smooth(se = T,
               size = 0.5,
               colour = "black",
-              level = 0.99) +
+              level = 0.95) +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
@@ -1181,7 +1182,7 @@ main %>%
   group_by(time_span) %>% 
   summarise(z_mean = mean(heart_rate_std),
             z_sd = sd(heart_rate_std),
-            z_t = qt(p = 0.01 / 2,      # 0.01 KI
+            z_t = qt(p = 0.05 / 2,      # 0.01 KI
                df = n() - 1,
                lower.tail = F
                ),
@@ -1198,10 +1199,8 @@ main %>%
                 width = 0.2) +
   geom_hline(yintercept = 0,
              linetype = "dashed") +
-  ylim(-1, 1) + 
   scale_y_continuous(breaks=seq(-1, 1, 0.5), 
-                     limits=c(-1, 1)) + 
- # scale_x_continuous(breaks = seq(0, 10, 2)) +
+                     limits=c(-1.1, 1)) + 
   labs(x = "Time (in Minutes)",
        y = "Standardized Mean Heart Rate",
        # caption = expression(paste(italic("Note: "),
