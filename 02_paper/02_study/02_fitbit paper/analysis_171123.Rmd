@@ -300,7 +300,7 @@ ki_plot_phases <-
   group_by(time_span) %>% 
   summarise(z_mean = mean(heart_rate_std),
             z_sd = sd(heart_rate_std),
-            z_t = qt(p = 0.01 / 2,      # 0.01 KI
+            z_t = qt(p = 0.01 / 2,      # 0.99 KI
                df = n() - 1,
                lower.tail = F
                ),
