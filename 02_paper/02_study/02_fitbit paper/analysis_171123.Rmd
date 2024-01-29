@@ -1228,7 +1228,7 @@ ggsave(filename = "plots_publication/mean_plot.png",
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 
-  select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
+  dplyr::select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
   distinct() %>% 
   group_by(ID) %>% 
   summarise(disruption_factor = mean(disruption_factor, na.rm = T),
@@ -1273,7 +1273,7 @@ summary(fit_pre_1)$r.squared - summary(fit_pre_2)$r.squared - summary(fit_pre_3)
 fit_pre_4 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ teaching_experience + confidence + disruption)
+  lm(slope ~ teaching_experience + confidence_factor + disruption_factor)
 
 summary(fit_pre_4)
 
