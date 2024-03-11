@@ -16,7 +16,8 @@ needs(tidyverse,
       gridExtra,
       janitor,
       RColorBrewer,
-      cowplot)
+      cowplot,
+      svglite)
 
 # suppress "summarize" info. 
 # if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
@@ -65,12 +66,14 @@ rm(i)
 df_aoi %>% 
   filter(TOI == "Lesson") %>% 
   select (Group,
+          Participant,
           starts_with("Total_duration_of_fixations"),
           starts_with("Number_of_fixations"),
           !"Total_duration_of_fixations.Disruptive_Person",
           !"Number_of_fixations.Disruptive_Person") %>% 
   rowwise() %>% 
   transmute(Group = Group,
+            Participant = Participant,
             Sum_duration_fixation = sum(c_across(starts_with("Total_duration")
                                                     ),
                                            na.rm = TRUE
@@ -82,7 +85,10 @@ df_aoi %>%
             ) %>% 
   mutate(Average_duration = round(Sum_duration_fixation/Sum_number_fixation,
                                          digits = 0),
-         Group = as_factor(Group)) -> df_aoi_sum
+         Group = as_factor(Group)) %>% 
+  drop_na() -> df_aoi_sum
+
+
 
 
 # mean & SD number fixation 
@@ -152,9 +158,11 @@ df_aoi_sum %>%
   #   ) 
   # )) +
   labs(x ="",
-       y = "Number") +
+       y = "Anzahl Fixationen") +
   scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Number of Fixations on all AOIs") +
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
+  ggtitle("Anzahl der Fixationen in allen AOIs") +
   theme_cowplot() +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
@@ -251,9 +259,11 @@ df_aoi_disrup %>%
   #                                  )
   #                  ) +
   labs(x ="",
-       y = "Number") + 
+       y = "Anzahl Fixationen") + 
   scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Number of Fixations\non AOI `Disruptive Person`") +
+  ggtitle("Anzahl Fixationen AOI\n`Störperson`") +
+    scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
   theme_cowplot() +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
@@ -364,10 +374,12 @@ df_aoi_stud %>%
   #                                  )
   #                  ) +
   labs(x ="",
-       y = "Number") + 
+       y = "Anzahl Fixationen") + 
   scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Number of Fixations\non AOI `Students`") +
+  ggtitle("Anzahl Fixationen AOI\n`Schüler:innen`") +
   theme_cowplot() +
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
         axis.text.y = element_text(size = 18),

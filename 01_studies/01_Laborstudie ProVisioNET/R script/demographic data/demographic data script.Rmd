@@ -91,14 +91,17 @@ We report how we determined our sample size, all data exclusions (if any), all m
 ```{r demographicstable, echo = FALSE}
 
 # prepare data (selected from questionnaire data)
-demo.data <- readxl::read_xlsx("./data/data_empschul_labor_lehrperson.xlsx") 
+demo.data <- readxl::read_xlsx("./data/demografic_data_empschul_labor_lehrperson.xlsx") 
 
 # select relevant columns
 demo.data <- demo.data %>% select(LI02_01_1,
                                   LI03_01,
                                   LI04_01,
-                                  LI06_05)
-
+                                  LI06_05) %>%
+  filter(!LI06_05 %in% c(201,
+                         242,
+                         141,
+                         142))
 
 # rename columns
 demo.data <- rename(demo.data, c("Group" = "LI06_05",
