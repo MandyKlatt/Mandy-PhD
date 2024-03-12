@@ -490,9 +490,11 @@ df_aoi_sum %>%
   #                                  )
   #                  ) +
   labs(x ="",
-       y = "Milliseconds") + 
-  scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Average Duration of Fixations on all AOIs") +
+       y = "Millisekunden") + 
+  scale_fill_brewer(palette  = "RdBu") + 
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
+  ggtitle("Durchschnittliche Fixationsdauer in allen AOIs") +
   theme_cowplot() +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
@@ -592,9 +594,11 @@ df_aoi_disrup %>%
   #                                  )
   #                  ) +
   labs(x ="",
-       y = "Milliseconds") + 
-  scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Average Duration of Fixations\non AOI `Disruptive Person`") +
+       y = "Millisekunden") + 
+  scale_fill_brewer(palette  = "RdBu") + 
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
+  ggtitle("Ø Fixationsdauer AOI\n`Störperson`") +
   theme_cowplot() +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
@@ -707,9 +711,11 @@ df_aoi_stud %>%
   #                                  )
   #                  ) +
   labs(x ="",
-       y = "Milliseconds") + 
+       y = "Millisekunden") + 
   scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Average Duration of Fixations\non AOI `Students`") +
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
+  ggtitle("Ø Fixationsdauer AOI\n `Schüler:innen`") +
   theme_cowplot() +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
@@ -812,9 +818,11 @@ df_ttff_sum %>%
   #                                  )
   #                  ) +
   labs(x ="",
-       y = "Seconds") + 
-  scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Time to first fixation on all AOIs") +
+       y = "Sekunden") + 
+  scale_fill_brewer(palette  = "RdBu") +
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
+  ggtitle("Zeit bis zur ersten Fixation in allen AOIs") +
   theme_cowplot() +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
@@ -917,9 +925,11 @@ plot_time_disrup <-
   #                  ) +
   # ylim(0,250) +
   labs(x ="",
-       y = "Seconds") + 
-  scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Time to First Fixation\non AOI `Disruptive Person`") +
+       y = "Sekunden") + 
+  scale_fill_brewer(palette  = "RdBu") +
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
+  ggtitle("Zeit bis zur ersten Fixation\nAOI `Störperson`") +
   theme_cowplot() +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
@@ -1027,9 +1037,11 @@ plot_time_stud <-
   #                  ) +
   # ylim(0,250) +
   labs(x ="",
-       y = "Seconds") + 
+       y = "Sekunden") + 
   scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("Time to First Fixation\non AOI `Students`") +
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
+  ggtitle("Zeit bis zur ersten Fixation\nAOI `Schüler:innen`") +
   theme_cowplot() +
   theme(legend.position="none",
         axis.text.x = element_text(size = 34),
@@ -1049,15 +1061,16 @@ ggsave(plot = plot_time_stud,
        units = "in")
 
 
-# TIME TO FIRST FIXATIONS on all AOIs 
+# TIME TO FIRST FIXATIONS on AOI "Students"
 # t-test for expertise differences
 t.test(x = df_ttff_stud$Stud_time_fixation_sec[df_ttff_stud$Group == "Expert"],
-       y = df_ttff_stud$Stud_time_fixation_sec[df_ttff_stud$Group == "Novice"])
+       y = df_ttff_stud$Stud_time_fixation_sec[df_ttff_stud$Group == "Novice"],
+       var.equal = TRUE)
 
 
-# TIME TO FIRST FIXATIONS on all AOIs 
+# TIME TO FIRST FIXATIONS on AOI "Students" 
 # effect size for expertise differences
-d_time_all <- CohenD(x = df_ttff_stud$Stud_time_fixation_sec[df_ttff_stud$Group == "Expert"],
+d_time_stud <- CohenD(x = df_ttff_stud$Stud_time_fixation_sec[df_ttff_stud$Group == "Expert"],
                     y = df_ttff_stud$Stud_time_fixation_sec[df_ttff_stud$Group == "Novice"],
                     na.rm = TRUE)
 ```
