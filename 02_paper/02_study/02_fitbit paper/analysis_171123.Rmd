@@ -655,10 +655,15 @@ df_ttest_slope %$%
          pooled = T)
 ```
 
-### Correlation 
+### Correlations 
 
 ## Pr-teaching phase
 ```{r}
+
+fix_models %>% 
+  filter(Phase == "Pre Teaching Phase") %>% 
+  select(slope) -> cor_pre_slope
+
 main %>% 
   filter(time_span == "preparation") %>% 
   group_by(ID) %>% 
@@ -679,12 +684,19 @@ main %>%
          #                   true = 0,
          #                   false = 1),
           teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
-         ) -> cor_pre
+         ) -> cor_pre_hr
+
+cor_pre <- bind_cols(cor_pre_slope, cor_pre_hr)
 
 # heart rate ~
 cor.test(cor_pre$heart_rate_m, cor_pre$teaching_experience)
 cor.test(cor_pre$heart_rate_m, cor_pre$disruption_factor_m)
 cor.test(cor_pre$heart_rate_m, cor_pre$confidence_factor_m)
+
+# mean slope 
+cor.test(cor_pre$slope, cor_pre$teaching_experience)
+cor.test(cor_pre$slope, cor_pre$disruption_factor_m)
+cor.test(cor_pre$slope, cor_pre$confidence_factor_m)
 
 # teaching experience ~
 cor.test(cor_pre$teaching_experience, cor_pre$disruption_factor_m)
@@ -699,6 +711,12 @@ cor.test(cor_pre$disruption_factor_m, cor_pre$confidence_factor_m)
 
 ## Teaching phase
 ```{r}
+
+fix_models %>% 
+  filter(Phase == "Teaching Phase") %>% 
+  select(slope) -> cor_teaching_slope
+
+
 main %>% 
   filter(time_span == "teaching") %>% 
   group_by(ID) %>% 
@@ -719,12 +737,20 @@ main %>%
          #                   true = 0,
          #                   false = 1),
           teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
-         ) -> cor_teaching
+         ) -> cor_teaching_hr
+
+cor_teaching <- bind_cols(cor_teaching_slope, cor_teaching_hr)
+
 
 # heart rate ~
 cor.test(cor_teaching$heart_rate_m, cor_teaching$teaching_experience)
 cor.test(cor_teaching$heart_rate_m, cor_teaching$disruption_factor_m)
 cor.test(cor_teaching$heart_rate_m, cor_teaching$confidence_factor_m)
+
+# slope ~
+cor.test(cor_teaching$slope, cor_teaching$teaching_experience)
+cor.test(cor_teaching$slope, cor_teaching$disruption_factor_m)
+cor.test(cor_teaching$slope, cor_teaching$confidence_factor_m)
 
 # teaching experience ~
 cor.test(cor_teaching$teaching_experience, cor_teaching$disruption_factor_m)
@@ -740,6 +766,11 @@ cor.test(cor_teaching$disruption_factor_m, cor_teaching$confidence_factor_m)
 
 ## Post-teaching phase
 ```{r}
+
+fix_models %>% 
+  filter(Phase == "Post Teaching Phase") %>% 
+  select(slope) -> cor_post_slope
+
 main %>% 
   filter(time_span == "post") %>% 
   group_by(ID) %>% 
@@ -760,12 +791,20 @@ main %>%
          #                   true = 0,
          #                   false = 1),
           teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
-         ) -> cor_post
+         ) -> cor_post_hr
+
+cor_post <- bind_cols(cor_post_slope, cor_post_hr)
+
 
 # heart rate ~
 cor.test(cor_post$heart_rate_m, cor_post$teaching_experience)
 cor.test(cor_post$heart_rate_m, cor_post$disruption_factor_m)
 cor.test(cor_post$heart_rate_m, cor_post$confidence_factor_m)
+
+# slope ~
+cor.test(cor_post$slope, cor_post$teaching_experience)
+cor.test(cor_post$slope, cor_post$disruption_factor_m)
+cor.test(cor_post$slope, cor_post$confidence_factor_m)
 
 # teaching experience ~
 cor.test(cor_post$teaching_experience, cor_post$disruption_factor_m)
@@ -781,6 +820,11 @@ cor.test(cor_post$disruption_factor_m, cor_post$confidence_factor_m)
 
 ## Interview phase
 ```{r}
+
+fix_models %>% 
+  filter(Phase == "Interview Phase") %>% 
+  select(slope) -> cor_interview_slope
+
 main %>% 
   filter(time_span == "interview") %>% 
   group_by(ID) %>% 
@@ -801,12 +845,21 @@ main %>%
          #                   true = 0,
          #                   false = 1),
          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
-         ) -> cor_interview
+         ) -> cor_interview_hr
+
+cor_interview <- bind_cols(cor_interview_slope, cor_interview_hr)
+
 
 # heart rate ~
 cor.test(cor_interview$heart_rate_m, cor_interview$teaching_experience)
 cor.test(cor_interview$heart_rate_m, cor_interview$disruption_factor_m)
 cor.test(cor_interview$heart_rate_m, cor_interview$confidence_factor_m)
+
+# slope ~
+cor.test(cor_interview$slope, cor_interview$teaching_experience)
+cor.test(cor_interview$slope, cor_interview$disruption_factor_m)
+cor.test(cor_interview$slope, cor_interview$confidence_factor_m)
+
 
 # teaching experience ~
 cor.test(cor_interview$teaching_experience, cor_interview$disruption_factor_m)
@@ -821,6 +874,11 @@ cor.test(cor_interview$disruption_factor_m, cor_interview$confidence_factor_m)
 
 ## End phase
 ```{r}
+
+fix_models %>% 
+  filter(Phase == "End Phase") %>% 
+  select(slope) -> cor_end_slope
+
 main %>% 
   filter(time_span == "end") %>% 
   group_by(ID) %>% 
@@ -841,12 +899,19 @@ main %>%
          #                   true = 0,
          #                   false = 1),
           teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
-         ) -> cor_end
+         ) -> cor_end_hr
+
+cor_end <- bind_cols(cor_end_slope, cor_end_hr)
 
 # heart rate ~
 cor.test(cor_end$heart_rate_m, cor_end$teaching_experience)
 cor.test(cor_end$heart_rate_m, cor_end$disruption_factor_m)
 cor.test(cor_end$heart_rate_m, cor_end$confidence_factor_m)
+
+# slope ~
+cor.test(cor_end$slope, cor_end$teaching_experience)
+cor.test(cor_end$slope, cor_end$disruption_factor_m)
+cor.test(cor_end$slope, cor_end$confidence_factor_m)
 
 # teaching experience ~
 cor.test(cor_end$teaching_experience, cor_end$disruption_factor_m)
