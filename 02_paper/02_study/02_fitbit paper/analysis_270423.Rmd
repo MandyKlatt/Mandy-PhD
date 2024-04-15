@@ -40,7 +40,9 @@ needs(ltm,
       Hmisc,
       corrplot,
       tidyverse,
-      ggplot2)
+      ggplot2,
+      lavaan,
+      lm.beta)
 
 
 # disruption & confidence rating
@@ -253,13 +255,14 @@ loess_plot_overall <-
   theme_apa() + 
   theme(axis.title.y = element_blank())
 
+
 lm_plot_phases <-
   main %>% 
   filter(time_span != "overall") %>%
   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("(1) Pre-teaching\nphase","(2) Teaching\nphase","(3) Post-teaching\nphase","(4) Interview\nphase","(5) End\nphase"))) %>% 
+                            labels = c("Pre-teaching\nphase","Teaching\nphase","Post-teaching\nphase","Interview\nphase","End\nphase"))) %>% 
   distinct() %>% 
   ggplot(mapping = aes(x = time,
                        y = heart_rate_std
@@ -296,7 +299,7 @@ ki_plot_phases <-
   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("(1) Pre-teaching Interval","(2) Teaching Interval","(3) Post-teaching Interval","(4) Interview Interval","(5) End Interval"))) %>% 
+                            labels = c("Pre-teaching Interval","Teaching Interval","Post-teaching Interval","Interview Interval","End Interval"))) %>% 
   distinct() %>%
   group_by(time_span) %>% 
   summarise(z_mean = mean(heart_rate_std),
@@ -346,7 +349,7 @@ lm_plot <-
   dplyr::select("ID","time_span", "time","heart_rate_std") %>%
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("(1) Pre-Teaching\nInteval","(2) Teaching\nInterval","(3) Post-Teaching\nInterval","(4) Interview\nInterval","(5) End\nInterval")
+                            labels = c("Pre-Teaching\nInterval","Teaching\nInterval","Post-Teaching\nInterval","Interview\nInterval","End\nInterval")
                             ),
          time = time / 60
          ) %>%
@@ -813,6 +816,15 @@ main %>%
             ) %>% 
   ungroup() -> data_regression_mean
 
+
+# ## using lavaan package to get std. regression coefficients 
+# MLRModel <- 'heart_rate ~ teaching_experience
+#              heart_rate ~ 1'
+# 
+# output <- sem(model = MLRModel, data = data_regression_mean)
+# summary(output, standardized = TRUE)
+
+## loop for regression model
 for (i in unique(data_regression_mean$time_span)) {
   
   cache <- data_regression_mean %>% 
@@ -820,28 +832,32 @@ for (i in unique(data_regression_mean$time_span)) {
   
   regr1 <-
     lm(heart_rate ~ teaching_experience,
-    data = cache) 
+    data = cache) %>% 
+    lm.beta()
   
   assign(value = regr1,
          x = paste0("regr_", i, "1"))
   
   regr2 <-
     lm(heart_rate ~ teaching_experience + disruption_factor,
-    data = cache) 
+    data = cache) %>% 
+    lm.beta() 
   
   assign(value = regr2,
          x = paste0("regr_", i, "2"))
   
   regr3 <-
     lm(heart_rate ~ teaching_experience + confidence_factor,
-    data = cache) 
+    data = cache) %>% 
+    lm.beta() 
   
   assign(value = regr3,
          x = paste0("regr_", i, "3"))
   
   regr4 <-
     lm(heart_rate ~ teaching_experience + disruption_factor + confidence_factor,
-    data = cache)
+    data = cache) %>% 
+    lm.beta()
   
   assign(value = regr4,
          x = paste0("regr_", i, "4"))
@@ -850,10 +866,10 @@ for (i in unique(data_regression_mean$time_span)) {
 
 # Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
 
-summary(regr_teaching1)
-summary(regr_teaching2)
-summary(regr_teaching3)
-summary(regr_teaching4)
+summary(regr_end1)
+summary(regr_end2)
+summary(regr_end3)
+summary(regr_post4)
 
 ```
 
@@ -861,51 +877,71 @@ summary(regr_teaching4)
 ```{r}
 
 main %>% 
-  dplyr::select("ID", "disruption_factor", "confidence_factor", "teaching_experience") %>% 
-  distinct() %>% 
-  group_by(ID) %>% 
-  # summarise(disruption_factor = mean(disruption_factor, na.rm = T),
-  #           confidence_factor = mean(confidence_factor, na.rm = T),
-  #           teaching_experience) %>% 
-  transmute(id = as.character(ID),
-            disruption_factor = mean(disruption_factor, na.rm = T),
-            confidence_factor = mean(confidence_factor, na.rm = T),
-            teaching_experience) %>% 
-  ungroup() %>% 
-  distinct() %>% 
-  right_join(x = .,
-            y = fix_models,
-            by = "id") -> data_regression_slope
+  group_by(ID, time_span) %>% 
+  filter(! time_span %in% "overall") %>% 
+  mutate(time_span = factor(time_span,
+                            levels = c("end","interview","post","preparation","teaching"),
+                            labels = c("preparation","teaching","post","interview","end")
+                           )
+         ) %>%
+  rename(id = ID) %>% 
+  summarise(disruption_factor = mean(disruption_factor,
+                                     na.rm = T),
+            confidence_factor = mean(confidence_factor,
+                                     na.rm = T),
+            teaching_experience = mean(teaching_experience),
+            heart_rate = mean(heart_rate_std)
+            ) -> df_slope
 
-for (i in unique(data_regression_slope$Phase)) {
+fix_models %>%
+  mutate(id = as_factor(id),
+         time_span = factor(Phase,
+                           levels = c("Pre Teaching Phase","Teaching Phase","Post Teaching Phase","Interview Phase","End Phase"),
+                           labels = c("preparation","teaching","post","interview","end")
+                           )
+         ) %>%
+    group_by(id, time_span) %>% 
+    summarise(slope = mean(slope)) %>% 
+  ungroup() -> fix_models_slope
+
+merge(df_slope,
+      fix_models_slope,
+      by=c("id", "time_span")) -> data_regression_slope
+
+
+for (i in unique(data_regression_slope$time_span)) {
   
   cache <- data_regression_slope %>% 
-    filter(Phase == i)
+    filter(time_span == i)
   
   regr1 <-
     lm(slope ~ teaching_experience,
-    data = cache) 
+    data = cache) %>% 
+    lm.beta()
   
   assign(value = regr1,
          x = paste0("regr_", i, "1"))
   
   regr2 <-
     lm(slope ~ teaching_experience + disruption_factor,
-    data = cache) 
+    data = cache) %>% 
+    lm.beta()
   
   assign(value = regr2,
          x = paste0("regr_", i, "2"))
   
   regr3 <-
     lm(slope ~ teaching_experience + confidence_factor,
-    data = cache) 
+    data = cache) %>% 
+    lm.beta()
   
   assign(value = regr3,
          x = paste0("regr_", i, "3"))
   
   regr4 <-
     lm(slope ~ teaching_experience + disruption_factor + confidence_factor,
-    data = cache)
+    data = cache) %>% 
+    lm.beta()
   
   assign(value = regr4,
          x = paste0("regr_", i, "4"))
@@ -914,10 +950,10 @@ for (i in unique(data_regression_slope$Phase)) {
 
 # Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
 
-summary(regr_preparation1)
-summary(regr_preparation2)
-summary(regr_preparation3)
-summary(regr_preparation4)
+summary(regr_end1)
+summary(regr_end2)
+summary(regr_end3)
+summary(regr_end4)
 
 ```
 
@@ -998,7 +1034,7 @@ main %>%
   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
   mutate(time_span = factor(time_span,
                             levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("(1) Pre-teaching\nInterval","(2) Teaching\nInterval","(3) Post-teaching\nInterval","(4) Interview\nInterval","(5) End\nInterval"))) %>% 
+                            labels = c("Pre-teaching\nInterval","Teaching\nInterval","Post-teaching\nInterval","Interview\nInterval","End\nInterval"))) %>% 
   distinct() %>%
   group_by(time_span) %>% 
   summarise(z_mean = mean(heart_rate_std),
