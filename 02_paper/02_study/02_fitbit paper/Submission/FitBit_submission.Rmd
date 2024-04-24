@@ -31,11 +31,46 @@ output: rticles::elsevier_article
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.width = 8, fig.height = 4, cache = TRUE)
+
+# load packages
+
+library(needs)
+
+needs(ltm,
+      xtable,
+      broom,
+      ppcor,
+      jtools,
+      lm.beta,
+      janitor,
+      lubridate,
+      readxl,
+      ggthemes,
+      gridExtra,
+      imputeTS,
+      DescTools,
+      cowplot,
+      rstatix,
+      ggpubr,
+      lme4,
+      lmerTest,
+      viridis,
+      gridExtra,
+      gridtext,
+      magrittr,
+      PerformanceAnalytics,
+      Hmisc,
+      corrplot,
+      tidyverse,
+      ggplot2,
+      lavaan,
+      lm.beta,
+      stargazer)
 ```
 
 # Introduction 
 
-In education, there’s interest in identifying reliable indicators for teacher stress and burnout [@fisher2011; @ junker2021]. Previous research often relied on self-report questionnaires [@chaplain2008; @liu2020], which may be prone to biases like social desirability [@razavi2001self] or recall errors [@van2016accuracy]. To overcome these limitations, ambulatory assessment methods are recommended [@trull2013ambulatory; @wettstein2020ambulatory], such as measuring physiological parameters like heart rate (HR), offering objective insights into teachers’ stress levels without disrupting their teaching [@donker2018; @runge2020]. 
+In education, there’s interest in identifying reliable indicators for teacher stress and burnout [@fisher2011; @junker2021]. Previous research often relied on self-report questionnaires [@chaplain2008; @liu2020], which may be prone to biases like social desirability [@razavi2001self] or recall errors [@van2016accuracy]. To overcome these limitations, ambulatory assessment methods are recommended [@trull2013ambulatory; @wettstein2020ambulatory], such as measuring physiological parameters like heart rate (HR), offering objective insights into teachers’ stress levels without disrupting their teaching [@donker2018; @runge2020]. 
 
 Current studies on teachers’ HR in teaching settings often rely on expensive and invasive electrocardiographs [@sperka1995; @scheuch1997psychophysische; @donker2018; @junker2021; @huang2022class], showing that teacher-centered activities and common stressors lead to increased HR. However, using affordable and non-invasive instruments like wrist-worn fitness trackers [@ferguson2015] could enhance HR recording in educational contexts. Unlike clinical devices, fitness trackers could offer continuous and less intrusive data collection over time [@godfrey2018z], aligning with the increasing popularity and acceptance of wearables among the general population [@peng2022acceptance]. These devices, equipped with biosensors, provide users with physiological and behavioral data, offering an accessible means for monitoring physical activity and health in daily life.
 
@@ -104,11 +139,113 @@ Second, five representative 10-minute intervals were selected from the five phas
 
 We expected lower HR levels for teachers with more teaching experience, particularly during the teaching interval (**Hypothesis 2a**). We expected higher HR levels for teachers who felt more disrupted by the enacted classroom events, regardless of their teaching experience (**Hypotheses 2b**). At the same time, we expected lower HR levels for teachers who felt more confident in dealing with the events, regardless of teaching experience (**Hypothesis 2c**). Lastly, we hypothesized that each of the three predictors (teaching experience, disruption appraisal, confidence appraisal) uniquely contributes to explaining variance in teachers´ HR levels (**Hypothesis 2d**). In addition, we exploratively examined the same as for the HR levels again for the changes in HR.
 
+```{r read the data}
+
+# disruption & confidence rating
+
+df_rating <- 
+  excel_sheets("data/Coding_SRI.xlsx") %>% 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  dplyr::select(ID, # select relevant columns 
+         "disruption_factor", # -99 = subject did not notice event; -100 = experimenter did not ask for event
+         "confidence_factor",
+         "event"
+         ) %>% 
+  mutate(disruption_factor = ifelse(disruption_factor < 0,
+                                    yes = NA,
+                                    no = disruption_factor
+                                    ),
+         confidence_factor = ifelse(confidence_factor < 0,
+                                   yes = NA,
+                                   no = confidence_factor),
+         event = as_factor(event)
+         )
+
+# demographic data
+
+df_demo <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  transmute(ID = LI06_05, # select and rename relevant columns 
+            gender = factor(LI02_01_1,
+                            levels = 1:2,
+                            labels = c("male","female") # 1 = male; 2 = female
+                            ),
+            age = LI03_01, 
+            teaching_experience = LI04_01)
+
+N_prewrangling <- as.numeric(nrow(df_demo))
+
+# merge two data frames by ID 
+df_merge <- merge(df_demo,
+                  df_rating,
+                  by = "ID") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132")
+         )
+
+# heart rate data
+
+data_path <- "./data/heart_rate_data"
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "end",
+                               str_detect(string = id, pattern = "_m") ~ "teaching",
+                               str_detect(string = id, pattern = "_p") ~ "preparation",
+                               str_detect(string = id, pattern = "_s") ~ "post",
+                               str_detect(string = id, pattern = "_i") ~ "interview",
+                               TRUE ~ "overall"
+                               ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+    # filter(time <= 600) %>% # filter for 10min intervals
+    filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
+    dplyr::select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+main <-
+  left_join(main, df_merge,
+            by = "ID")
+
+main <- 
+  main %>% 
+  dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  dplyr::summarise(mean_heart = mean(heart_rate),
+            sd_heart = sd(heart_rate)) %>%
+  ungroup() %>% 
+  right_join(x = .,
+             y = main,
+             by = "ID") %>% 
+  filter(!(time_span == "teaching" & time > 600)) %>%
+  mutate(heart_rate_std = (heart_rate - mean_heart)/
+           sd_heart)
+
+N_postwrangling <- as.numeric(length(unique(main$ID)))
+
+stargazer
+
+```
+
+
 # Method 
 
 ## Participants
 
-The sample consisted of $N$ = 84 pre- and in-service teachers from Germany, who were recruited via personal contact, email lists, and flyers. The data of three participants was lost due to failed data transmission, yielding an analysis sample of $n$ = 81 ($n$ = 52 women, $n$ = 29 men). Participants had a mean age of 30.95 years ($SD$ = 10.90; range: 19-60) and an average teaching experience of 5.64 years ($SD$ = 9.46; range: 0-37). 
+The sample consisted of $N$ = `r N_prewrangling` pre- and in-service teachers from Germany, who were recruited via personal contact, email lists, and flyers. The data of three participants was lost due to failed data transmission, yielding an analysis sample of $n$ = `N_postwrangling` ($n$ = 52 women, $n$ = 29 men). Participants had a mean age of 30.95 years ($SD$ = 10.90; range: 19-60) and an average teaching experience of 5.64 years ($SD$ = 9.46; range: 0-37). 
 
 ## Setting and Procedure 
 
@@ -117,7 +254,7 @@ The study was carried out following the ethical standards and the approval of th
 ```{=latex}
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=1\textwidth]{images/Timeline_ProVision_vertical.png}
+  \includegraphics[width=1\textwidth]{images/Timeline.pdf}
   \caption{Procedure of the two-hour-long study consisting of five phases with five representative 10-minute intervals}
   \label{Procedure of the two-hour-long study consisting of five phases with five representative 10-minute intervals}
 \end{figure}
