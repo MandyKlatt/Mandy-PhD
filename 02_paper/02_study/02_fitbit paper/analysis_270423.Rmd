@@ -141,6 +141,17 @@ main <-
 # Descriptives
 ```{r descriptive statistics}
 
+# # Count for in-service and pre-service teachers
+# # Remove duplicate cases
+# distinct_df <- distinct(main, ID, gender, .keep_all = TRUE)
+# 
+# # Count individual cases
+# case_summary <- distinct_df %>%
+#   filter(ID > 200) %>% 
+#   count(gender == "male")
+# print(case_summary)
+
+
 # Mean, SD and range for overall (unstandardized)
 descrip_hr_overall <- main %>%
   filter(time_span %in% c("overall")) %>% 
