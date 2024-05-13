@@ -666,6 +666,23 @@ df_ttest_slope %$%
 
 ### Correlation 
 
+## age x teaching experience
+``` {r}
+main %>% 
+  filter(time_span == "overall") %>% 
+  group_by(ID) %>% 
+  select(ID,
+         teaching_experience,
+         age) -> teach_gender
+
+cor(cor_teach_gender$teaching_experience,
+    cor_teach_gender$age,
+    method = c("pearson")
+  ) -> cor_teach_gender
+
+```
+
+
 ## Pr-teaching phase
 ```{r}
   main %>% 
