@@ -111,7 +111,7 @@ map(.x = dir(path = data_path,
          ID = as.numeric(ID)
       ) %>%
     # filter(time <= 600) %>% # filter for 10min intervals
-    filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
+    # filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
     dplyr::select(!c("Time","Heart Rate","id"))
     ) %>%
   bind_rows()
@@ -135,6 +135,11 @@ main <-
   mutate(heart_rate_std = (heart_rate - mean_heart)/
            sd_heart)
    
+
+## count for individuals 
+main %>% 
+  filter(time >= 7200) %>% 
+  distinct(ID, .keep_all = TRUE) -> filter_overall
 
 ```
 
