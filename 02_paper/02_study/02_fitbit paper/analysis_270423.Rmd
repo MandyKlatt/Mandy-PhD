@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
 	warning = FALSE
 )
 ```
-
+# Packages & read in data
 ```{r}
 library(needs)
 needs(ltm,
@@ -42,7 +42,9 @@ needs(ltm,
       tidyverse,
       ggplot2,
       lavaan,
-      lm.beta)
+      lm.beta,
+      psych,
+      stats)
 
 
 # disruption & confidence rating
@@ -244,7 +246,6 @@ rating_table <-
 ```
 
 # Plots
-
 ```{r fig.width = 10,results='hide',fig.keep='all'}
 
 ## Overall Course Plot (std. vs. unstd.)
@@ -348,6 +349,73 @@ ggsave(filename = "plots_publication/mean_plot.png",
        units = "cm")
 
 
+## Box Plot (over 81 participants) 
+box_plot <-
+  main %>% 
+  filter(time_span != "overall") %>%   
+  dplyr::select("ID",
+         "time_span",
+         "heart_rate_std") %>% 
+  mutate(time_span = fct_recode(time_span,
+                                "Pre-teaching Interval" = "pre",
+                                "Teaching Interval" = "main",
+                                "Post-teaching Interval" = "subsequent",
+                                "Interview Interval" = "interview",
+                                "End Interval" = "after"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-teaching Interval",
+                                       "Teaching Interval",
+                                       "Post-teaching Interval",
+                                       "Interview Interval",
+                                       "End Interval"
+                                       ),
+                            labels = c("Pre-Teaching\nInterval",
+                                       "Teaching\nInterval",
+                                       "Post-Teaching\nInterval",
+                                       "Interview\nInterval",
+                                       "End\nInterval")
+                            )
+         ) %>%
+  distinct() %>% 
+  group_by(ID, time_span) %>%
+  summarise(mean_hr_std = 
+              mean(heart_rate_std, 
+                   na.rm = TRUE)
+            ) %>% 
+  ggplot(mapping = aes(x = time_span,
+                       y = mean_hr_std
+                       )
+         ) +
+  geom_boxplot()+
+  scale_y_continuous(breaks=seq(-2, 2, 1), 
+                     limits=c(-2, 2)
+                     ) +   
+  # geom_jitter(width = 0.2) +
+  theme_apa() + 
+  theme(axis.text.x = 
+          element_text(
+            color="black",
+            size = 12),
+        plot.caption = element_text(hjust = 0)
+        ) + 
+  labs(x = "",
+       y = "Standardized Mean Heart Rate",
+       caption = expression(
+         paste(italic("Note: N"), 
+               "= 81 participants per interval. Fig. shows median (bold line), interquartile range (box) and outliers (dots)."
+         )
+       ))
+
+box_plot
+
+ggsave(filename = "plots_publication/box_plot.png",
+       plot = box_plot,
+       width = 20,
+       height = 12,
+       units = "cm")
+
+
 ## LM Plot
 lm_plot <-
   main %>%
@@ -426,7 +494,6 @@ ggsave(filename = "plots_publication/lm_plot.png",
 ```
 
 # Slopes and Intercepts
-
 ```{r}
 df_regression <- 
   main %>% 
@@ -526,7 +593,6 @@ table_data %>%
 ```
 
 # Plots for all phases
-
 ```{r}
 mods <-   
   df_regression %>% 
@@ -568,7 +634,6 @@ list(`Preparation Phase` = list(name = "Pre-Teaching ", mod = mods$preparation, 
 
 # t-Tests 
 ## using heart rate means
-
 ```{r}
 df_ttest <- 
   df_regression %>% 
@@ -576,7 +641,6 @@ df_ttest <-
   summarise(mean_heart_rate = mean(heart_rate_std)) %>% 
   ungroup()
 ```
-
 ## Teaching vs. Pre-Teaching (mean HR)
 
 ```{r}
@@ -621,7 +685,6 @@ df_ttest %$%
 ```
 
 ## Teaching vs. End (mean HR)
-
 ```{r}
 df_ttest %$% 
   t.test(x = .$mean_heart_rate[.$time_span == "teaching"],
@@ -634,9 +697,112 @@ df_ttest %$%
          pooled = T)
 ```
 
+
+## ANOVA & planned constrasts
+```{r}
+# Data wrangling - preparing data for ANOVA
+df_anova <-
+  main %>% 
+  filter(time_span != "overall") %>%   
+  dplyr::select("ID",
+         "time_span",
+         "heart_rate_std") %>% 
+  mutate(time_span = fct_recode(time_span,
+                                "Pre-teaching interval" = "pre",
+                                "Teaching interval" = "main",
+                                "Post-teaching interval" = "subsequent",
+                                "Interview interval" = "interview",
+                                "End interval" = "after"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-teaching interval",
+                                       "Teaching interval",
+                                       "Post-teaching interval",
+                                       "Interview interval",
+                                       "End interval"
+                                       )
+                            )
+         ) %>%
+  distinct() %>% 
+  group_by(ID, time_span) %>%
+  summarise(mean_hr_std = mean(heart_rate_std, na.rm = TRUE))
+
+# Counting participants in individual phases
+table(df_anova['time_span'])
+
+# descriptive analysis
+describeBy(df_anova$mean_hr_std,
+           df_anova$time_span)
+
+# Visualization
+bxp <- ggboxplot(df_anova, x = "time_span", y = "mean_hr_std", add = "point")
+bxp
+
+# Check for outliers
+outliers <-
+  df_anova %>%
+  group_by(time_span) %>%
+  identify_outliers(mean_hr_std)
+
+# check for normality assumption --> can be checked by computing Shapiro-Wilk test for each time point. If the data is normally distributed, the p-value should be greater than 0.05
+norm_assump <-
+  df_anova %>%
+  group_by(time_span) %>%
+  shapiro_test(mean_hr_std)
+
+# QQ plot draws the correlation between a given data and the normal distribution. 
+plot <- 
+  ggqqplot(df_anova, "mean_hr_std", facet.by = "time_span")
+
+df_anova_subset <- subset(df_anova, select = c(time_span, mean_hr_std))
+
+# # anova
+# res.aov <- rstatix::anova_test(data = df_anova_subset,
+#                                dv = mean_hr,
+#                                wid = ,
+#                                within = time_span)
+# get_anova_table(res.aov)
+
+# anova
+df_anova_phase <- 
+  aov(df_anova_subset$mean_hr_std ~ df_anova_subset$time_span)
+summary(df_anova_phase)
+
+# effect size for ANOVA
+DescTools::EtaSq(df_anova_phase)
+f = sqrt (0.7202944/ (1-0.7202944))
+
+# planned constrasts
+model <- aov(mean_hr_std ~ time_span, data = df_anova_subset)
+summary (model)
+
+contrast1 <- c(-1, 1, 0, 0, 0)
+contrast2 <- c(0, 1, -1, 0, 0)
+contrast3 <- c(0, 1, 0, -1, 0)
+contrast4 <- c(0, 1, 0, 0, -1)
+
+contrasts(df_anova_subset$time_span) <- cbind(contrast1,
+                                              contrast2,
+                                              contrast3,
+                                              contrast4)
+
+model2 <- aov(mean_hr_std ~ time_span, data = df_anova_subset)
+summary(model2)
+
+summary.aov(model2, 
+            split = list (time_span = list ("Teaching interval vs. Pre-teaching interval" = 1,
+                                            "Teaching interval vs. Post-teaching interval" = 2,
+                                            "Teaching interval vs. Interview interval" = 3,
+                                            "Teaching interval vs. End interval" = 4
+                                            )
+                          )
+            )
+
+```
+
+
 # t-Tests 
 ## using mean Slope 
-
 ```{r}
 df_ttest_slope <- 
   fix_models %>% 
@@ -647,7 +813,6 @@ df_ttest_slope <-
 
 
 ## Teaching vs. Interview (mean slope)
-
 ```{r}
 df_ttest_slope %$% 
   t.test(x = .$mean_slope[.$Phase == "Teaching Phase"],
@@ -659,7 +824,6 @@ df_ttest_slope %$%
          y = .$mean_slope[.$Phase == "Interview Phase"],
          pooled = T)
 ```
-
 ## Teaching vs. End (mean slope)
 
 ```{r}
@@ -675,7 +839,6 @@ df_ttest_slope %$%
 ```
 
 ## Interview vs. End (mean slope)
-
 ```{r}
 df_ttest_slope %$% 
   t.test(x = .$mean_slope[.$Phase == "Interview Phase"],
@@ -688,8 +851,8 @@ df_ttest_slope %$%
          pooled = T)
 ```
 
-### Correlation 
 
+### Correlation 
 ## age x teaching experience
 ``` {r}
 main %>% 
@@ -855,7 +1018,9 @@ main %>%
 ```
 
 
-# Multiple Linear Regression (Mean)
+
+
+# Multiple Linear Regression (Mean) -- LOOP
 ```{r}
 main %>% 
   group_by(ID, time_span) %>% 
@@ -924,8 +1089,7 @@ summary(regr_end3)
 summary(regr_post4)
 
 ```
-
-# Multiple Linear Regression (Slope)
+# Multiple Linear Regression (Slope) -- LOOP
 ```{r}
 
 main %>% 
@@ -1011,7 +1175,6 @@ summary(regr_end4)
 
 
 # Multiple Linear Regression (Slope)
-
 # Pre Teaching Phase
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
@@ -1095,7 +1258,6 @@ fit_pre_3$model %>%
       
 
 ```
-
 # Teaching Phase
 
 ```{r echo = FALSE, results='asis'}
@@ -1226,7 +1388,6 @@ stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
 
 
 # Interview Phase
-
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 
@@ -1291,7 +1452,6 @@ stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
 
 
 # End Phase
-
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 
