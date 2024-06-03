@@ -297,67 +297,6 @@ ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
        units = "cm")
 
 
-## Overall Plot (unstd. vs. std. over 81 participants)
-df_heart_rate <-
-  main %>%
-  mutate(time = time / 60) %>%
-  filter(time_span == "overall") %>%
-  dplyr::select("ID","time","heart_rate") %>%
-  distinct() %>%
-  group_by(ID) %>%
-  mutate(type = "a. Heart Rate (in beats per minute)") %>%
-  summarise(time = time,
-            mean_hr_unstd = mean(heart_rate,
-                                 na.rm = TRUE)
-            )
-
-df_heart_rate_std <-
-  main %>%
-  mutate(time = time / 60) %>%
-  filter(time_span == "overall") %>%
-  dplyr::select("ID","time","heart_rate_std") %>%
-  distinct() %>%
-  group_by(ID) %>%
-  summarise(time = time,
-            mean_hr_std = mean(heart_rate_std,
-                               na.rm = TRUE)
-            ) %>%
-  transmute(ID,
-            time,
-            type = "b. Heart Rate (standardized)",
-            heart_rate = mean_hr_std)
-
-
-loess_plot_std_unstd <-
-  bind_rows(df_heart_rate,
-            df_heart_rate_std
-          ) %>%
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate
-                       )
-         ) +
-  geom_smooth(se = T,
-              size = 0.5,
-              colour = "black",
-              level = 0.99) +
-  scale_color_viridis_d(option = "A",
-                        end = 0.8) +
-  scale_linetype_manual(values = c(1, 6)) +
-  scale_x_continuous(expand = c(0.01,0)) +
-  labs(x = "Time (in minutes)",
-       y = "",
-       ) +
-  theme_apa() +
-  facet_wrap(~ type,
-             ncol = 2,
-             scales = "free_y")
-
-ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
-       width = 16,
-       height = 12,
-       units = "cm")
-
-
 ## Mean Plot
 main %>% 
   filter(time_span != "overall") %>%
@@ -418,11 +357,11 @@ box_plot <-
          "time_span",
          "heart_rate_std") %>% 
   mutate(time_span = fct_recode(time_span,
-                                "Pre-teaching Interval" = "pre",
-                                "Teaching Interval" = "main",
-                                "Post-teaching Interval" = "subsequent",
+                                "Pre-teaching Interval" = "preparation",
+                                "Teaching Interval" = "teaching",
+                                "Post-teaching Interval" = "post",
                                 "Interview Interval" = "interview",
-                                "End Interval" = "after"
+                                "End Interval" = "end"
                                 ),
          time_span = factor(time_span,
                             levels = c("Pre-teaching Interval",
@@ -461,7 +400,7 @@ box_plot <-
         plot.caption = element_text(hjust = 0)
         ) + 
   labs(x = "",
-       y = "Standardized Mean Heart Rate",
+       y = "Mean Standardized Heart Rate",
        caption = expression(
          paste(italic("Note: N"), 
                "= 81 participants per interval. Fig. shows median (bold line), interquartile range (box) and outliers (dots)."
@@ -503,7 +442,7 @@ lm_plot <-
   scale_x_continuous(breaks = seq(0, 10, 2)) +
   scale_y_continuous(breaks = seq(from = -1, to = 1, by = 0.5)) +
   labs(x = "Time (in Minutes)",
-       y = "Standardized Mean Heart Rate",
+       y = "Mean Standardized Heart Rate",
        caption = expression(paste(italic("Note: "),
                                   "The shadow around the line represents the 95% confidence interval."
                                   )
