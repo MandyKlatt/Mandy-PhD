@@ -82,7 +82,8 @@ df_merge <- merge(df_demo,
                   df_rating,
                   by = "ID") %>% 
   filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
-                    "132")
+                    "132",
+                    "236")
          )
 
 # rm(list = c("df_demo","df_rating"))
@@ -90,7 +91,7 @@ df_merge <- merge(df_demo,
 data_path <- "./data/heart_rate_data"
 
 
-# single bpm values 
+# single bpm values (data frame with only single measurement point)
 main_single_hr <-
 map(.x = dir(path = data_path,
              pattern = ".csv"),
@@ -119,78 +120,21 @@ map(.x = dir(path = data_path,
     ) %>%
   bind_rows()
 
-
-# multiple bpm values
-# 
-# main_single_hr <-
-#   left_join(main, 
-#             df_demo,
-#             by = "ID")
-# 
-# main_single_hr <- 
-#   main_single_hr %>% 
-#   dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
-#   distinct() %>% 
-#   group_by(ID) %>% 
-#   dplyr::summarise(mean_heart = mean(heart_rate),
-#             sd_heart = sd(heart_rate)) %>%
-#   ungroup() %>% 
-#   right_join(x = .,
-#              y = main,
-#              by = "ID") %>% 
-#   filter(!(time_span == "teaching" & time > 600)) %>%
-#   mutate(heart_rate_std = (heart_rate - mean_heart)/
-#            sd_heart)
-# 
-# main_single_hr <-
-# map(.x = dir(path = data_path,
-#              pattern = ".csv"),
-#     ~ read_csv(file.path(data_path, .), 
-#                id = "id",
-#                col_types = c("t","n")
-#                ) %>% 
-#   mutate(time = .$Time - min(.$Time),
-#          time = as.numeric(time),
-#          heart_rate = `Heart Rate`,
-#          ID = id,
-#          time_span = case_when(str_detect(string = id, pattern = "_a") ~ "end",
-#                                str_detect(string = id, pattern = "_m") ~ "teaching",
-#                                str_detect(string = id, pattern = "_p") ~ "preparation",
-#                                str_detect(string = id, pattern = "_s") ~ "post",
-#                                str_detect(string = id, pattern = "_i") ~ "interview",
-#                                TRUE ~ "overall"
-#                                ),
-#          ID = str_extract(string = ID,
-#                           pattern = "[:digit:]{3}"),
-#          ID = as.numeric(ID)
-#       ) %>%
-#     # filter(time <= 600) %>% # filter for 10min intervals
-#     filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
-#     dplyr::select(!c("Time","Heart Rate","id"))
-#     ) %>%
-#   bind_rows()
-# 
-# 
-# main <-
-#   left_join(main, 
-#             df_demo,
-#             by = "ID")
-# 
-# main_single_hr <- 
-#   main_single_hr %>% 
-#   dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
-#   distinct() %>% 
-#   group_by(ID) %>% 
-#   dplyr::summarise(mean_heart = mean(heart_rate),
-#             sd_heart = sd(heart_rate)) %>%
-#   ungroup() %>% 
-#   right_join(x = .,
-#              y = main,
-#              by = "ID") %>% 
-#   filter(!(time_span == "teaching" & time > 600)) %>%
-#   mutate(heart_rate_std = (heart_rate - mean_heart)/
-#            sd_heart)
-
+# adding z-standardized HR
+main_single_hr <-
+  main_single_hr %>%
+  dplyr::select("time", "heart_rate", "ID", "time_span") %>%
+  distinct() %>%
+  group_by(ID) %>%
+  dplyr::summarise(mean_heart = mean(heart_rate),
+            sd_heart = sd(heart_rate)) %>%
+  ungroup() %>%
+  right_join(x = .,
+             y = main_single_hr,
+             by = "ID") %>%
+  filter(!(time_span == "teaching" & time > 600)) %>%
+  mutate(heart_rate_std = (heart_rate - mean_heart)/
+           sd_heart)
 
 ## count for individuals 
 main_single_hr %>% 
@@ -1084,7 +1028,14 @@ main %>%
 
 # Multiple Linear Regression (Mean) -- LOOP
 ```{r}
-main %>% 
+
+# multiple bpm values (merged data frame for multiple regression with multiple measurement points)
+main_multiple_hr <-
+  left_join(main_single_hr,
+            df_merge,
+            by = "ID")
+
+main_multiple_hr %>% 
   group_by(ID, time_span) %>% 
   summarise(disruption_factor = mean(disruption_factor,
                                      na.rm = T),
