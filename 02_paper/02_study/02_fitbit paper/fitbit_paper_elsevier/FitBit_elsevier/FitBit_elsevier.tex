@@ -31,6 +31,8 @@ authoryear]{elsarticle} %review=doublespace preprint=single 5p=2 column
 \fi
 % use microtype if available
 \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
 
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
@@ -57,37 +59,9 @@ authoryear]{elsarticle} %review=doublespace preprint=single 5p=2 column
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
 
-% Pandoc citation processing
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newlength{\cslentryspacingunit} % times entry-spacing
-\setlength{\cslentryspacingunit}{\parskip}
-% for Pandoc 2.8 to 2.10.1
-\newenvironment{cslreferences}%
-  {}%
-  {\par}
-% For Pandoc 2.11+
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1
-  \let\oldpar\par
-  \def\par{\hangindent=\cslhangindent\oldpar}
-  \fi
-  % set entry spacing
-  \setlength{\parskip}{#2\cslentryspacingunit}
- }%
- {}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 
+\usepackage{tabularx}
 
 
 
@@ -170,8 +144,21 @@ device \sep
   
  \end{frontmatter}
 
-\hypertarget{present-investigation}{%
-\section{Present investigation}\label{present-investigation}}
+% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
+% Date and time: Mo, Jun 24, 2024 - 16:22:09
+
+\\begin{table}[h] 
+\\centering 
+\\caption{} 
+\\label{}
+\\begin{tabular}{@{
+\\extracolsep{5pt}} ccccc} \\\\[-1.8ex]\\hline \\hline \\\\[-1.8ex] \\textbackslash \textit{Interval} & \\textbackslash \textit{M HR} & \\textbackslash \textit{SD HR} & \\textbackslash \textit{Min} & \\textbackslash \textit{Max} \\\\ \\hline \\\\[-1.8ex] Overall Course of 2h & 90.09/-0.04 & 15.76/0.99 & 51/-4.03 & 164/4.56 \\\\ Pre-teaching interval & 77.95/-1.07 & 11.14/0.57 & 50/-2.68 & 120/2.96 \\\\ Teaching interval & 82.32/-0.72 & 11.85/0.74 & 51/-2.51 & 132/4.39 \\\\ Post-teaching interval & 93.61/0.27 & 14.01/0.76 & 60/-2.17 & 150/3.06 \\\\ Interview interval & 96.28/0.48 & 14.11/0.88 & 56/-3.56 & 139/3.24 \\\\ End Interval & 100.8/0.85 & 16.23/0.77 & 63/-2.18 & 164/4.37 \\\\ \\hline \\\\[-1.8ex]
+\\end{tabular}
+\\end{table}
+
+%\input{tab_1.tex}
+
+\section{Present investigation}\label{present-investigation}
 
 The aim was to investigate whether HR measures assessed by a Fitbit
 Charge 4 are a suitable and effective method to \textbf{(1)} map
@@ -193,10 +180,11 @@ confident they felt in dealing with disruptions. In the (5) end phase,
 the subject answered another second questionnaire.
 
 According to previous findings that fitness trackers can be used as a
-low-cost, non-invasive method of measuring HR (\textbf{hajj2022wrist?};
-Fuller et al. 2020) and that different HRs of teachers can be measured
-in different teaching phases (\textbf{donker2020associations?};
-\textbf{junker2021potential?}), we formulate the hypotheses as follows:
+low-cost, non-invasive method of measuring HR
+\citep{hajj2022wrist, fuller2020reliability} and that different HRs of
+teachers can be measured in different teaching phases
+\citep{donker2020associations, junker2021potential}, we formulate the
+hypotheses as follows:
 
 \textbf{Hypothesis 1}. In a first step, we wanted to display
 exploratively the course of HR during the entire study. Additionally, we
@@ -221,20 +209,8 @@ considering the three predictors in concert and controlling for their
 common variance, we expected teaching experience and self-reported data
 to remain substantial predictors (\textbf{Hypothesis 2d}).
 
-\hypertarget{references}{%
-\section*{References}\label{references}}
-\addcontentsline{toc}{section}{References}
-
-\hypertarget{refs}{}
-\begin{CSLReferences}{1}{0}
-\leavevmode\vadjust pre{\hypertarget{ref-fuller2020reliability}{}}%
-Fuller, Daniel, Emily Colwell, Jonathan Low, Kassia Orychock, Melissa
-Ann Tobin, Bo Simango, Richard Buote, et al. 2020. {``Reliability and
-Validity of Commercially Available Wearable Devices for Measuring Steps,
-Energy Expenditure, and Heart Rate: Systematic Review.''} \emph{JMIR
-mHealth and uHealth} 8 (9): e18694.
-
-\end{CSLReferences}
+\renewcommand\refname{References}
+\bibliography{r-references.bib}
 
 
 \end{document}
