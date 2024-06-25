@@ -87,6 +87,8 @@ output:
     citation_package: natbib
 header-includes:
   - \usepackage{tabularx}
+  - \usepackage{threeparttable}
+  - \usepackage{booktabs}
 ---
 
 ```{r analysis-preferences, include=FALSE}
@@ -116,7 +118,8 @@ needs(ltm,
       ggpubr,
       lme4,
       viridis, 
-      stargazer)
+      stargazer,
+      papaja)
 ```
 
 ```{r data wrangling, include=FALSE}
@@ -305,7 +308,7 @@ rating_table <-
             )
 ```
 
-```{r, include=FALSE}
+```{r table_1, include=FALSE}
 
 desc_hr_phases <- bind_rows(x = descrip_hr_overall,
                             y = descrip_hr_phases) |> 
@@ -349,22 +352,13 @@ desc_hr_phases_std <- bind_rows(x = descrip_hr_overall_std,
 
 desc_hr_phases[1, 1] <- 'overall'
 
-
-
-
-
 df_desc_hr <- desc_hr_phases |> 
   mutate(across(everything(),
                 ~ paste(.,
                         desc_hr_phases_std[[cur_column()]],
                         sep = "/")
                 )
-         ) #|> 
-  # # rename(`\textit{M} HR` = `M HR`,
-  #        # `\textit{SD} HR` = `SD HR`,
-  #        # `\textit{Min}` = `Min`,
-  #        `\textit{Max}` = `Max`,
-  #       `\textit{Interval}` = Interval)
+         )
 
 df_desc_hr$Interval <- c('Overall Course of 2h',
                          'Pre-teaching interval',
@@ -373,27 +367,11 @@ df_desc_hr$Interval <- c('Overall Course of 2h',
                          'Interview interval',
                          'End Interval')
 
-names(df_desc_hr) <- paste0("\\textit{", names(df_desc_hr),"}")
+tab_1 <- apa_table(df_desc_hr,
+                   placement = 'h',
+                   )
 
-stargazer(df_desc_hr,
-          type = 'latex',
-          out = 'tab_1.tex',
-          summary = FALSE,
-          rownames = FALSE,
-          table.placement = 'h',
-          align = FALSE
-          ) -> tab_1
-
-pattern <- "textit\\\\\\{([^}]*)\\\\\\}"
-replacement <- "\textit{\\1}"
-
-# Anwenden des Regex
-tab_1_new <- str_replace_all(tab_1, pattern, replacement)
-
-paste(tab_1_new, collapse = '')
-
-writeLines(tab_1_new, 'tab_1.tex')
-
+writeLines(tab_1, 'tab_1.tex')
 
 ```
 
@@ -408,7 +386,7 @@ options(tinytex.verbose = TRUE)
 # Present investigation 
 The aim was to investigate whether HR measures assessed by a Fitbit Charge 4 are a suitable and effective method to **(1)** map teachers course of arousal over the course of a five phase lab study, including a micro teaching unit,  and **(2)**  examine whether HR measures can be predicted by self-reported data on cognitive appraisal.
 
-Within the time frame of approximately two hours, we investigated five intervals with a duration of 10-minutes each: In the (1) pre-teaching phase, the subjects were prepared for the following micro teaching unit  teaching lesson and familiarized with the setting. During the (2) teaching phase, the participants taught a 15-minute self-prepared lesson to a "class" of three actors that simulated nine classroom disruptions . In the following (3) post-teaching phase, the subjects answered a questionnaires, followed by  and in the (4) interview phase, in which they subjects watched thea pre-recorded video of their 15-minute lesson to assess the self-report data of how disrupted subjects felt and how confident they felt in dealing with disruptions. In the (5) end phase, the subject answered another  second questionnaire.
+Within the time frame of approximately two hours, we investigated five intervals with a duration of 10-minutes each: In the (1) pre-teaching phase, the subjects were prepared for the following micro teaching unit  teaching lesson and familiarized with the setting. During the (2) teaching phase, the participants taught a 15-minute self-prepared lesson to a "class" of three actors that simulated nine classroom disruptions . In the following (3) post-teaching phase, the subjects answered a questionnaires, followed by  and in the (4) interview phase, in which they subjects watched thea pre-recorded video of their 15-minute lesson to assess the self-report data of how disrupted subjects felt and how confident they felt in dealing with disruptions. In the (5) end phase, the subject answered another second questionnaire.
 
 According to previous findings that fitness trackers can be used as a low-cost, non-invasive method of measuring HR [@hajj2022wrist; @fuller2020reliability] and that different HRs of teachers can be measured in different teaching phases [@donker2020associations; @junker2021potential], we formulate the hypotheses as follows:
 
