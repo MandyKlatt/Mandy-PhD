@@ -217,7 +217,7 @@ main <-
            sd_heart)
 ```
 
-```{r descriptives, include=FALSE}
+```{r HR descriptives, include=FALSE}
 # Mean, SD and range for overall (unstandardized)
 
 descrip_hr_overall <- main %>%
