@@ -41,3 +41,5 @@ stringr
 forcats
 lavaan
 stargazer
+tinylabels
+papaja

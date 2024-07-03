@@ -1230,7 +1230,7 @@ loess_comp <- annotate_figure(p = loess_comp,
 
 ggsave(loess_comp,
        filename = "plots_publication/loess_plot_std_unstd_new.png",
-       width = 17,
+       width = 18,
        height = 12,
        units = "cm")
 ```

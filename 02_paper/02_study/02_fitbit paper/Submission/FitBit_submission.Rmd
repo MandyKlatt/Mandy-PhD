@@ -1,47 +1,110 @@
 ---
-title: Title here
-subtitle: Do you have a subtitle? If so, write it here
-titlerunning: Short form of title (if too long for head)
-authorrunning:
-  Short form of author list if too long for running head
-thanks: |
-  Grants or other notes about the article that should go
-  on the front page should be placed here. General
-  acknowledgments should be placed at the end of the article.
-authors:
-  - name: Author 1
-    address: Department of YYY, University of XXX
-    email: abc@def
-  - name: Author 2
-    address: Department of ZZZ, University of WWW
-    email: djf@wef
-keywords:
-  - key
-  - dictionary
-  - word
-MSC:
-  - MSC code 1
-  - MSC code 2    
+title: "New approaches to teachers' experience of stress: Do heart rate measurements with fitness trackers provide an efficient, inexpensive, and robust measurement method?"
+shorttitle: "Using fitbit to measure teachers' heart rate"
+authornote: |
+ We received funding from QualiFond of University Leipzig. We have no conflicts of interest to disclose. This article is based on data used at conference presentations (DACH-Nachwuchsakademie, 2022; EARLI SIG 11, 2022; EARLI SIG 27, 2022). 
+author:
+  - name: Mandy Klatt
+    email: mandy.klatt@uni-leipzig.de
+    affiliation: Leipzig University
+    correspondingauthor: true
+    footnote: 1
+  - name: Peer Keßler
+    email: Peer@example.com
+    affiliation: Leipzig University
+    footnote: 2
+  - name: Gregor Kachel
+    email: gregor@example.com
+    affiliation: Leipzig University, Max Planck Institute for Evolutionary Anthropology
+    footnote: 1
+  - name: Christin Lotz
+    email: christin@example.com
+    affiliation: Leipzig University
+    footnote: 1
+  - name: Anne Deiglmayr
+    email: anne@example.com
+    affiliation: Leipzig University
+    footnote: 3
+address:
+  - code: Leipzig University
+    organization: Empirische Schul- und Unterrichtsforschung
+    addressline: Marschnerstr. 29
+    city: Leipzig
+    state: Sachsen
+    postcode: 04109
+    country: Germany
+  - code: Max Planck Institute for Evolutionary Anthropology
+    organization: Department
+    addressline: Deutscher Pl. 6
+    postcode: 04103
+    city: Leipzig
+    state: Sachsen
+    country: Germany
+footnote:
+  - code: 1
+    text: 
+      - "Conceptualization"
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - code: 2
+    text: 
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - code: 3
+    text: "Supervision"
 abstract: |
-  The text of your abstract.  150 -- 250 words.
+  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
+  
+  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
+  
+  One sentence clearly stating the **general problem** being addressed by  this particular study.
+  
+  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
+  
+  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
+  
+  One or two sentences to put the results into a more **general context**.
+  
+  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+  
+  XXX In this proof-of-concept study, we aimed to advance the field of teacher stress by collecting heart rate data with wrist-worn devices and testing a methodology that has the potential to provide more insights on the non-invasive assessment of teacher stress. XXX
+  
+  <!-- https://tinyurl.com/ybremelq -->
+keywords: 
+  - heart rate
+  - photoplethysmography
+  - wearable electronic device
+  - teaching
+journal: "Computers & Education"
+date: "`r Sys.Date()`"
+classoption: preprint, 3p, authoryear
 bibliography: r-references.bib
-csl: computers-and-education.csl
-output: rticles::elsevier_article
+linenumbers: false
+numbersections: true
+output: 
+  rticles::elsevier_article:
+    keep_tex: true
+    citation_package: natbib
+header-includes:
+  - \usepackage{tabularx}
+  - \usepackage{threeparttable}
+  - \usepackage{booktabs}
 ---
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.width = 8, fig.height = 4, cache = TRUE)
+```
 
-# load packages
+```{r installing packages, include=FALSE}
 
 library(needs)
-
 needs(ltm,
-      xtable,
       broom,
       ppcor,
       jtools,
       lm.beta,
+      tidyverse,
       janitor,
       lubridate,
       readxl,
@@ -53,19 +116,9 @@ needs(ltm,
       rstatix,
       ggpubr,
       lme4,
-      lmerTest,
-      viridis,
-      gridExtra,
-      gridtext,
-      magrittr,
-      PerformanceAnalytics,
-      Hmisc,
-      corrplot,
-      tidyverse,
-      ggplot2,
-      lavaan,
-      lm.beta,
-      stargazer)
+      viridis, 
+      stargazer,
+      papaja)
 ```
 
 # Introduction 
@@ -139,18 +192,18 @@ Second, five representative 10-minute intervals were selected from the five phas
 
 We expected lower HR levels for teachers with more teaching experience, particularly during the teaching interval (**Hypothesis 2a**). We expected higher HR levels for teachers who felt more disrupted by the enacted classroom events, regardless of their teaching experience (**Hypotheses 2b**). At the same time, we expected lower HR levels for teachers who felt more confident in dealing with the events, regardless of teaching experience (**Hypothesis 2c**). Lastly, we hypothesized that each of the three predictors (teaching experience, disruption appraisal, confidence appraisal) uniquely contributes to explaining variance in teachers´ HR levels (**Hypothesis 2d**). In addition, we exploratively examined the same as for the HR levels again for the changes in HR.
 
-```{r read the data}
+```{r data wrangling, include=FALSE}
 
 # disruption & confidence rating
 
 df_rating <- 
-  excel_sheets("data/Coding_SRI.xlsx") %>% 
-  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  excel_sheets("data/Coding_SRI.xlsx") |> 
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) |> # read in data with two sheets
   dplyr::select(ID, # select relevant columns 
-         "disruption_factor", # -99 = subject did not notice event; -100 = experimenter did not ask for event
+         "disruption_factor", # -99 = subject did not notice event; -100 = experimenter did not asked for event
          "confidence_factor",
          "event"
-         ) %>% 
+         ) |> 
   mutate(disruption_factor = ifelse(disruption_factor < 0,
                                     yes = NA,
                                     no = disruption_factor
@@ -164,26 +217,26 @@ df_rating <-
 # demographic data
 
 df_demo <- 
-  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") |> # read in excel 
   transmute(ID = LI06_05, # select and rename relevant columns 
             gender = factor(LI02_01_1,
                             levels = 1:2,
-                            labels = c("male","female") # 1 = male; 2 = female
+                            labels = c("male","female")
                             ),
-            age = LI03_01, 
+            age = LI03_01, # 1 = male; 2 = female
             teaching_experience = LI04_01)
 
-N_prewrangling <- as.numeric(nrow(df_demo))
-
 # merge two data frames by ID 
+
 df_merge <- merge(df_demo,
                   df_rating,
-                  by = "ID") %>% 
+                  by = "ID") |> 
   filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
                     "132")
          )
 
-# heart rate data
+# rm(list = c("df_demo","df_rating"))
+
 
 data_path <- "./data/heart_rate_data"
 
@@ -193,8 +246,8 @@ map(.x = dir(path = data_path,
     ~ read_csv(file.path(data_path, .), 
                id = "id",
                col_types = c("t","n")
-               ) %>% 
-  mutate(time = .$Time - min(.$Time),
+               ) |> 
+  mutate(time = Time - min(Time),
          time = as.numeric(time),
          heart_rate = `Heart Rate`,
          ID = id,
@@ -208,11 +261,11 @@ map(.x = dir(path = data_path,
          ID = str_extract(string = ID,
                           pattern = "[:digit:]{3}"),
          ID = as.numeric(ID)
-      ) %>%
-    # filter(time <= 600) %>% # filter for 10min intervals
-    filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
+      ) |>
+    # filter(time <= 600) |> # filter for 10min intervals
+    filter(time <= 7200) |> # filter for 2 hours (maximal duration of study)
     dplyr::select(!c("Time","Heart Rate","id"))
-    ) %>%
+    ) |>
   bind_rows()
 
 main <-
@@ -234,9 +287,9 @@ main <-
   mutate(heart_rate_std = (heart_rate - mean_heart)/
            sd_heart)
 
-N_postwrangling <- as.numeric(length(unique(main$ID)))
+N_prewrangling <- as.numeric(nrow(df_demo))
 
-stargazer
+N_postwrangling <- as.numeric(length(unique(main$ID)))
 
 ```
 
@@ -288,8 +341,9 @@ We conducted all analyses with R [@RStudio2020]. Graphics were created using ggp
 
 **Research goal 1**. The first research goal included mapping teachers’ HR before, during, and following a micro-teaching unit in the course of a five-phase lab study. 
 
+Regarding the teachers’ HR trend, we displayed the HR trend over the course of the entire study. For z-standardization as a method to account for individual differences in the baseline HR, we visually compared unstandardized and standardized mean HR trends for the entire two-hours study[^3]. For all further analyses, we used standardized rather than unstandardized HR values. 
+[^3]:   Note that the study exceeded the planned duration of two hours for a few participants. To avoid distortions when mapping the HR over the course of the study (see Fig. 3), the endpoint was set at two hours for all participants, even though data from later time points was used in the *end interval* for a few participants.
 
-Regarding the teachers’ HR trend, we displayed the HR trend over the course of the entire study. For z-standardization as a method to account for individual differences in the baseline HR, we visually compared unstandardized and standardized mean HR trends for the entire two-hours study. 
 For testing Hypothesis 1a, which examined the HR levels in the different intervals, we initially conducted a one-way ANOVA with repeated measures as an omnibus test. The dependent variable comprised the standardized HR mean for each interval. To identify the highest HR level, we subsequently conducted t-tests with planned contrasts as post-hoc tests, accompanied by the effect size d [@cohen1988new]. Specifically, we tested the differences between the teaching interval ($I_2$) and the other four intervals. Note that mean HR was calculated at the subject level of $n$ = 81 participants (see Table 1), whereas the mean slope and mean intercept estimates are based on all values at all measurement time points (see Table 2).
 For testing Hypothesis 1b, which examined the HR changes within each interval, we conducted a linear estimation of the increase or decrease in HR over time. To this end, we used fixed intercept fixed slope regression models [@gelman2006data] for each interval to estimate intercepts and linear slopes for all individuals which were then averaged across individuals[^2].
 
@@ -298,5 +352,319 @@ For testing Hypothesis 1b, which examined the HR changes within each interval, w
 **Research goal 2**. In addressing our second research goal, we examined the effects of teaching experience and subjective appraisal of disruptive classroom events on teachers’ HR levels during the five phases. 
 
 To test hypothesis 2a, we examined the effect of teaching experience on participants’ HR levels for each of the five intervals using linear regression models with teaching experience as the sole predictor. To test hypotheses 2b and 2c, we separately augmented the models by either teachers’ disruption appraisal (Hypothesis 2b) or confidence appraisal (Hypothesis 2c), while controlling for shared variance with teaching experience. HR levels were only predicted with the disruption and confidence appraisal after the teaching had taken place, i.e., for all the intervals following the pre-teaching interval (I1). To test hypothesis 2d, we examined the effects of all three predictors in one regression model. We repeated these steps to explore the effect of teaching experience and subjective appraisals on changes in teachers’ HR at each interval.
+
+# Results
+
+## Research goal 1: Mapping teachers’ HR over the course of the study phases
+
+The first part of our first research goal was to map participants’ overall HR trend and explore whether z-standardization of participants’ HR is a useful method to account for individual differences in the baseline HR. Means, standard deviations, and range of teachers’ unstandardized and standardized HR are shown in Table 1. Fig. 3 a. and b. display the unstandardized and standardized HR trends, respectively.  HR initially increased, peaked, and then decreased, with the unstandardized and standardized HR graphs showing high similarity. Thus, for all further analyses, we used participants’ standardized HR values. 
+
+```{r HR descriptives, include=FALSE}
+# Mean, SD and range for overall (unstandardized)
+
+descrip_hr_overall <- main |>
+  filter(time_span %in% c("overall")) |> 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
+
+# Mean, SD and range for overall (standardized)
+
+descrip_hr_overall_std <- main |>
+  filter(time_span %in% c("overall")) |> 
+  summarise(N = n_distinct(ID),
+            "M std heart rate in bpm" = round(mean(heart_rate_std),
+                                              digits = 2),
+            "SD std heart rate in bpm" = round(sd(heart_rate_std),
+                                               digits = 2),
+            "Min std heart rate in bpm" = round(min(heart_rate_std),
+                                                digits = 2),
+            "Max heart rate in bpm" = round(max(heart_rate_std),
+                                            digits = 2)
+            )
+
+# Mean, SD and range for individual phases (unstandardized)
+
+descrip_hr_phases <- main |> 
+  filter(!time_span %in% c("overall")) |> 
+  group_by(time_span) |> 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
+
+# Mean, SD and range for individual phases (standardized)
+
+descrip_hr_phases_std <- main |> 
+  filter(!time_span %in% c("overall")) |> 
+  group_by(time_span) |> 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate_std),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate_std),
+                                      digits = 2),
+            "Min heart rate in bpm" = round(min(heart_rate_std),
+                                            digits = 2),
+            "Max heart rate in bpm" = round(max(heart_rate_std),
+                                            digits = 2)
+  )
+
+# # format and insert table in manuscript
+# descrip_hr_phases |>
+# papaja::apa_table(
+#   caption = "Mean, SD and range for teachers' heart rate in individual phases",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+#   )
+
+# Mean, SD and range for disruption and confidence factor
+
+rating_table <- 
+  df_rating |> 
+  filter(!is.na(confidence_factor),
+         !is.na(disruption_factor)) |> 
+   summarise(N = n_distinct(ID), 
+            "M disruption factor" = round(mean(disruption_factor),
+                                     digits = 2),
+            "SD disruption factor" = round(sd(disruption_factor),
+                                      digits = 2),
+            "Min disruption factor" = min(disruption_factor),
+            "Max disruption factor" = max(disruption_factor),
+            "M confidence factor" = round(mean(confidence_factor),
+                                     digits = 2),
+            "SD confidence factor" = round(sd(confidence_factor),
+                                      digits = 2),
+            "Min confidence factor" = min(confidence_factor),
+            "Max confidence factor" = max(confidence_factor)
+            )
+```
+
+```{r table_1, include=FALSE}
+
+desc_hr_phases <- bind_rows(x = descrip_hr_overall,
+                            y = descrip_hr_phases) |> 
+  select(-N) |> 
+  rename(`M HR` = `M heart rate in bpm`,
+         `SD HR` = `SD heart rate in bpm`,
+         `Min` = `Min heart rate in bpm`,
+         `Max` = `Max heart rate in bpm`,
+         Interval = time_span) |> 
+  select(c(Interval,
+           `M HR`,
+           `SD HR`,
+           `Min`,
+           `Max`)
+         )
+
+descrip_hr_overall_std <- descrip_hr_overall_std |> 
+  rename(`M HR` = `M std heart rate in bpm`,
+         `SD HR` = `SD std heart rate in bpm`,
+         `Min` = `Min std heart rate in bpm`,
+         `Max` = `Max heart rate in bpm`,
+          ) |> 
+  mutate(Interval = 'overall')
+
+descrip_hr_phases_std <-  descrip_hr_phases_std |> 
+  rename(`M HR` = `M heart rate in bpm`,
+         `SD HR` = `SD heart rate in bpm`,
+         `Min` = `Min heart rate in bpm`,
+         `Max` = `Max heart rate in bpm`,
+         Interval = time_span)
+
+desc_hr_phases_std <- bind_rows(x = descrip_hr_overall_std,
+                                y = descrip_hr_phases_std) |> 
+  select(-N) |> 
+    select(c(Interval,
+           `M HR`,
+           `SD HR`,
+           `Min`,
+           `Max`)
+         )
+
+desc_hr_phases[1, 1] <- 'overall'
+
+df_desc_hr <- desc_hr_phases |> 
+  mutate(across(everything(),
+                ~ paste(.,
+                        desc_hr_phases_std[[cur_column()]],
+                        sep = "/")
+                )
+         )
+
+df_desc_hr$Interval <- c('Overall Course of 2h',
+                         'Pre-teaching interval',
+                         'Teaching interval',
+                         'Post-teaching interval',
+                         'Interview interval',
+                         'End Interval')
+
+tab_1 <- apa_table(df_desc_hr,
+                   placement = 'h',
+                   label = 'tab_1',
+                   caption = 'Mean HR (M), standard deviations HR (SD), and range of teachers’ HR over the course of the entire study and the five intervals (unstandardized in BPM/z-standardized)',
+                   note = 'Please note that M and SD of the overall course vs. the individual intervals were not exactly 0 and 1 due to rounding differences.' 
+                   )
+
+print(tab_1)
+
+writeLines(tab_1, 'tab_1.tex')
+
+```
+
+```{=latex}
+\input{tab_1.tex}
+```
+
+```{r loess-plot, include=FALSE}
+df_heart_rate <- 
+  main |> 
+  mutate(time = time / 60) |> 
+  filter(time_span == "overall") |>
+  dplyr::select("ID","time","heart_rate") |> 
+  distinct() |> 
+  mutate(type = "a. Heart Rate (in Beats per Minute)")
+
+df_heart_rate_std <- 
+  main |> 
+  mutate(time = time / 60) |> 
+  filter(time_span == "overall") |>
+  dplyr::select("ID","time","heart_rate_std") |> 
+  distinct() |> 
+  transmute(ID,
+            time,
+            type = "b. Heart Rate (Standardized)",
+            heart_rate = heart_rate_std)
+
+df_heart_rate |> 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_smooth(se = T,
+              size = 0.5,
+              colour = "black",
+              level = 0.95) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  scale_x_continuous(expand = c(0.01,0)) + 
+ labs(x = "",
+      y = "",
+      ) +
+  theme_apa() + 
+  facet_wrap(~ type,
+             ncol = 2,
+             scales = "free_y") -> loess_hr
+
+df_heart_rate_std |> 
+  ggplot(mapping = aes(x = time,
+                       y = heart_rate
+                       )
+         ) +
+  geom_smooth(se = T,
+              size = 0.5,
+              colour = "black",
+              level = 0.95) +
+  scale_color_viridis_d(option = "A",
+                        end = 0.8) +
+  scale_linetype_manual(values = c(1, 6)) +
+  scale_x_continuous(expand = c(0.01,0)) +
+  scale_y_continuous(expand = c(0, 0.25)) +
+  labs(x = "",
+       y = "",
+       ) +
+  theme_apa() + 
+  facet_wrap(~ type,
+             ncol = 2,
+             scales = "free_y") -> loess_hr_std
+
+loess_comp <- grid.arrange(loess_hr, loess_hr_std,
+                           ncol = 2) 
+
+loess_comp <- annotate_figure(p = loess_comp,
+                              bottom = 'Time (in Minutes)')
+
+
+
+
+ggsave(loess_comp,
+       filename = "plots_publication/loess_plot_std_unstd_new.pdf",
+       width = 16,
+       height = 12,
+       units = "cm")
+```
+
+```{=latex}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{plots_publication/loess_plot_std_unstd_new.pdf}
+  \caption{Overall course of the HR with the unstandardized HR in BPM shown in Fig. 3a. and the z-standardized HR shown in Fig. 3b. for the planned 2-hour study.}
+  \label{Overall course of the HR with the unstandardized HR in BPM shown in Fig. 3a. and the z-standardized HR shown in Fig. 3b. for the planned 2-hour study.}
+\end{figure}
+```
+
+```{r, include=FALSE}
+
+# main |> 
+#   filter(time_span != "overall") |>
+#   dplyr::select("ID","time_span", "time","heart_rate_std") |> 
+#   mutate(time_span = factor(time_span,
+#                             levels = c("preparation","teaching","post","interview","end"),
+#                             labels = c("(1) Pre-teaching\nInterval","(2) Teaching\nInterval","(3) Post-teaching\nInterval","(4) Interview\nInterval","(5) End\nInterval"))) |> 
+#   distinct() |>
+#   group_by(time_span) |> 
+#   summarise(z_mean = mean(heart_rate_std),
+#             z_sd = sd(heart_rate_std),
+#             z_t = qt(p = 0.05 / 2,      # 0.01 KI
+#                df = n() - 1,
+#                lower.tail = F
+#                ),
+#             z_error = z_sd / sqrt(n()),
+#             lower = z_mean - z_t * z_error,
+#             upper = z_mean + z_t * z_error,
+#             ) |> 
+#   ungroup() |> 
+#   ggplot(mapping = aes(x = factor(0),
+#                        y = z_mean)) + 
+#   geom_point() +
+#   geom_errorbar(mapping = aes(ymin = lower,
+#                               ymax = upper),
+#                 width = 0.2) +
+#   geom_hline(yintercept = 0,
+#              linetype = "dashed") +
+#   scale_y_continuous(breaks=seq(-1, 1, 0.5), 
+#                      limits=c(-1.1, 1)) + 
+#   labs(x = "Time (in Minutes)",
+#        y = "Standardized Mean Heart Rate",
+#        # caption = expression(paste(italic("Note: "),
+#        #                            "The shadow around the line represents the 99% confidence interval."
+#        #                            )
+#        #                      )
+#        ) +
+#   facet_grid(cols = vars(time_span),
+#              scales = "free_x") +
+#   theme_apa() +
+#   theme(axis.text.x = element_blank(),
+#         axis.ticks.x = element_blank(),
+#         plot.caption = element_text(hjust = 0))
+# 
+# ggsave(filename = "plots_publication/mean_plot.png",
+#        width = 20,
+#        height = 12,
+#        units = "cm")
+```
+
+
 
 

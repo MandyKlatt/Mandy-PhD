@@ -84,10 +84,14 @@ numbersections: true
 output: 
   rticles::elsevier_article:
     keep_tex: true
-    citation_package: default
+    citation_package: natbib
+header-includes:
+  - \usepackage{tabularx}
+  - \usepackage{threeparttable}
+  - \usepackage{booktabs}
 ---
 
-```{r analysis-preferences}
+```{r analysis-preferences, include=FALSE}
 # Seed for random number generation
 set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
@@ -113,22 +117,21 @@ needs(ltm,
       rstatix,
       ggpubr,
       lme4,
-      viridis)
+      viridis, 
+      stargazer,
+      papaja)
 ```
 
 ```{r data wrangling, include=FALSE}
 # disruption & confidence rating
+
 df_rating <- 
   excel_sheets("data/Coding_SRI.xlsx") %>% 
-  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
+  map_df(~ read_xlsx("data/Coding_SRI.xlsx",.)) %>% # read in data with two sheets
   dplyr::select(ID, # select relevant columns 
-         disruption_factor, # -99 = subject did not notice event; -100 = experimenter did not asked for event
-         confidence_factor,
-         event
-         ) %>% 
-  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
-                    "132",
-                    "236")
+         "disruption_factor", # -99 = subject did not notice event; -100 = experimenter did not asked for event
+         "confidence_factor",
+         "event"
          ) %>% 
   mutate(disruption_factor = ifelse(disruption_factor < 0,
                                     yes = NA,
@@ -141,59 +144,55 @@ df_rating <-
          )
 
 # demographic data
-df_demo_all <- 
+
+df_demo <- 
   read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% # read in excel 
   transmute(ID = LI06_05, # select and rename relevant columns 
-            # gender = factor(LI02_01_1,
-            #                 levels = 1:2,
-            #                 labels = c("male","female")
-            #                 ),
-            gender = LI02_01_1, # 1 = male; 2 = female
-            age = LI03_01, 
-            teaching_experience = LI04_01,
-            school_type = LI18,
-            term = LI11_01,
-            extracurricular_teaching_experience = LI14,
-            secondary_teaching_activities = LI17) %>% 
-  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
-                    "132",
-                    "236")
-        )
+            gender = factor(LI02_01_1,
+                            levels = 1:2,
+                            labels = c("male","female")
+                            ),
+            age = LI03_01, # 1 = male; 2 = female
+            teaching_experience = LI04_01)
 
 # merge two data frames by ID 
-df_merge <- merge(df_demo_all,
+
+df_merge <- merge(df_demo,
                   df_rating,
-                  by = "ID")
+                  by = "ID") %>% 
+  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
+                    "132")
+         )
 
 # rm(list = c("df_demo","df_rating"))
 
 
-data_path <- "./data/heart_rate_data"
+data_path <- "data/heart_rate_data"
 
 main <-
-map(.x = dir(path = data_path,
-             pattern = ".csv"),
-    ~ read_csv(file.path(data_path, .), 
-               id = "id",
-               col_types = c("t","n")
-               ) %>% 
+  map(.x = dir(path = data_path,
+               pattern = ".csv"),
+      ~ read_csv(file.path(data_path, .), 
+                 id = "id",
+                 col_types = c("t","n")
+                 ) %>% 
   mutate(time = .$Time - min(.$Time),
          time = as.numeric(time),
          heart_rate = `Heart Rate`,
          ID = id,
-         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "end_phase",
-                               str_detect(string = id, pattern = "_m") ~ "teaching_phase",
-                               str_detect(string = id, pattern = "_p") ~ "pre-teaching_phase",
-                               str_detect(string = id, pattern = "_s") ~ "post-teaching_phase",
-                               str_detect(string = id, pattern = "_i") ~ "interview_phase",
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "end",
+                               str_detect(string = id, pattern = "_m") ~ "teaching",
+                               str_detect(string = id, pattern = "_p") ~ "preparation",
+                               str_detect(string = id, pattern = "_s") ~ "post",
+                               str_detect(string = id, pattern = "_i") ~ "interview",
                                TRUE ~ "overall"
                                ),
          ID = str_extract(string = ID,
                           pattern = "[:digit:]{3}"),
          ID = as.numeric(ID)
       ) %>%
-      # filter(time <= 600) %>% # filter for 10min intervals
-    filter(time <= 7200) %>% # filter for 2 hours 30min (maximal duration of study)
+    # filter(time <= 600) %>% # filter for 10min intervals
+    filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
     dplyr::select(!c("Time","Heart Rate","id"))
     ) %>%
   bind_rows()
@@ -205,22 +204,179 @@ main <-
 main <- 
   main %>% 
   dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
-  filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
-                    "132",
-                    "236")
-        ) %>% 
   distinct() %>% 
   group_by(ID) %>% 
-  summarize(mean_heart = mean(heart_rate),
+  dplyr::summarise(mean_heart = mean(heart_rate),
             sd_heart = sd(heart_rate)) %>%
   ungroup() %>% 
   right_join(x = .,
              y = main,
              by = "ID") %>% 
+  filter(!(time_span == "teaching" & time > 600)) %>%
   mutate(heart_rate_std = (heart_rate - mean_heart)/
-           sd_heart) %>% 
-  filter(!(time_span == "teaching" & time > 600))
+           sd_heart)
+```
 
+```{r HR descriptives, include=FALSE}
+# Mean, SD and range for overall (unstandardized)
+
+descrip_hr_overall <- main %>%
+  filter(time_span %in% c("overall")) %>% 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
+
+# Mean, SD and range for overall (standardized)
+
+descrip_hr_overall_std <- main %>%
+  filter(time_span %in% c("overall")) %>% 
+  summarise(N = n_distinct(ID),
+            "M std heart rate in bpm" = round(mean(heart_rate_std),
+                                              digits = 2),
+            "SD std heart rate in bpm" = round(sd(heart_rate_std),
+                                               digits = 2),
+            "Min std heart rate in bpm" = round(min(heart_rate_std),
+                                                digits = 2),
+            "Max heart rate in bpm" = round(max(heart_rate_std),
+                                            digits = 2)
+            )
+
+# Mean, SD and range for individual phases (unstandardized)
+
+descrip_hr_phases <- main %>% 
+  filter(!time_span %in% c("overall")) %>% 
+  group_by(time_span) %>% 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate),
+                                      digits = 2),
+            "Min heart rate in bpm" = min(heart_rate),
+            "Max heart rate in bpm" = max(heart_rate)
+  )
+
+# Mean, SD and range for individual phases (standardized)
+
+descrip_hr_phases_std <- main %>% 
+  filter(!time_span %in% c("overall")) %>% 
+  group_by(time_span) %>% 
+  summarise(N = n_distinct(ID),
+            "M heart rate in bpm" = round(mean(heart_rate_std),
+                                     digits = 2),
+            "SD heart rate in bpm" = round(sd(heart_rate_std),
+                                      digits = 2),
+            "Min heart rate in bpm" = round(min(heart_rate_std),
+                                            digits = 2),
+            "Max heart rate in bpm" = round(max(heart_rate_std),
+                                            digits = 2)
+  )
+
+# # format and insert table in manuscript
+# descrip_hr_phases %>%
+# papaja::apa_table(
+#   caption = "Mean, SD and range for teachers' heart rate in individual phases",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+#   )
+
+# Mean, SD and range for disruption and confidence factor
+
+rating_table <- 
+  df_rating %>% 
+  filter(!is.na(confidence_factor),
+         !is.na(disruption_factor)) %>% 
+   summarise(N = n_distinct(ID), 
+            "M disruption factor" = round(mean(disruption_factor),
+                                     digits = 2),
+            "SD disruption factor" = round(sd(disruption_factor),
+                                      digits = 2),
+            "Min disruption factor" = min(disruption_factor),
+            "Max disruption factor" = max(disruption_factor),
+            "M confidence factor" = round(mean(confidence_factor),
+                                     digits = 2),
+            "SD confidence factor" = round(sd(confidence_factor),
+                                      digits = 2),
+            "Min confidence factor" = min(confidence_factor),
+            "Max confidence factor" = max(confidence_factor)
+            )
+```
+
+```{r table_1, include=FALSE}
+
+desc_hr_phases <- bind_rows(x = descrip_hr_overall,
+                            y = descrip_hr_phases) |> 
+  select(-N) |> 
+  rename(`M HR` = `M heart rate in bpm`,
+         `SD HR` = `SD heart rate in bpm`,
+         `Min` = `Min heart rate in bpm`,
+         `Max` = `Max heart rate in bpm`,
+         Interval = time_span) |> 
+  select(c(Interval,
+           `M HR`,
+           `SD HR`,
+           `Min`,
+           `Max`)
+         )
+
+descrip_hr_overall_std <- descrip_hr_overall_std |> 
+  rename(`M HR` = `M std heart rate in bpm`,
+         `SD HR` = `SD std heart rate in bpm`,
+         `Min` = `Min std heart rate in bpm`,
+         `Max` = `Max heart rate in bpm`,
+          ) |> 
+  mutate(Interval = 'overall')
+
+descrip_hr_phases_std <-  descrip_hr_phases_std |> 
+  rename(`M HR` = `M heart rate in bpm`,
+         `SD HR` = `SD heart rate in bpm`,
+         `Min` = `Min heart rate in bpm`,
+         `Max` = `Max heart rate in bpm`,
+         Interval = time_span)
+
+desc_hr_phases_std <- bind_rows(x = descrip_hr_overall_std,
+                                y = descrip_hr_phases_std) |> 
+  select(-N) |> 
+    select(c(Interval,
+           `M HR`,
+           `SD HR`,
+           `Min`,
+           `Max`)
+         )
+
+desc_hr_phases[1, 1] <- 'overall'
+
+df_desc_hr <- desc_hr_phases |> 
+  mutate(across(everything(),
+                ~ paste(.,
+                        desc_hr_phases_std[[cur_column()]],
+                        sep = "/")
+                )
+         )
+
+df_desc_hr$Interval <- c('Overall Course of 2h',
+                         'Pre-teaching interval',
+                         'Teaching interval',
+                         'Post-teaching interval',
+                         'Interview interval',
+                         'End Interval')
+
+tab_1 <- apa_table(df_desc_hr,
+                   placement = 'h',
+                   )
+
+writeLines(tab_1, 'tab_1.tex')
+
+```
+
+```{=latex}
+\input{tab_1.tex}
 ```
 
 ```{r, include=FALSE}
@@ -230,7 +386,7 @@ options(tinytex.verbose = TRUE)
 # Present investigation 
 The aim was to investigate whether HR measures assessed by a Fitbit Charge 4 are a suitable and effective method to **(1)** map teachers course of arousal over the course of a five phase lab study, including a micro teaching unit,  and **(2)**  examine whether HR measures can be predicted by self-reported data on cognitive appraisal.
 
-Within the time frame of approximately two hours, we investigated five intervals with a duration of 10-minutes each: In the (1) pre-teaching phase, the subjects were prepared for the following micro teaching unit  teaching lesson and familiarized with the setting. During the (2) teaching phase, the participants taught a 15-minute self-prepared lesson to a "class" of three actors that simulated nine classroom disruptions . In the following (3) post-teaching phase, the subjects answered a questionnaires, followed by  and in the (4) interview phase, in which they subjects watched thea pre-recorded video of their 15-minute lesson to assess the self-report data of how disrupted subjects felt and how confident they felt in dealing with disruptions. In the (5) end phase, the subject answered another  second questionnaire.
+Within the time frame of approximately two hours, we investigated five intervals with a duration of 10-minutes each: In the (1) pre-teaching phase, the subjects were prepared for the following micro teaching unit  teaching lesson and familiarized with the setting. During the (2) teaching phase, the participants taught a 15-minute self-prepared lesson to a "class" of three actors that simulated nine classroom disruptions . In the following (3) post-teaching phase, the subjects answered a questionnaires, followed by  and in the (4) interview phase, in which they subjects watched thea pre-recorded video of their 15-minute lesson to assess the self-report data of how disrupted subjects felt and how confident they felt in dealing with disruptions. In the (5) end phase, the subject answered another second questionnaire.
 
 According to previous findings that fitness trackers can be used as a low-cost, non-invasive method of measuring HR [@hajj2022wrist; @fuller2020reliability] and that different HRs of teachers can be measured in different teaching phases [@donker2020associations; @junker2021potential], we formulate the hypotheses as follows:
 
