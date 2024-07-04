@@ -32,6 +32,7 @@ needs(tidyverse,
 
 ```
 
+
 # Presence Questionnaire
 
 After each micro-teaching-unit, participants answered items on teaching quality using a validated questionnaire [@helmke2014unterrichtsdiagnostik] and self developed scales on the teacher's presence behavior derived from the research literature. The questionnaire was a 4-point Likert scale (1 = Strongly Disagree; 4 = Strongly Agree).
