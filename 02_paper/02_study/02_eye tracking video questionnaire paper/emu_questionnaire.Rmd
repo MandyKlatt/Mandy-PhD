@@ -37,62 +37,23 @@ needs(tidyverse,
 
 After each micro-teaching-unit, participants answered items on teaching quality using a validated questionnaire [@helmke2014unterrichtsdiagnostik] and self developed scales on the teacher's presence behavior derived from the research literature. The questionnaire was a 4-point Likert scale (1 = Strongly Disagree; 4 = Strongly Agree).
 
-
-Klassenmanagement:
-
-LM01_01	Klassenmanagement: Die gesamte Unterrichtslektion wurde für den Lernstoff verwendet.
-
-LM01_02	Klassenmanagement: Ich habe alles mitbekommen, was in der Klasse passiert ist.
-
-LM01_03	Klassenmanagement: Den Lernenden war jederzeit klar, was sie tun sollten.
-
-LM01_04	Klassenmanagement: Die Lernenden konnten ungestört arbeiten.
-
-LM01_05	Klassenmanagement: Die Lernenden waren die ganze Unterrichtslektion über aktiv bei der Sache.
-
-LM01_06	Klassenmanagement: Ich habe vieles mit kurzen Blicken und knappen Gesten geregelt.
-
-LM01_07	Klassenmanagement: Auf Störungen habe ich angemessen reagiert.
-
-LM01_08	Klassenmanagement: Bei Störungen gab ich den Lernenden ein klares STOP-Signal.
-
-Präsenz:
-
-LP01_01	Präsenzindikatoren: Ich hatte eine aufrechte, der Klasse zugewandte Körperhaltung.
-
-LP01_02	Präsenzindikatoren: Ich habe den Lernenden direkt in die Augen geschaut.
-
-LP01_03	Präsenzindikatoren: Ich habe meine Position im Raum bewusst eingesetzt und variiert.
-
-LP01_04	Präsenzindikatoren: Ich habe alle oft angesehen.
-
-LP01_05	Präsenzindikatoren: Meine Artikulation, Lautstärke und Tonhöhe waren angemessen.
-
-LP01_06	Präsenzindikatoren: Meine Sprechgeschwindigkeit und Sprechpausen waren angemessen.
-
-LP01_07	Präsenzindikatoren: Mein Sprechanteil an der gesamten Sprechzeit der Unterrichtslektion war angemessen.
-
-LP01_08	Präsenzindikatoren: Meine Gestik und Mimik waren abwechslungsreich und ausdrucksstark.
-
-Natürliches Verhalten:
-
-LV01_01	Natürliches Verhalten: Während der Unterrichtslektion habe ich mich sehr natürlich verhalten.
-
-LV01_02	Natürliches Verhalten: Es war für mich kein Problem, vor einer fiktiven Klasse zu unterrichten.
-
-LV01_03	Natürliches Verhalten: Beim Unterrichten vor einer fiktiven Klasse habe ich mich so verhalten, wie ich 
-es auch in der Schule tun würde.
-
-
 ```{r presence_questionnaire, echo=FALSE, results=TRUE}
+
+# original scale analysis
 
 # load data files
 quest.data <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  dplyr::select(LI06_05, 
-                LB01_01:LB01_03,
-                LM01_01:LM01_08,
+  dplyr::select(LB01_01:LB01_03,
+                LM01_01,
+                LM01_03:LM01_08,
                 LP01_01:LP01_08,
-                LV01_01:LV01_03)
+                LV01_01:LV01_03) 
+
+# descriptive data
+describe(quest.data)
+
+# omega
+omega(quest.data)
 
 # creating a matrix
 quest.table <- matrix(data = NA, nrow = 4, ncol = 8)
@@ -178,6 +139,109 @@ quest.table,
   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
 )
 
+
+# load data files with modified sclaes
+quest.data <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
+  dplyr::select(LB01_01:LB01_03,
+                LM01_01:LM01_08,
+                LP01_01:LP01_08,
+                LV01_01:LV01_03) %>% 
+  rename(
+    LZ01_06 = LM01_06,
+    LZ01_07 = LM01_07,
+    LZ01_08 = LM01_08
+    )
+
+# descriptive data
+describe(quest.data)
+
+# omega
+omega(quest.data)
+
+# creating a matrix
+quest.table <- matrix(data = NA, nrow = 5, ncol = 8)
+rownames(quest.table) <- c("LM", "LB", "LP", "LV", "LZ")
+colnames(quest.table) <- c("N Items","M","SD","Min","Max","Skewness","Kurtosis","Alpha")
+
+# creating a loop
+i <- "LM"
+
+for (i in c("LM", "LB", "LP", "LV", "LZ")) {
+
+loop.data <- quest.data %>%
+  dplyr::select(starts_with(match = i))
+
+quest.table[i, "N Items"] <- length(loop.data)
+
+# calculating mean
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  mean() %>%
+  round(., digits = 2) ->
+quest.table[i, "M"]
+
+# calculating SD
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  sd() %>%
+  round(., digits = 2) ->
+quest.table[i, "SD"]
+
+# calculating Min
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  min() %>%
+  round(., digits = 2) ->
+quest.table[i, "Min"]
+
+# calculating Max
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  max() %>%
+  round(., digits = 2) ->
+quest.table[i, "Max"]
+
+# calculating Skewness
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  skewness() %>%
+  round(., digits = 2) ->
+quest.table[i, "Skewness"]
+
+# calculating Kurtosis
+loop.data %>%
+  mutate(mean = rowMeans(.)) %>%
+  pull(mean) %>%
+  kurtosis() %>%
+  round(., digits = 2) ->
+quest.table[i, "Kurtosis"]
+
+# calculating Alpha
+alpha <- loop.data %>%
+  cronbach.alpha()
+
+quest.table[i, "Alpha"] <- round(alpha$alpha,2)
+
+}
+
+# rename columns
+rownames(quest.table) <- c("Classroom Management", "Balance", "Presence", "Natural Behavior", "Additional")
+
+# format and insert table in manuscript
+papaja::apa_table(
+quest.table,
+  caption = "Scale analysis for teachers' self-assessment",
+  # note = "Write Note here",
+  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+  font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+)
+
 ```
 
 ```{r item_analysis_classroom_management, echo=FALSE, results='asis'}
@@ -210,3 +274,9 @@ quest.data %>%
   tab_itemscale()
 ```
 
+```{r item_analysis_additional, echo=FALSE, results='asis'}
+quest.data %>%
+  dplyr::select(contains("LZ")) %>%
+  as.data.frame() %>%
+  tab_itemscale()
+```

@@ -556,11 +556,17 @@ LV01_03	Natürliches Verhalten: Beim Unterrichten vor einer fiktiven Klasse habe
 
 # load data files
 quest.data <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  dplyr::select(LI06_05, 
-                LB01_01:LB01_03,
-                LM01_01:LM01_08,
+  dplyr::select(LB01_01:LB01_03,
+                LM01_01,
+                LM01_03:LM01_08,
                 LP01_01:LP01_08,
-                LV01_01:LV01_03)
+                LV01_01:LV01_03) 
+
+# descriptive data
+describe(quest.data)
+
+# omega
+omega(quest.data)
 
 # creating a matrix
 quest.table <- matrix(data = NA, nrow = 4, ncol = 8)
