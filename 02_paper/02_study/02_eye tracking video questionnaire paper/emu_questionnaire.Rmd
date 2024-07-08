@@ -291,31 +291,41 @@ quest.data %>%
 
 # Exploratory factor analysis
 ```{r item_analysis_additional, echo=FALSE, results='asis'}
+
 ## Bartlett-Test 
 # --> prüft, ob Items miteinander korrelieren; das sollten sie tun
+
 cortest.bartlett(quest.data)
+
 # p < .05 --> p signifikant, d.h. Items korrelieren
 
 ## Kaiser-Meyer-Olkin-Kriterium (KMO-Werte) Measure of Adequacy (MSA) prüfen 
 # gibt an, ob ein Datensatz für eine Faktorenanalyse geeignet ist
 # --> KMO & MSA-Werte sollten größer als 0.5 sein
+
 KMO(quest.data)
+
 # overall MSA = 0.7
 # einzelne MSA-Werte checken; sollten auch alle größer als 0.5 sein
+
 # Item "LZ01_06 Ich habe vieles mit kurzen Blicken und knappen Gesten geregelt" hat einen Wert von 0.43 --> Ausschluss 
+
 quest.data[, !names(quest.data) %in% c("LZ01_06")] -> clean.data.quest
 KMO(clean.data.quest)
 
 ## Anzahl Faktoren mit MAP-Test (unter anderem) 
-# # durch verschiedene Methoden wird optimale Anzahl an Faktoren ermittelt
+# durch verschiedene Methoden wird optimale Anzahl an Faktoren ermittelt
 # MAP-Test wird häufig empfohlen 
 # mit Varimax-Rotation (macht Sinn, da man die Interpretierbarkeit der Faktoren verbessert) und ML-Faktorenanalyse
+
 nfactors(clean.data.quest, 
          rotate = "varimax", 
          fm = "mle")
+
 # MAP-Wert = 2 Faktoren
 
 ## Anzahl Faktoren kann auch mit Parallelanalyse bestimmt werden
+
 ev <- eigen(cor(clean.data.quest))
 ap <- parallel(subject = nrow(clean.data.quest),
                var = ncol(clean.data.quest),
@@ -324,20 +334,26 @@ ap <- parallel(subject = nrow(clean.data.quest),
 nS <- nScree(x = ev$values,
              aparallel = ap$eigen$qevpea)
 plotnScree(nS)
+
 # Parallel Analysis n = 2 factors
+
+###################################################
 
 ## Maximum-Likelihood-Faktorenanalyse
 # passt methodisch am besten, wenn man noch eine konfirmatorische Faktorenanalyse machen will
-# 2 Faktoren
+# n Faktoren
 # Varimax-Rotation
+
 fit1 <- factanal(x = clean.data.quest,
                  factors = 4, # inhaltlich macht es keinen Sinn, nur 2 Faktoren anzunehmen
                  rotation = "varimax")
 
 # Ergebnisse ausgeben lassen mit 2 Dezimalstellen und Faktorenladung < 0.3 unterdrückt
+
 print(fit1, 
       digits = 2,
       cutoff = .3)
+
 # wir sehen Faktorladungen, um die Faktoren zu interpretieren
 # Faktorladungen wurden nur ausgegeben, wenn sie größer als 0.3 und -0.3 waren (um nur große Faktorladungen zu sehen)
 # weiter unten: erklärte Varianz (Cumulative Var = 0.29) und wie ist Zuwachs der erklärten Varianz durch einzelne Faktoren
@@ -345,12 +361,15 @@ print(fit1,
 
 # Mit Uniquenesses kann Kommunalität berechnet werden
 # --> zeigen an, wie viel Varianz von den einzelnen Items durch die Faktoren erklärt wird (wie wichtig sind die einzelnen Items für Lösung)
+
 1-fit1$uniquenesses
 
 # Screeplot zur Visualisierung
+
 scree.plot(fit1$correlation)
 
 
+###################################################
 
 ## Hauptachsenfaktorenanalyse
 # 4 Faktoren
@@ -361,16 +380,47 @@ fit2 <- fa(r = clean.data.quest,
            rotate = "varimax")
 
 # Ergebnisse ausgeben
+
 fit2
 
 # Faktorladungen ausgeben
+
 fit2$loadings
 
 # Kommunalitäten ausgeben
+
 fit2$communality
 
 # Sceeplot 
+
 plot(fit2$values, 
+     type = "b")
+
+###################################################
+
+## Hauptkomponentenanalyse
+# 4 Faktoren
+# Varimax-Rotation
+
+fit3 <- principal(r = clean.data.quest,
+                  nfactors = 3, 
+                  rotate = "varimax")
+
+# Ergebnisse ausgeben
+
+fit3
+
+# Faktorladungen ausgeben
+
+fit3$loadings
+
+# Kommunalitäten ausgeben
+
+fit3$communality
+
+# Sceeplot 
+
+plot(fit3$values, 
      type = "b")
 
 ```
