@@ -1,0 +1,195 @@
+---
+title: "Through the eyes of the teacher - Multimodal exploration of expertise differences
+  in the perception of classroom disruptions in a laboratory study"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r include=FALSE}
+# install.packages("needs")
+
+# suppress "summarize" info. 
+# if this line is ommitted, each table using the summarize function will be accompanied with a warning from the console
+options(dplyr.summarise.inform = FALSE)
+
+library(needs)
+needs(tidyverse,
+      lubridate,
+      viridis,
+      grid,
+      gridExtra,
+      cowplot,
+      readxl,
+      ARTofR,
+      moments,
+      ltm,
+      sjPlot,
+      kableExtra,
+      xtable,
+      DescTools,
+      formattable,
+      psych)
+
+```
+
+## Participants
+
+```{r demographicstable, include = TRUE, echo=FALSE}
+
+# read in data and select and rename relevant columns with transmute 
+demo.data <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% 
+  transmute(Group = LI06_05,
+            Gender = LI02_01_1,
+            Age = LI03_01,
+            `Teaching Experience` = LI04_01,
+            School_type = LI18,
+            Grade = LI16_05,
+            Subject = LI10_05,
+            Semester = LI11_01,
+            Internship = LI13_01,
+            `Extracurricular Teaching Experience` = LI14,
+            `Secondary Teaching Activities` = LI17
+            )
+
+# define expert and novice with ifelse function
+demo.data$Group = ifelse(demo.data$Group < 200, "Novice","Expert")
+
+# changing gender to count female gender (male = 2 --> 0)
+demo.data$Gender = ifelse(demo.data$Gender == 2, "1","0")
+
+# changing character Gender into numeric
+demo.data$Gender <- as.numeric(demo.data$Gender)
+
+# creating new column with total participants to calculate percent of gender
+demo.data <- demo.data %>%
+  group_by(Group) %>%
+  mutate(Sum_participants = n())
+
+# replacing 2 to 1 (Oberschule = Gymnasisium --> Secondary school)
+demo.data$School_type[demo.data$School_type == 2] <- "1"
+
+# creating new column to calculate percent of school type
+demo.data <- 
+  demo.data %>%
+  group_by(School_type, Group) %>%
+  mutate(Count_Schooltype = sum(n())) %>% 
+  mutate(Percent_schooltype = round((Count_Schooltype/Sum_participants) * 100, 
+         digits = 2))
+
+# changing character Percent_schooltype into numeric
+demo.data$Percent_schooltype <- as.numeric(demo.data$Percent_schooltype)
+
+# changing character Semester into numeric
+demo.data$Semester <- as.numeric(demo.data$Semester)
+
+
+# changing Type of School into character
+# LI18:
+# 1: Grundschule
+# 2: Oberschule
+# 3: Gymnasium
+# 4: Förderschule/Sondershausen
+# 5: Berufsbildende Schule
+# -1: andere Schulform
+demo.data$School_type <- factor(x = demo.data$School_type,
+                   levels = c("1","3","4","5","-1"), # Mögliche Werte # andere Möglichkeit: unique(demo.data$School_type)
+                   labels = c("Primary School","Secondary School", "Special Education","Vocational School", "Other Schooltype")) # Bezeichnungen
+
+# changing `Extracurricular Teaching Experience` to count experience (no experience = 2 --> 0)
+demo.data$`Extracurricular Teaching Experience` = ifelse(demo.data$`Extracurricular Teaching Experience` == 1, "1","0")
+
+# changing character Extra. Exp. into numeric
+demo.data$`Extracurricular Teaching Experience` <- as.numeric(demo.data$`Extracurricular Teaching Experience`)
+
+# changing `Secondary Teaching Activities` to count experience (no experience = 2 --> 0)
+demo.data$`Secondary Teaching Activities` = ifelse(demo.data$`Secondary Teaching Activities` == 1, "1","0")
+
+# changing character Extra. Exp. into numeric
+demo.data$`Secondary Teaching Activities` <- as.numeric(demo.data$`Secondary Teaching Activities`)
+
+# create new columns that give proportion of Gender
+# percent = female gender divided by all female Gender
+# demo.data <- demo.data  %>% 
+#   group_by(Group) %>% 
+#   mutate(Gender_percent = Gender/Sum_participants) %>% 
+#   mutate(Gender_percent = round(sum(Gender_percent)*100, digits=0))
+
+# create a basic table (tibble) using tidyverse functions
+demo.table <- demo.data %>%
+  group_by(Group) %>%
+  summarise(N=n(),
+            "Women in percent" = round(sum(Gender/Sum_participants) * 100, 
+                                               digits = 2),
+            "M Age in years" = round(mean(Age), 
+                                     digits = 2),
+            "SD Age in years" = round(sd(Age), 
+                                      digits = 2),
+            "Min Age in years" = min(Age),
+            "Max Age in years" = max(Age),
+                       "M Exp." = round(mean(`Teaching Experience`), 2),
+            "SD Exp." = round(sd(`Teaching Experience`), 2),
+            "Min Exp." = min(`Teaching Experience`),
+            "Max Exp." = max(`Teaching Experience`)
+            )
+
+knitr::kable(demo.table,
+             caption = "Demographic information & teaching experience")
+
+# # format and insert table in manuscript
+# demo.table %>%
+# papaja::apa_table(
+#   caption = "Demographic Information",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+#   )
+
+
+# create a basic table (tibble) using tidyverse functions
+exp.table <- demo.data %>%
+  group_by(Group) %>%
+  summarise(N=n(),
+           "M Exp." = round(mean(`Teaching Experience`), 2),
+            "SD Exp." = round(sd(`Teaching Experience`), 2),
+            "Min Exp." = min(`Teaching Experience`),
+            "Max Exp." = max(`Teaching Experience`),
+            "M Semester" = round(mean(Semester), 2),
+            "SD Semester" = round(sd(Semester), 2),
+            "Min Semester" = min(Semester),
+            "Max Semester" = max(Semester),
+            "M Internship" = round(mean(Internship), 2),
+            "SD Internship" = round(sd(Internship), 2),
+            "Min Internship" = min(Internship),
+            "Max Internship" = max(Internship),
+            "Extracurricular Teaching Experience" = round(sum(`Extracurricular Teaching Experience`/Sum_participants) * 100, digits = 2),
+            "Secondary Teaching Activities" = round(sum(`Secondary Teaching Activities`/Sum_participants) * 100)
+           )
+
+# # format and insert table in manuscript
+# exp.table %>%
+# papaja::apa_table(
+#   caption = "Teaching Experience in years, internship experience in teaching units (45min) and extracurricular teaching experience in percent",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+#   )
+
+
+
+```
+
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
