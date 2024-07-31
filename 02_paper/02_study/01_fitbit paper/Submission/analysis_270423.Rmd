@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
 	warning = FALSE
 )
 ```
-
+# Packages & read in data
 ```{r}
 library(needs)
 needs(ltm,
@@ -42,7 +42,9 @@ needs(ltm,
       tidyverse,
       ggplot2,
       lavaan,
-      lm.beta)
+      lm.beta,
+      psych,
+      stats)
 
 
 # disruption & confidence rating
@@ -80,15 +82,17 @@ df_merge <- merge(df_demo,
                   df_rating,
                   by = "ID") %>% 
   filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
-                    "132")
+                    "132",
+                    "236")
          )
 
 # rm(list = c("df_demo","df_rating"))
 
-
 data_path <- "./data/heart_rate_data"
 
-main <-
+
+# single bpm values (data frame with only single measurement point)
+main_single_hr <-
 map(.x = dir(path = data_path,
              pattern = ".csv"),
     ~ read_csv(file.path(data_path, .), 
@@ -116,33 +120,45 @@ map(.x = dir(path = data_path,
     ) %>%
   bind_rows()
 
-main <-
-  left_join(main, df_merge,
-            by = "ID")
-
-main <- 
-  main %>% 
-  dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
-  distinct() %>% 
-  group_by(ID) %>% 
+# adding z-standardized HR
+main_single_hr <-
+  main_single_hr %>%
+  dplyr::select("time", "heart_rate", "ID", "time_span") %>%
+  distinct() %>%
+  group_by(ID) %>%
   dplyr::summarise(mean_heart = mean(heart_rate),
             sd_heart = sd(heart_rate)) %>%
-  ungroup() %>% 
+  ungroup() %>%
   right_join(x = .,
-             y = main,
-             by = "ID") %>% 
+             y = main_single_hr,
+             by = "ID") %>%
   filter(!(time_span == "teaching" & time > 600)) %>%
   mutate(heart_rate_std = (heart_rate - mean_heart)/
            sd_heart)
-   
+
+## count for individuals 
+main_single_hr %>% 
+  filter(time >= 7200) %>% 
+  distinct(ID, .keep_all = TRUE) -> filter_overall
 
 ```
 
 # Descriptives
 ```{r descriptive statistics}
 
+# # Count for in-service and pre-service teachers
+# # Remove duplicate cases
+# distinct_df <- distinct(main, ID, gender, .keep_all = TRUE)
+# 
+# # Count individual cases
+# case_summary <- distinct_df %>%
+#   filter(ID > 200) %>% 
+#   count(gender == "male")
+# print(case_summary)
+
+
 # Mean, SD and range for overall (unstandardized)
-descrip_hr_overall <- main %>%
+descrip_hr_overall <- main_single_hr %>%
   filter(time_span %in% c("overall")) %>% 
   summarise(N = n_distinct(ID),
             "M heart rate in bpm" = round(mean(heart_rate),
@@ -154,7 +170,7 @@ descrip_hr_overall <- main %>%
   )
 
 # Mean, SD and range for overall (standardized)
-descrip_hr_overall_std <- main %>%
+descrip_hr_overall_std <- main_single_hr %>%
   filter(time_span %in% c("overall")) %>% 
   summarise(N = n_distinct(ID),
             "M std heart rate in bpm" = round(mean(heart_rate_std),
@@ -168,7 +184,7 @@ descrip_hr_overall_std <- main %>%
             )
 
 # Mean, SD and range for individual phases (unstandardized)
-descrip_hr_phases <- main %>% 
+descrip_hr_phases <- main_single_hr %>% 
   filter(!time_span %in% c("overall")) %>% 
   group_by(time_span) %>% 
   summarise(N = n_distinct(ID),
@@ -181,17 +197,17 @@ descrip_hr_phases <- main %>%
   )
 
 # Mean, SD and range for individual phases (standardized)
-descrip_hr_phases_std <- main %>% 
+descrip_hr_phases_std <- main_single_hr %>% 
   filter(!time_span %in% c("overall")) %>% 
   group_by(time_span) %>% 
   summarise(N = n_distinct(ID),
-            "M heart rate in bpm" = round(mean(heart_rate_std),
+            "M heart rate std" = round(mean(heart_rate_std),
                                      digits = 2),
-            "SD heart rate in bpm" = round(sd(heart_rate_std),
+            "SD heart rate std" = round(sd(heart_rate_std),
                                       digits = 2),
-            "Min heart rate in bpm" = round(min(heart_rate_std),
+            "Min heart rate std" = round(min(heart_rate_std),
                                             digits = 2),
-            "Max heart rate in bpm" = round(max(heart_rate_std),
+            "Max heart rate std" = round(max(heart_rate_std),
                                             digits = 2)
   )
 
@@ -227,124 +243,187 @@ rating_table <-
 
 ```
 
-# Graph
-
+# Plots
 ```{r fig.width = 10,results='hide',fig.keep='all'}
-loess_plot_overall <-
-  main %>% 
+
+## Overall Course Plot (std. vs. unstd.)
+# data frame unstd. HR
+df_heart_rate <- 
+  main_single_hr %>% 
+  mutate(time = time / 60) %>% 
   filter(time_span == "overall") %>%
-  dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
+  dplyr::select("ID","time","heart_rate") %>% 
   distinct() %>% 
+  mutate(type = "a. Heart Rate (in beats per minute)")
+
+# data frame std. HR
+df_heart_rate_std <- 
+  main_single_hr %>% 
+  mutate(time = time / 60) %>% 
+  filter(time_span == "overall") %>%
+  dplyr::select("ID","time","heart_rate_std") %>% 
+  distinct() %>% 
+  transmute(ID,
+            time,
+            type = "b. Heart Rate (standardized)",
+            heart_rate = heart_rate_std
+            )
+# bind data frames
+bind_rows(df_heart_rate,
+          df_heart_rate_std
+          ) -> df_hr_hr_std
+# plotting
+df_hr_hr_std %>% 
   ggplot(mapping = aes(x = time,
-                       y = heart_rate_std
+                       y = heart_rate
                        )
          ) +
-  # geom_point(alpha = 0.05) + 
-  geom_smooth(se = FALSE,
+  geom_smooth(se = T,
               size = 0.5,
-              colour = "black") +
+              colour = "black",
+              level = 0.99) +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
-  scale_x_continuous(expand = c(0, NA),
-                     breaks = seq(0, 9000, 600)) +
-  scale_y_continuous(breaks = seq(-1, 1, 0.5)) + 
-  labs(x = "Time (in Seconds)",
-       y = "") +
-  ggtitle("Overall Course of Mean Heart Rate") +
-  theme_apa() + 
-  theme(axis.title.y = element_blank())
-
-
-lm_plot_phases <-
-  main %>% 
-  filter(time_span != "overall") %>%
-  dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
-  mutate(time_span = factor(time_span,
-                            levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("Pre-teaching\nphase","Teaching\nphase","Post-teaching\nphase","Interview\nphase","End\nphase"))) %>% 
-  distinct() %>% 
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate_std
-                       )
-         ) +
-  # geom_point(alpha = 0.05) + 
-  geom_smooth(method = "lm",
-              se = TRUE,
-              size = 0.5,
-              colour = "black") +
-  scale_color_viridis_d(option = "A",
-                        end = 0.8) +
-  scale_linetype_manual(values = c(1, 6)) +
-  # scale_x_continuous(expand = c(0, NA),
-  #                    breaks = seq(0, 9000, 600)) +
-  #scale_y_continuous(breaks = seq(0, 160, 5)) + 
-  labs(x = "Time (in Seconds)",
+  scale_x_continuous(expand = c(0.01,0)) + 
+  labs(x = "Time (in minutes)",
        y = "",
-       subtitle = "") +
-  theme_apa() +
-  theme(axis.title.y = element_blank()) +
-  facet_grid(cols = vars(time_span),
-             scales = "free_x")
+       ) +
+  theme_apa() + 
+  facet_wrap(~ type,
+             ncol = 2,
+             scales = "free_y") -> loess_plot_std_unstd
 
-ggsave(filename = "plots_publication/lm_plot.png",
-       width = 22,
+loess_plot_std_unstd
+
+ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
+       width = 16,
        height = 12,
        units = "cm")
 
 
-ki_plot_phases <-
-  main %>% 
-  filter(time_span != "overall") %>%
-  dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
-  mutate(time_span = factor(time_span,
-                            levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("Pre-teaching Interval","Teaching Interval","Post-teaching Interval","Interview Interval","End Interval"))) %>% 
-  distinct() %>%
-  group_by(time_span) %>% 
-  summarise(z_mean = mean(heart_rate_std),
-            z_sd = sd(heart_rate_std),
-            z_t = qt(p = 0.01 / 2,      # 0.01 KI
-               df = n() - 1,
-               lower.tail = F
-               ),
-            z_error = z_sd / sqrt(n()),
-            lower = z_mean - z_t * z_error,
-            upper = z_mean + z_t * z_error,
+## Mean Plot
+# main_single_hr %>% 
+#   filter(time_span != "overall") %>%
+#   dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
+#   mutate(time_span = factor(time_span,
+#                             levels = c("preparation","teaching","post","interview","end"),
+#                             labels = c("Pre-teaching\nInterval","Teaching\nInterval","Post-teaching\nInterval","Interview\nInterval","End\nInterval"))) %>% 
+#   distinct() %>%
+#   group_by(time_span) %>% 
+#   summarise(z_mean = mean(heart_rate_std),
+#             z_sd = sd(heart_rate_std),
+#             z_t = qt(p = 0.05 / 2,      # 0.05 KI
+#                df = n() - 1,
+#                lower.tail = F
+#                ),
+#             z_error = z_sd / sqrt(n()),
+#             lower = z_mean - z_t * z_error,
+#             upper = z_mean + z_t * z_error,
+#             ) %>% 
+#   ungroup() %>% 
+#   ggplot(mapping = aes(x = factor(0),
+#                        y = z_mean)) + 
+#   geom_point() +
+#   geom_errorbar(mapping = aes(ymin = lower,
+#                               ymax = upper),
+#                 width = 0.2) +
+#   geom_hline(yintercept = 0,
+#              linetype = "dashed") +
+#   ylim(-1.5, 1.5) + 
+#   scale_y_continuous(breaks=seq(-1.5, 1.5, 0.5), 
+#                      limits=c(-1.5, 1.5)
+#                      ) + 
+#   labs(x = "Time (in Minutes)",
+#        y = "Standardized Mean Heart Rate",
+#        # caption = expression(paste(italic("Note: "),
+#        #                            "The shadow around the line represents the 95% confidence interval."
+#        #                            )
+#        #                      )
+#        ) +
+#   facet_grid(cols = vars(time_span),
+#              scales = "free_x") +
+#   theme_apa() +
+#   theme(axis.text.x = element_blank(),
+#         axis.ticks.x = element_blank(),
+#         plot.caption = element_text(hjust = 0))
+# 
+# ggsave(filename = "plots_publication/mean_plot.png",
+#        width = 20,
+#        height = 12,
+#        units = "cm")
+
+
+## Box Plot (over 81 participants) 
+box_plot <-
+  main_single_hr %>% 
+  filter(time_span != "overall") %>%   
+  dplyr::select("ID",
+         "time_span",
+         "heart_rate_std") %>% 
+  mutate(time_span = fct_recode(time_span,
+                                "Pre-teaching Interval" = "preparation",
+                                "Teaching Interval" = "teaching",
+                                "Post-teaching Interval" = "post",
+                                "Interview Interval" = "interview",
+                                "End Interval" = "end"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-teaching Interval",
+                                       "Teaching Interval",
+                                       "Post-teaching Interval",
+                                       "Interview Interval",
+                                       "End Interval"
+                                       ),
+                            labels = c("Pre-Teaching\nInterval",
+                                       "Teaching\nInterval",
+                                       "Post-Teaching\nInterval",
+                                       "Interview\nInterval",
+                                       "End\nInterval")
+                            )
+         ) %>%
+  distinct() %>% 
+  group_by(ID, time_span) %>%
+  summarise(mean_hr_std = 
+              mean(heart_rate_std, 
+                   na.rm = TRUE)
             ) %>% 
-  ungroup() %>% 
-  ggplot(mapping = aes(x = factor(0),
-                       y = z_mean)) + 
-  geom_point() +
-  geom_errorbar(mapping = aes(ymin = lower,
-                              ymax = upper),
-                width = 0.2) +
-  geom_hline(yintercept = 0,
-             linetype = "dashed") +
-  labs(subtitle = "1% Confidence Intervall",
-       x = "") +
-  facet_grid(cols = vars(time_span)) +
-  theme_apa() +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.title.y = element_blank())
+  ggplot(mapping = aes(x = time_span,
+                       y = mean_hr_std
+                       )
+         ) +
+  geom_boxplot()+
+  scale_y_continuous(breaks=seq(-2, 2, 1), 
+                     limits=c(-2, 2)
+                     ) +   
+  # geom_jitter(width = 0.2) +
+  theme_apa() + 
+  theme(axis.text.x = 
+          element_text(
+            color="black",
+            size = 12),
+        plot.caption = element_text(hjust = 0)
+        ) + 
+  labs(x = "",
+       y = "Mean Standardized Heart Rate",
+       caption = expression(
+         paste(italic("Note: N"), 
+               "= 81 participants per interval. Fig. shows median (bold line), interquartile range (box) and outliers (dots)."
+         )
+       ))
+
+box_plot
+
+ggsave(filename = "plots_publication/box_plot.png",
+       plot = box_plot,
+       width = 20,
+       height = 12,
+       units = "cm")
 
 
-text_y <- text_grob("Average Heart Rate (Standardized)",
-                   rot = 90)
-
-plot_overall <-
-  grid.arrange(loess_plot_overall, lm_plot_phases, ki_plot_phases,
-               ncol = 1,
-               left = text_y
-               )
-
-plot_overall
-
-
-
+## LM Plot
 lm_plot <-
-  main %>%
+  main_single_hr %>%
   filter(time_span != "overall") %>%
   dplyr::select("ID","time_span", "time","heart_rate_std") %>%
   mutate(time_span = factor(time_span,
@@ -358,21 +437,19 @@ lm_plot <-
                        y = heart_rate_std
                        )
          ) +
-  # geom_point(alpha = 0.05) +
   geom_smooth(method = "lm",
               se = T,
               size = 0.5,
               colour = "black",
-              level = 0.99) +
+              level = 0.95) +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
-  #scale_linetype_manual(values = c(1, 6)) +
   scale_x_continuous(breaks = seq(0, 10, 2)) +
   scale_y_continuous(breaks = seq(from = -1, to = 1, by = 0.5)) +
   labs(x = "Time (in Minutes)",
-       y = "Standardized Mean Heart Rate",
+       y = "Mean Standardized Heart Rate",
        caption = expression(paste(italic("Note: "),
-                                  "The shadow around the line represents the 99% confidence interval."
+                                  "The shadow around the line represents the 95% confidence interval."
                                   )
                             )
        ) +
@@ -382,19 +459,49 @@ lm_plot <-
   facet_grid(cols = vars(time_span),
              scales = "free_x")
 
+# lm_plot_phases <-
+#   main %>% 
+#   filter(time_span != "overall") %>%
+#   dplyr::select("ID", "time_span", "time", "heart_rate_std") %>% 
+#   mutate(time_span = factor(time_span,
+#                             levels = c("preparation","teaching","post","interview","end"),
+#                             labels = c("Pre-teaching\nphase", "Teaching\nphase", "Post-teaching\nphase", "Interview\nphase", "End\nphase"))) %>% 
+#   ggplot(aes(x = time, 
+#              y = heart_rate_std, 
+#              color = ID)
+#          ) +
+#   geom_smooth(method = "lm", 
+#               se = TRUE, 
+#               aes(group = ID), 
+#               size = 0.5) + # Regression per ID
+#   geom_smooth(data = . %>% 
+#                 group_by(time_span) %>% 
+#                 summarise_all(mean), 
+#               method = "lm", 
+#               se = TRUE, color = "black", 
+#               size = 1) + # Overall regression
+#   scale_color_viridis_d(option = "A", 
+#                         end = 0.8) +
+#   scale_linetype_manual(values = c(1, 6)) +
+#   labs(x = "Time (in Seconds)", 
+#        y = "", 
+#        subtitle = "") +
+#   theme_apa() +
+#   theme(axis.title.y = element_blank()) +
+#   facet_grid(cols = vars(time_span), 
+#              scales = "free_x")
+
 ggsave(filename = "plots_publication/lm_plot.png",
        plot = lm_plot,
        width = 20,
        height = 12,
        units = "cm")
-
 ```
 
 # Slopes and Intercepts
-
 ```{r}
 df_regression <- 
-  main %>% 
+  main_single_hr %>% 
   filter(time_span != "overall") %>%
   dplyr::select("ID", "time_span","time","heart_rate_std","heart_rate") %>% 
   distinct() %>% 
@@ -491,7 +598,6 @@ table_data %>%
 ```
 
 # Plots for all phases
-
 ```{r}
 mods <-   
   df_regression %>% 
@@ -533,7 +639,6 @@ list(`Preparation Phase` = list(name = "Pre-Teaching ", mod = mods$preparation, 
 
 # t-Tests 
 ## using heart rate means
-
 ```{r}
 df_ttest <- 
   df_regression %>% 
@@ -541,7 +646,6 @@ df_ttest <-
   summarise(mean_heart_rate = mean(heart_rate_std)) %>% 
   ungroup()
 ```
-
 ## Teaching vs. Pre-Teaching (mean HR)
 
 ```{r}
@@ -586,7 +690,6 @@ df_ttest %$%
 ```
 
 ## Teaching vs. End (mean HR)
-
 ```{r}
 df_ttest %$% 
   t.test(x = .$mean_heart_rate[.$time_span == "teaching"],
@@ -599,9 +702,113 @@ df_ttest %$%
          pooled = T)
 ```
 
+
+## ANOVA & planned constrasts
+```{r}
+# Data wrangling - preparing data for ANOVA
+df_anova <-
+  main_single_hr %>% 
+  filter(time_span != "overall") %>%   
+  dplyr::select("ID",
+         "time_span",
+         "heart_rate_std") %>% 
+  mutate(time_span = fct_recode(time_span,
+                                "Pre-teaching interval" = "preparation",
+                                "Teaching interval" = "teaching",
+                                "Post-teaching interval" = "post",
+                                "Interview interval" = "interview",
+                                "End interval" = "end"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-teaching interval",
+                                       "Teaching interval",
+                                       "Post-teaching interval",
+                                       "Interview interval",
+                                       "End interval"
+                                       )
+                            )
+         ) %>%
+  distinct() %>% 
+  group_by(ID, time_span) %>%
+  summarise(mean_hr_std = mean(heart_rate_std, na.rm = TRUE))
+
+# Counting participants in individual phases
+table(df_anova['time_span'])
+
+# descriptive analysis
+describeBy(df_anova$mean_hr_std,
+           df_anova$time_span)
+
+# Visualization
+bxp <- ggboxplot(df_anova, x = "time_span", y = "mean_hr_std", add = "point")
+bxp
+
+# Check for outliers
+outliers <-
+  df_anova %>%
+  group_by(time_span) %>%
+  identify_outliers(mean_hr_std)
+
+# check for normality assumption --> can be checked by computing Shapiro-Wilk test for each time point. If the data is normally distributed, the p-value should be greater than 0.05
+norm_assump <-
+  df_anova %>%
+  group_by(time_span) %>%
+  shapiro_test(mean_hr_std)
+
+# QQ plot draws the correlation between a given data and the normal distribution. 
+plot <- 
+  ggqqplot(df_anova, "mean_hr_std", facet.by = "time_span")
+
+df_anova_subset <- subset(df_anova, select = c(time_span, mean_hr_std))
+
+# anova
+df_anova_phase <- 
+  aov(df_anova_subset$mean_hr_std ~ df_anova_subset$time_span)
+summary(df_anova_phase)
+
+# effect size for ANOVA
+DescTools::EtaSq(df_anova_phase)
+f = sqrt (0.7202944/ (1-0.7202944))
+
+# planned constrasts
+model <- aov(mean_hr_std ~ time_span, data = df_anova_subset)
+summary (model)
+
+contrast1 <- c(-1, 1, 0, 0, 0)
+contrast2 <- c(0, 1, -1, 0, 0)
+contrast3 <- c(0, 1, 0, -1, 0)
+contrast4 <- c(0, 1, 0, 0, -1)
+
+contrasts(df_anova_subset$time_span) <- cbind(contrast1,
+                                              contrast2,
+                                              contrast3,
+                                              contrast4)
+
+model2 <- aov(mean_hr_std ~ time_span, data = df_anova_subset)
+summary(model2)
+
+summary.lm(model2, 
+            split = list (time_span = list ("Teaching interval vs. Pre-teaching interval" = 1,
+                                            "Teaching interval vs. Post-teaching interval" = 2,
+                                            "Teaching interval vs. Interview interval" = 3,
+                                            "Teaching interval vs. End interval" = 4
+                                            )
+                          )
+            )
+
+# effect size of pairwise comparisons
+library(dplyr)
+library(rstatix)
+effect_size_pwc <-
+  df_anova_subset %>%
+  cohens_d(mean_hr_std ~ time_span) %>% 
+  as.data.frame()
+
+```
+
+
 # t-Tests 
 ## using mean Slope 
-
 ```{r}
 df_ttest_slope <- 
   fix_models %>% 
@@ -612,7 +819,6 @@ df_ttest_slope <-
 
 
 ## Teaching vs. Interview (mean slope)
-
 ```{r}
 df_ttest_slope %$% 
   t.test(x = .$mean_slope[.$Phase == "Teaching Phase"],
@@ -624,7 +830,6 @@ df_ttest_slope %$%
          y = .$mean_slope[.$Phase == "Interview Phase"],
          pooled = T)
 ```
-
 ## Teaching vs. End (mean slope)
 
 ```{r}
@@ -640,7 +845,6 @@ df_ttest_slope %$%
 ```
 
 ## Interview vs. End (mean slope)
-
 ```{r}
 df_ttest_slope %$% 
   t.test(x = .$mean_slope[.$Phase == "Interview Phase"],
@@ -653,7 +857,24 @@ df_ttest_slope %$%
          pooled = T)
 ```
 
+
 ### Correlation 
+## age x teaching experience
+``` {r}
+main %>% 
+  filter(time_span == "overall") %>% 
+  group_by(ID) %>% 
+  select(ID,
+         teaching_experience,
+         age) -> teach_gender
+
+cor(cor_teach_gender$teaching_experience,
+    cor_teach_gender$age,
+    method = c("pearson")
+  ) -> cor_teach_gender
+
+```
+
 
 ## Pr-teaching phase
 ```{r}
@@ -803,9 +1024,18 @@ main %>%
 ```
 
 
-# Multiple Linear Regression (Mean)
+
+
+# Multiple Linear Regression (Mean) -- LOOP
 ```{r}
-main %>% 
+
+# multiple bpm values (merged data frame for multiple regression with multiple measurement points)
+main_multiple_hr <-
+  left_join(main_single_hr,
+            df_merge,
+            by = "ID")
+
+main_multiple_hr %>% 
   group_by(ID, time_span) %>% 
   summarise(disruption_factor = mean(disruption_factor,
                                      na.rm = T),
@@ -872,8 +1102,7 @@ summary(regr_end3)
 summary(regr_post4)
 
 ```
-
-# Multiple Linear Regression (Slope)
+# Multiple Linear Regression (Slope) -- LOOP
 ```{r}
 
 main %>% 
@@ -957,132 +1186,8 @@ summary(regr_end4)
 
 ```
 
-# Overall Plot (unstd./std.)
-```{r}
-df_heart_rate <- 
-  main %>% 
-  mutate(time = time / 60) %>% 
-  filter(time_span == "overall") %>%
-  dplyr::select("ID","time","heart_rate") %>% 
-  distinct() %>% 
-  mutate(type = "a. Heart Rate (in beats per minute)")
-
-df_heart_rate_std <- 
-  main %>% 
-  mutate(time = time / 60) %>% 
-  filter(time_span == "overall") %>%
-  dplyr::select("ID","time","heart_rate_std") %>% 
-  distinct() %>% 
-  transmute(ID,
-            time,
-            type = "b. Heart Rate (standardized)",
-            heart_rate = heart_rate_std)
-
-# left_join(x = df_heart_rate,
-#           y = df_heart_rate_std,
-#           by = c("ID","time")) %>% 
-bind_rows(df_heart_rate,
-          df_heart_rate_std
-          ) %>% 
-  ggplot(mapping = aes(x = time,
-                       y = heart_rate
-                       )
-         ) +
-  # geom_point(alpha = 0.05) + 
-  geom_smooth(se = T,
-              size = 0.5,
-              colour = "black",
-              level = 0.99) +
-  scale_color_viridis_d(option = "A",
-                        end = 0.8) +
-  scale_linetype_manual(values = c(1, 6)) +
-  # scale_x_continuous(expand = c(0, NA),
-  #                    breaks = seq(0, 120, 10)) +
-  scale_x_continuous(expand = c(0.01,0)) + 
-  labs(x = "Time (in minutes)",
-       #y = "Heart Rate (in Beats per Minute)",
-       y = "",
-       # title = "Figure #",
-       # subtitle = "Overall Course of Average Heartrate",
-#        caption = expression(paste(italic("Note: "),
-# "The shadow around the line represents the 99% confidence interval. The confidence interval shown refers to the HR measurement points during the entire study period. We used the ggplot2 package (v3.3.3; Wickham, 2016) to calculate the moving average of the course."))
-       ) +
-  #ggtitle("Overall Course of Average Heartrate") +
-  theme_apa() + 
-  # theme(plot.subtitle = element_text(face = "italic"),
-  #       plot.caption = element_text(hjust = 0),
-  #       axis.line = element_line(colour = "black"),
-  #       panel.grid.major = element_blank(),
-  #       panel.grid.minor = element_blank(),
-  #       panel.border = element_blank(),
-  #       panel.background = element_blank()) +
-  facet_wrap(~ type,
-             ncol = 2,
-             scales = "free_y")
-
-ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
-       width = 16,
-       height = 12,
-       units = "cm")
-```
-
-# Mean Plot
-```{r}
-
-main %>% 
-  filter(time_span != "overall") %>%
-  dplyr::select("ID","time_span", "time","heart_rate_std") %>% 
-  mutate(time_span = factor(time_span,
-                            levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("Pre-teaching\nInterval","Teaching\nInterval","Post-teaching\nInterval","Interview\nInterval","End\nInterval"))) %>% 
-  distinct() %>%
-  group_by(time_span) %>% 
-  summarise(z_mean = mean(heart_rate_std),
-            z_sd = sd(heart_rate_std),
-            z_t = qt(p = 0.01 / 2,      # 0.01 KI
-               df = n() - 1,
-               lower.tail = F
-               ),
-            z_error = z_sd / sqrt(n()),
-            lower = z_mean - z_t * z_error,
-            upper = z_mean + z_t * z_error,
-            ) %>% 
-  ungroup() %>% 
-  ggplot(mapping = aes(x = factor(0),
-                       y = z_mean)) + 
-  geom_point() +
-  geom_errorbar(mapping = aes(ymin = lower,
-                              ymax = upper),
-                width = 0.2) +
-  geom_hline(yintercept = 0,
-             linetype = "dashed") +
-  ylim(-1, 1) + 
-  scale_y_continuous(breaks=seq(-1, 1, 0.5), 
-                     limits=c(-1, 1)) + 
-  labs(x = "Time (in Minutes)",
-       y = "Standardized Mean Heart Rate",
-       # caption = expression(paste(italic("Note: "),
-       #                            "The shadow around the line represents the 99% confidence interval."
-       #                            )
-       #                      )
-       ) +
-  facet_grid(cols = vars(time_span),
-             scales = "free_x") +
-  theme_apa() +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        plot.caption = element_text(hjust = 0))
-
-ggsave(filename = "plots_publication/mean_plot.png",
-       width = 20,
-       height = 12,
-       units = "cm")
-```
-
-
 
 # Multiple Linear Regression (Slope)
-
 # Pre Teaching Phase
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
@@ -1166,7 +1271,6 @@ fit_pre_3$model %>%
       
 
 ```
-
 # Teaching Phase
 
 ```{r echo = FALSE, results='asis'}
@@ -1297,7 +1401,6 @@ stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
 
 
 # Interview Phase
-
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 
@@ -1362,7 +1465,6 @@ stargazer::stargazer(fit_post_1, fit_post_2,fit_post_3, fit_post_4, fit_post_5,
 
 
 # End Phase
-
 ```{r echo = FALSE, results='asis'}
 df_multi <- 
   main %>% 

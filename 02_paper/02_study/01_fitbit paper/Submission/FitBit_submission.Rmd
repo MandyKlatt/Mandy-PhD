@@ -119,7 +119,8 @@ needs(ltm,
       viridis, 
       stargazer,
       papaja,
-      grid)
+      grid,
+      purrr)
 ```
 
 # Introduction 
@@ -700,15 +701,27 @@ Next, we examined HR changes (i.e., mean slopes) within each interval to test fo
 
 ```{r}
 df_regression <- 
-  main_single_hr %>% 
-  filter(time_span != "overall") %>%
-  dplyr::select("ID", "time_span","time","heart_rate_std","heart_rate") %>% 
-  distinct() %>% 
-  mutate(time = time / 60) %>% 
+  main_single_hr |> 
+  filter(time_span != "overall") |> 
+  dplyr::select("ID",
+                "time_span",
+                "time",
+                "heart_rate_std",
+                "heart_rate") |> 
+  distinct() |> 
+  mutate(time = time / 60) |> 
   mutate(ID = as_factor(ID),
          Phase = factor(time_span,
-                           levels = c("preparation","teaching","post","interview","end"),
-                            labels = c("Pre Teaching Phase","Teaching Phase","Post Teaching Phase","Interview Phase","End Phase")
+                        levels = c("preparation",
+                                   "teaching",
+                                   "post",
+                                   "interview",
+                                   "end"),
+                        labels = c("Pre Teaching Phase",
+                                   "Teaching Phase",
+                                   "Post Teaching Phase",
+                                   "Interview Phase",
+                                   "End Phase")
                            )
          )
 
@@ -786,6 +799,26 @@ table_data <-
             ) %>% 
   arrange(Phase)
 
+table_data$n[table_data$Phase == "Pre Teaching Phase"] <- df_regression %>% filter(Phase == "Pre Teaching Phase") %>% pull(heart_rate_std) %>% length()
+table_data$n[table_data$Phase == "Teaching Phase"] <- df_regression %>% filter(Phase == "Teaching Phase") %>% pull(heart_rate_std) %>% length()
+table_data$n[table_data$Phase == "Post Teaching Phase"] <- df_regression %>% filter(Phase == "Post Teaching Phase") %>% pull(heart_rate_std) %>% length()
+table_data$n[table_data$Phase == "Interview Phase"] <- df_regression %>% filter(Phase == "Interview Phase") %>% pull(heart_rate_std) %>% length()
+table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase == "End Phase") %>% pull(heart_rate_std) %>% length()
+
+tab_2 <- apa_table(table_data,
+                   placement = 'h',
+                   label = 'tab_2',
+                   caption = 'Descriptive statistics (n, M, SD) for the mean intercepts and the mean slopes for the five intervals',
+                   note = 'Please note that M and SD of the overall course vs. the individual intervals were not exactly 0 and 1 due to rounding differences.' 
+                   )
+
+writeLines(tab_2, 'tab_2.tex')
+
+```
+
+```{=latex}
+\input{tab_2.tex}
+```
 
 
 
