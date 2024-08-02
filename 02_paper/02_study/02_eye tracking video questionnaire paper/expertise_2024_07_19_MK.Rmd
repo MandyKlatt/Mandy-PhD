@@ -712,19 +712,34 @@ df_quest <- na.omit(df_quest)
 df_quest_table <-
   df_quest %>%
   group_by(Group) %>%
-  transmute(
-    Group = Group,
-    # "N cm" = length(c_across(starts_with("LM")), na.rm = TRUE),
-    "M cm" = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
-    "SD cm" = round(sd(c_across(starts_with("LM")), na.rm = TRUE), 2),
-    "Min cm" = round(min(c_across(starts_with("LM")), na.rm = TRUE), 2),
-    "Max cm" = round(max(c_across(starts_with("LM")), na.rm = TRUE), 2),
+  summarise(
+    N = n(),
+    "M cm" = round(mean(c_across(starts_with(
+      "LM"
+    )), na.rm = TRUE), 2),
+    "SD cm" = round(sd(c_across(starts_with(
+      "LM"
+    )), na.rm = TRUE), 2),
+    "Min cm" = round(min(c_across(starts_with(
+      "LM"
+    )), na.rm = TRUE), 2),
+    "Max cm" = round(max(c_across(starts_with(
+      "LM"
+    )), na.rm = TRUE), 2),
     # "N cm" = length(c_across(starts_with("LP")), na.rm = TRUE),
-    "M n&pv com" = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2),
-    "SD n&pv com" = round(sd(c_across(starts_with("LP")), na.rm = TRUE), 2),
-    "Min n&pv com" = round(min(c_across(starts_with("LP")), na.rm = TRUE), 2),
-    "Max n&pv com" = round(max(c_across(starts_with("LP")), na.rm = TRUE), 2)
-  )
+    "M n&pv com" = round(mean(c_across(starts_with(
+      "LP"
+    )), na.rm = TRUE), 2),
+    "SD n&pv com" = round(sd(c_across(starts_with(
+      "LP"
+    )), na.rm = TRUE), 2),
+    "Min n&pv com" = round(min(c_across(starts_with(
+      "LP"
+    )), na.rm = TRUE), 2),
+    "Max n&pv com" = round(max(c_across(starts_with(
+      "LP"
+    )), na.rm = TRUE), 2)
+  ) 
 
 knitr::kable(df_quest_table,
              caption = "Mean, SD, Min, Max for classroom managament and ")

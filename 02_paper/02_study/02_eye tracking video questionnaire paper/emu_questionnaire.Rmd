@@ -152,7 +152,7 @@ quest.data1 %>%
   ))
 ```
 
-# # Scale analysis --> Classroom Management (8 Items) and Presence (8 Items) 
+# Scale analysis --> Classroom Management (8 Items) and Presence (8 Items) 
 ```{r presence_questionnaire, echo=FALSE, results=TRUE}
 
 # load data files with modified scales
