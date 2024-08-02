@@ -118,7 +118,9 @@ needs(ltm,
       lme4,
       viridis, 
       stargazer,
-      papaja)
+      papaja,
+      grid,
+      purrr)
 ```
 
 # Introduction 
@@ -195,10 +197,9 @@ We expected lower HR levels for teachers with more teaching experience, particul
 ```{r data wrangling, include=FALSE}
 
 # disruption & confidence rating
-
 df_rating <- 
   excel_sheets("data/Coding_SRI.xlsx") |> 
-  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) |> # read in data with two sheets
+  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) |>  # read in data with two sheets
   dplyr::select(ID, # select relevant columns 
          "disruption_factor", # -99 = subject did not notice event; -100 = experimenter did not asked for event
          "confidence_factor",
@@ -215,9 +216,8 @@ df_rating <-
          )
 
 # demographic data
-
 df_demo <- 
-  read_excel("./data/data_empschul_labor_lehrperson.xlsx") |> # read in excel 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") |>  # read in excel 
   transmute(ID = LI06_05, # select and rename relevant columns 
             gender = factor(LI02_01_1,
                             levels = 1:2,
@@ -227,26 +227,28 @@ df_demo <-
             teaching_experience = LI04_01)
 
 # merge two data frames by ID 
-
 df_merge <- merge(df_demo,
                   df_rating,
                   by = "ID") |> 
   filter(!ID %in% c("126", # exclude cases with no fitbit data (to check see data Heart Rate)
-                    "132")
+                    "132",
+                    "236")
          )
 
 # rm(list = c("df_demo","df_rating"))
 
-
 data_path <- "./data/heart_rate_data"
 
-main <-
+
+# single bpm values (data frame with only single measurement point)
+
+main_single_hr <-
 map(.x = dir(path = data_path,
              pattern = ".csv"),
     ~ read_csv(file.path(data_path, .), 
                id = "id",
                col_types = c("t","n")
-               ) |> 
+               ) %>% 
   mutate(time = Time - min(Time),
          time = as.numeric(time),
          heart_rate = `Heart Rate`,
@@ -261,35 +263,38 @@ map(.x = dir(path = data_path,
          ID = str_extract(string = ID,
                           pattern = "[:digit:]{3}"),
          ID = as.numeric(ID)
-      ) |>
-    # filter(time <= 600) |> # filter for 10min intervals
-    filter(time <= 7200) |> # filter for 2 hours (maximal duration of study)
+      ) |> 
+    # filter(time <= 600) |>  # filter for 10min intervals
+    filter(time <= 7200) |>  # filter for 2 hours (maximal duration of study)
     dplyr::select(!c("Time","Heart Rate","id"))
-    ) |>
+    ) |> 
   bind_rows()
 
-main <-
-  left_join(main, df_merge,
-            by = "ID")
+# adding z-standardized HR
 
-main <- 
-  main %>% 
-  dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
-  distinct() %>% 
-  group_by(ID) %>% 
+main_single_hr <-
+  main_single_hr |> 
+  dplyr::select("time", "heart_rate", "ID", "time_span") |> 
+  distinct() |> 
+  group_by(ID) |> 
   dplyr::summarise(mean_heart = mean(heart_rate),
-            sd_heart = sd(heart_rate)) %>%
-  ungroup() %>% 
-  right_join(x = .,
-             y = main,
-             by = "ID") %>% 
-  filter(!(time_span == "teaching" & time > 600)) %>%
+            sd_heart = sd(heart_rate)) |> 
+  ungroup() |> 
+  right_join(y = main_single_hr,
+             by = "ID") |> 
+  filter(!(time_span == "teaching" & time > 600)) |> 
   mutate(heart_rate_std = (heart_rate - mean_heart)/
            sd_heart)
 
+## count for individuals 
+
+main_single_hr |> 
+  filter(time >= 7200) |> 
+  distinct(ID, .keep_all = TRUE) -> filter_overall
+
 N_prewrangling <- as.numeric(nrow(df_demo))
 
-N_postwrangling <- as.numeric(length(unique(main$ID)))
+N_postwrangling <- as.numeric(length(unique(main_single_hr$ID)))
 
 ```
 
@@ -362,7 +367,7 @@ The first part of our first research goal was to map participants’ overall HR 
 ```{r HR descriptives, include=FALSE}
 # Mean, SD and range for overall (unstandardized)
 
-descrip_hr_overall <- main |>
+descrip_hr_overall <- main_single_hr |> 
   filter(time_span %in% c("overall")) |> 
   summarise(N = n_distinct(ID),
             "M heart rate in bpm" = round(mean(heart_rate),
@@ -375,7 +380,7 @@ descrip_hr_overall <- main |>
 
 # Mean, SD and range for overall (standardized)
 
-descrip_hr_overall_std <- main |>
+descrip_hr_overall_std <- main_single_hr |> 
   filter(time_span %in% c("overall")) |> 
   summarise(N = n_distinct(ID),
             "M std heart rate in bpm" = round(mean(heart_rate_std),
@@ -390,9 +395,9 @@ descrip_hr_overall_std <- main |>
 
 # Mean, SD and range for individual phases (unstandardized)
 
-descrip_hr_phases <- main |> 
+descrip_hr_phases <- main_single_hr |> 
   filter(!time_span %in% c("overall")) |> 
-  group_by(time_span) |> 
+  group_by(time_span) %>% 
   summarise(N = n_distinct(ID),
             "M heart rate in bpm" = round(mean(heart_rate),
                                      digits = 2),
@@ -404,29 +409,19 @@ descrip_hr_phases <- main |>
 
 # Mean, SD and range for individual phases (standardized)
 
-descrip_hr_phases_std <- main |> 
+descrip_hr_phases_std <- main_single_hr |> 
   filter(!time_span %in% c("overall")) |> 
   group_by(time_span) |> 
   summarise(N = n_distinct(ID),
-            "M heart rate in bpm" = round(mean(heart_rate_std),
+            "M heart rate std" = round(mean(heart_rate_std),
                                      digits = 2),
-            "SD heart rate in bpm" = round(sd(heart_rate_std),
+            "SD heart rate std" = round(sd(heart_rate_std),
                                       digits = 2),
-            "Min heart rate in bpm" = round(min(heart_rate_std),
+            "Min heart rate std" = round(min(heart_rate_std),
                                             digits = 2),
-            "Max heart rate in bpm" = round(max(heart_rate_std),
+            "Max heart rate std" = round(max(heart_rate_std),
                                             digits = 2)
   )
-
-# # format and insert table in manuscript
-# descrip_hr_phases |>
-# papaja::apa_table(
-#   caption = "Mean, SD and range for teachers' heart rate in individual phases",
-#   # note = "Write Note here",
-#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
-#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
-#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
-#   )
 
 # Mean, SD and range for disruption and confidence factor
 
@@ -448,6 +443,7 @@ rating_table <-
             "Min confidence factor" = min(confidence_factor),
             "Max confidence factor" = max(confidence_factor)
             )
+
 ```
 
 ```{r table_1, include=FALSE}
@@ -476,10 +472,10 @@ descrip_hr_overall_std <- descrip_hr_overall_std |>
   mutate(Interval = 'overall')
 
 descrip_hr_phases_std <-  descrip_hr_phases_std |> 
-  rename(`M HR` = `M heart rate in bpm`,
-         `SD HR` = `SD heart rate in bpm`,
-         `Min` = `Min heart rate in bpm`,
-         `Max` = `Max heart rate in bpm`,
+  rename(`M HR` = `M heart rate std`,
+         `SD HR` = `SD heart rate std`,
+         `Min` = `Min heart rate std`,
+         `Max` = `Max heart rate std`,
          Interval = time_span)
 
 desc_hr_phases_std <- bind_rows(x = descrip_hr_overall_std,
@@ -516,8 +512,6 @@ tab_1 <- apa_table(df_desc_hr,
                    note = 'Please note that M and SD of the overall course vs. the individual intervals were not exactly 0 and 1 due to rounding differences.' 
                    )
 
-print(tab_1)
-
 writeLines(tab_1, 'tab_1.tex')
 
 ```
@@ -528,7 +522,7 @@ writeLines(tab_1, 'tab_1.tex')
 
 ```{r loess-plot, include=FALSE}
 df_heart_rate <- 
-  main |> 
+  main_single_hr |> 
   mutate(time = time / 60) |> 
   filter(time_span == "overall") |>
   dplyr::select("ID","time","heart_rate") |> 
@@ -536,7 +530,7 @@ df_heart_rate <-
   mutate(type = "a. Heart Rate (in Beats per Minute)")
 
 df_heart_rate_std <- 
-  main |> 
+  main_single_hr |> 
   mutate(time = time / 60) |> 
   filter(time_span == "overall") |>
   dplyr::select("ID","time","heart_rate_std") |> 
@@ -554,18 +548,28 @@ df_heart_rate |>
   geom_smooth(se = T,
               size = 0.5,
               colour = "black",
-              level = 0.95) +
+              level = 0.95
+              ) +
   scale_color_viridis_d(option = "A",
-                        end = 0.8) +
-  scale_linetype_manual(values = c(1, 6)) +
-  scale_x_continuous(expand = c(0.01,0)) + 
+                        end = 0.8
+                        ) +
+  scale_linetype_manual(values = c(1, 6)
+                        ) +
+  scale_x_continuous(expand = c(0.01,0)
+                     ) + 
  labs(x = "",
       y = "",
       ) +
   theme_apa() + 
   facet_wrap(~ type,
              ncol = 2,
-             scales = "free_y") -> loess_hr
+             scales = "free_y"
+             ) + 
+  theme(plot.margin = margin(r = 15,
+                             t = 20,
+                             b = 20)
+        ) -> loess_hr
+
 
 df_heart_rate_std |> 
   ggplot(mapping = aes(x = time,
@@ -587,21 +591,24 @@ df_heart_rate_std |>
   theme_apa() + 
   facet_wrap(~ type,
              ncol = 2,
-             scales = "free_y") -> loess_hr_std
+             scales = "free_y"
+             ) +
+  theme(plot.margin = margin(r = 30,
+                             t = 20,
+                             b = 20)
+        ) -> loess_hr_std
 
-loess_comp <- grid.arrange(loess_hr, loess_hr_std,
+loess_comp <- grid.arrange(loess_hr,
+                           loess_hr_std,
                            ncol = 2) 
 
 loess_comp <- annotate_figure(p = loess_comp,
                               bottom = 'Time (in Minutes)')
 
-
-
-
 ggsave(loess_comp,
        filename = "plots_publication/loess_plot_std_unstd_new.pdf",
-       width = 16,
-       height = 12,
+       width = 20,
+       height = 15,
        units = "cm")
 ```
 
@@ -614,57 +621,204 @@ ggsave(loess_comp,
 \end{figure}
 ```
 
-```{r, include=FALSE}
+We first tested the hypothesis that teachers showed the highest mean standardized HR during the micro-teaching unit, compared to all other intervals (Hypothesis 1a). Repeated measures ANOVA revealed that the mean standardized HR differed statistically significantly between intervals, F(4, 400) = 260.62, p < .05, f = 1.60 (large effect). Post-hoc contrasts indicated that, as hypothesized, the mean was significantly higher in the teaching interval (I2) than in all other intervals (see also Fig. 4). Specifically, it was higher than in the pre-teaching interval (I1; t(400)  = -10.08, p < .05, d = 1.03; large effect), the post-teaching interval (I3; t(400) = -6.94, p < .05, d = 1.37; large effect), the interview interval (I4; t(400) = 15.00, p < .05, d = 3.29; large effect), and the end interval (I5); t(400) = 22.54, p < .05, d = 4.64; large effect). 
 
-# main |> 
-#   filter(time_span != "overall") |>
-#   dplyr::select("ID","time_span", "time","heart_rate_std") |> 
-#   mutate(time_span = factor(time_span,
-#                             levels = c("preparation","teaching","post","interview","end"),
-#                             labels = c("(1) Pre-teaching\nInterval","(2) Teaching\nInterval","(3) Post-teaching\nInterval","(4) Interview\nInterval","(5) End\nInterval"))) |> 
-#   distinct() |>
-#   group_by(time_span) |> 
-#   summarise(z_mean = mean(heart_rate_std),
-#             z_sd = sd(heart_rate_std),
-#             z_t = qt(p = 0.05 / 2,      # 0.01 KI
-#                df = n() - 1,
-#                lower.tail = F
-#                ),
-#             z_error = z_sd / sqrt(n()),
-#             lower = z_mean - z_t * z_error,
-#             upper = z_mean + z_t * z_error,
-#             ) |> 
-#   ungroup() |> 
-#   ggplot(mapping = aes(x = factor(0),
-#                        y = z_mean)) + 
-#   geom_point() +
-#   geom_errorbar(mapping = aes(ymin = lower,
-#                               ymax = upper),
-#                 width = 0.2) +
-#   geom_hline(yintercept = 0,
-#              linetype = "dashed") +
-#   scale_y_continuous(breaks=seq(-1, 1, 0.5), 
-#                      limits=c(-1.1, 1)) + 
-#   labs(x = "Time (in Minutes)",
-#        y = "Standardized Mean Heart Rate",
-#        # caption = expression(paste(italic("Note: "),
-#        #                            "The shadow around the line represents the 99% confidence interval."
-#        #                            )
-#        #                      )
-#        ) +
-#   facet_grid(cols = vars(time_span),
-#              scales = "free_x") +
-#   theme_apa() +
-#   theme(axis.text.x = element_blank(),
-#         axis.ticks.x = element_blank(),
-#         plot.caption = element_text(hjust = 0))
-# 
-# ggsave(filename = "plots_publication/mean_plot.png",
-#        width = 20,
-#        height = 12,
-#        units = "cm")
+```{r}
+box_plot <-
+  main_single_hr |> 
+  filter(time_span != "overall") |>  
+  dplyr::select("ID",
+         "time_span",
+         "heart_rate_std") |> 
+  mutate(time_span = fct_recode(time_span,
+                                "Pre-teaching Interval" = "preparation",
+                                "Teaching Interval" = "teaching",
+                                "Post-teaching Interval" = "post",
+                                "Interview Interval" = "interview",
+                                "End Interval" = "end"
+                                ),
+         time_span = factor(time_span,
+                            levels = c("Pre-teaching Interval",
+                                       "Teaching Interval",
+                                       "Post-teaching Interval",
+                                       "Interview Interval",
+                                       "End Interval"
+                                       ),
+                            labels = c("Pre-Teaching\nInterval",
+                                       "Teaching\nInterval",
+                                       "Post-Teaching\nInterval",
+                                       "Interview\nInterval",
+                                       "End\nInterval")
+                            )
+         ) |> 
+  distinct() |> 
+  group_by(ID, time_span) |> 
+  summarise(mean_hr_std = 
+              mean(heart_rate_std, 
+                   na.rm = TRUE)
+            ) |> 
+  ggplot(mapping = aes(x = time_span,
+                       y = mean_hr_std
+                       )
+         ) +
+  geom_boxplot()+
+  scale_y_continuous(breaks=seq(-2, 2, 1), 
+                     limits=c(-2, 2)
+                     ) +   
+  # geom_jitter(width = 0.2) +
+  theme_apa() + 
+  theme(axis.text.x = 
+          element_text(
+            color="black",
+            size = 12),
+        plot.caption = element_text(hjust = 0)
+        ) + 
+  labs(x = "",
+       y = "Mean Standardized Heart Rate",
+       caption = expression(
+         paste(italic("Note: N"), 
+               "= 81 participants per interval. Fig. shows median (bold line), interquartile range (box) and outliers (dots)."
+         )
+       ))
+
+ggsave(filename = "plots_publication/box_plot.pdf",
+       plot = box_plot,
+       width = 20,
+       height = 15,
+       units = "cm")
 ```
 
+```{=latex}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{plots_publication/box_plot.pdf}
+  \caption{Distribution of the standardized heart rate means in the five intervals}
+  \label{Distribution of the standardized heart rate means in the five intervals}
+\end{figure}
+```
+
+Next, we examined HR changes (i.e., mean slopes) within each interval to test for the hypothesis that HR increased during the pre-teaching interval and decreased during all other intervals (Hypothesis 1b). The mean intercepts and mean slopes, complemented by their standard deviations for each interval, are shown in Table 2; the graphical representation of the slopes is displayed in Figure 5. The mean slope of the pre-teaching interval (I1) was significantly positive, indicating an increase in HR, as hypothesized. Further, the mean slopes of the teaching interval (I2) and post-teaching interval (I3) were significantly negative, indicating a decrease in HR. For the last two intervals, the interview interval (I4)  and end interval (I5), the mean slope was negative but did not differ significantly from zero.
+
+```{r}
+df_regression <- 
+  main_single_hr |> 
+  filter(time_span != "overall") |> 
+  dplyr::select("ID",
+                "time_span",
+                "time",
+                "heart_rate_std",
+                "heart_rate") |> 
+  distinct() |> 
+  mutate(time = time / 60) |> 
+  mutate(ID = as_factor(ID),
+         Phase = factor(time_span,
+                        levels = c("preparation",
+                                   "teaching",
+                                   "post",
+                                   "interview",
+                                   "end"),
+                        labels = c("Pre Teaching Phase",
+                                   "Teaching Phase",
+                                   "Post Teaching Phase",
+                                   "Interview Phase",
+                                   "End Phase")
+                           )
+         )
+
+fix_models <-
+  df_regression %>%
+  split(.$Phase) %>%
+  map( ~ lm(formula = heart_rate_std ~ 0 + ID + time:ID,
+            data = .)) %>%
+  map(
+    ~ coef(.) %>%
+      tibble::as_tibble(.,
+                        rownames = "name") %>%
+      transmute(
+        type = if_else(str_detect(name,
+                                  ":"),
+                       true = "slope",
+                       false = "intercept"),
+        id = str_remove_all(name,
+                            "[^[:digit:]]"),
+        value = value
+      ),
+    
+  ) %>%
+  bind_rows(.id = "Phase") %>%
+  pivot_wider(names_from = type,
+              values_from = value)
+
+p.values_slope <-
+  fix_models %>%
+  split(.$Phase) %>%
+  map( ~ t.test(x = .$slope,
+                mu = 0)$p.value) %>%
+  bind_rows(.id = "Phase") %>%
+  pivot_longer(cols = everything(),
+               names_to = "Phase",
+               values_to = "p.value_slope")
+
+p.values_intercept <-
+  fix_models %>%
+  split(.$Phase) %>%
+  map( ~ t.test(x = .$intercept,
+                mu = 0)$p.value) %>%
+  bind_rows(.id = "Phase") %>%
+  pivot_longer(cols = everything(),
+               names_to = "Phase",
+               values_to = "p.value_intercept")
+
+sd_mean <-
+  fix_models %>%
+  group_by(Phase) %>%
+  dplyr::summarise(
+    mean_slope = mean(slope),
+    sd_slope = sd(slope),
+    mean_intercept = mean(intercept),
+    sd_intercept = sd(intercept)
+  )
+
+table_data <- 
+  right_join(x = sd_mean,
+             y = p.values_intercept,
+             by = "Phase") %>% 
+  right_join(x = .,
+             y = p.values_slope,
+             by = "Phase") %>% 
+  transmute(Phase = factor(Phase,
+                           levels = c("Pre Teaching Phase","Teaching Phase","Post Teaching Phase","Interview Phase","End Phase")
+                           ),
+            n = NA,
+            `Mean(Intercept)` = round(mean_intercept, digits = 3),
+            `SD(Intercept)` = round(sd_intercept, digits = 3),
+            `p-Value (Intercept)` = p.value_intercept,
+            `Mean(Slope)` = round(mean_slope, digits = 3), 
+            `SD(Slope)` = round(sd_slope,digits = 3),
+            `p-Value (Slope)` = p.value_slope, 
+            ) %>% 
+  arrange(Phase)
+
+table_data$n[table_data$Phase == "Pre Teaching Phase"] <- df_regression %>% filter(Phase == "Pre Teaching Phase") %>% pull(heart_rate_std) %>% length()
+table_data$n[table_data$Phase == "Teaching Phase"] <- df_regression %>% filter(Phase == "Teaching Phase") %>% pull(heart_rate_std) %>% length()
+table_data$n[table_data$Phase == "Post Teaching Phase"] <- df_regression %>% filter(Phase == "Post Teaching Phase") %>% pull(heart_rate_std) %>% length()
+table_data$n[table_data$Phase == "Interview Phase"] <- df_regression %>% filter(Phase == "Interview Phase") %>% pull(heart_rate_std) %>% length()
+table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase == "End Phase") %>% pull(heart_rate_std) %>% length()
+
+tab_2 <- apa_table(table_data,
+                   placement = 'h',
+                   label = 'tab_2',
+                   caption = 'Descriptive statistics (n, M, SD) for the mean intercepts and the mean slopes for the five intervals',
+                   note = 'Please note that M and SD of the overall course vs. the individual intervals were not exactly 0 and 1 due to rounding differences.' 
+                   )
+
+writeLines(tab_2, 'tab_2.tex')
+
+```
+
+```{=latex}
+\input{tab_2.tex}
+```
 
 
 
