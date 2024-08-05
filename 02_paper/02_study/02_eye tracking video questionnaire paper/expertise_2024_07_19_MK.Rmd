@@ -34,7 +34,7 @@ needs(tidyverse,
 
 ```
 
-## Participants
+## 1. Participants
 ```{r demographicstable, include = TRUE, echo=FALSE}
 
 # read in data and select and rename relevant columns with transmute 
@@ -161,10 +161,18 @@ knitr::kable(demo.table,
 
 ```
 
-## Measures
+## 2. Measures
 
-### Eye-Tracking Data
-```{r eyetracking, include = TRUE, echo=FALSE}
+### 2.1 Eye-Tracking Data
+
+1. Number of fixation, Fixation duration, GRI 
+- Alles (gesamte Lektion), students (gesamte Lektion)
+- disruptive person (tatsächliche Dauer der Störung)
+
+2. Time to first fixation
+- disruptive person (tatsächliche Dauer der Störung)
+
+```{r eyetracking_read_in_data, echo=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
 # return a character vector with names of .tsv data in data folder
  file_names <- list.files(path = "data",
@@ -178,13 +186,15 @@ knitr::kable(demo.table,
               locale = locale(decimal_mark = ",")) %>%
      dplyr::select(Group,
                    Participant,
+                   TOI,
                    starts_with("Total_duration_of_fixations"),
-                   starts_with("Number_of_fixations")
+                   starts_with("Number_of_fixations"),
+                   starts_with("Time_to_first_fixation")
      )
 
-   assign(value = work_data, 
-          x = str_remove(paste0("tib_", i), 
-                         pattern = ".tsv")) 
+   assign(value = work_data,
+          x = str_remove(paste0("tib_", i),
+                         pattern = ".tsv"))
 
  }
 
@@ -192,8 +202,8 @@ knitr::kable(demo.table,
  df_aoi <-
    mget(ls(pattern = "interval_complete")) %>%
    bind_rows()
-   
- 
+
+
  df_aoi$Participant <- as.numeric(
    str_extract(df_aoi$Participant,
                                    "\\d{3}")
@@ -207,17 +217,374 @@ knitr::kable(demo.table,
 
 ```
 
+XXX 223 & 232 sind fehlerhaft --> Daten nochmal komplett neu ziehen!! XXX
 
-#### Fixation count & fixation duration (M, SD, Effektstärke)
-•	Alles (gesamte Lektion), students (gesamte Lektion)
-•	disruptive person (tatsächliche Dauer der Störung)
+#### 2.2.1 Number of fixation in entire micro-teaching unit
+```{r nof_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-#### Time to first fixation 
-•	disruptive person (tatsächliche Dauer der Störung)
+##################### NUMBER OF FIXATION ON ALL AOIS ########################
+
+# filter group & total duration & number fixation on all AOIs
+df_aoi %>% 
+  filter(TOI == "Lesson") %>% 
+  dplyr::select (Group,
+          Participant,
+          starts_with("Total_duration_of_fixations"),
+          starts_with("Number_of_fixations"),
+          !"Total_duration_of_fixations.Disruptive_Person",
+          !"Number_of_fixations.Disruptive_Person") %>% 
+  rowwise() %>% 
+  transmute(Group = Group,
+            Participant = Participant,
+            Sum_duration_fixation = sum(c_across(starts_with("Total_duration")
+                                                    ),
+                                           na.rm = TRUE
+                                           ),
+            Sum_number_fixation = sum(c_across(starts_with("Number_of")
+                                                  ),
+                                         na.rm = TRUE
+                                         )
+            ) %>% 
+  mutate(Average_duration = round(Sum_duration_fixation/Sum_number_fixation,
+                                         digits = 0),
+         Group = as_factor(Group)) %>% 
+  drop_na() -> df_aoi_sum
 
 
-### Rating Scales (Disruption Appraisal, Confidence Appraisal, Prevalence Rating)
-```{r rating_scales, echo=FALSE, results='asis'}
+# N, M, SD, min & max number of fixation (ent)
+nof.table <-
+  df_aoi_sum %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(Sum_number_fixation), digits = 2),
+    "SD" = round(sd(Sum_number_fixation), digits = 2),
+    "Min" = round(min(Sum_number_fixation), digits = 2),
+    "Max" = round(max(Sum_number_fixation), digits = 2)
+    )
+
+knitr::kable(nof.table,
+             caption = "N, M, SD, min & max number of fixation in entire micro-teaching unit")
+
+
+# plotting number of fixations on ALL AOIS
+df_aoi_sum %>% 
+  ggplot(mapping = aes(x = Group,
+                       y = Sum_number_fixation)) +
+  geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  labs(x ="",
+       y = "Number of fixation") +
+  scale_fill_brewer(palette  = "RdBu") +  
+  ggtitle("Number of fixation\n(micro-teaching unit)") +
+  theme_cowplot() +
+  theme(legend.position="none") -> plot_number_group
+
+plot_number_group
+
+```
+
+#### t-test & effect size "Number of fixation in entire micro-teaching unit"
+```{r nof_all_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# NUMBER OF FIXATIONS on all AOIs 
+# t-test for expertise differences
+t.test(x = df_aoi_sum$Sum_number_fixation[df_aoi_sum$Group == "Expert"],
+       y = df_aoi_sum$Sum_number_fixation[df_aoi_sum$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# NUMBER OF FIXATIONS on all AOIs
+# effect size for expertise differences
+d_number_all <- CohenD(x = df_aoi_sum$Sum_number_fixation[df_aoi_sum$Group == "Expert"],
+                       y = df_aoi_sum$Sum_number_fixation[df_aoi_sum$Group == "Novice"],
+                       na.rm = TRUE)
+round(d_number_all, 2)
+
+```
+
+#### 2.2.2 Number of fixations on AOI "Students" during entire micro-teaching unit
+```{r nof_students, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+##################### NUMBER OF FIXATIONS ON AOI STUDENTS ########################
+
+# filter group & total duration & number fixation on AOI Students
+df_aoi %>% 
+  filter(TOI == "Lesson") %>% 
+  dplyr::select (Group,
+                 Participant,
+                 "Total_duration_of_fixations.Anna",
+                 "Total_duration_of_fixations.Bianca",
+                 "Total_duration_of_fixations.Carl(a)",
+                 "Number_of_fixations.Anna",
+                 "Number_of_fixations.Bianca",
+                 "Number_of_fixations.Carl(a)") %>% 
+  rowwise() %>% 
+  transmute(Group = Group,
+            Participant = Participant, 
+            Stud_duration_fixation = sum(c_across(starts_with("Total_duration")
+                                                 ),
+                                         na.rm = TRUE
+                                         ),
+            Stud_number_fixation = sum(c_across(starts_with("Number_of")
+                                                ),
+                                       na.rm = TRUE
+                                       )
+            ) %>% 
+  mutate(Average_duration_stud = round(Stud_duration_fixation/Stud_number_fixation, 
+                                  digits = 0),
+         Group = as_factor(Group)
+         ) -> df_aoi_stud
+
+# N, M, SD, min & max number of fixation on AOI students
+nof.stud.table <-
+  df_aoi_stud %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(Stud_number_fixation), digits = 2),
+    "SD" = round(sd(Stud_number_fixation), digits = 2),
+    "Min" = round(min(Stud_number_fixation), digits = 2),
+    "Max" = round(max(Stud_number_fixation), digits = 2)
+    )
+
+knitr::kable(nof.stud.table,
+             caption = "N, M, SD, min & max number of fixation on AOI students (entire micro-teaching unit)")
+
+
+# plotting average duration on AOI Students
+df_aoi_stud %>% 
+  ggplot(mapping = aes(x = Group,
+                       y = Stud_number_fixation)) +
+  geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  labs(x ="",
+       y = "Number of fixation") + 
+  scale_fill_brewer(palette  = "RdBu") +  
+  ggtitle("Number of fixation on AOI\n`Students` (micro-teaching unit)") +
+  theme_cowplot() +
+  theme(legend.position="none") -> plot_number_stud
+
+plot_number_stud
+
+```
+
+#### t-test & effect size "Number of fixation on AOI students"
+```{r nof_stud_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# NUMBER OF FIXATIONS on AOI students 
+# t-test for expertise differences
+t.test(x = df_aoi_stud$Stud_number_fixation[df_aoi_stud$Group == "Expert"],
+       y = df_aoi_stud$Stud_number_fixation[df_aoi_stud$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# NUMBER OF FIXATIONS on AOI students
+# effect size for expertise differences
+d_number_stud <- CohenD(x = df_aoi_stud$Stud_number_fixation[df_aoi_stud$Group == "Expert"],
+                      y = df_aoi_stud$Stud_number_fixation[df_aoi_stud$Group == "Novice"],
+                      na.rm = TRUE)
+
+round(d_number_stud, 2)
+
+```
+
+
+#### 2.2.3 Average duration in entire micro-teaching unit
+```{r dur_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+##################### AVERAGE DURATION ########################
+
+# N, M, SD, min & max average duration (entire micro-teaching unit)
+dur.table <-
+  df_aoi_sum %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(Average_duration), digits = 2),
+    "SD" = round(sd(Average_duration), digits = 2),
+    "Min" = round(min(Average_duration), digits = 2),
+    "Max" = round(max(Average_duration), digits = 2)
+    )
+
+knitr::kable(dur.table,
+             caption = "N, M, SD, min & max average duration in entire micro-teaching unit")
+
+
+# plotting average duration on ALL AOIS
+df_aoi_sum %>% 
+  ggplot(mapping = aes(x = Group,
+                       y = Average_duration)) +
+  geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  labs(x ="",
+       y = "Milliseconds") + 
+  scale_fill_brewer(palette  = "RdBu") + 
+  ggtitle("Average duration \n(micro-teaching unit)") +
+  theme_cowplot() +
+  theme(legend.position="none") -> plot_average_duration_group
+
+plot_average_duration_group
+
+```
+
+#### t-test & effect size "Average duration in entire micro-teaching unit"
+```{r dur_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# AVERAGE DURATION OF FIXATIONS on all AOIs 
+# t-test for expertise differences
+t.test(x = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Expert"],
+       y = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# AVERAGE DURATION OF FIXATIONS on all AOIs
+# effect size for expertise differences
+d_aver_all <- CohenD(x = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Expert"],
+                     y = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Novice"],
+                    na.rm = TRUE)
+round(d_aver_all, 2)
+
+```
+
+#### 2.2.4 Average duration on AOI students
+```{r dur_students, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+##################### AVERAGE DURATION ON AOI STUDENTS ########################
+
+# filter group & total duration & number fixation on AOI Students
+df_aoi %>% 
+  filter(TOI == "Lesson") %>% 
+  dplyr::select (Group,
+          "Total_duration_of_fixations.Anna",
+          "Total_duration_of_fixations.Bianca",
+          "Total_duration_of_fixations.Carl(a)",
+          "Number_of_fixations.Anna",
+          "Number_of_fixations.Bianca",
+          "Number_of_fixations.Carl(a)") %>% 
+  rowwise() %>% 
+  transmute(Group = Group,
+            Stud_duration_fixation = sum(c_across(starts_with("Total_duration")
+                                                 ),
+                                         na.rm = TRUE
+                                         ),
+            Stud_number_fixation = sum(c_across(starts_with("Number_of")
+                                                ),
+                                       na.rm = TRUE
+                                       )
+            ) %>% 
+  mutate(Average_duration_stud = round(Stud_duration_fixation/Stud_number_fixation, 
+                                  digits = 0),
+         Group = as_factor(Group)) -> df_aoi_stud
+
+
+# N, M, SD, min & max average duration on AOI students
+dur.stud.table <-
+  df_aoi_stud %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(Average_duration_stud), digits = 2),
+    "SD" = round(sd(Average_duration_stud), digits = 2),
+    "Min" = round(min(Average_duration_stud), digits = 2),
+    "Max" = round(max(Average_duration_stud), digits = 2)
+    )
+
+knitr::kable(dur.stud.table,
+             caption = "N, M, SD, min & max average duration on AOI students")
+
+
+# plotting average duration on AOI Students
+df_aoi_stud %>% 
+  ggplot(mapping = aes(x = Group,
+                       y = Average_duration_stud)) +
+  geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  # scale_x_discrete(labels = paste0(c("Novice\n","Expert\n"),
+  #                                  "M = ", c(mean_dur_nov, mean_dur_exp),
+  #                                  "; SD = ", c(sd_dur_nov, sd_dur_exp)
+  #                                  )
+  #                  ) +
+  labs(x ="",
+       y = "Millisekunden") + 
+  scale_fill_brewer(palette  = "RdBu") +  
+  scale_x_discrete(labels=c("Novice" = "Unerfahren",
+                            "Expert" = "Erfahren")) +
+  ggtitle("Ø Fixationsdauer AOI\n `Schüler:innen`") +
+  theme_cowplot() +
+  theme(legend.position="none",
+        axis.text.x = element_text(size = 34),
+        axis.text.y = element_text(size = 18),
+        axis.title = element_text(size = 34),
+        plot.title = element_text(size = 35, 
+                                  face = "bold")
+  ) -> plot_average_duration_stud
+
+plot_average_duration_stud
+```
+
+
+#### t-test & effect size "Average duration on AOI students"
+```{r dur_stud_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# AVERAGE DURATION OF FIXATIONS on AOI Students 
+# t-test for expertise differences
+t.test(x = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Expert"],
+       y = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# AVERAGE DURATION OF FIXATIONS on AOI Students
+# effect size for expertise differences
+d_aver_stud <- CohenD(x = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Expert"],
+                      y = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Novice"],
+                      na.rm = TRUE)
+
+```
+
+#### t-test & effect size "Average duration on AOI students"
+```{r dur_stud_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# AVERAGE DURATION OF FIXATIONS on all AOIs 
+# t-test for expertise differences
+t.test(x = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Expert"],
+       y = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# AVERAGE DURATION OF FIXATIONS on all AOIs
+# effect size for expertise differences
+d_aver_all <- CohenD(x = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Expert"],
+                     y = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Novice"],
+                    na.rm = TRUE)
+round(d_aver_all, 2)
+
+```
+
+
+
+### 2.2 Rating Scales (Disruption Appraisal, Confidence Appraisal, Prevalence Rating)
+```{r rating_scales, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # read in data and combine multiple excel sheets into a single table 
 sri <-
@@ -299,14 +666,18 @@ dist_group_plot <-
   theme_cowplot()
 
 dist_group_plot
+```
 
+#### t-Test & effect size "Disruption appraisal"
+```{r sri_da_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 #################### T-TEST & EFFECT SIZE ############
 
 # Disruption appraisal 
 # t-test for expertise differences
-t_test_disrup <- t.test(x = sri$disruption_appraisal[sri$ID == "Expert"],
-                        y = sri$disruption_appraisal[sri$ID == "Novice"])
+t.test(x = sri$disruption_appraisal[sri$ID == "Expert"],
+       y = sri$disruption_appraisal[sri$ID == "Novice"],
+       var.equal = TRUE)
 
 # Disruption appraisal 
 # effect size for expertise differences
@@ -315,8 +686,9 @@ d_sri_disrup <- CohenD(x = sri$disruption_appraisal[sri$ID == "Expert"],
                        na.rm = TRUE)
 
 round(d_sri_disrup, 2)
+```
 
-
+```{r sri_ca, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ############## Confidence appraisal #########################
 
@@ -383,13 +755,18 @@ confi_group_plot <-
   theme_cowplot()
 
 confi_group_plot
+```
+
+#### t-Test & effect size "Confidence appraisal"
+```{r sri_ca_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 #################### T-TEST & EFFECT SIZE ############
 
 # Confidence Appraisal 
 # t-test for expertise differences
-t_test_confi <- t.test(x = sri$confidence_appraisal[sri$ID == "Expert"],
-                       y = sri$confidence_appraisal[sri$ID == "Novice"])
+t.test(x = sri$confidence_appraisal[sri$ID == "Expert"],
+       y = sri$confidence_appraisal[sri$ID == "Novice"],
+       var.equal = TRUE)
 
 # Disruption Factor 
 # effect size for expertise differences
@@ -398,7 +775,9 @@ d_sri_confi <- CohenD(x = sri$confidence_appraisal[sri$ID == "Expert"],
                       na.rm = TRUE)
 
 round(d_sri_confi, 2)
+```
 
+```{r sri_pr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ############## Prevalence Rating #########################
 
@@ -464,13 +843,18 @@ preva_group_plot <-
 
 preva_group_plot
 
+```
+
+#### t-Test & effect size "Prevalence rating"
+```{r sri_pr_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 #################### T-TEST & EFFECT SIZE ############
 
 # Prevalence Rating 
 # t-test for expertise differences
-t_test_preva <- t.test(x = sri$prevalence_rating[sri$ID == "Expert"],
-                       y = sri$prevalence_rating[sri$ID == "Novice"])
+t.test(x = sri$prevalence_rating[sri$ID == "Expert"],
+       y = sri$prevalence_rating[sri$ID == "Novice"],
+       var.equal = TRUE)
 
 # Prevalence Rating 
 # effect size for expertise differences
@@ -482,8 +866,8 @@ round(d_sri_preva, 2)
 
 ```
 
-### Situational Jugdement Test
-```{r sjt, echo=FALSE, results='asis'}
+### 2.3 Situational Jugdement Test
+```{r sjt, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # read in data
 df_sjt <- 
@@ -623,8 +1007,10 @@ df_sjt_long %>%
         )
 
 mean_plot
+```
 
-
+#### t-test & effect size "STJ - All"
+```{r sjt_all_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 #################### T-TEST & EFFECT SIZE ##################
 
 # define expert and novice with ifelse function in wide format
@@ -633,7 +1019,8 @@ df_sjt$Group = ifelse(df_sjt$Group < 200, "Novice","Expert")
 #### ALL #### 
 # t-test for expertise differences 
 t.test(x = df_sjt$All[df_sjt$Group == "Expert"],
-       y = df_sjt$All[df_sjt$Group == "Novice"])
+       y = df_sjt$All[df_sjt$Group == "Novice"],
+       var.equal = TRUE)
 
 
 # effect size for expertise differences
@@ -644,10 +1031,16 @@ d_sjt_all <- CohenD(x = df_sjt$All[df_sjt$Group == "Expert"],
 
 round(d_sjt_all, 2)
 
+```
+
+#### t-test & effect size "SJT - Managing momentum"
+```{r sjt_mm, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
 #### MANAGING MOMENTUM #### 
 # t-test for expertise differences 
 t.test(x = df_sjt$`Managing momentum`[df_sjt$Group == "Expert"],
-       y = df_sjt$`Managing momentum`[df_sjt$Group == "Novice"]
+       y = df_sjt$`Managing momentum`[df_sjt$Group == "Novice"],
+       var.equal = TRUE
        )
 
 
@@ -658,11 +1051,16 @@ d_sjt_mm <- CohenD(x = df_sjt$`Managing momentum`[df_sjt$Group == "Expert"],
                   )
 
 round(d_sjt_mm, 2)
+```
+
+#### t-test & effect size "SJT - Monitoring"
+```{r sjt_m, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 #### MONITORING ####
 # t-test for expertise differences 
 t.test(x = df_sjt$Monitoring[df_sjt$Group == "Expert"],
-       y = df_sjt$Monitoring[df_sjt$Group == "Novice"]
+       y = df_sjt$Monitoring[df_sjt$Group == "Novice"],
+       var.equal = TRUE
        )
 
 
@@ -673,12 +1071,16 @@ d_sjt_moni <- CohenD(x = df_sjt$Monitoring[df_sjt$Group == "Expert"],
                     )
 
 round(d_sjt_moni, 2)
+``` 
 
+#### t-test & effect size "SJT - Rules & routines"
+```{r sjt_rr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 #### RULES & ROUTINES #### 
 # t-test for expertise differences 
 t.test(x = df_sjt$`Rules and routines`[df_sjt$Group == "Expert"],
-       y = df_sjt$`Rules and routines`[df_sjt$Group == "Novice"]
+       y = df_sjt$`Rules and routines`[df_sjt$Group == "Novice"],
+       var.equal = TRUE
       )
 
 
@@ -693,7 +1095,7 @@ round(d_sjt_rr, 2)
 ```
 
 
-### Classroom Questionnaire
+### 2.4 Classroom Questionnaire
 ```{r classroom questionnaire, echo=FALSE, results='asis'}
 
 # load data files with modified scales
@@ -742,16 +1144,123 @@ df_quest_table <-
   ) 
 
 knitr::kable(df_quest_table,
-             caption = "Mean, SD, Min, Max for classroom managament and ")
+             caption = "Mean, SD, min, max for classroom managament (cm) and non-/paraverbal communication (n&pv com)")
 
 
+#################### Plots ############
+
+# create table with means
+df_quest_plot <-
+  df_quest %>%
+  rowwise() %>% 
+  transmute(Group = Group,
+            "All" = round(mean(c_across(starts_with("L")), na.rm = TRUE), 2),
+            "Classroom management" = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
+            "Non-/paraverbal communication" = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2)
+            )
+    
+    
+# changing from wide to long format
+df_quest_long <- df_quest_plot %>% 
+  pivot_longer(!Group, names_to = "Scales Classroom Questionnaire", values_to = "Mean")
+
+# plotting mean of all aspects 
+quest_plot <- 
+df_quest_long %>% 
+  mutate(Group = factor(Group,
+                        levels = c("Novice", 
+                                   "Expert")
+                        )
+         ) %>% 
+  ggplot(mapping = aes(x = Group,
+                       y = Mean)) +
+  geom_boxplot(mapping = aes(fill = Group), 
+               outlier.shape = NA) +
+  geom_point(size = 1, 
+             alpha = 0.4,
+             position = position_jitter(seed = 1, 
+                                        width = 0.1,
+                                        height = 0.1)) +
+  labs(x = "") +
+  ylim(0,4) + 
+  scale_fill_brewer(palette  = "RdBu") +  
+  facet_wrap(vars(`Scales Classroom Questionnaire`), 
+             nrow = 1, strip.position = "bottom") +
+  theme_cowplot() +
+  ggtitle("Classroom Questionnaire") +
+    theme(
+    plot.title = element_text(size = 25, 
+                              face = "bold"),
+    legend.title = element_text(size = 20),
+    legend.text = element_text(size = 15),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    strip.text.x = element_text(size = 8),
+    axis.title.y = element_text(size = 20),
+    axis.title.x = element_text(size = 22)
+        )
+
+quest_plot
+```
+
+#### t-test & effect size "Classroom Questionnaire - All"
+```{r classroom questionnaire_all, echo=FALSE, results='asis'}
+
+#################### T-TEST & EFFECT SIZE ##################
+
+#### All #### 
+# t-test for expertise differences 
+t.test(x = df_quest_plot$All[df_quest_plot$Group == "Expert"],
+       y = df_quest_plot$All[df_quest_plot$Group == "Novice"],
+       var.equal = TRUE
+       )
 
 
+# effect size for expertise differences
+d_quest_all <- CohenD(x = df_quest_plot$All[df_quest_plot$Group == "Expert"],
+                      y = df_quest_plot$All[df_quest_plot$Group == "Novice"],
+                      na.rm = TRUE
+                      )
+
+round(d_quest_all, 2)
 
 ```
 
+#### t-test & effect size "Classroom Questionnaire - Classroom Management"
+```{r classroom questionnaire_cm, echo=FALSE, results='asis'}
 
-o	2 Skalen: 
-	Classroom Management (5 Items + 3 selbstkonstruiert)
-	Non- & paraverbal Communication (8 Items  abgeleitet aus Theorie (Kiel, Frey & Weiß)
+#### Classroom Management #### 
+# t-test for expertise differences 
+t.test(x = df_quest_plot$`Classroom management`[df_quest_plot$Group == "Expert"],
+       y = df_quest_plot$`Classroom management`[df_quest_plot$Group == "Novice"],
+       var.equal = TRUE)
 
+
+# effect size for expertise differences
+d_quest_cm <- CohenD(x = df_quest_plot$`Classroom management`[df_quest_plot$Group == "Expert"],
+                      y = df_quest_plot$`Classroom management`[df_quest_plot$Group == "Novice"],
+                      na.rm = TRUE
+                      )
+
+round(d_quest_cm, 2)
+```
+
+#### t-test & effect size "Classroom Questionnaire - Non-/paraverbal communication"
+```{r classroom questionnaire_npvc, echo=FALSE, results='asis'}
+
+#### Non-/paraverbal communication #### 
+# t-test for expertise differences 
+t.test(x = df_quest_plot$`Non-/paraverbal communication`[df_quest_plot$Group == "Expert"],
+       y = df_quest_plot$`Non-/paraverbal communication`[df_quest_plot$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# effect size for expertise differences
+d_quest_npvc <- CohenD(x = df_quest_plot$`Non-/paraverbal communication`[df_quest_plot$Group == "Expert"],
+                      y = df_quest_plot$`Non-/paraverbal communication`[df_quest_plot$Group == "Novice"],
+                      na.rm = TRUE
+                      )
+
+round(d_quest_npvc, 2)
+
+```

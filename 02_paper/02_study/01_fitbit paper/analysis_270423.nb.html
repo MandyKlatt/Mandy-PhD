@@ -2553,34 +2553,23 @@ cor(cor_teach_gender$teaching_experience,
 <h2>Pr-teaching phase</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICBtYWluICU+JSBcbiAgZmlsdGVyKHRpbWVfc3BhbiA9PSBcInByZXBhcmF0aW9uXCIpICU+JSBcbiAgZ3JvdXBfYnkoSUQpICU+JSBcbiAgdHJhbnNtdXRlKGhlYXJ0X3JhdGVfbSA9IG1lYW4oaGVhcnRfcmF0ZV9zdGQpLFxuICAgICAgICAgICAgY29uZmlkZW5jZV9mYWN0b3JfbSA9IG1lYW4oY29uZmlkZW5jZV9mYWN0b3IsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5hLnJtID0gVFJVRSksXG4gICAgICAgICAgICBkaXNydXB0aW9uX2ZhY3Rvcl9tID0gbWVhbihkaXNydXB0aW9uX2ZhY3RvcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5hLnJtID0gVFJVRSksXG4gICAgICAgICAgICB0ZWFjaGluZ19leHBlcmllbmNlID0gdGVhY2hpbmdfZXhwZXJpZW5jZSxcbiAgICAgICAgICAgIGdlbmRlciA9IGdlbmRlclxuICApICU+JVxuICBkaXN0aW5jdCgpICU+JSBcbiAgdW5ncm91cCgpICU+JSBcbiAgdHJhbnNtdXRlKGhlYXJ0X3JhdGVfbSA9IChoZWFydF9yYXRlX20gLSBtZWFuKC4kaGVhcnRfcmF0ZV9tKSkvc2QoLiRoZWFydF9yYXRlX20pLFxuICAgICAgICAgY29uZmlkZW5jZV9mYWN0b3JfbSA9IChjb25maWRlbmNlX2ZhY3Rvcl9tIC0gbWVhbiguJGNvbmZpZGVuY2VfZmFjdG9yX20pKS9zZCguJGNvbmZpZGVuY2VfZmFjdG9yX20pLFxuICAgICAgICAgZGlzcnVwdGlvbl9mYWN0b3JfbSA9IChkaXNydXB0aW9uX2ZhY3Rvcl9tIC0gbWVhbiguJGRpc3J1cHRpb25fZmFjdG9yX20pKS9zZCguJGRpc3J1cHRpb25fZmFjdG9yX20pLFxuICAgICAgICAgIyBnZW5kZXIgPSBpZl9lbHNlKGdlbmRlciA9PSBcIm1hbGVcIixcbiAgICAgICAgICMgICAgICAgICAgICAgICAgICAgdHJ1ZSA9IDAsXG4gICAgICAgICAjICAgICAgICAgICAgICAgICAgIGZhbHNlID0gMSksXG4gICAgICAgICAgdGVhY2hpbmdfZXhwZXJpZW5jZSA9ICh0ZWFjaGluZ19leHBlcmllbmNlIC0gbWVhbiguJHRlYWNoaW5nX2V4cGVyaWVuY2UpKS9zZCguJHRlYWNoaW5nX2V4cGVyaWVuY2UpXG4gICAgICAgICApIC0+IGNvcl9wcmVcblxuY29yLnRlc3QoY29yX3ByZSRoZWFydF9yYXRlX20sIGNvcl9wcmUkY29uZmlkZW5jZV9mYWN0b3JfbSlcblxuIyBrbml0cjo6a2FibGUoeCA9IGxpc3QocGNvcl9tYWluJGVzdGltYXRlLCBwY29yX21haW4kcC52YWx1ZSksIGZvcm1hdCA9IFwic2ltcGxlXCIpIFxuXG5gYGAifQ== -->
-<pre class="r"><code>  main %&gt;% 
-  filter(time_span == &quot;preparation&quot;) %&gt;% 
-  group_by(ID) %&gt;% 
-  transmute(heart_rate_m = mean(heart_rate_std),
-            confidence_factor_m = mean(confidence_factor,
-                                      na.rm = TRUE),
-            disruption_factor_m = mean(disruption_factor,
-                                       na.rm = TRUE),
-            teaching_experience = teaching_experience,
-            gender = gender
-  ) %&gt;%
-  distinct() %&gt;% 
-  ungroup() %&gt;% 
-  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
-         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
-         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
-         # gender = if_else(gender == &quot;male&quot;,
-         #                   true = 0,
-         #                   false = 1),
-          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
-         ) -&gt; cor_pre
-
-cor.test(cor_pre$heart_rate_m, cor_pre$confidence_factor_m)
-
-# knitr::kable(x = list(pcor_main$estimate, pcor_main$p.value), format = &quot;simple&quot;) 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29yLnRlc3QoY29yX3ByZSRoZWFydF9yYXRlX20sIGNvcl9wcmUkY29uZmlkZW5jZV9mYWN0b3JfbSlcblxuYGBgIn0= -->
+<pre class="r"><code>cor.test(cor_pre$heart_rate_m, cor_pre$confidence_factor_m)
 </code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5cdFBlYXJzb24ncyBwcm9kdWN0LW1vbWVudCBjb3JyZWxhdGlvblxuXG5kYXRhOiAgY29yX3ByZSRoZWFydF9yYXRlX20gYW5kIGNvcl9wcmUkY29uZmlkZW5jZV9mYWN0b3JfbVxudCA9IC0wLjg1NTI0LCBkZiA9IDc5LCBwLXZhbHVlID0gMC4zOTVcbmFsdGVybmF0aXZlIGh5cG90aGVzaXM6IHRydWUgY29ycmVsYXRpb24gaXMgbm90IGVxdWFsIHRvIDBcbjk1IHBlcmNlbnQgY29uZmlkZW5jZSBpbnRlcnZhbDpcbiAtMC4zMDc2OTM5ICAwLjEyNTE4ODFcbnNhbXBsZSBlc3RpbWF0ZXM6XG4gICAgICAgY29yIFxuLTAuMDk1Nzc5NCBcbiJ9 -->
+<pre><code>
+    Pearson&#39;s product-moment correlation
+
+data:  cor_pre$heart_rate_m and cor_pre$confidence_factor_m
+t = -0.85524, df = 79, p-value = 0.395
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.3076939  0.1251881
+sample estimates:
+       cor 
+-0.0957794 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
