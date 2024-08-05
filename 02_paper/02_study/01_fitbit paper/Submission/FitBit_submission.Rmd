@@ -89,6 +89,9 @@ header-includes:
   - \usepackage{tabularx}
   - \usepackage{threeparttable}
   - \usepackage{booktabs}
+  - \usepackage{array}
+  - \usepackage{caption}
+  - \usepackage{tablefootnote}
 ---
 
 
@@ -517,7 +520,27 @@ writeLines(tab_1, 'tab_1.tex')
 ```
 
 ```{=latex}
-\input{tab_1.tex}
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{lXXXXX}
+        \toprule
+        Interval & \textit{M HR} & \textit{SD HR} & Min & Max \\
+        \midrule
+        Overall Course of 2h & 90.09/0.04\tablefootnote{Please note that standardized M and SD of the overall course were not exactly 0 and 1 due to rounding differences} & 15.76/0.991 & 51/-4.03 & 164/4.56 \\
+        Pre-teaching interval ($I_1$) & 96.28/0.48 & 14.11/0.88 & 56/-3.56 & 139/3.24 \\
+        Teaching interval ($I_2$) & 100.80/0.85 & 16.23/0.77 & 63/-2.18 & 164/4.37 \\
+        Post-teaching interval ($I_3$) & 93.61/0.27 & 14.01/0.76 & 60/-2.17 & 150/3.06 \\
+        Interview interval ($I_4$) & 82.32/-0.72 & 11.85/0.74 & 51/-2.51 & 132/4.39 \\
+        End interval $I_5$) & 77.95/-1.07 & 11.14/0.57 & 50\tablefootnote{Deviations of the minimum values in the overall course vs. the end interval ($I_5$) are due to data of a few participants who
+        needed more than two hours to finish the study.}/-2.68 & 120/2.96 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Mean HR (M), standard deviations HR (SD), and range of teachers’ HR over the course of the entire study and the five intervals (unstandardized in BPM/z-standardized).}
+    \label{tab_1}
+\end{table}
 ```
 
 ```{r loess-plot, include=FALSE}
@@ -623,7 +646,7 @@ ggsave(loess_comp,
 
 We first tested the hypothesis that teachers showed the highest mean standardized HR during the micro-teaching unit, compared to all other intervals (Hypothesis 1a). Repeated measures ANOVA revealed that the mean standardized HR differed statistically significantly between intervals, F(4, 400) = 260.62, p < .05, f = 1.60 (large effect). Post-hoc contrasts indicated that, as hypothesized, the mean was significantly higher in the teaching interval (I2) than in all other intervals (see also Fig. 4). Specifically, it was higher than in the pre-teaching interval (I1; t(400)  = -10.08, p < .05, d = 1.03; large effect), the post-teaching interval (I3; t(400) = -6.94, p < .05, d = 1.37; large effect), the interview interval (I4; t(400) = 15.00, p < .05, d = 3.29; large effect), and the end interval (I5); t(400) = 22.54, p < .05, d = 4.64; large effect). 
 
-```{r}
+```{r box plot, include=FALSE}
 box_plot <-
   main_single_hr |> 
   filter(time_span != "overall") |>  
@@ -699,7 +722,7 @@ ggsave(filename = "plots_publication/box_plot.pdf",
 
 Next, we examined HR changes (i.e., mean slopes) within each interval to test for the hypothesis that HR increased during the pre-teaching interval and decreased during all other intervals (Hypothesis 1b). The mean intercepts and mean slopes, complemented by their standard deviations for each interval, are shown in Table 2; the graphical representation of the slopes is displayed in Figure 5. The mean slope of the pre-teaching interval (I1) was significantly positive, indicating an increase in HR, as hypothesized. Further, the mean slopes of the teaching interval (I2) and post-teaching interval (I3) were significantly negative, indicating a decrease in HR. For the last two intervals, the interview interval (I4)  and end interval (I5), the mean slope was negative but did not differ significantly from zero.
 
-```{r}
+```{r table_2, include=FALSE}
 df_regression <- 
   main_single_hr |> 
   filter(time_span != "overall") |> 
@@ -804,20 +827,36 @@ table_data$n[table_data$Phase == "Teaching Phase"] <- df_regression %>% filter(P
 table_data$n[table_data$Phase == "Post Teaching Phase"] <- df_regression %>% filter(Phase == "Post Teaching Phase") %>% pull(heart_rate_std) %>% length()
 table_data$n[table_data$Phase == "Interview Phase"] <- df_regression %>% filter(Phase == "Interview Phase") %>% pull(heart_rate_std) %>% length()
 table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase == "End Phase") %>% pull(heart_rate_std) %>% length()
-
-tab_2 <- apa_table(table_data,
-                   placement = 'h',
-                   label = 'tab_2',
-                   caption = 'Descriptive statistics (n, M, SD) for the mean intercepts and the mean slopes for the five intervals',
-                   note = 'Please note that M and SD of the overall course vs. the individual intervals were not exactly 0 and 1 due to rounding differences.' 
-                   )
-
-writeLines(tab_2, 'tab_2.tex')
-
 ```
 
 ```{=latex}
-\input{tab_2.tex}
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{lXXXXX}
+        \toprule
+        Interval & n\tablefootnote{All measurement points per interval for all participants. Note that the variation in $n$ stems from the variation in the number of collected data points by the fitness tracker.} & \multicolumn{2}{c}{\textit{M (SD)}} & \multicolumn{2}{c}{$p$} \\
+        & & Intercept & Slope & Intercept & Slope \\
+        \midrule
+        (1) Pre-teaching interval & 6896 & 0.052  & 0.085*  & .57 & $<$ .05 \\
+        & & (0.820) & (0.133) & & \\
+        (2) Teaching interval & 7150 & 1.025* & -0.039* & $<$ .05 & $<$ .05 \\
+        & & (0.690) & (0.108) & & \\
+        (3) Post-teaching interval & 6664 & 0.549* & -0.060* & $<$ .05 & $<$ .05 \\
+        & & (0.547) & (0.101) & & \\
+        (4) Interview interval & 6287 & -0.617* & -0.022 & $<$ .05 & .006 \\
+        & & (0.614) & (0.070) & & \\
+        (5) End interval & 5990 & -1.004* & -0.012 & $<$ .05 & .14 \\
+        & & (0.500) & (0.074) & & \\
+        \bottomrule \\
+        Note. * $p < .05$
+    \end{tabularx}
+    \caption{Descriptive statistics (n, M, SD) for the mean intercepts and the mean slopes for the five intervals.}
+    \label{tab_2}
+\end{table}
+
 ```
 
 
