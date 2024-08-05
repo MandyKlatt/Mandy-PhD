@@ -64,6 +64,9 @@ authoryear]{elsarticle} %review=doublespace preprint=single 5p=2 column
 \usepackage{tabularx}
 \usepackage{threeparttable}
 \usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{tablefootnote}
 
 
 
@@ -711,7 +714,26 @@ HR initially increased, peaked, and then decreased, with the
 unstandardized and standardized HR graphs showing high similarity. Thus,
 for all further analyses, we used participants' standardized HR values.
 
-\input{tab_1.tex}
+\renewcommand{\arraystretch}{1.5}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{lXXXXX}
+        \toprule
+        Interval & \textit{M HR} & \textit{SD HR} & Min & Max \\
+        \midrule
+        Overall Course of 2h & 90.09/0.04\tablefootnote{Please note that standardized M and SD of the overall course were not exactly 0 and 1 due to rounding differences} & 15.76/0.991 & 51/-4.03 & 164/4.56 \\
+        Pre-teaching interval ($I_1$) & 96.28/0.48 & 14.11/0.88 & 56/-3.56 & 139/3.24 \\
+        Teaching interval ($I_2$) & 100.80/0.85 & 16.23/0.77 & 63/-2.18 & 164/4.37 \\
+        Post-teaching interval ($I_3$) & 93.61/0.27 & 14.01/0.76 & 60/-2.17 & 150/3.06 \\
+        Interview interval ($I_4$) & 82.32/-0.72 & 11.85/0.74 & 51/-2.51 & 132/4.39 \\
+        End interval $I_5$) & 77.95/-1.07 & 11.14/0.57 & 50\tablefootnote{Deviations of the minimum values in the overall course vs. the end interval ($I_5$) are due to data of a few participants who
+        needed more than two hours to finish the study.}/-2.68 & 120/2.96 \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Mean HR (M), standard deviations HR (SD), and range of teachers’ HR over the course of the entire study and the five intervals (unstandardized in BPM/z-standardized).}
+    \label{tab_1}
+\end{table}
 
 \begin{figure}[htbp]
   \centering
@@ -735,11 +757,6 @@ t(400) = 15.00, p \textless{} .05, d = 3.29; large effect), and the end
 interval (I5); t(400) = 22.54, p \textless{} .05, d = 4.64; large
 effect).
 
-\begin{verbatim}
-## `summarise()` has grouped output by 'ID'. You can override using the `.groups`
-## argument.
-\end{verbatim}
-
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/box_plot.pdf}
@@ -760,9 +777,31 @@ significantly negative, indicating a decrease in HR. For the last two
 intervals, the interview interval (I4) and end interval (I5), the mean
 slope was negative but did not differ significantly from zero.
 
-\input{tab_2.tex}
+\renewcommand{\arraystretch}{1.5}
 
-```
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{lXXXXX}
+        \toprule
+        Interval & n\tablefootnote{All measurement points per interval for all participants. Note that the variation in $n$ stems from the variation in the number of collected data points by the fitness tracker.} & \multicolumn{2}{c}{\textit{M (SD)}} & \multicolumn{2}{c}{$p$} \\
+        & & Intercept & Slope & Intercept & Slope \\
+        \midrule
+        (1) Pre-teaching interval & 6896 & 0.052  & 0.085*  & .57 & $<$ .05 \\
+        & & (0.820) & (0.133) & & \\
+        (2) Teaching interval & 7150 & 1.025* & -0.039* & $<$ .05 & $<$ .05 \\
+        & & (0.690) & (0.108) & & \\
+        (3) Post-teaching interval & 6664 & 0.549* & -0.060* & $<$ .05 & $<$ .05 \\
+        & & (0.547) & (0.101) & & \\
+        (4) Interview interval & 6287 & -0.617* & -0.022 & $<$ .05 & .006 \\
+        & & (0.614) & (0.070) & & \\
+        (5) End interval & 5990 & -1.004* & -0.012 & $<$ .05 & .14 \\
+        & & (0.500) & (0.074) & & \\
+        \bottomrule \\
+        Note. * $p < .05$
+    \end{tabularx}
+    \caption{Descriptive statistics (n, M, SD) for the mean intercepts and the mean slopes for the five intervals.}
+    \label{tab_2}
+\end{table}
 
 \bibliography{r-references.bib}
 

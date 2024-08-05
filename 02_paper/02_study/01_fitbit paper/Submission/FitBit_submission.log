@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.6.24)  31 JUL 2024 16:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.8.1)  1 AUG 2024 13:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **FitBit_submission.tex
 (./FitBit_submission.tex
-LaTeX2e <2024-06-01> patch level 1
+LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-05-27>
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/elsarticle/elsarticle.cls
 Document Class: elsarticle 2024/04/04, 3.4: Elsevier Ltd
@@ -263,7 +263,7 @@ Package: inputenc 2024/02/08 v1.3d Input encoding file
 \inpenc@prehook=\toks28
 \inpenc@posthook=\toks29
 ) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
-Package: hyperref 2024-05-23 v7.01i Hypertext links for LaTeX
+Package: hyperref 2024-07-10 v7.01j Hypertext links for LaTeX
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
 ) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty
@@ -293,7 +293,7 @@ Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO)
 \Hy@linkcounter=\count301
 \Hy@pagecounter=\count302
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def
-File: pd1enc.def 2024-05-23 v7.01i Hyperref: PDFDocEncoding definition (HO)
+File: pd1enc.def 2024-07-10 v7.01j Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 ) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
@@ -301,7 +301,7 @@ Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
 \Hy@SavedSpaceFactor=\count303
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def
-File: puenc.def 2024-05-23 v7.01i Hyperref: PDF Unicode definition (HO)
+File: puenc.def 2024-07-10 v7.01j Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
 )
@@ -341,7 +341,7 @@ package with kernel methods
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
-File: hpdftex.def 2024-05-23 v7.01i Hyperref driver for pdfTeX
+File: hpdftex.def 2024-07-10 v7.01j Hyperref driver for pdfTeX
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty
 Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend package
 with kernel methods
@@ -404,31 +404,73 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count314
 \@lastruleclass=\count315
 \@thisrulewidth=\dimen194
-)
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 70.
+) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen195
+\captionmargin=\dimen196
+\caption@leftmargin=\dimen197
+\caption@rightmargin=\dimen198
+\caption@width=\dimen199
+\caption@indent=\dimen256
+\caption@parindent=\dimen257
+\caption@hangindent=\dimen258
+Package caption Info: elsarticle document class detected.
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/caption/caption-elsarticle.sto
+File: caption-elsarticle.sto 2020/08/22 v2.0 Adaption of the caption package to the elsarticle document class (AR)
+))
+\c@caption@flags=\count316
+\c@continuedfloat=\count317
+Package caption Info: hyperref package is loaded.
+Package caption Info: threeparttable package is loaded.
+) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tablefootnote/tablefootnote.sty
+Package: tablefootnote 2014/01/26 v1.1c Table foot notes (HMM)
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xifthen/xifthen.sty
+Package: xifthen 2015/11/05 v1.4.0 Extended ifthen features
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count318
+\calc@Bcount=\count319
+\calc@Adimen=\dimen259
+\calc@Bdimen=\dimen260
+\calc@Askip=\skip61
+\calc@Bskip=\skip62
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count320
+\calc@Cskip=\skip63
+) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/ifmtarg/ifmtarg.sty
+Package: ifmtarg 2018/04/16 v1.2b check for an empty argument
+)))
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 73.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) (./FitBit_submission.aux)
 \openout1 = `FitBit_submission.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -471,200 +513,202 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 70.
+Package hyperref Info: Link coloring OFF on input line 73.
 (./FitBit_submission.out) (./FitBit_submission.out)
 \@outlinefile=\write4
 \openout4 = `FitBit_submission.out'.
 
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 147.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 150.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 147.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 150.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 147.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 150.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 147.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 150.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 147.
+(Font)              <10> on input line 150.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 147.
+(Font)              <7> on input line 150.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 147.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 147.
+(Font)              <5> on input line 150.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 150.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 147.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 150.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 147.
+(Font)              <8> on input line 150.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 147.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 147.
+(Font)              <6> on input line 150.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 150.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-Package natbib Warning: Citation `razavi2001self' on page 1 undefined on input line 155.
+Package natbib Warning: Citation `razavi2001self' on page 1 undefined on input line 158.
 
 
-Package natbib Warning: Citation `van2016accuracy' on page 1 undefined on input line 156.
+Package natbib Warning: Citation `van2016accuracy' on page 1 undefined on input line 159.
 
 
-Package natbib Warning: Citation `trull2013ambulatory' on page 1 undefined on input line 158.
+Package natbib Warning: Citation `trull2013ambulatory' on page 1 undefined on input line 161.
 
 
-Package natbib Warning: Citation `wettstein2020ambulatory' on page 1 undefined on input line 158.
+Package natbib Warning: Citation `wettstein2020ambulatory' on page 1 undefined on input line 161.
 
 
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 177.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\cnotenum' on input line 177.
+(hyperref)                removing `\<def>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 177.
+(hyperref)                removing `\cnotenum' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@corref' on input line 177.
+(hyperref)                removing `\<def>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 177.
+(hyperref)                removing `\@corref' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 177.
+(hyperref)                removing `\<let>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 177.
+(hyperref)                removing `\comma' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 177.
+(hyperref)                removing `\<def>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 177.
+(hyperref)                removing `\@fnmark' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 177.
+(hyperref)                removing `\<let>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 177.
+(hyperref)                removing `\comma' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 177.
+(hyperref)                removing `\<def>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 177.
+(hyperref)                removing `\@fnmark' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 177.
+(hyperref)                removing `\<let>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 177.
+(hyperref)                removing `\comma' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 177.
+(hyperref)                removing `\<def>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 177.
+(hyperref)                removing `\@fnmark' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 177.
+(hyperref)                removing `\<let>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 177.
+(hyperref)                removing `\comma' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 177.
+(hyperref)                removing `\<def>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 177.
+(hyperref)                removing `\@fnmark' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 177.
+(hyperref)                removing `\<let>-command' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 177.
+(hyperref)                removing `\comma' on input line 180.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 177.
+(hyperref)                removing `\<def>-command' on input line 180.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\@fnmark' on input line 180.
 
 [1
 
 {c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
 
-Package natbib Warning: Citation `johnson2005experience' on page 2 undefined on input line 188.
+Package natbib Warning: Citation `johnson2005experience' on page 2 undefined on input line 191.
 
 
-Package natbib Warning: Citation `montgomery2005meta' on page 2 undefined on input line 193.
+Package natbib Warning: Citation `montgomery2005meta' on page 2 undefined on input line 196.
 
 
-Package natbib Warning: Citation `cramer2018belastung' on page 2 undefined on input line 198.
+Package natbib Warning: Citation `cramer2018belastung' on page 2 undefined on input line 201.
 
 
-Package natbib Warning: Citation `boyle1995structural' on page 2 undefined on input line 200.
+Package natbib Warning: Citation `boyle1995structural' on page 2 undefined on input line 203.
 
 
-Package natbib Warning: Citation `klusmann2012berufliche' on page 2 undefined on input line 202.
+Package natbib Warning: Citation `klusmann2012berufliche' on page 2 undefined on input line 205.
 
 
-Package natbib Warning: Citation `ophardt2017klassenmanagement' on page 2 undefined on input line 206.
+Package natbib Warning: Citation `ophardt2017klassenmanagement' on page 2 undefined on input line 209.
 
 
-Package natbib Warning: Citation `wolff2015keeping' on page 2 undefined on input line 206.
+Package natbib Warning: Citation `wolff2015keeping' on page 2 undefined on input line 209.
 
 
-Package natbib Warning: Citation `scalise2018wearables' on page 2 undefined on input line 241.
+Package natbib Warning: Citation `scalise2018wearables' on page 2 undefined on input line 244.
 
 
-Package natbib Warning: Citation `castaneda2018review' on page 2 undefined on input line 248.
+Package natbib Warning: Citation `castaneda2018review' on page 2 undefined on input line 251.
 
 
 
 [2]
 
-Package natbib Warning: Citation `schult2014belastet' on page 3 undefined on input line 266.
+Package natbib Warning: Citation `schult2014belastet' on page 3 undefined on input line 269.
 
 
-Package natbib Warning: Citation `lazarus1990theory' on page 3 undefined on input line 279.
+Package natbib Warning: Citation `lazarus1990theory' on page 3 undefined on input line 282.
 
 
-Package natbib Warning: Citation `krause2013messung' on page 3 undefined on input line 285.
+Package natbib Warning: Citation `krause2013messung' on page 3 undefined on input line 288.
 
 
 
@@ -672,42 +716,42 @@ pdfTeX warning: pdflatex.exe (file ./images/Model_Teacher_Stress_adapted_new.pdf
 <images/Model_Teacher_Stress_adapted_new.pdf, id=204, 963.6pt x 542.025pt>
 File: images/Model_Teacher_Stress_adapted_new.pdf Graphic file (type pdf)
 <use images/Model_Teacher_Stress_adapted_new.pdf>
-Package pdftex.def Info: images/Model_Teacher_Stress_adapted_new.pdf  used on input line 293.
+Package pdftex.def Info: images/Model_Teacher_Stress_adapted_new.pdf  used on input line 296.
 (pdftex.def)             Requested size: 468.0pt x 263.24571pt.
 
-Package natbib Warning: Citation `aloe2014' on page 3 undefined on input line 315.
+Package natbib Warning: Citation `aloe2014' on page 3 undefined on input line 318.
 
 
-Package natbib Warning: Citation `klieme2008concept' on page 3 undefined on input line 318.
+Package natbib Warning: Citation `klieme2008concept' on page 3 undefined on input line 321.
 
 
-Package natbib Warning: Citation `konig2016teacher' on page 3 undefined on input line 318.
+Package natbib Warning: Citation `konig2016teacher' on page 3 undefined on input line 321.
 
 
 
 [3 <./images/Model_Teacher_Stress_adapted_new.pdf>]
 
-Package natbib Warning: Citation `wolff2021classroom' on page 4 undefined on input line 324.
+Package natbib Warning: Citation `wolff2021classroom' on page 4 undefined on input line 327.
 
 
-Package natbib Warning: Citation `ophardt2017klassenmanagement' on page 4 undefined on input line 327.
+Package natbib Warning: Citation `ophardt2017klassenmanagement' on page 4 undefined on input line 330.
 
 
-Package natbib Warning: Citation `wolff2015keeping' on page 4 undefined on input line 327.
+Package natbib Warning: Citation `wolff2015keeping' on page 4 undefined on input line 330.
 
 
-Package natbib Warning: Citation `Darnell2019' on page 4 undefined on input line 363.
+Package natbib Warning: Citation `Darnell2019' on page 4 undefined on input line 366.
 
 
-Package natbib Warning: Citation `Darnell2019' on page 4 undefined on input line 363.
+Package natbib Warning: Citation `Darnell2019' on page 4 undefined on input line 366.
 
 
-Package natbib Warning: Citation `Darnell2019' on page 4 undefined on input line 397.
+Package natbib Warning: Citation `Darnell2019' on page 4 undefined on input line 400.
 
 
 
 [4]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 494.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 497.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -718,10 +762,10 @@ pdfTeX warning: pdflatex.exe (file ./images/Timeline.pdf): PDF inclusion: found 
 <images/Timeline.pdf, id=282, 597.55246pt x 845.07724pt>
 File: images/Timeline.pdf Graphic file (type pdf)
 <use images/Timeline.pdf>
-Package pdftex.def Info: images/Timeline.pdf  used on input line 522.
+Package pdftex.def Info: images/Timeline.pdf  used on input line 525.
 (pdftex.def)             Requested size: 468.0pt x 661.8784pt.
 
-LaTeX Warning: Float too large for page by 60.93396pt on input line 525.
+LaTeX Warning: Float too large for page by 59.37839pt on input line 528.
 
 
 
@@ -729,78 +773,91 @@ LaTeX Warning: Float too large for page by 60.93396pt on input line 525.
 
 [7 <./images/Timeline.pdf>]
 
-Package natbib Warning: Citation `lu2008can' on page 8 undefined on input line 602.
+Package natbib Warning: Citation `lu2008can' on page 8 undefined on input line 605.
 
 
-Package natbib Warning: Citation `donker2018quantitative' on page 8 undefined on input line 611.
+Package natbib Warning: Citation `donker2018quantitative' on page 8 undefined on input line 614.
 
 
-Package natbib Warning: Citation `claessens2017positive' on page 8 undefined on input line 611.
+Package natbib Warning: Citation `claessens2017positive' on page 8 undefined on input line 614.
 
 
 
 [8]
 
-Package natbib Warning: Citation `cohen1988new' on page 9 undefined on input line 663.
+Package natbib Warning: Citation `cohen1988new' on page 9 undefined on input line 666.
 
 
-Package natbib Warning: Citation `gelman2006data' on page 9 undefined on input line 671.
+Package natbib Warning: Citation `gelman2006data' on page 9 undefined on input line 674.
 
-(./tab_1.tex)
-<plots_publication/loess_plot_std_unstd_new.pdf, id=318, 568.1225pt x 426.59375pt>
+
+pdfTeX warning (ext4): destination with the same identifier (name{Hfootnote.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.736 \end{table}
+                 
+<plots_publication/loess_plot_std_unstd_new.pdf, id=326, 568.1225pt x 426.59375pt>
 File: plots_publication/loess_plot_std_unstd_new.pdf Graphic file (type pdf)
 <use plots_publication/loess_plot_std_unstd_new.pdf>
-Package pdftex.def Info: plots_publication/loess_plot_std_unstd_new.pdf  used on input line 718.
+Package pdftex.def Info: plots_publication/loess_plot_std_unstd_new.pdf  used on input line 740.
 (pdftex.def)             Requested size: 468.0pt x 351.42995pt.
-
-
-[9]
-
-[10 <./plots_publication/loess_plot_std_unstd_new.pdf>]
-<plots_publication/box_plot.pdf, id=338, 568.1225pt x 426.59375pt>
+<plots_publication/box_plot.pdf, id=327, 568.1225pt x 426.59375pt>
 File: plots_publication/box_plot.pdf Graphic file (type pdf)
 <use plots_publication/box_plot.pdf>
-Package pdftex.def Info: plots_publication/box_plot.pdf  used on input line 745.
+Package pdftex.def Info: plots_publication/box_plot.pdf  used on input line 762.
 (pdftex.def)             Requested size: 468.0pt x 351.42995pt.
-(./tab_2.tex
-Overfull \hbox (122.64111pt too wide) in paragraph at lines 8--29
- [] 
- []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+[9
+pdfTeX warning (ext4): destination with the same identifier (name{Hfootnote.2}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.765 \end{figure}
+                  ]
 
-) (./FitBit_submission.bbl
+[10 <./plots_publication/loess_plot_std_unstd_new.pdf>]
+pdfTeX warning (ext4): destination with the same identifier (name{Hfootnote.3}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.804 \end{table}
+                 
+pdfTeX warning (ext4): destination with the same identifier (name{Hfootnote.4}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.804 \end{table}
+                  (./FitBit_submission.bbl
 
-[11 <./plots_publication/box_plot.pdf>]
+[11]
 
-[12])
+[12 <./plots_publication/box_plot.pdf>]
+
+[13])
 
 Package natbib Warning: There were undefined citations.
 
 
 
-[13] (./FitBit_submission.aux)
+[14] (./FitBit_submission.aux)
  ***********
-LaTeX2e <2024-06-01> patch level 1
+LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-05-27>
  ***********
 Package rerunfilecheck Info: File `FitBit_submission.out' has not changed.
 (rerunfilecheck)             Checksum: B1FEF5705E088DA3004FE57AF3F5D304;3129.
  ) 
 Here is how much of TeX's memory you used:
- 12011 strings out of 475560
- 190085 string characters out of 5776370
- 1948908 words of memory out of 5000000
- 34339 multiletter control sequences out of 15000+600000
+ 13622 strings out of 475544
+ 221814 string characters out of 5775997
+ 1952908 words of memory out of 5000000
+ 35933 multiletter control sequences out of 15000+600000
  610862 words of font info for 75 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,11n,79p,527b,635s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt8.pfb>
-Output written on FitBit_submission.pdf (13 pages, 578509 bytes).
+ 72i,16n,79p,535b,649s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt8.pfb>
+Output written on FitBit_submission.pdf (14 pages, 591539 bytes).
 PDF statistics:
- 460 PDF objects out of 1000 (max. 8388607)
- 402 compressed objects within 5 object streams
- 86 named destinations out of 1000 (max. 500000)
+ 494 PDF objects out of 1000 (max. 8388607)
+ 423 compressed objects within 5 object streams
+ 94 named destinations out of 1000 (max. 500000)
  141 words of extra memory for PDF output out of 10000 (max. 10000000)
 
