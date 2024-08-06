@@ -225,7 +225,11 @@ descrip_hr_phases_std <- main_single_hr %>%
 rating_table <- 
   df_rating %>% 
   filter(!is.na(confidence_factor),
-         !is.na(disruption_factor)) %>% 
+         !is.na(disruption_factor),
+         !ID %in% c("126",
+                    "132",
+                    "236")
+         ) %>% 
    summarise(N = n_distinct(ID), 
             "M disruption factor" = round(mean(disruption_factor),
                                      digits = 2),
@@ -241,6 +245,22 @@ rating_table <-
             "Max confidence factor" = max(confidence_factor)
             )
 
+# Mean, SD and range for teaching experience
+demo_table <-
+  df_demo %>% 
+  filter(!ID %in% c("126",
+                    "132",
+                    "236"
+                    )
+         ) %>% 
+  summarise(N = n(),
+            "M teaching experience" = round(mean(teaching_experience),
+                                            digits = 2),
+            "SD teaching experience" = round(sd(teaching_experience),
+                                             digits = 2),
+            "Min teaching experience" = min(teaching_experience),
+            "Max teaching experience" = max(teaching_experience),
+            )
 ```
 
 # Plots
@@ -646,8 +666,8 @@ df_ttest <-
   summarise(mean_heart_rate = mean(heart_rate_std)) %>% 
   ungroup()
 ```
-## Teaching vs. Pre-Teaching (mean HR)
 
+## Teaching vs. Pre-Teaching (mean HR)
 ```{r}
 df_ttest %$% 
   t.test(x = .$mean_heart_rate[.$time_span == "teaching"],
@@ -661,7 +681,6 @@ df_ttest %$%
 ```
 
 ## Teaching vs. Post-Teaching (mean HR)
-
 ```{r}
 df_ttest %$% 
   t.test(x = .$mean_heart_rate[.$time_span == "teaching"],
@@ -676,7 +695,6 @@ df_ttest %$%
 
 
 ## Teaching vs. Interview (mean HR)
-
 ```{r}
 df_ttest %$% 
   t.test(x = .$mean_heart_rate[.$time_span == "teaching"],
@@ -785,7 +803,7 @@ contrasts(df_anova_subset$time_span) <- cbind(contrast1,
                                               contrast4)
 
 model2 <- aov(mean_hr_std ~ time_span, data = df_anova_subset)
-summary(model2)
+(model2)
 
 summary.lm(model2, 
             split = list (time_span = list ("Teaching interval vs. Pre-teaching interval" = 1,
@@ -868,8 +886,8 @@ main %>%
          teaching_experience,
          age) -> teach_gender
 
-cor(teach_gender$teaching_experience,
-    teach_gender$age,
+cor(cor_teach_gender$teaching_experience,
+    cor_teach_gender$age,
     method = c("pearson")
   ) -> cor_teach_gender
 
@@ -1237,13 +1255,13 @@ summary(fit_pre_1)$r.squared - summary(fit_pre_2)$r.squared - summary(fit_pre_3)
 fit_pre_4 <-
   df_multi %>% 
   filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ teaching_experience + confidence + disruption)
+  lm(slope ~ teaching_experience + confidence_factor + disruption_factor)
 
 summary(fit_pre_4)
 
 
-stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4, fit_pre_5,
-                     type = "html",
+stargazer::stargazer(fit_pre_1, fit_pre_2,fit_pre_3, fit_pre_4,
+                     type = "latex",
                      caption = "Pre Teaching Phase",
                      dep.var.labels = "Slope",
                      # order = c(1, 2, 3),
