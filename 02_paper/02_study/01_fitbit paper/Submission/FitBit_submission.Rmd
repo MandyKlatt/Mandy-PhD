@@ -859,5 +859,38 @@ table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase 
 
 ```
 
+## Research goal 2: Prediction of mean standardized HR and mean slopes with teaching experience and subjective appraisals
 
+Correlations among mean standardized HR/mean slopes (see Table 2), teaching experience (M = 5.64, SD = 9.46), disruption appraisal (M = 5.19, SD = 2.87), and confidence appraisal (M = 7.81, SD = 1.97) are presented in Table 3. Correlations between mean standardized HR/mean slopes and the other variables were mostly very small and statistically non-significant, except for the pre-teaching interval (I1), in which mean slope and teaching experience correlated negatively (r=-.27), and the interview interval (I4) in which mean HR and teaching experience correlated positively (r=.24). Correlations between teaching experience and appraisals were substantial: more experienced teachers had lower disruption appraisals (r=-.36), and higher confidence appraisals (r=.44). Moreover, the two appraisal variables were negatively correlated (r=-.37).
+
+Concerning the effect of teaching experience on participants’ HR levels (i.e., mean standardized HR) for each of the five intervals, teaching experience significantly predicted mean standardized HR only in the interview interval (Table 4, Interview interval, Model 1), indicating a higher mean standardized HR for teachers with more teaching experience. This relationship is, in fact, in the opposite direction as predicted by Hypothesis 2a.
+
+Neither adding disruption appraisal (**Hypothesis 2b**) nor adding confidence appraisal (**Hypothesis 2c**) while controlling for the shared variance with teaching experience revealed significant effects on teachers’ mean standardized HR.
+
+When considering the effects of the three predictors in concert (**Hypothesis 2d**), mean standardized HR was significantly predicted only by disruption appraisal, and only in the post-teaching interval (Table 4, Post-teaching interval, Model 4), indicating a higher mean standardized HR for teachers who felt more disrupted by the classroom events, when controlling for the other variables. 
+
+Concerning the explorative investigation of the effects of teaching experience and subjective appraisals on changes (i.e., mean slopes) in teachers’ HR, teaching experience significantly predicted the mean slope in the pre-teaching interval (Table 4, Pre-teaching interval, Model 1), indicating a less steep HR increase in teachers with more teaching experience. For all other intervals, no variable revealed a significant prediction.
+
+```{=latex}
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{lccccc}
+        \toprule
+        Variable & Pre-teaching & Teaching & Post-teaching & Interview & End \\
+        & interval & interval & interval & interval & interval \\
+        \midrule
+        Teaching Experience & $- .17/ - .27^*$ & .11/-.02 & $- .04/-.03$ & $.24^*/-.20$ & .04/.11 \\
+        Disruption Appraisal & $- .01/.16$ & $- .20/.08$ & .20/$- .14$ & $- .13/.01$ & .04/.12 \\
+        Confidence Appraisal & $- .10/ - .18$ & .06/.09 & .04/$- .03$ & .09/$- .19$ & $- .07/.13$ \\
+        \bottomrule \\
+          Note. * $p < .05$.
+    \end{tabularx}
+    \caption{Correlations between mean standardized HR/mean slopes and the predictor variables of teaching experience (TE), disruption appraisal (DA), and confidence appraisal (CA) for the five intervals.}
+    \label{tab_3}
+\end{table}
+
+```
 

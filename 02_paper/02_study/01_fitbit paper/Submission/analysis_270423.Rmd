@@ -868,8 +868,8 @@ main %>%
          teaching_experience,
          age) -> teach_gender
 
-cor(cor_teach_gender$teaching_experience,
-    cor_teach_gender$age,
+cor(teach_gender$teaching_experience,
+    teach_gender$age,
     method = c("pearson")
   ) -> cor_teach_gender
 
