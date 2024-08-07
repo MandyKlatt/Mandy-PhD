@@ -92,6 +92,10 @@ header-includes:
   - \usepackage{array}
   - \usepackage{caption}
   - \usepackage{tablefootnote}
+  - \usepackage{float}
+  - \usepackage{wrapfig}
+  - \usepackage{pdflscape}
+  - \usepackage{longtable}
 ---
 
 
@@ -313,12 +317,12 @@ The sample consisted of $N$ = `r N_prewrangling` pre- and in-service teachers fr
 The study was carried out following the ethical standards and the approval of the University’s Institutional Review Board. All participants were informed in detail about the aims and intention of the study before testing. Participation was voluntary and only took place after written consent had been given. Participants were not rewarded in any way for participating in the study.
 
 ```{=latex}
-\begin{figure}[htbp]
+\begin{wrapfigure}{r}{0.5\textwidth}
   \centering
-  \includegraphics[width=1\textwidth]{images/Timeline.pdf}
+  \includegraphics[width=0.5\textwidth]{images/Timeline_small.pdf}
   \caption{Procedure of the two-hour-long study consisting of five phases with five representative 10-minute intervals}
   \label{Procedure of the two-hour-long study consisting of five phases with five representative 10-minute intervals}
-\end{figure}
+\end{wrapfigure}
 ```
 
 Each participant came to the lab for a period of approximately two hours in total, and each underwent the same phases: *pre-teaching phase*, *teaching phase*, *post-teaching phase*, *interview phase*, and *end phase* (please refer to Fig. 2 for a timeline). In the *pre-teaching phase*, the experimenter welcomed the participants and helped them put on the fitness tracker. This was followed by a warm-up session to familiarize the participants with the laboratory setting and the class. This phase took about 10-15 minutes and participants spent this time mostly standing or slowly walking around. During the *teaching phase*, the participants held their self-prepared, micro-teaching  unit to a class of three trained actors who performed nine, potentially disruptive, classroom events (e.g., chatting with a neighbor, heckling, looking at the phone; see Table ## in the supplementary material for an overview and categorization of all events; also see Fig## for a depiction of the laboratory setting of the micro-teaching unit).  In preparation for the 15-minute lesson, the topic and class level could be freely chosen by the teachers. The type of course was to be an introductory lesson and the desired social form required individual work or frontal teaching, without longer video sequences and movement of the actors.  The teaching unit lasted about 15-20 minutes. Participants spent this time mostly standing or slowly walking around. After having completed the micro-teaching unit, in the *post-teaching phase*, participants were seated at a desk and filled in questionnaires for approximately 10-15 minutes: a brief computer-based questionnaire assessing sociodemographic data (e.g., teaching experience, gender, studied school type, studied school subjects, extracurricular teaching activities), and a short knowledge test that is irrelevant to the present study. In the *interview phase*, the participants watched the video of their own teaching together with the experimenter. While doing so, they were given a Stimulated Recall Interview (SRI), in which the participants watched their recorded eye-tracking video of the lesson from the ego perspective, indicating the participants’ gaze point. The experimenter stopped the video each time one of the nine classroom events happened and asked a total of eight questions, five of which were open and three closed. We assessed – among other questions irrelevant to this study – with two closed questions the teachers’ subjective appraisal of the classroom events that took place during the *teaching phase* in terms of how subjectively disruptive they were (disruption appraisal) and how confident the participants felt dealing with them (confidence appraisal) with one item each. The interview lasted about 45-60 minutes and the participants’ position was seated. The *end phase* lasted about 10-15 minutes and participants answered in a seated position another questionnaire irrelevant to this study.
@@ -636,7 +640,7 @@ ggsave(loess_comp,
 ```
 
 ```{=latex}
-\begin{figure}[htbp]
+\begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/loess_plot_std_unstd_new.pdf}
   \caption{Overall course of the HR with the unstandardized HR in BPM shown in Fig. 3a. and the z-standardized HR shown in Fig. 3b. for the planned 2-hour study.}
@@ -712,7 +716,7 @@ ggsave(filename = "plots_publication/box_plot.pdf",
 ```
 
 ```{=latex}
-\begin{figure}[htbp]
+\begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/box_plot.pdf}
   \caption{Distribution of the standardized heart rate means in the five intervals}
@@ -859,5 +863,291 @@ table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase 
 
 ```
 
+## Research goal 2: Prediction of mean standardized HR and mean slopes with teaching experience and subjective appraisals
 
+Correlations among mean standardized HR/mean slopes (see Table 2), teaching experience (M = 5.64, SD = 9.46), disruption appraisal (M = 5.19, SD = 2.87), and confidence appraisal (M = 7.81, SD = 1.97) are presented in Table 3. Correlations between mean standardized HR/mean slopes and the other variables were mostly very small and statistically non-significant, except for the pre-teaching interval (I1), in which mean slope and teaching experience correlated negatively (r=-.27), and the interview interval (I4) in which mean HR and teaching experience correlated positively (r=.24). Correlations between teaching experience and appraisals were substantial: more experienced teachers had lower disruption appraisals (r=-.36), and higher confidence appraisals (r=.44). Moreover, the two appraisal variables were negatively correlated (r=-.37).
+
+Concerning the effect of teaching experience on participants’ HR levels (i.e., mean standardized HR) for each of the five intervals, teaching experience significantly predicted mean standardized HR only in the interview interval (Table 4, Interview interval, Model 1), indicating a higher mean standardized HR for teachers with more teaching experience. This relationship is, in fact, in the opposite direction as predicted by Hypothesis 2a.
+
+Neither adding disruption appraisal (**Hypothesis 2b**) nor adding confidence appraisal (**Hypothesis 2c**) while controlling for the shared variance with teaching experience revealed significant effects on teachers’ mean standardized HR.
+
+When considering the effects of the three predictors in concert (**Hypothesis 2d**), mean standardized HR was significantly predicted only by disruption appraisal, and only in the post-teaching interval (Table 4, Post-teaching interval, Model 4), indicating a higher mean standardized HR for teachers who felt more disrupted by the classroom events, when controlling for the other variables. 
+
+Concerning the explorative investigation of the effects of teaching experience and subjective appraisals on changes (i.e., mean slopes) in teachers’ HR, teaching experience significantly predicted the mean slope in the pre-teaching interval (Table 4, Pre-teaching interval, Model 1), indicating a less steep HR increase in teachers with more teaching experience. For all other intervals, no variable revealed a significant prediction.
+
+```{r correlations, include=FALSE}
+
+main <-
+map(.x = dir(path = data_path,
+             pattern = ".csv"),
+    ~ read_csv(file.path(data_path, .), 
+               id = "id",
+               col_types = c("t","n")
+               ) %>% 
+  mutate(time = .$Time - min(.$Time),
+         time = as.numeric(time),
+         heart_rate = `Heart Rate`,
+         ID = id,
+         time_span = case_when(str_detect(string = id, pattern = "_a") ~ "end",
+                               str_detect(string = id, pattern = "_m") ~ "teaching",
+                               str_detect(string = id, pattern = "_p") ~ "preparation",
+                               str_detect(string = id, pattern = "_s") ~ "post",
+                               str_detect(string = id, pattern = "_i") ~ "interview",
+                               TRUE ~ "overall"
+                               ),
+         ID = str_extract(string = ID,
+                          pattern = "[:digit:]{3}"),
+         ID = as.numeric(ID)
+      ) %>%
+    # filter(time <= 600) %>% # filter for 10min intervals
+    filter(time <= 7200) %>% # filter for 2 hours (maximal duration of study)
+    dplyr::select(!c("Time","Heart Rate","id"))
+    ) %>%
+  bind_rows()
+
+main <-
+  left_join(main, df_merge,
+            by = "ID")
+
+main <- 
+  main %>% 
+  dplyr::select("time", "heart_rate", "ID", "time_span") %>% 
+  distinct() %>% 
+  group_by(ID) %>% 
+  dplyr::summarise(mean_heart = mean(heart_rate),
+            sd_heart = sd(heart_rate)) %>%
+  ungroup() %>% 
+  right_join(x = .,
+             y = main,
+             by = "ID") %>% 
+  filter(!(time_span == "teaching" & time > 600)) %>%
+  mutate(heart_rate_std = (heart_rate - mean_heart)/
+           sd_heart)
+   
+
+# pre teaching interval
+
+main %>% 
+  filter(time_span == "preparation") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) -> cor_pre
+
+# teaching interval
+
+main %>% 
+  filter(time_span == "teaching") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_teaching
+
+# post-teaching interval
+
+main %>% 
+  filter(time_span == "post") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_post
+
+# interview interval
+
+main %>% 
+  filter(time_span == "interview") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_interview
+
+# end interval
+
+main %>% 
+  filter(time_span == "end") %>% 
+  group_by(ID) %>% 
+  transmute(heart_rate_m = mean(heart_rate_std),
+            confidence_factor_m = mean(confidence_factor,
+                                      na.rm = TRUE),
+            disruption_factor_m = mean(disruption_factor,
+                                       na.rm = TRUE),
+            teaching_experience = teaching_experience,
+            gender = gender
+  ) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  transmute(heart_rate_m = (heart_rate_m - mean(.$heart_rate_m))/sd(.$heart_rate_m),
+         confidence_factor_m = (confidence_factor_m - mean(.$confidence_factor_m))/sd(.$confidence_factor_m),
+         disruption_factor_m = (disruption_factor_m - mean(.$disruption_factor_m))/sd(.$disruption_factor_m),
+         gender = if_else(gender == "male",
+                           true = 0,
+                           false = 1),
+          teaching_experience = (teaching_experience - mean(.$teaching_experience))/sd(.$teaching_experience)
+         ) %>%
+  pcor()  -> pcor_end
+
+
+```
+
+
+```{=latex}
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabularx}{\textwidth}{lccccc}
+        \toprule
+        Variable & Pre-teaching & Teaching & Post-teaching & Interview & End \\
+        & interval & interval & interval & interval & interval \\
+        \midrule
+        Teaching Experience & $- .17/ - .27^*$ & .11/-.02 & $- .04/-.03$ & $.24^*/-.20$ & .04/.11 \\
+        Disruption Appraisal & $- .01/.16$ & $- .20/.08$ & .20/$- .14$ & $- .13/.01$ & .04/.12 \\
+        Confidence Appraisal & $- .10/ - .18$ & .06/.09 & .04/$- .03$ & .09/$- .19$ & $- .07/.13$ \\
+        \bottomrule \\
+          Note. * $p < .05$.
+    \end{tabularx}
+    \caption{Correlations between mean standardized HR/mean slopes and the predictor variables of teaching experience (TE), disruption appraisal (DA), and confidence appraisal (CA) for the five intervals.}
+    \label{tab_3}
+\end{table}
+
+```
+
+```{=latex}
+
+\begin{landscape}
+
+% Set longtable to stretch the entire width of the page
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+
+\begin{longtable}{@{\extracolsep{\fill}} p{1.8cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} @{}}
+
+    \toprule
+    & \multicolumn{4}{c}{Model 1} & \multicolumn{4}{c}{Model 2} & \multicolumn{4}{c}{Model 3} & \multicolumn{4}{c}{Model 4} \\
+    \cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13} \cmidrule(lr){14-17}
+    Dependent \newline variable: & \multicolumn{16}{c}{Mean standardized HR and mean slopes} \\
+    \cmidrule(lr){2-17}
+    & \multicolumn{2}{c}{Mean std. HR} & \multicolumn{2}{c}{Mean slopes} & \multicolumn{2}{c}{Mean std. HR} & \multicolumn{2}{c}{Mean slopes} & \multicolumn{2}{c}{Mean std. HR} & \multicolumn{2}{c}{Mean slopes} & \multicolumn{2}{c}{Mean std. HR} & \multicolumn{2}{c}{Mean slopes} \\
+    & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ \\
+    \midrule
+    \endfirsthead
+
+    \multicolumn{17}{c}{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+    \toprule
+    & \multicolumn{4}{c}{Model 1} & \multicolumn{4}{c}{Model 2} & \multicolumn{4}{c}{Model 3} & \multicolumn{4}{c}{Model 4} \\
+    \cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13} \cmidrule(lr){14-17}
+    Dependent variable: & \multicolumn{16}{c}{Mean standardized HR and mean slopes} \\
+    \cmidrule(lr){2-17}
+    & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ & $\beta$ (SE) & $p$ \\
+    \midrule
+    \endhead
+
+    \bottomrule
+    \multicolumn{17}{c}{{Continued on next page}} \\
+    \endfoot
+
+    \bottomrule
+    \endlastfoot
+
+    Pre-teaching \newline interval (I1) & & & & & & & & & & & & & & & & \\
+    Teaching \newline Experience & \begin{tabular}{@{}c@{}}$-.17$\\$(.005)$\end{tabular} & $.12$ & \begin{tabular}{@{}c@{}}$-.27^*$\\$(.002)$\end{tabular} & $<.05$ & & & & & & & & & & & & \\
+    R\textsuperscript{2} & $.030$ & & $.071$ & & & & & & & & & & & & & \\
+    \midrule
+    Teaching \newline interval (I2) & & & & & & & & & & & & & & & & \\
+    Teaching \newline Experience & \begin{tabular}{@{}c@{}}$.11$\\$(.002)$\end{tabular} & $.34$ & \begin{tabular}{@{}c@{}}$-.02$\\$(.001)$\end{tabular} & $.83$ & \begin{tabular}{@{}c@{}}$.04$\\$(.005)$\end{tabular} & $.73$ & \begin{tabular}{@{}c@{}}$.01$\\$(.001)$\end{tabular} & $.96$ & \begin{tabular}{@{}c@{}}$.10$\\$(.006)$\end{tabular} & $.42$ & \begin{tabular}{@{}c@{}}$-.08$\\$(.001)$\end{tabular} & $.54$ & \begin{tabular}{@{}c@{}}$.05$\\$(.006)$\end{tabular} & $.67$ & \begin{tabular}{@{}c@{}}$-.05$\\$(.001)$\end{tabular} & $.72$ \\
+    Disruption \newline Appraisal & \begin{tabular}{@{}c@{}}$-.18$\\$(.041)$\end{tabular} & $.13$ & \begin{tabular}{@{}c@{}}$.08$\\$(.010)$\end{tabular} & $.50$ & \begin{tabular}{@{}c@{}}$-.19$\\$(.042)$\end{tabular} & $.13$ & \begin{tabular}{@{}c@{}}$.12$\\$(.010)$\end{tabular} & $.34$ \\
+    Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$.01$\\$(.046)$\end{tabular} & $.92$ & \begin{tabular}{@{}c@{}}$.12$\\$(.011)$\end{tabular} & $.34$ & \begin{tabular}{@{}c@{}}$-.04$\\$(.047)$\end{tabular} & $.76$ & \begin{tabular}{@{}c@{}}$.15$\\$(.012)$\end{tabular} & $.24$ \\
+    R\textsuperscript{2} & $.012$ & & $.000$ & & $.040$ & & $.015$ & & $.012$ & & $.010$ & & $.042$ & & $.031$ \\
+    $\Delta$ R\textsuperscript{2} & & & $.028$ & & $.015$ & & $.000$ & & $.010$ & & $.030$ & & $.031$ \\
+    \midrule
+    Post-teaching \newline interval (I3) & & & & & & & & & & & & & & & & \\
+    Teaching \newline Experience & \begin{tabular}{@{}c@{}}$-.04$\\$(.005)$\end{tabular} & $.70$ & \begin{tabular}{@{}c@{}}$-.03$\\$(.001)$\end{tabular} & $.80$ & \begin{tabular}{@{}c@{}}$.04$\\$(.005)$\end{tabular} & $.76$ & \begin{tabular}{@{}c@{}}$-.09$\\$(.001)$\end{tabular} & $.44$ & \begin{tabular}{@{}c@{}}$-.08$\\$(.006)$\end{tabular} & $.55$ & \begin{tabular}{@{}c@{}}$-.02$\\$(.001)$\end{tabular} & $.89$ & \begin{tabular}{@{}c@{}}$-.01$\\$(.006)$\end{tabular} & $.91$ & \begin{tabular}{@{}c@{}}$-.07$\\$(.001)$\end{tabular} & $.61$ \\
+    Disruption \newline Appraisal & \begin{tabular}{@{}c@{}}$.22$\\$(.040)$\end{tabular} & $.07$ & \begin{tabular}{@{}c@{}}$-.18$\\$(.009)$\end{tabular} & $.14$ & \begin{tabular}{@{}c@{}}$.25^*$\\$(.041)$\end{tabular} & $<.05$ & \begin{tabular}{@{}c@{}}$-.20$\\$(.010)$\end{tabular} & $.12$ \\
+    Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$.08$\\$(.045)$\end{tabular} & $.55$ & \begin{tabular}{@{}c@{}}$-.03$\\$(.011)$\end{tabular} & $.83$ & \begin{tabular}{@{}c@{}}$.14$\\$(.046)$\end{tabular} & $.27$ & \begin{tabular}{@{}c@{}}$-.08$\\$(.011)$\end{tabular} & $.54$ \\
+    R\textsuperscript{2} & $.002$ & & $.001$ & & $.043$ & & $.020$ & & $.006$ & & $.002$ & & $.058$ & & $.023$ \\
+    $\Delta$ R\textsuperscript{2} & & & $.041$ & & $.019$ & & $.004$ & & $.001$ & & $.056$ & & $.022$ \\
+    \midrule
+    Interview \newline interval (I4) & & & & & & & & & & & & & & & & \\
+    Teaching \newline Experience & \begin{tabular}{@{}c@{}}$.24^*$\\$(.006)$\end{tabular} & $<.05$ & \begin{tabular}{@{}c@{}}$-.20$\\$(.001)$\end{tabular} & $.07$ & \begin{tabular}{@{}c@{}}$.22$\\$(.006)$\end{tabular} & $.06$ & \begin{tabular}{@{}c@{}}$-.23$\\$(.001)$\end{tabular} & $.06$ & \begin{tabular}{@{}c@{}}$.25^*$\\$(.006)$\end{tabular} & $<.05$ & \begin{tabular}{@{}c@{}}$-.14$\\$(.001)$\end{tabular} & $.25$ & \begin{tabular}{@{}c@{}}$.23$\\$(.007)$\end{tabular} & $.07$ & \begin{tabular}{@{}c@{}}$-.17$\\$(.001)$\end{tabular} & $.18$ \\
+    Disruption \newline Appraisal & \begin{tabular}{@{}c@{}}$-.05$\\$(.045)$\end{tabular} & $.66$ & \begin{tabular}{@{}c@{}}$-.08$\\$(.006)$\end{tabular} & $.52$ & \begin{tabular}{@{}c@{}}$-.06$\\$(.047)$\end{tabular} & $.61$ & \begin{tabular}{@{}c@{}}$-.12$\\$(.007)$\end{tabular} & $.34$ \\
+    Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$-.02$\\$(.050)$\end{tabular} & $.85$ & \begin{tabular}{@{}c@{}}$-.13$\\$(.007)$\end{tabular} & $.29$ & \begin{tabular}{@{}c@{}}$-.04$\\$(.052)$\end{tabular} & $.76$ & \begin{tabular}{@{}c@{}}$-.16$\\$(.007)$\end{tabular} & $.20$ \\
+    R\textsuperscript{2} & $.058$ & & $.040$ & & $.060$ & & $.050$ & & $.058$ & & $.054$ & & $.061$ & & $.069$ \\
+    $\Delta$ R\textsuperscript{2} & & & $.002$ & & $.010$ & & $.000$ & & $.014$ & & $.003$ & & $.029$ \\
+    \midrule
+    End \newline interval (I5) & & & & & & & & & & & & & & & & \\
+    Teaching \newline Experience & \begin{tabular}{@{}c@{}}$.04$\\$(.004)$\end{tabular} & $.70$ & \begin{tabular}{@{}c@{}}$.11$\\$(.001)$\end{tabular} & $.32$ & \begin{tabular}{@{}c@{}}$.07$\\$(.005)$\end{tabular} & $.58$ & \begin{tabular}{@{}c@{}}$.18$\\$(.001)$\end{tabular} & $.13$ & \begin{tabular}{@{}c@{}}$.09$\\$(.005)$\end{tabular} & $.46$ & \begin{tabular}{@{}c@{}}$.07$\\$(.001)$\end{tabular} & $.58$ & \begin{tabular}{@{}c@{}}$.10$\\$(.005)$\end{tabular} & $.43$ & \begin{tabular}{@{}c@{}}$.12$\\$(.001)$\end{tabular} & $.33$ \\
+    Disruption \newline Appraisal & \begin{tabular}{@{}c@{}}$.06$\\$(.035)$\end{tabular} & $.60$ & \begin{tabular}{@{}c@{}}$.19$\\$(.007)$\end{tabular} & $.12$ & \begin{tabular}{@{}c@{}}$.04$\\$(.037)$\end{tabular} & $.76$ & \begin{tabular}{@{}c@{}}$.23$\\$(.007)$\end{tabular} & $.07$ \\
+    Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$-.11$\\$(.039)$\end{tabular} & $.38$ & \begin{tabular}{@{}c@{}}$.10$\\$(.008)$\end{tabular} & $.43$ & \begin{tabular}{@{}c@{}}$-.10$\\$(.041)$\end{tabular} & $.44$ & \begin{tabular}{@{}c@{}}$.16$\\$(.008)$\end{tabular} & $.22$ \\
+    R\textsuperscript{2} & $.002$ & & $.013$ & & $.005$ & & $.053$ & & $.012$ & & $.025$ & & $.013$ & & $.078$ \\
+    $\Delta$ R\textsuperscript{2} & & & $.003$ & & $.040$ & & $.010$ & & $.012$ & & $.011$ & & $.065$ \\
+\end{longtable}
+\begin{tablenotes}
+\footnotesize
+\item Note. In Model 1, mean standardized HR and mean slopes were predicted only by teaching experience. In Model 2, solely disruption appraisal was added to teaching experience as a predictor. In Model 3, solely confidence appraisal was added to teaching experience as a predictor. In Model 4, all three predictors were considered in concert.
+\item * $p < .05$.
+\end{tablenotes}
+\end{landscape}
+
+```
 
