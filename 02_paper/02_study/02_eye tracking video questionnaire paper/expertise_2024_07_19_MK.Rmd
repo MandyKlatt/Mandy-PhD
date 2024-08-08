@@ -164,14 +164,6 @@ knitr::kable(demo.table,
 ## 2. Measures
 
 ### 2.1 Eye-Tracking Data
-
-1. Number of fixation, Fixation duration, GRI 
-- Alles (gesamte Lektion), students (gesamte Lektion)
-- disruptive person (tatsächliche Dauer der Störung)
-
-2. Time to first fixation
-- disruptive person (tatsächliche Dauer der Störung)
-
 ```{r eyetracking_read_in_data, echo=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
 # return a character vector with names of .tsv data in data folder
@@ -223,7 +215,7 @@ df_aoi <- df_aoi %>%
 
 ```
 
-XXX 223 & 232 sind fehlerhaft --> Daten nochmal komplett neu ziehen!! XXX
+XXX 223 (ist eine Doppelung der 214) & 232 (enthält NAs) sind fehlerhaft --> Daten nochmal komplett neu ziehen!! XXX
 
 #### 2.2.1 Number of fixation (micro-teaching unit)
 ```{r nof_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -271,10 +263,10 @@ nof.table <-
   )
 
 knitr::kable(nof.table,
-             caption = "N, M, SD, min & max number of fixation (micro-teaching unit)")
+             caption = "N, M, SD, min & max number of fixations (micro-teaching unit)")
 
 
-# plotting number of fixations on ALL AOIS
+# plotting number of fixations (micro-teaching unit)
 df_aoi_sum %>%
   ggplot(mapping = aes(x = Group, y = Sum_number_fixation)) +
   geom_boxplot(mapping = aes(fill = Group), outlier.shape = NA) +
@@ -288,7 +280,7 @@ df_aoi_sum %>%
     )
   ) +
   ylim(0, 2500) +
-  labs(x = "", y = "Number of fixation") +
+  labs(x = "", y = "Number of fixations") +
   scale_fill_brewer(palette  = "RdBu") +
   ggtitle("Number of fixation\n(micro-teaching unit)") +
   theme_cowplot() +
@@ -298,7 +290,7 @@ plot_number_group
 
 ```
 
-#### t-test & effect size "Number of fixation in entire micro-teaching unit"
+#### t-test & effect size "Number of fixation (micro-teaching unit)"
 ```{r nof_all_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # NUMBER OF FIXATIONS on all AOIs 
@@ -322,12 +314,12 @@ round(d_number_all, 2)
 
 ```
 
-#### 2.2.2 Number of fixations on AOI "students" (micro-teaching unit)
+#### 2.2.2 Number of fixations (AOI students)
 ```{r nof_students, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-##################### NUMBER OF FIXATIONS ON AOI STUDENTS ########################
+##################### NUMBER OF FIXATIONS (AOI STUDENTS) ########################
 
-# filter group & total duration & number fixation on AOI Students
+# filter group & total duration & number fixation (AOI students)
 df_aoi %>%
   filter(TOI == "Lesson") %>%
   dplyr::select (
@@ -352,7 +344,7 @@ df_aoi %>%
     Group = as_factor(Group)
   ) -> df_aoi_stud
 
-# N, M, SD, min & max number of fixation on AOI students
+# N, M, SD, min & max number of fixations (AOI students)
 nof.stud.table <-
   df_aoi_stud %>%
   group_by(Group) %>%
@@ -365,7 +357,7 @@ nof.stud.table <-
   )
 
 knitr::kable(nof.stud.table,
-             caption = "N, M, SD, min & max number of fixation on AOI students (micro-teaching unit)")
+             caption = "N, M, SD, min & max number of fixations (AOI students)")
 
 
 # plotting average duration on AOI Students
@@ -381,9 +373,9 @@ df_aoi_stud %>%
       height = 0.1
     )
   ) +
-  labs(x = "", y = "Number of fixation") +
+  labs(x = "", y = "Number of fixations") +
   scale_fill_brewer(palette  = "RdBu") +
-  ggtitle("Number of fixation on AOI `Students`\n(micro-teaching unit)") +
+  ggtitle("Number of fixations\n(AOI students)") +
   theme_cowplot() +
   theme(legend.position = "none") -> plot_number_stud
 
@@ -391,7 +383,7 @@ plot_number_stud
 
 ```
 
-#### t-test & effect size "Number of fixation on AOI students"
+#### t-test & effect size "Number of fixation" (AOI students)
 ```{r nof_stud_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # NUMBER OF FIXATIONS on AOI students 
@@ -411,7 +403,7 @@ round(d_number_stud, 2)
 
 ```
 
-#### 2.2.3 Number of fixations on AOI "disruptive person" (during disruption)
+#### 2.2.3 Number of fixations (AOI disruptive person)
 ```{r nof_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### NUMBER OF FIXATION ON AOI DISRUPTIVE PERSON ########################
@@ -438,7 +430,7 @@ nof.disrup.table <-
   )
 
 knitr::kable(nof.disrup.table,
-             caption = "N, M, SD, min & max number of fixation on AOI disruptive person (during disruption)")
+             caption = "N, M, SD, min & max number of fixation (AOI disruptive person)")
 
 
 # plotting average duration on AOI Disruptive person
@@ -455,16 +447,16 @@ df_aoi_disrup %>%
     )
   ) +
   ylim(0, 150) +
-  labs(x = "", y = "Number of fixation") +
+  labs(x = "", y = "Number of fixations") +
   scale_fill_brewer(palette  = "RdBu") +
-  ggtitle("Number of fixation AOI\n`disruptive person`") +
+  ggtitle("Number of fixations\n(AOI disruptive person)") +
   theme_cowplot() +
   theme(legend.position = "none") -> plot_number_disrup
 
 plot_number_disrup
 ```
 
-#### t-test & effect size "Number of fixation on AOI disruptive person"
+#### t-test & effect size "Number of fixations" (AOI disruptive person)
 ```{r nof_disrup_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # NUMBER OF FIXATIONS on AOI disruptive person 
@@ -484,31 +476,31 @@ round(d_number_disrup, 2)
 
 ```
 
-#### 2.2.4 Average duration of fixation (micro-teaching unit)
+#### 2.2.4 Average duration of fixations in milliseconds (micro-teaching unit)
 ```{r dur_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-##################### AVERAGE DURATION OF FIXATION IN ENTIRE MICRO-TEACHING UNIT ########################
+##################### AVERAGE DURATION OF FIXATIONS (MICRO-TEACHING UNIT) ########################
 
-# N, M, SD, min & max average duration of fixation (entire micro-teaching unit)
-dur.table <-
-  df_aoi_sum %>%
-  group_by(Group) %>%
+# N, M, SD, min & max average duration of fixations (micro-teaching unit)
+dur.table <- 
+  df_aoi_sum %>%  
+  group_by(Group) %>% 
   summarise(
     N = n(),
-    "M in ms" = round(mean(Sum_duration_fixation), digits = 2),
-    "SD in ms" = round(sd(Sum_duration_fixation), digits = 2),
-    "Min in ms" = round(min(Sum_duration_fixation), digits = 2),
-    "Max in ms" = round(max(Sum_duration_fixation), digits = 2)
+    "M in ms" = round(mean(Average_duration_calc), digits = 2),
+    "SD in ms" = round(sd(Average_duration_calc), digits = 2),
+    "Min in ms" = round(min(Average_duration_calc), digits = 2),
+    "Max in ms" = round(max(Average_duration_calc), digits = 2)
     )
 
 knitr::kable(dur.table,
-             caption = "N, M, SD, min & max duration of fixation in milliseconds (micro-teaching unit)")
+             caption = "N, M, SD, min & max duration of fixations in milliseconds (micro-teaching unit)")
 
 
 # plotting average duration (micro-teaching unit)
 df_aoi_sum %>% 
   ggplot(mapping = aes(x = Group,
-                       y = Sum_duration_fixation)) +
+                       y = Average_duration_calc)) +
   geom_boxplot(mapping = aes(fill = Group),
                outlier.shape = NA) +
   geom_point(size = 2,
@@ -516,12 +508,12 @@ df_aoi_sum %>%
              position = position_jitter(seed = 1,
                                         width = 0.1,
                                         height = 0.1)) +
-  ylim(0, 1000000) +
+  ylim(0, 1000) +
   
   labs(x ="",
        y = "Milliseconds") + 
   scale_fill_brewer(palette  = "RdBu") + 
-  ggtitle("Duration of fixation\n(micro-teaching unit)") +
+  ggtitle("Average duration of fixations\n(micro-teaching unit)") +
   theme_cowplot() +
   theme(legend.position="none") -> plot_average_duration_group
 
@@ -529,26 +521,26 @@ plot_average_duration_group
 
 ```
 
-#### t-test & effect size "Average duration in entire micro-teaching unit"
+#### t-test & effect size "Average duration of fixations" (micro-teaching unit)
 ```{r dur_all_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # AVERAGE DURATION OF FIXATIONS on all AOIs 
 # t-test for expertise differences
-t.test(x = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Expert"],
-       y = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Novice"],
+t.test(x = df_aoi_sum$Average_duration_calc[df_aoi_sum$Group == "Expert"],
+       y = df_aoi_sum$Average_duration_calc[df_aoi_sum$Group == "Novice"],
        var.equal = TRUE)
 
 
 # AVERAGE DURATION OF FIXATIONS on all AOIs
 # effect size for expertise differences
-d_aver_all <- CohenD(x = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Expert"],
-                     y = df_aoi_sum$Average_duration[df_aoi_sum$Group == "Novice"],
+d_aver_all <- CohenD(x = df_aoi_sum$Average_duration_calc[df_aoi_sum$Group == "Expert"],
+                     y = df_aoi_sum$Average_duration_calc[df_aoi_sum$Group == "Novice"],
                     na.rm = TRUE)
 round(d_aver_all, 2)
 
 ```
 
-#### 2.2.5 Average duration on AOI students
+#### 2.2.5 Average duration of fixations (AOI students)
 ```{r dur_students, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### AVERAGE DURATION ON AOI STUDENTS ########################
@@ -577,20 +569,20 @@ df_aoi %>%
   ) -> df_aoi_stud
 
 
-# N, M, SD, min & max average duration on AOI students
+# N, M, SD, min & max average duration of fixations on AOI students
 dur.stud.table <-
   df_aoi_stud %>%
   group_by(Group) %>%
   summarise(
     N = n(),
-    "M" = round(mean(Average_duration_stud), digits = 2),
-    "SD" = round(sd(Average_duration_stud), digits = 2),
-    "Min" = round(min(Average_duration_stud), digits = 2),
-    "Max" = round(max(Average_duration_stud), digits = 2)
+    "M in ms" = round(mean(Average_duration_stud), digits = 2),
+    "SD in ms" = round(sd(Average_duration_stud), digits = 2),
+    "Min in ms" = round(min(Average_duration_stud), digits = 2),
+    "Max in ms" = round(max(Average_duration_stud), digits = 2)
   )
 
 knitr::kable(dur.stud.table,
-             caption = "N, M, SD, min & max average duration on AOI students")
+             caption = "N, M, SD, min & max average duration of fixations in milliseconds (AOI students)")
 
 
 # plotting average duration on AOI Students
@@ -610,7 +602,7 @@ df_aoi_stud %>%
   labs(x ="",
        y = "Milliseconds") + 
   scale_fill_brewer(palette  = "RdBu") + 
-  ggtitle("Average duration of fixation on AOI `Students`\n(micro-teaching unit)") +
+  ggtitle("Average duration of fixations\n(AOI students)") +
   theme_cowplot() +
   theme(legend.position="none") -> plot_average_duration_stud
 
@@ -618,7 +610,7 @@ plot_average_duration_stud
 
 ```
 
-#### t-test & effect size "Average duration on AOI students"
+#### t-test & effect size "Average duration of fixations" (AOI students)
 ```{r dur_stud_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # AVERAGE DURATION OF FIXATIONS on AOI Students 
@@ -640,10 +632,10 @@ d_aver_stud <- CohenD(
 
 ```
 
-#### 2.2.6 Average duration of fixations on AOI "disruptive person" (during disruption)
+#### 2.2.6 Average duration of fixations (AOI disruptive person)
 ```{r dur_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-##################### AVERAGE DURATION ON AOI DISRUPTIVE PERSON ########################
+##################### AVERAGE DURATIONS ON AOI DISRUPTIVE PERSON ########################
 
 # filter group & total duration & number fixation on AOI Disruptive person
 df_aoi %>%
@@ -662,21 +654,20 @@ df_aoi %>%
     Group = as_factor(Group)
   ) -> df_aoi_disrup
 
-
-# N, M, SD, min & max number of fixation on AOI "disruptive person"
+# N, M, SD, min & max average duration of fixations in milliseconds (AOI disruptive person)"
 dur.disrup.table <-
   df_aoi_disrup %>%
   group_by(Group) %>%
   summarise(
     N = n(),
-    "M" = round(mean(Average_duration_disrup), digits = 2),
-    "SD" = round(sd(Average_duration_disrup), digits = 2),
-    "Min" = round(min(Average_duration_disrup), digits = 2),
-    "Max" = round(max(Average_duration_disrup), digits = 2)
+    "M in ms" = round(mean(Average_duration_disrup), digits = 2),
+    "SD in ms" = round(sd(Average_duration_disrup), digits = 2),
+    "Min in ms" = round(min(Average_duration_disrup), digits = 2),
+    "Max in ms" = round(max(Average_duration_disrup), digits = 2)
   )
 
 knitr::kable(dur.disrup.table,
-             caption = "N, M, SD, min & max average duration of fixation on AOI disruptive person (during disruption)")
+             caption = "N, M, SD, min & max average duration of fixations in milliseconds (AOI disruptive person)")
 
 
 # plotting average duration on AOI Disruptive person
@@ -694,7 +685,7 @@ df_aoi_disrup %>%
   labs(x ="",
        y = "Milliseconds") + 
   scale_fill_brewer(palette  = "RdBu") + 
-  ggtitle("Average duration of fixation AOI\n`disruptive person`") +
+  ggtitle("Average duration of fixations\n(AOI disruptive person)") +
   theme_cowplot() +
   theme(legend.position="none") -> plot_average_duration_disrup
 
@@ -702,7 +693,7 @@ plot_average_duration_disrup
 
 ```
 
-#### t-test & effect size "Average duration of fixation on AOI disruptive person"
+#### t-test & effect size "Average duration of fixations" (AOI disruptive person)
 ```{r _disrup_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # AVERAGDE DURATION OF FIXATIONS on AOI disruptive person 
@@ -722,56 +713,38 @@ round(d_dur_disrup, 2)
 
 ```
 
-
-#### 2.2.1 GRI (micro-teaching unit)
+#### 2.2.7 Gaze Relational Index (GRI; micro-teaching unit)
 ```{r gri_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### GRI IN MICRO-TEACHING UNIT ########################
 
 # filter group, participants, total duration & number fixation in entire micro-teaching unit
 df_aoi_sum %>%
-  filter(TOI == "Lesson") %>%
-  dplyr::select (
-    Group,
-    Participant,
-    starts_with("Total_duration_of_fixations"),
-    starts_with("Number_of_fixations"),
-    !"Total_duration_of_fixations.Disruptive_Person",
-    !"Number_of_fixations.Disruptive_Person"
-  ) %>%
-  rowwise() %>%
-  transmute(
-    Group = Group,
-    Participant = Participant,
-    Sum_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
-    Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE)
-  ) %>%
+  group_by(Group) %>% 
   mutate(
-    GRI = round(Sum_duration_fixation / Sum_number_fixation, digits = 0),
-    Group = as_factor(Group)
-  ) %>%
-  drop_na() -> df_gri
+    GRI = round(Average_duration_calc / Sum_number_fixation, digits = 2),
+    )-> df_gri
 
 
 # N, M, SD, min & max number of fixation (micro-teaching unit)
-nof.table <-
-  df_aoi_sum %>%
+gri.table <-
+  df_gri %>%
   group_by(Group) %>%
   summarise(
     N = n(),
-    "M" = round(mean(Sum_number_fixation), digits = 2),
-    "SD" = round(sd(Sum_number_fixation), digits = 2),
-    "Min" = round(min(Sum_number_fixation), digits = 2),
-    "Max" = round(max(Sum_number_fixation), digits = 2)
+    "M" = round(mean(GRI), digits = 2),
+    "SD" = round(sd(GRI), digits = 2),
+    "Min" = round(min(GRI), digits = 2),
+    "Max" = round(max(GRI), digits = 2)
   )
 
-knitr::kable(nof.table,
-             caption = "N, M, SD, min & max number of fixation (micro-teaching unit)")
+knitr::kable(gri.table,
+             caption = "N, M, SD, min & max GRI (micro-teaching unit)")
 
 
 # plotting number of fixations on ALL AOIS
-df_aoi_sum %>%
-  ggplot(mapping = aes(x = Group, y = Sum_number_fixation)) +
+df_gri %>%
+  ggplot(mapping = aes(x = Group, y = GRI)) +
   geom_boxplot(mapping = aes(fill = Group), outlier.shape = NA) +
   geom_point(
     size = 2,
@@ -782,14 +755,257 @@ df_aoi_sum %>%
       height = 0.1
     )
   ) +
-  ylim(0, 2500) +
-  labs(x = "", y = "Number of fixation") +
+  ylim(0, 1) +
+  labs(x = "", y = "mean duration of fixations/\nmean number of fixations") +
   scale_fill_brewer(palette  = "RdBu") +
-  ggtitle("Number of fixation\n(micro-teaching unit)") +
+  ggtitle("GRI\n(micro-teaching unit)") +
   theme_cowplot() +
-  theme(legend.position = "none") -> plot_number_group
+  theme(legend.position = "none") -> plot_gri_group
 
-plot_number_group
+plot_gri_group
+
+```
+
+#### t-test & effect size "GRI" (micro-teaching unit)
+```{r gri_all_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# GRI (mirco-teaching unit)
+# t-test for expertise differences
+t.test(x = df_gri$GRI[df_gri$Group == "Expert"],
+       y = df_gri$GRI[df_gri$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# GRI (mirco-teaching unit) 
+# effect size for expertise differences
+d_gri_all <- CohenD(x = df_gri$GRI[df_gri$Group == "Expert"],
+                        y = df_gri$GRI[df_gri$Group == "Novice"],
+                        na.rm = TRUE)
+
+round(d_gri_all, 2)
+
+```
+
+#### 2.2.8 Gaze Relational Index (GRI; AOI students)
+```{r gri_stud, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+##################### GRI on AOI students ########################
+
+# filter group, participants, total duration & number fixation on AOI students
+df_aoi_stud %>%
+  group_by(Group) %>% 
+  mutate(
+    GRI_stud = round(Average_duration_stud / Stud_number_fixation, digits = 2),
+    )-> df_gri_stud
+
+
+# N, M, SD, min & max GRI (AOI students)
+gri.stud.table <-
+  df_gri_stud %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(GRI_stud), digits = 2),
+    "SD" = round(sd(GRI_stud), digits = 2),
+    "Min" = round(min(GRI_stud), digits = 2),
+    "Max" = round(max(GRI_stud), digits = 2)
+  )
+
+knitr::kable(gri.stud.table,
+             caption = "N, M, SD, min & max GRI (AOI students)")
+
+
+# plotting GRI on AOI students
+df_gri_stud %>%
+  ggplot(mapping = aes(x = Group, y = GRI_stud)) +
+  geom_boxplot(mapping = aes(fill = Group), outlier.shape = NA) +
+  geom_point(
+    size = 2,
+    alpha = 0.7,
+    position = position_jitter(
+      seed = 1,
+      width = 0.1,
+      height = 0.1
+    )
+  ) +
+  ylim(0, 2.5) +
+  labs(x = "", y = "mean duration of fixations/\nmean number of fixations") +
+  scale_fill_brewer(palette  = "RdBu") +
+  ggtitle("GRI\n(AOI students)") +
+  theme_cowplot() +
+  theme(legend.position = "none") -> plot_gri_stud
+
+plot_gri_stud
+
+```
+
+#### t-test & effect size "GRI" (AOI students)
+```{r gri_stud_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# GRI (AOI students)
+# t-test for expertise differences
+t.test(x = df_gri_stud$GRI_stud[df_gri_stud$Group == "Expert"],
+       y = df_gri_stud$GRI_stud[df_gri_stud$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# GRI (AOI students) 
+# effect size for expertise differences
+d_gri_stud <- CohenD(x = df_gri_stud$GRI_stud[df_gri_stud$Group == "Expert"],
+                     y = df_gri_stud$GRI_stud[df_gri_stud$Group == "Novice"],
+                     na.rm = TRUE)
+
+round(d_gri_stud, 2)
+
+```
+
+#### 2.2.9 Gaze Relational Index (GRI; AOI disruptive person)
+```{r gri_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+##################### GRI on AOI students ########################
+
+# filter
+df_aoi_disrup %>%
+  group_by(Group) %>% 
+  mutate(
+    GRI_disrup = round(Average_duration_disrup / Number_of_fixations.Disruptive_Person, digits = 2),
+    )-> df_gri_disrup
+
+
+# N, M, SD, min & max GRI (AOI disruptive person)
+gri.disrup.table <-
+  df_gri_disrup %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(GRI_disrup), digits = 2),
+    "SD" = round(sd(GRI_disrup), digits = 2),
+    "Min" = round(min(GRI_disrup), digits = 2),
+    "Max" = round(max(GRI_disrup), digits = 2)
+  )
+
+knitr::kable(gri.disrup.table,
+             caption = "N, M, SD, min & max GRI (AOI disruptive person)")
+
+
+# plotting GRI on AOI disruptive person
+df_gri_disrup %>%
+  ggplot(mapping = aes(x = Group, y = GRI_disrup)) +
+  geom_boxplot(mapping = aes(fill = Group), outlier.shape = NA) +
+  geom_point(
+    size = 2,
+    alpha = 0.7,
+    position = position_jitter(
+      seed = 1,
+      width = 0.1,
+      height = 0.1
+    )
+  ) +
+  ylim(0, 25) +
+  labs(x = "", y = "mean duration of fixations/\nmean number of fixations") +
+  scale_fill_brewer(palette  = "RdBu") +
+  ggtitle("GRI\n(AOI disruptive person)") +
+  theme_cowplot() +
+  theme(legend.position = "none") -> plot_gri_disrup
+
+plot_gri_disrup
+
+```
+
+#### t-test & effect size "GRI" (AOI disruptive person)
+```{r gri_disrup_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# GRI (AOI disruptive person)
+# t-test for expertise differences
+t.test(x = df_gri_disrup$GRI_disrup[df_gri_disrup$Group == "Expert"],
+       y = df_gri_disrup$GRI_disrup[df_gri_disrup$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# GRI (AOI disruptive person)
+# effect size for expertise differences
+d_gri_disrup <- CohenD(x = df_gri_disrup$GRI_disrup[df_gri_disrup$Group == "Expert"],
+                       y = df_gri_disrup$GRI_disrup[df_gri_disrup$Group == "Novice"],
+                       na.rm = TRUE)
+
+round(d_gri_disrup, 2)
+
+```
+
+#### 2.2.10 Time to first fixation in seconds (AOI disruptive person)
+```{r ttff_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+############### TIME TO FIRST FIXATION ####################
+
+df_aoi %>% 
+  filter(TOI == "Lesson") %>% 
+  dplyr::select (Group,
+          "Time_to_first_fixation.Disruptive_Person") %>% 
+  rowwise() %>% 
+  mutate(Group = as_factor(Group)) -> df_ttff_disrup
+
+# changing milliseconds into seconds
+df_ttff_disrup$Disrup_time_fixation_sec <-
+  round(df_ttff_disrup$Time_to_first_fixation.Disruptive_Person / 1000,
+        digits = 2)
+
+# M, SD, min, max time to first fixation "Disruptive Person"
+ttff.disrup.table <-
+  df_ttff_disrup %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M in sec" = round(mean(Disrup_time_fixation_sec), digits = 2),
+    "SD in sec" = round(sd(Disrup_time_fixation_sec), digits = 2),
+    "Min in sec" = round(min(Disrup_time_fixation_sec), digits = 2),
+    "Max in sec" = round(max(Disrup_time_fixation_sec), digits = 2)
+  )
+
+knitr::kable(ttff.disrup.table,
+             caption = "N, M, SD, min & max time to first fixation in seconds (AOI disruptive person)")
+
+
+
+##################### plotting time to first fixation for groups ##################### 
+plot_time_disrup <- 
+  ggplot(data = df_ttff_disrup,
+         mapping = aes(x = Group,
+                       y = Disrup_time_fixation_sec)) +
+ geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  ylim(0,350) +
+  labs(x ="",
+       y = "Seconds") + 
+  scale_fill_brewer(palette  = "RdBu") +
+  ggtitle("Time to first fixation\n(AOI disruptive person)") +
+  theme_cowplot() +
+  theme(legend.position="none") 
+
+plot_time_disrup
+```
+
+#### t-test & effect size "Time to first fixation" (AOI disruptive person)
+```{r ttff_disrup_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# TIME TO FIRST FIXATIONS on disruptive person 
+# t-test for expertise differences
+t.test(x = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Expert"],
+       y = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Novice"],
+       var.equal = TRUE)
+
+
+# TIME TO FIRST FIXATIONS on disruptive person 
+# effect size for expertise differences
+d_time_disrup <- CohenD(x = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Expert"],
+                    y = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Novice"],
+                    na.rm = TRUE)
+
+round(d_time_disrup, 2)
 
 ```
 
