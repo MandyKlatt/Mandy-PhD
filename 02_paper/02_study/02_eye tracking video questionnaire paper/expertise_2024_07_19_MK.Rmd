@@ -1690,3 +1690,56 @@ d_quest_npvc <- CohenD(x = df_quest_plot$`Non-/paraverbal communication`[df_ques
 round(d_quest_npvc, 2)
 
 ```
+
+## 3. Correlations
+
+```{r correlations, echo=FALSE, message=FALSE, warning=FALSE}
+
+# demo data 
+df_demo <- 
+  read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% 
+  filter(!LI06_05 == 201,
+         !LI06_05 == 223,
+         !LI06_05 == 232) %>% # exclude participant due to missing eye tracking data
+  transmute(ID = LI06_05,
+            Gender = LI02_01_1,
+            Age = LI03_01,
+            `Teaching Experience` = LI04_01,
+            )
+
+# average duration & number fixation (micro-teaching unit)
+df_aoi %>%
+  filter(TOI == "Lesson") %>% 
+  dplyr::select (
+    Group,
+    Participant,
+    starts_with("Total_duration_of_fixations"),
+    starts_with("Number_of_fixations"),
+    starts_with("Average_duration"),
+    !"Total_duration_of_fixations.Disruptive_Person",
+    !"Number_of_fixations.Disruptive_Person",
+    !"Average_duration_of_fixations.Disruptive_Person"
+  ) %>%
+  rowwise() %>%
+  transmute(
+    Group = Group,
+    Participant = Participant,
+    Sum_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
+    Sum_average_duration_fixation = sum(c_across(starts_with("Average_duration")), na.rm = TRUE),
+    Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE)
+  ) %>%
+  mutate(
+    Average_duration_calc = round(Sum_duration_fixation / Sum_number_fixation, digits = 0),
+    Group = as_factor(Group)
+  ) %>%
+  drop_na() -> df_aoi_sum
+
+
+# create a big data frame with all measures 
+
+
+
+
+
+```
+
