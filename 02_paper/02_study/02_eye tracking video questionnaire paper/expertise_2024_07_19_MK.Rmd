@@ -244,7 +244,7 @@ df_aoi %>%
     Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE)
   ) %>%
   mutate(
-    Average_duration_calc = round(Sum_duration_fixation / Sum_number_fixation, digits = 0),
+    Average_duration_mtu = round(Sum_duration_fixation / Sum_number_fixation, digits = 0),
     Group = as_factor(Group)
   ) %>%
   drop_na() -> df_aoi_sum
@@ -487,10 +487,10 @@ dur.table <-
   group_by(Group) %>% 
   summarise(
     N = n(),
-    "M in ms" = round(mean(Average_duration_calc), digits = 2),
-    "SD in ms" = round(sd(Average_duration_calc), digits = 2),
-    "Min in ms" = round(min(Average_duration_calc), digits = 2),
-    "Max in ms" = round(max(Average_duration_calc), digits = 2)
+    "M in ms" = round(mean(Average_duration_mtu), digits = 2),
+    "SD in ms" = round(sd(Average_duration_mtu), digits = 2),
+    "Min in ms" = round(min(Average_duration_mtu), digits = 2),
+    "Max in ms" = round(max(Average_duration_mtu), digits = 2)
     )
 
 knitr::kable(dur.table,
@@ -500,7 +500,7 @@ knitr::kable(dur.table,
 # plotting average duration (micro-teaching unit)
 df_aoi_sum %>% 
   ggplot(mapping = aes(x = Group,
-                       y = Average_duration_calc)) +
+                       y = Average_duration_mtu)) +
   geom_boxplot(mapping = aes(fill = Group),
                outlier.shape = NA) +
   geom_point(size = 2,
@@ -526,15 +526,15 @@ plot_average_duration_group
 
 # AVERAGE DURATION OF FIXATIONS on all AOIs 
 # t-test for expertise differences
-t.test(x = df_aoi_sum$Average_duration_calc[df_aoi_sum$Group == "Expert"],
-       y = df_aoi_sum$Average_duration_calc[df_aoi_sum$Group == "Novice"],
+t.test(x = df_aoi_sum$Average_duration_mtu[df_aoi_sum$Group == "Expert"],
+       y = df_aoi_sum$Average_duration_mtu[df_aoi_sum$Group == "Novice"],
        var.equal = TRUE)
 
 
 # AVERAGE DURATION OF FIXATIONS on all AOIs
 # effect size for expertise differences
-d_aver_all <- CohenD(x = df_aoi_sum$Average_duration_calc[df_aoi_sum$Group == "Expert"],
-                     y = df_aoi_sum$Average_duration_calc[df_aoi_sum$Group == "Novice"],
+d_aver_all <- CohenD(x = df_aoi_sum$Average_duration_mtu[df_aoi_sum$Group == "Expert"],
+                     y = df_aoi_sum$Average_duration_mtu[df_aoi_sum$Group == "Novice"],
                     na.rm = TRUE)
 round(d_aver_all, 2)
 
@@ -722,7 +722,7 @@ round(d_dur_disrup, 2)
 df_aoi_sum %>%
   group_by(Group) %>% 
   mutate(
-    GRI = round(Average_duration_calc / Sum_number_fixation, digits = 2),
+    GRI = round(Average_duration_mtu / Sum_number_fixation, digits = 2),
     )-> df_gri
 
 
@@ -1701,17 +1701,16 @@ df_demo <-
   filter(!LI06_05 == 201,
          !LI06_05 == 223,
          !LI06_05 == 232) %>% # exclude participant due to missing eye tracking data
-  transmute(ID = LI06_05,
+  transmute(Participant = LI06_05,
             Gender = LI02_01_1,
             Age = LI03_01,
             `Teaching Experience` = LI04_01,
             )
 
-# average duration & number fixation (micro-teaching unit)
+# average duration, number fixation, GRI (micro-teaching unit)
 df_aoi %>%
   filter(TOI == "Lesson") %>% 
   dplyr::select (
-    Group,
     Participant,
     starts_with("Total_duration_of_fixations"),
     starts_with("Number_of_fixations"),
@@ -1722,24 +1721,151 @@ df_aoi %>%
   ) %>%
   rowwise() %>%
   transmute(
-    Group = Group,
     Participant = Participant,
     Sum_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
     Sum_average_duration_fixation = sum(c_across(starts_with("Average_duration")), na.rm = TRUE),
     Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE)
   ) %>%
   mutate(
-    Average_duration_calc = round(Sum_duration_fixation / Sum_number_fixation, digits = 0),
-    Group = as_factor(Group)
-  ) %>%
-  drop_na() -> df_aoi_sum
+    Average_duration_mtu = round(Sum_duration_fixation / Sum_number_fixation, digits = 0),
+    GRI_mtu = round(Average_duration_mtu / Sum_number_fixation, digits = 2)) %>%
+  drop_na() %>% 
+  dplyr::select(Participant,
+         Sum_number_fixation, 
+         Average_duration_mtu,
+         GRI_mtu) -> df_aoi_numb_dur
 
+
+# average duration, number fixation, GRI (AOI student)
+df_aoi %>%
+  filter(TOI == "Lesson") %>%
+  dplyr::select (
+    Participant,
+    "Total_duration_of_fixations.Anna",
+    "Total_duration_of_fixations.Bianca",
+    "Total_duration_of_fixations.Carl(a)",
+    "Number_of_fixations.Anna",
+    "Number_of_fixations.Bianca",
+    "Number_of_fixations.Carl(a)"
+  ) %>%
+  rowwise() %>%
+  transmute(
+    Participant = Participant,
+    Stud_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
+    Stud_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE)
+  ) %>%
+  mutate(
+    Average_duration_stud = round(Stud_duration_fixation / Stud_number_fixation, digits = 0),
+    GRI_stud = round(Average_duration_stud / Stud_number_fixation, digits = 2)
+    ) %>% 
+  dplyr::select(Participant,
+         Stud_number_fixation,
+         Average_duration_stud,
+         GRI_stud
+         )-> df_aoi_stud
+
+
+# average duration, number fixation, GRI (AOI disruptive person)
+df_aoi %>%
+  filter(TOI == "Lesson") %>%
+  dplyr::select(Participant,
+                "Total_duration_of_fixations.Disruptive_Person",
+                "Number_of_fixations.Disruptive_Person"
+                ) %>%
+  rowwise() %>%
+  mutate(
+    Average_duration_disrup = round(
+      Total_duration_of_fixations.Disruptive_Person / Number_of_fixations.Disruptive_Person,
+      digits = 0),
+    GRI_disrup = round(
+      Average_duration_disrup / Number_of_fixations.Disruptive_Person, digits = 2)) %>% 
+  dplyr::select(Participant,
+                Number_of_fixations.Disruptive_Person,
+                Average_duration_disrup,
+                GRI_disrup
+                ) -> df_aoi_disrup
+
+# time to first fixatoin (AOI disruptive person)
+df_aoi %>% 
+  filter(TOI == "Lesson") %>% 
+  dplyr::select (Participant,
+                 "Time_to_first_fixation.Disruptive_Person") %>% 
+  rowwise() -> df_ttff_disrup
+
+# rating scales
+df_sri <-
+  excel_sheets("data/Coding_SRI.xlsx") %>%
+  map_df(~ read_xlsx("data/Coding_SRI.xlsx", .)) %>%
+  filter(
+    !ID %in% c(201,
+               223,
+               232),
+    !disruption_appraisal == -100,
+    !confidence_appraisal == -100,
+    !disruption_appraisal == -99,
+    !confidence_appraisal == -99,
+    !disruption_appraisal == -88,
+    !confidence_appraisal == -88,
+    !prevalence_rating == -100,
+    !prevalence_rating == -99,
+    !prevalence_rating == -88
+    ) %>% 
+  rename(Participant = ID) %>%
+  group_by(Participant) %>% 
+  summarise(
+    Mean_disrupption_appraisal = round(mean(disruption_appraisal), 2),
+    Mean_confidence_appraisal = round(mean(confidence_appraisal), 2),
+    Mean_prevalence_rating = round(mean(prevalence_rating), 2)
+    )%>% 
+  dplyr::select(Participant,
+                Mean_disrupption_appraisal,
+                Mean_confidence_appraisal,
+                Mean_prevalence_rating)
+
+# sjt
+df_sjt <-
+  read_excel("./data/SJT.xlsx") %>%
+  dplyr::select(UI06_05, # Participant
+                SJT_AL_gek, # Monitoring
+                SJT_ST_gek, # Managing momentum
+                SJT_R_gek, # Rules and routines
+                SJT_KF_gek) %>% # All
+  filter(!UI06_05 %in% c(201, 223, 232)) %>%  # exclude ID with no eye tracking data
+  transmute(
+    Participant = UI06_05,
+    SJT_Monitoring = round(SJT_AL_gek, 2),
+    SJT_Managing_momentum = round(SJT_ST_gek, 2),
+    SJT_Rules_routines = round(SJT_R_gek, 2),
+    SJT_All = round(SJT_KF_gek, 2)
+  )
+
+# classroom questionnaire
+df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
+  dplyr::select(LI06_05, 
+                LM01_01:LM01_08, # classroom management
+                LP01_01:LP01_08) %>% # non- & paraverbal communication
+  filter(!LI06_05 %in% c(201, 223, 232)) %>% # exclude ID with no eye tracking data
+  rename(Participant = LI06_05) %>% 
+  group_by(Participant) %>% 
+  transmute(Participant = Participant,
+            "Quest_All" = round(mean(c_across(starts_with("L")), na.rm = TRUE), 2),
+            "Quest_classroom_management" = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
+            "Quest_non_paraverbal_communication" = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2)
+            )
 
 # create a big data frame with all measures 
+#put all data frames into list
+df_list <- list(df_demo,
+                  df_aoi_numb_dur,
+                  df_aoi_stud,
+                  df_aoi_disrup,
+                  df_sri,
+                  df_sjt,
+                  df_quest)
 
-
-
-
+#merge all data frames in list
+df_merge <-
+  df_list %>% reduce(full_join, by='Participant')
 
 ```
 
