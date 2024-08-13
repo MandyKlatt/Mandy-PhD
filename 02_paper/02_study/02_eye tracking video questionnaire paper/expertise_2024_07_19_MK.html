@@ -1878,8 +1878,8 @@ unit)</h4>
 <h4>t-test &amp; effect size “Average duration of fixations”
 (micro-teaching unit)</h4>
 <pre><code>Two Sample t-test</code></pre>
-<p>data: df_aoi_sum<span class="math inline">\(Average_duration_calc[df_aoi_sum\)</span>Group ==
-“Expert”] and df_aoi_sum<span class="math inline">\(Average_duration_calc[df_aoi_sum\)</span>Group ==
+<p>data: df_aoi_sum<span class="math inline">\(Average_duration_mtu[df_aoi_sum\)</span>Group ==
+“Expert”] and df_aoi_sum<span class="math inline">\(Average_duration_mtu[df_aoi_sum\)</span>Group ==
 “Novice”] t = -1.7965, df = 79, p-value = 0.07623 alternative
 hypothesis: true difference in means is not equal to 0 95 percent
 confidence interval: -94.07762 4.81755 sample estimates: mean of x mean
@@ -3102,6 +3102,651 @@ is not equal to 0 95 percent confidence interval: 0.0006129687
 <p>[1] 0.44 attr(,“magnitude”) [1] “small”</p>
 </div>
 </div>
+</div>
+<div id="correlations" class="section level2">
+<h2>3. Correlations</h2>
+<pre><code>##                                       Gender   Age Teaching Experience
+## Gender                                  1.00 -0.13               -0.06
+## Age                                    -0.13  1.00                0.91
+## Teaching Experience                    -0.06  0.91                1.00
+## Sum_number_fixation                    -0.02  0.26                0.32
+## Average_duration_mtu                    0.04 -0.14               -0.23
+## GRI_mtu                                 0.04 -0.18               -0.26
+## Stud_number_fixation                    0.09  0.15                0.19
+## Average_duration_stud                   0.09 -0.14               -0.21
+## GRI_stud                                0.00 -0.18               -0.24
+## Number_of_fixations.Disruptive_Person   0.08  0.09                0.04
+## Average_duration_disrup                -0.08 -0.16               -0.24
+## GRI_disrup                             -0.04 -0.17               -0.17
+## Mean_disrupption_appraisal              0.12 -0.24               -0.31
+## Mean_confidence_appraisal              -0.08  0.59                0.57
+## Mean_prevalence_rating                  0.19 -0.28               -0.27
+## SJT_Monitoring                          0.11  0.20                0.19
+## SJT_Managing_momentum                   0.00 -0.04               -0.05
+## SJT_Rules_routines                     -0.03 -0.07               -0.04
+## SJT_All                                 0.07  0.06                0.06
+## Quest_All                               0.03  0.33                0.30
+## Quest_classroom_management              0.04  0.21                0.23
+## Quest_non_paraverbal_communication      0.01  0.29                0.24
+##                                       Sum_number_fixation Average_duration_mtu
+## Gender                                              -0.02                 0.04
+## Age                                                  0.26                -0.14
+## Teaching Experience                                  0.32                -0.23
+## Sum_number_fixation                                  1.00                -0.86
+## Average_duration_mtu                                -0.86                 1.00
+## GRI_mtu                                             -0.96                 0.96
+## Stud_number_fixation                                 0.55                -0.41
+## Average_duration_stud                               -0.81                 0.91
+## GRI_stud                                            -0.80                 0.75
+## Number_of_fixations.Disruptive_Person                0.32                -0.20
+## Average_duration_disrup                             -0.62                 0.68
+## GRI_disrup                                          -0.58                 0.52
+## Mean_disrupption_appraisal                          -0.04                 0.04
+## Mean_confidence_appraisal                            0.10                -0.07
+## Mean_prevalence_rating                              -0.12                 0.11
+## SJT_Monitoring                                       0.31                -0.18
+## SJT_Managing_momentum                                0.06                -0.02
+## SJT_Rules_routines                                   0.21                -0.12
+## SJT_All                                              0.26                -0.17
+## Quest_All                                            0.06                 0.07
+## Quest_classroom_management                           0.07                 0.06
+## Quest_non_paraverbal_communication                   0.03                 0.06
+##                                       GRI_mtu Stud_number_fixation
+## Gender                                   0.04                 0.09
+## Age                                     -0.18                 0.15
+## Teaching Experience                     -0.26                 0.19
+## Sum_number_fixation                     -0.96                 0.55
+## Average_duration_mtu                     0.96                -0.41
+## GRI_mtu                                  1.00                -0.49
+## Stud_number_fixation                    -0.49                 1.00
+## Average_duration_stud                    0.89                -0.40
+## GRI_stud                                 0.80                -0.86
+## Number_of_fixations.Disruptive_Person   -0.27                 0.43
+## Average_duration_disrup                  0.69                -0.35
+## GRI_disrup                               0.58                -0.52
+## Mean_disrupption_appraisal               0.05                -0.02
+## Mean_confidence_appraisal               -0.07                -0.16
+## Mean_prevalence_rating                   0.11                -0.25
+## SJT_Monitoring                          -0.26                 0.15
+## SJT_Managing_momentum                   -0.07                 0.15
+## SJT_Rules_routines                      -0.19                 0.11
+## SJT_All                                 -0.24                 0.17
+## Quest_All                                0.04                -0.07
+## Quest_classroom_management               0.01                -0.15
+## Quest_non_paraverbal_communication       0.05                 0.01
+##                                       Average_duration_stud GRI_stud
+## Gender                                                 0.09     0.00
+## Age                                                   -0.14    -0.18
+## Teaching Experience                                   -0.21    -0.24
+## Sum_number_fixation                                   -0.81    -0.80
+## Average_duration_mtu                                   0.91     0.75
+## GRI_mtu                                                0.89     0.80
+## Stud_number_fixation                                  -0.40    -0.86
+## Average_duration_stud                                  1.00     0.77
+## GRI_stud                                               0.77     1.00
+## Number_of_fixations.Disruptive_Person                 -0.24    -0.36
+## Average_duration_disrup                                0.75     0.60
+## GRI_disrup                                             0.59     0.60
+## Mean_disrupption_appraisal                            -0.02    -0.03
+## Mean_confidence_appraisal                             -0.12     0.08
+## Mean_prevalence_rating                                 0.10     0.25
+## SJT_Monitoring                                        -0.22    -0.20
+## SJT_Managing_momentum                                 -0.05    -0.09
+## SJT_Rules_routines                                    -0.13    -0.14
+## SJT_All                                               -0.21    -0.20
+## Quest_All                                              0.03     0.08
+## Quest_classroom_management                             0.00     0.11
+## Quest_non_paraverbal_communication                     0.05     0.03
+##                                       Number_of_fixations.Disruptive_Person
+## Gender                                                                 0.08
+## Age                                                                    0.09
+## Teaching Experience                                                    0.04
+## Sum_number_fixation                                                    0.32
+## Average_duration_mtu                                                  -0.20
+## GRI_mtu                                                               -0.27
+## Stud_number_fixation                                                   0.43
+## Average_duration_stud                                                 -0.24
+## GRI_stud                                                              -0.36
+## Number_of_fixations.Disruptive_Person                                  1.00
+## Average_duration_disrup                                               -0.22
+## GRI_disrup                                                            -0.80
+## Mean_disrupption_appraisal                                             0.00
+## Mean_confidence_appraisal                                             -0.05
+## Mean_prevalence_rating                                                -0.17
+## SJT_Monitoring                                                         0.19
+## SJT_Managing_momentum                                                  0.25
+## SJT_Rules_routines                                                     0.17
+## SJT_All                                                                0.28
+## Quest_All                                                              0.03
+## Quest_classroom_management                                            -0.09
+## Quest_non_paraverbal_communication                                     0.07
+##                                       Average_duration_disrup GRI_disrup
+## Gender                                                  -0.08      -0.04
+## Age                                                     -0.16      -0.17
+## Teaching Experience                                     -0.24      -0.17
+## Sum_number_fixation                                     -0.62      -0.58
+## Average_duration_mtu                                     0.68       0.52
+## GRI_mtu                                                  0.69       0.58
+## Stud_number_fixation                                    -0.35      -0.52
+## Average_duration_stud                                    0.75       0.59
+## GRI_stud                                                 0.60       0.60
+## Number_of_fixations.Disruptive_Person                   -0.22      -0.80
+## Average_duration_disrup                                  1.00       0.71
+## GRI_disrup                                               0.71       1.00
+## Mean_disrupption_appraisal                               0.05       0.01
+## Mean_confidence_appraisal                               -0.24      -0.09
+## Mean_prevalence_rating                                   0.02       0.13
+## SJT_Monitoring                                          -0.16      -0.22
+## SJT_Managing_momentum                                   -0.02      -0.21
+## SJT_Rules_routines                                      -0.05      -0.14
+## SJT_All                                                 -0.12      -0.28
+## Quest_All                                               -0.08      -0.05
+## Quest_classroom_management                              -0.06       0.06
+## Quest_non_paraverbal_communication                      -0.08      -0.08
+##                                       Mean_disrupption_appraisal
+## Gender                                                      0.12
+## Age                                                        -0.24
+## Teaching Experience                                        -0.31
+## Sum_number_fixation                                        -0.04
+## Average_duration_mtu                                        0.04
+## GRI_mtu                                                     0.05
+## Stud_number_fixation                                       -0.02
+## Average_duration_stud                                      -0.02
+## GRI_stud                                                   -0.03
+## Number_of_fixations.Disruptive_Person                       0.00
+## Average_duration_disrup                                     0.05
+## GRI_disrup                                                  0.01
+## Mean_disrupption_appraisal                                  1.00
+## Mean_confidence_appraisal                                  -0.35
+## Mean_prevalence_rating                                     -0.04
+## SJT_Monitoring                                             -0.01
+## SJT_Managing_momentum                                      -0.01
+## SJT_Rules_routines                                          0.17
+## SJT_All                                                     0.06
+## Quest_All                                                  -0.12
+## Quest_classroom_management                                 -0.11
+## Quest_non_paraverbal_communication                         -0.10
+##                                       Mean_confidence_appraisal
+## Gender                                                    -0.08
+## Age                                                        0.59
+## Teaching Experience                                        0.57
+## Sum_number_fixation                                        0.10
+## Average_duration_mtu                                      -0.07
+## GRI_mtu                                                   -0.07
+## Stud_number_fixation                                      -0.16
+## Average_duration_stud                                     -0.12
+## GRI_stud                                                   0.08
+## Number_of_fixations.Disruptive_Person                     -0.05
+## Average_duration_disrup                                   -0.24
+## GRI_disrup                                                -0.09
+## Mean_disrupption_appraisal                                -0.35
+## Mean_confidence_appraisal                                  1.00
+## Mean_prevalence_rating                                     0.14
+## SJT_Monitoring                                             0.15
+## SJT_Managing_momentum                                     -0.16
+## SJT_Rules_routines                                        -0.18
+## SJT_All                                                   -0.03
+## Quest_All                                                  0.51
+## Quest_classroom_management                                 0.50
+## Quest_non_paraverbal_communication                         0.36
+##                                       Mean_prevalence_rating SJT_Monitoring
+## Gender                                                  0.19           0.11
+## Age                                                    -0.28           0.20
+## Teaching Experience                                    -0.27           0.19
+## Sum_number_fixation                                    -0.12           0.31
+## Average_duration_mtu                                    0.11          -0.18
+## GRI_mtu                                                 0.11          -0.26
+## Stud_number_fixation                                   -0.25           0.15
+## Average_duration_stud                                   0.10          -0.22
+## GRI_stud                                                0.25          -0.20
+## Number_of_fixations.Disruptive_Person                  -0.17           0.19
+## Average_duration_disrup                                 0.02          -0.16
+## GRI_disrup                                              0.13          -0.22
+## Mean_disrupption_appraisal                             -0.04          -0.01
+## Mean_confidence_appraisal                               0.14           0.15
+## Mean_prevalence_rating                                  1.00          -0.02
+## SJT_Monitoring                                         -0.02           1.00
+## SJT_Managing_momentum                                  -0.09           0.33
+## SJT_Rules_routines                                     -0.06           0.17
+## SJT_All                                                -0.02           0.77
+## Quest_All                                               0.01           0.13
+## Quest_classroom_management                              0.08           0.14
+## Quest_non_paraverbal_communication                     -0.02           0.13
+##                                       SJT_Managing_momentum SJT_Rules_routines
+## Gender                                                 0.00              -0.03
+## Age                                                   -0.04              -0.07
+## Teaching Experience                                   -0.05              -0.04
+## Sum_number_fixation                                    0.06               0.21
+## Average_duration_mtu                                  -0.02              -0.12
+## GRI_mtu                                               -0.07              -0.19
+## Stud_number_fixation                                   0.15               0.11
+## Average_duration_stud                                 -0.05              -0.13
+## GRI_stud                                              -0.09              -0.14
+## Number_of_fixations.Disruptive_Person                  0.25               0.17
+## Average_duration_disrup                               -0.02              -0.05
+## GRI_disrup                                            -0.21              -0.14
+## Mean_disrupption_appraisal                            -0.01               0.17
+## Mean_confidence_appraisal                             -0.16              -0.18
+## Mean_prevalence_rating                                -0.09              -0.06
+## SJT_Monitoring                                         0.33               0.17
+## SJT_Managing_momentum                                  1.00               0.32
+## SJT_Rules_routines                                     0.32               1.00
+## SJT_All                                                0.73               0.57
+## Quest_All                                             -0.14               0.00
+## Quest_classroom_management                            -0.21               0.01
+## Quest_non_paraverbal_communication                    -0.03              -0.02
+##                                       SJT_All Quest_All
+## Gender                                   0.07      0.03
+## Age                                      0.06      0.33
+## Teaching Experience                      0.06      0.30
+## Sum_number_fixation                      0.26      0.06
+## Average_duration_mtu                    -0.17      0.07
+## GRI_mtu                                 -0.24      0.04
+## Stud_number_fixation                     0.17     -0.07
+## Average_duration_stud                   -0.21      0.03
+## GRI_stud                                -0.20      0.08
+## Number_of_fixations.Disruptive_Person    0.28      0.03
+## Average_duration_disrup                 -0.12     -0.08
+## GRI_disrup                              -0.28     -0.05
+## Mean_disrupption_appraisal               0.06     -0.12
+## Mean_confidence_appraisal               -0.03      0.51
+## Mean_prevalence_rating                  -0.02      0.01
+## SJT_Monitoring                           0.77      0.13
+## SJT_Managing_momentum                    0.73     -0.14
+## SJT_Rules_routines                       0.57      0.00
+## SJT_All                                  1.00      0.01
+## Quest_All                                0.01      1.00
+## Quest_classroom_management              -0.03      0.83
+## Quest_non_paraverbal_communication       0.06      0.86
+##                                       Quest_classroom_management
+## Gender                                                      0.04
+## Age                                                         0.21
+## Teaching Experience                                         0.23
+## Sum_number_fixation                                         0.07
+## Average_duration_mtu                                        0.06
+## GRI_mtu                                                     0.01
+## Stud_number_fixation                                       -0.15
+## Average_duration_stud                                       0.00
+## GRI_stud                                                    0.11
+## Number_of_fixations.Disruptive_Person                      -0.09
+## Average_duration_disrup                                    -0.06
+## GRI_disrup                                                  0.06
+## Mean_disrupption_appraisal                                 -0.11
+## Mean_confidence_appraisal                                   0.50
+## Mean_prevalence_rating                                      0.08
+## SJT_Monitoring                                              0.14
+## SJT_Managing_momentum                                      -0.21
+## SJT_Rules_routines                                          0.01
+## SJT_All                                                    -0.03
+## Quest_All                                                   0.83
+## Quest_classroom_management                                  1.00
+## Quest_non_paraverbal_communication                          0.45
+##                                       Quest_non_paraverbal_communication
+## Gender                                                              0.01
+## Age                                                                 0.29
+## Teaching Experience                                                 0.24
+## Sum_number_fixation                                                 0.03
+## Average_duration_mtu                                                0.06
+## GRI_mtu                                                             0.05
+## Stud_number_fixation                                                0.01
+## Average_duration_stud                                               0.05
+## GRI_stud                                                            0.03
+## Number_of_fixations.Disruptive_Person                               0.07
+## Average_duration_disrup                                            -0.08
+## GRI_disrup                                                         -0.08
+## Mean_disrupption_appraisal                                         -0.10
+## Mean_confidence_appraisal                                           0.36
+## Mean_prevalence_rating                                             -0.02
+## SJT_Monitoring                                                      0.13
+## SJT_Managing_momentum                                              -0.03
+## SJT_Rules_routines                                                 -0.02
+## SJT_All                                                             0.06
+## Quest_All                                                           0.86
+## Quest_classroom_management                                          0.45
+## Quest_non_paraverbal_communication                                  1.00</code></pre>
+<p><img src="data:image/png;base64,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" width="672" /></p>
+<pre><code>## 
+## 
+## Means, standard deviations, and correlations with confidence intervals
+##  
+## 
+##   Variable                                  M     SD   1           2           
+##   1. Gender                                 0.07  0.22                         
+##                                                                                
+##   2. Age                                    0.11  0.35 -.33                    
+##                                                        [-.66, .11]             
+##                                                                                
+##   3. Teaching Experience                    0.09  0.37 -.27        .99**       
+##                                                        [-.62, .18] [.97, 1.00] 
+##                                                                                
+##   4. Sum_number_fixation                    -0.06 0.51 .00         .53*        
+##                                                        [-.42, .42] [.15, .78]  
+##                                                                                
+##   5. Average_duration_mtu                   0.13  0.48 -.03        -.51*       
+##                                                        [-.44, .40] [-.76, -.11]
+##                                                                                
+##   6. GRI_mtu                                0.10  0.51 -.02        -.50*       
+##                                                        [-.44, .41] [-.76, -.10]
+##                                                                                
+##   7. Stud_number_fixation                   -0.03 0.40 .09         .39         
+##                                                        [-.34, .49] [-.04, .70] 
+##                                                                                
+##   8. Average_duration_stud                  0.12  0.48 -.01        -.51*       
+##                                                        [-.43, .41] [-.77, -.11]
+##                                                                                
+##   9. GRI_stud                               0.09  0.49 -.05        -.47*       
+##                                                        [-.46, .38] [-.74, -.06]
+##                                                                                
+##   10. Number_of_fixations.Disruptive_Person 0.02  0.35 .10         .27         
+##                                                        [-.34, .50] [-.17, .62] 
+##                                                                                
+##   11. Average_duration_disrup               0.09  0.43 -.10        -.56**      
+##                                                        [-.50, .33] [-.79, -.18]
+##                                                                                
+##   12. GRI_disrup                            0.04  0.45 -.08        -.45*       
+##                                                        [-.49, .35] [-.73, -.04]
+##                                                                                
+##   13. Mean_disrupption_appraisal            0.00  0.26 .24         -.59**      
+##                                                        [-.20, .60] [-.81, -.22]
+##                                                                                
+##   14. Mean_confidence_appraisal             0.11  0.34 -.25        .79**       
+##                                                        [-.61, .19] [.56, .91]  
+##                                                                                
+##   15. Mean_prevalence_rating                0.04  0.26 .28         -.52*       
+##                                                        [-.16, .63] [-.77, -.13]
+##                                                                                
+##   16. SJT_Monitoring                        0.12  0.31 .04         .36         
+##                                                        [-.39, .45] [-.07, .68] 
+##                                                                                
+##   17. SJT_Managing_momentum                 0.07  0.30 -.01        -.11        
+##                                                        [-.43, .42] [-.51, .33] 
+##                                                                                
+##   18. SJT_Rules_routines                    0.07  0.28 -.05        -.10        
+##                                                        [-.46, .38] [-.50, .34] 
+##                                                                                
+##   19. SJT_All                               0.13  0.35 .02         .10         
+##                                                        [-.40, .44] [-.34, .50] 
+##                                                                                
+##   20. Quest_All                             0.18  0.33 -.16        .53*        
+##                                                        [-.54, .28] [.14, .78]  
+##                                                                                
+##   21. Quest_classroom_management            0.14  0.30 -.13        .44*        
+##                                                        [-.52, .31] [.02, .72]  
+##                                                                                
+##   22. Quest_non_paraverbal_communication    0.15  0.29 -.16        .51*        
+##                                                        [-.54, .28] [.12, .77]  
+##                                                                                
+##   3            4             5            6            7           
+##                                                                    
+##                                                                    
+##                                                                    
+##                                                                    
+##                                                                    
+##                                                                    
+##                                                                    
+##                                                                    
+##   .60**                                                            
+##   [.24, .82]                                                       
+##                                                                    
+##   -.58**       -.99**                                              
+##   [-.80, -.21] [-1.00, -.98]                                       
+##                                                                    
+##   -.58**       -1.00**       1.00**                                
+##   [-.80, -.20] [-1.00, -.99] [1.00, 1.00]                          
+##                                                                    
+##   .45*         .87**         -.85**       -.86**                   
+##   [.03, .73]   [.72, .95]    [-.93, -.66] [-.94, -.69]             
+##                                                                    
+##   -.58**       -.99**        .99**        .99**        -.84**      
+##   [-.80, -.21] [-1.00, -.98] [.99, 1.00]  [.99, 1.00]  [-.93, -.65]
+##                                                                    
+##   -.53*        -.97**        .96**        .96**        -.96**      
+##   [-.78, -.14] [-.99, -.92]  [.89, .98]   [.91, .99]   [-.98, -.91]
+##                                                                    
+##   .29          .72**         -.68**       -.71**       .81**       
+##   [-.15, .64]  [.42, .87]    [-.86, -.36] [-.87, -.40] [.59, .92]  
+##                                                                    
+##   -.62**       -.95**        .95**        .95**        -.80**      
+##   [-.83, -.27] [-.98, -.88]  [.87, .98]   [.87, .98]   [-.92, -.58]
+##                                                                    
+##   -.50*        -.90**        .88**        .90**        -.88**      
+##   [-.76, -.10] [-.96, -.77]  [.73, .95]   [.76, .96]   [-.95, -.73]
+##                                                                    
+##   -.59**       -.12          .09          .10          -.03        
+##   [-.81, -.23] [-.52, .32]   [-.34, .49]  [-.34, .50]  [-.44, .40] 
+##                                                                    
+##   .78**        .28           -.27         -.25         -.00        
+##   [.54, .90]   [-.17, .62]   [-.62, .18]  [-.61, .19]  [-.42, .42] 
+##                                                                    
+##   -.51*        -.41          .36          .38          -.53*       
+##   [-.77, -.11] [-.71, .02]   [-.07, .68]  [-.05, .69]  [-.78, -.15]
+##                                                                    
+##   .40          .70**         -.68**       -.70**       .57**       
+##   [-.03, .70]  [.39, .87]    [-.86, -.36] [-.87, -.40] [.20, .80]  
+##                                                                    
+##   -.09         .32           -.31         -.34         .41         
+##   [-.49, .35]  [-.12, .65]   [-.65, .12]  [-.67, .10]  [-.02, .71] 
+##                                                                    
+##   -.05         .48*          -.47*        -.49*        .45*        
+##   [-.46, .38]  [.07, .75]    [-.75, -.06] [-.76, -.09] [.03, .73]  
+##                                                                    
+##   .14          .60**         -.59**       -.62**       .56**       
+##   [-.30, .53]  [.24, .82]    [-.81, -.23] [-.82, -.26] [.18, .79]  
+##                                                                    
+##   .51*         .16           -.12         -.12         -.05        
+##   [.11, .76]   [-.28, .54]   [-.52, .31]  [-.51, .32]  [-.46, .38] 
+##                                                                    
+##   .43*         .10           -.07         -.07         -.16        
+##   [.01, .72]   [-.34, .50]   [-.48, .36]  [-.48, .36]  [-.55, .28] 
+##                                                                    
+##   .48*         .17           -.14         -.14         .03         
+##   [.08, .75]   [-.27, .56]   [-.53, .30]  [-.53, .30]  [-.39, .45] 
+##                                                                    
+##   8            9            10           11           12           13          
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##                                                                                
+##   .95**                                                                        
+##   [.89, .98]                                                                   
+##                                                                                
+##   -.70**       -.77**                                                          
+##   [-.87, -.40] [-.90, -.52]                                                    
+##                                                                                
+##   .96**        .91**        -.71**                                             
+##   [.91, .98]   [.79, .96]   [-.87, -.40]                                       
+##                                                                                
+##   .90**        .91**        -.92**       .92**                                 
+##   [.77, .96]   [.80, .96]   [-.97, -.82] [.81, .97]                            
+##                                                                                
+##   .08          .03          -.00         .15          .08                      
+##   [-.36, .48]  [-.39, .45]  [-.43, .42]  [-.29, .54]  [-.35, .48]              
+##                                                                                
+##   -.28         -.13         -.02         -.40         -.20         -.69**      
+##   [-.63, .16]  [-.52, .31]  [-.44, .41]  [-.70, .02]  [-.57, .24]  [-.86, -.37]
+##                                                                                
+##   .36          .48*         -.45*        .30          .41          .03         
+##   [-.08, .68]  [.07, .75]   [-.73, -.04] [-.14, .64]  [-.01, .71]  [-.40, .44] 
+##                                                                                
+##   -.70**       -.65**       .57**        -.66**       -.67**       -.11        
+##   [-.87, -.40] [-.84, -.32] [.20, .80]   [-.85, -.34] [-.85, -.35] [-.51, .32] 
+##                                                                                
+##   -.33         -.37         .52*         -.26         -.44*        .12         
+##   [-.66, .11]  [-.69, .06]  [.13, .77]   [-.62, .18]  [-.73, -.02] [-.32, .51] 
+##                                                                                
+##   -.48*        -.48*        .48*         -.38         -.48*        .29         
+##   [-.75, -.08] [-.75, -.08] [.08, .75]   [-.69, .04]  [-.75, -.07] [-.15, .63] 
+##                                                                                
+##   -.61**       -.60**       .62**        -.54**       -.64**       .08         
+##   [-.82, -.26] [-.81, -.23] [.26, .82]   [-.79, -.16] [-.84, -.30] [-.36, .48] 
+##                                                                                
+##   -.15         -.04         -.02         -.27         -.12         -.44*       
+##   [-.54, .29]  [-.45, .39]  [-.44, .40]  [-.62, .17]  [-.52, .32]  [-.73, -.03]
+##                                                                                
+##   -.10         .05          -.17         -.20         -.00         -.42        
+##   [-.50, .34]  [-.38, .46]  [-.55, .27]  [-.57, .24]  [-.42, .42]  [-.71, .01] 
+##                                                                                
+##   -.16         -.09         .07          -.29         -.18         -.41        
+##   [-.55, .28]  [-.49, .35]  [-.37, .47]  [-.63, .15]  [-.56, .26]  [-.71, .01] 
+##                                                                                
+##   14          15          16          17           18          19         
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##                                                                           
+##   -.03                                                                    
+##   [-.45, .40]                                                             
+##                                                                           
+##   .18         -.30                                                        
+##   [-.26, .56] [-.64, .14]                                                 
+##                                                                           
+##   -.37        -.27        .61**                                           
+##   [-.68, .06] [-.62, .17] [.25, .82]                                      
+##                                                                           
+##   -.33        -.27        .51*        .67**                               
+##   [-.66, .10] [-.62, .17] [.12, .77]  [.35, .85]                          
+##                                                                           
+##   -.14        -.30        .88**       .87**        .79**                  
+##   [-.53, .30] [-.64, .14] [.73, .95]  [.72, .95]   [.55, .91]             
+##                                                                           
+##   .77**       -.07        .08         -.40         -.24        -.18       
+##   [.51, .90]  [-.48, .37] [-.35, .49] [-.70, .03]  [-.60, .20] [-.56, .26]
+##                                                                           
+##   .76**       .07         .04         -.49*        -.26        -.24       
+##   [.50, .90]  [-.37, .47] [-.39, .45] [-.75, -.08] [-.61, .18] [-.60, .20]
+##                                                                           
+##   .68**       -.13        .12         -.27         -.20        -.10       
+##   [.36, .85]  [-.53, .30] [-.32, .52] [-.62, .17]  [-.57, .25] [-.50, .34]
+##                                                                           
+##   20         21        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##                        
+##   .94**                
+##   [.86, .97]           
+##                        
+##   .95**      .79**     
+##   [.89, .98] [.56, .91]
+##                        
+## 
+## Note. M and SD are used to represent mean and standard deviation, respectively.
+## Values in square brackets indicate the 95% confidence interval.
+## The confidence interval is a plausible range of population correlations 
+## that could have caused the sample correlation (Cumming, 2014).
+##  * indicates p &lt; .05. ** indicates p &lt; .01.
+## </code></pre>
 </div>
 
 

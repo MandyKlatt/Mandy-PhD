@@ -30,7 +30,8 @@ needs(tidyverse,
       xtable,
       DescTools,
       formattable,
-      psych)
+      psych,
+      apaTables)
 
 ```
 
@@ -1692,7 +1693,6 @@ round(d_quest_npvc, 2)
 ```
 
 ## 3. Correlations
-
 ```{r correlations, echo=FALSE, message=FALSE, warning=FALSE}
 
 # demo data 
@@ -1841,20 +1841,26 @@ df_sjt <-
 
 # classroom questionnaire
 df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  dplyr::select(LI06_05, 
-                LM01_01:LM01_08, # classroom management
+  dplyr::select(LI06_05, LM01_01:LM01_08, # classroom management
                 LP01_01:LP01_08) %>% # non- & paraverbal communication
   filter(!LI06_05 %in% c(201, 223, 232)) %>% # exclude ID with no eye tracking data
-  rename(Participant = LI06_05) %>% 
-  group_by(Participant) %>% 
-  transmute(Participant = Participant,
-            "Quest_All" = round(mean(c_across(starts_with("L")), na.rm = TRUE), 2),
-            "Quest_classroom_management" = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
-            "Quest_non_paraverbal_communication" = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2)
-            )
+  rename(Participant = LI06_05) %>%
+  group_by(Participant) %>%
+  transmute(
+    Participant = Participant,
+    "Quest_All" = round(mean(c_across(starts_with(
+      "L"
+    )), na.rm = TRUE), 2),
+    "Quest_classroom_management" = round(mean(c_across(starts_with(
+      "LM"
+    )), na.rm = TRUE), 2),
+    "Quest_non_paraverbal_communication" = round(mean(c_across(starts_with(
+      "LP"
+    )), na.rm = TRUE), 2)
+  )
 
 # create a big data frame with all measures 
-#put all data frames into list
+# put all data frames into list
 df_list <- list(df_demo,
                   df_aoi_numb_dur,
                   df_aoi_stud,
@@ -1863,9 +1869,48 @@ df_list <- list(df_demo,
                   df_sjt,
                   df_quest)
 
-#merge all data frames in list
+# merge all data frames in list
 df_merge <-
-  df_list %>% reduce(full_join, by='Participant')
+  df_list %>% reduce(full_join, by='Participant') %>% 
+  dplyr::select(.,
+                -"Participant")
+
+# create a correlation matrix
+cor_tab <- 
+  df_merge %>% 
+  cor(method = "spearman") %>% 
+  round(., digits = 2)
+
+# create a scatter plot 
+# pairs(~ Gender + 
+#         Age + 
+#         `Teaching Experience` + 
+#         Sum_number_fixation + 
+#         Stud_number_fixation + 
+#         Number_of_fixations.Disruptive_Person + 
+#         Average_duration_mtu + 
+#         Average_duration_stud + 
+#         Average_duration_disrup + 
+#         GRI_mtu + 
+#         GRI_stud + 
+#         GRI_disrup + 
+#         Mean_disrupption_appraisal + 
+#         Mean_confidence_appraisal + 
+#         Mean_prevalence_rating + 
+#         SJT_Monitoring + 
+#         SJT_Managing_momentum + 
+#         SJT_Rules_routines + 
+#         SJT_All + 
+#         Quest_classroom_management + 
+#         Quest_non_paraverbal_communication + 
+#         Quest_All,
+#       upper.panel = NULL,
+#       pch = 20,
+#       cex = 3, 
+#       main = "Correlation Table Expertise Measures",
+#       col = Gender)
+
+# apa.cor.table(cor_tab)
 
 ```
 
