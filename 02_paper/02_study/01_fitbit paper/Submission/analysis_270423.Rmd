@@ -1112,12 +1112,26 @@ for (i in unique(data_regression_mean$time_span)) {
 
 }
 
-# Hier habe ich immer nur die Modelle getauscht. Also statt regr_end1 regr_teaching1 usw.
-
 summary(regr_preparation1)
+summary(regr_preparation2)
+summary(regr_preparation3)
+summary(regr_preparation4)
+summary(regr_teaching1)
+summary(regr_teaching2)
+summary(regr_teaching3)
+summary(regr_teaching4)
+summary(regr_post1)
+summary(regr_post2)
+summary(regr_post3)
+summary(regr_post4)
+summary(regr_interview1)
+summary(regr_interview2)
+summary(regr_interview3)
+summary(regr_interview4)
+summary(regr_end1)
 summary(regr_end2)
 summary(regr_end3)
-summary(regr_post4)
+summary(regr_end4)
 
 ```
 # Multiple Linear Regression (Slope) -- LOOP
@@ -1228,8 +1242,9 @@ df_multi <-
 
 fit_pre_1 <-
   df_multi %>% 
-  filter(Phase == "Pre Teaching Phase") %$% 
-  lm(slope ~ teaching_experience)
+  filter(Phase == "Pre Teaching Phase") %>% 
+  lm(slope ~ teaching_experience,
+     data = .)
 
 summary(fit_pre_1)
 
