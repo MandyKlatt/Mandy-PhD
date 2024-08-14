@@ -1073,6 +1073,96 @@ main %>%
 
 ```
 
+```{r regressions, include=FALSE}
+
+# multiple bpm values (merged data frame for multiple regression with multiple measurement points)
+main_multiple_hr <-
+  left_join(main_single_hr,
+            df_merge,
+            by = "ID")
+
+main_multiple_hr %>% 
+  group_by(ID, time_span) %>% 
+  summarise(disruption_factor = mean(disruption_factor,
+                                     na.rm = T),
+            confidence_factor = mean(confidence_factor,
+                                     na.rm = T),
+            teaching_experience = mean(teaching_experience),
+            heart_rate = mean(heart_rate_std)
+            ) %>% 
+  ungroup() -> data_regression_mean
+
+
+# ## using lavaan package to get std. regression coefficients 
+# MLRModel <- 'heart_rate ~ teaching_experience
+#              heart_rate ~ 1'
+# 
+# output <- sem(model = MLRModel, data = data_regression_mean)
+# summary(output, standardized = TRUE)
+
+## loop for regression model
+for (i in unique(data_regression_mean$time_span)) {
+  
+  cache <- data_regression_mean %>% 
+    filter(time_span == i)
+  
+  regr1 <-
+    lm(heart_rate ~ teaching_experience,
+    data = cache) %>% 
+    lm.beta()
+  
+  assign(value = regr1,
+         x = paste0("regr_", i, "1"))
+  
+  regr2 <-
+    lm(heart_rate ~ teaching_experience + disruption_factor,
+    data = cache) %>% 
+    lm.beta() 
+  
+  assign(value = regr2,
+         x = paste0("regr_", i, "2"))
+  
+  regr3 <-
+    lm(heart_rate ~ teaching_experience + confidence_factor,
+    data = cache) %>% 
+    lm.beta() 
+  
+  assign(value = regr3,
+         x = paste0("regr_", i, "3"))
+  
+  regr4 <-
+    lm(heart_rate ~ teaching_experience + disruption_factor + confidence_factor,
+    data = cache) %>% 
+    lm.beta()
+  
+  assign(value = regr4,
+         x = paste0("regr_", i, "4"))
+
+}
+
+summary(regr_preparation1)
+summary(regr_preparation2)
+summary(regr_preparation3)
+summary(regr_preparation4)
+summary(regr_teaching1)
+summary(regr_teaching2)
+summary(regr_teaching3)
+summary(regr_teaching4)
+summary(regr_post1)
+summary(regr_post2)
+summary(regr_post3)
+summary(regr_post4)
+summary(regr_interview1)
+summary(regr_interview2)
+summary(regr_interview3)
+summary(regr_interview4)
+summary(regr_end1)
+summary(regr_end2)
+summary(regr_end3)
+summary(regr_end4)
+
+```
+
 ```{=latex}
 
 \begin{landscape}
