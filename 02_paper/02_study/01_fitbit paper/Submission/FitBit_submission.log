@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.8.5)  6 AUG 2024 16:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.8.5)  15 AUG 2024 15:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -835,201 +835,202 @@ Package natbib Warning: Citation `gelman2006data' on page 8 undefined on input l
 pdfTeX warning (ext4): destination with the same identifier (name{Hfootnote.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.740 \end{table}
+l.742 \end{table}
                  
 pdfTeX warning (ext4): destination with the same identifier (name{Hfootnote.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.740 \end{table}
+l.742 \end{table}
                  
-<plots_publication/loess_plot_std_unstd_new.pdf, id=324, 568.1225pt x 426.59375pt>
-File: plots_publication/loess_plot_std_unstd_new.pdf Graphic file (type pdf)
-<use plots_publication/loess_plot_std_unstd_new.pdf>
-Package pdftex.def Info: plots_publication/loess_plot_std_unstd_new.pdf  used on input line 744.
+Overfull \hbox (382.49753pt too wide) in paragraph at lines 755--755
+[]  \T1/lmtt/m/n/10 \caption{Overall course of the HR with the unstandardized HR in BPM shown in Fig. 3a. and the z-standardized HR shown in Fig. 3b. for the planned 2-hour study.}[] 
+ []
+
+
+Overfull \hbox (371.99756pt too wide) in paragraph at lines 755--755
+[]  \T1/lmtt/m/n/10 \label{Overall course of the HR with the unstandardized HR in BPM shown in Fig. 3a. and the z-standardized HR shown in Fig. 3b. for the planned 2-hour study.}[] 
+ []
+
+<plots_publication/box_plot.pdf, id=324, 568.1225pt x 426.59375pt>
+File: plots_publication/box_plot.pdf Graphic file (type pdf)
+<use plots_publication/box_plot.pdf>
+Package pdftex.def Info: plots_publication/box_plot.pdf  used on input line 774.
 (pdftex.def)             Requested size: 468.0pt x 351.42995pt.
 
 
 [9]
-<plots_publication/box_plot.pdf, id=338, 568.1225pt x 426.59375pt>
-File: plots_publication/box_plot.pdf Graphic file (type pdf)
-<use plots_publication/box_plot.pdf>
-Package pdftex.def Info: plots_publication/box_plot.pdf  used on input line 766.
-(pdftex.def)             Requested size: 468.0pt x 351.42995pt.
-
-
-[10 <./plots_publication/loess_plot_std_unstd_new.pdf>]
 pdfTeX warning (ext4): destination with the same identifier (name{Hfootnote.3}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.808 \end{table}
+l.816 \end{table}
                  
 pdfTeX warning (ext4): destination with the same identifier (name{Hfootnote.4}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.808 \end{table}
+l.816 \end{table}
                  
 
-[11 <./plots_publication/box_plot.pdf>]
-Underfull \hbox (badness 10000) in alignment at lines 870--870
+[10 <./plots_publication/box_plot.pdf>]
+Underfull \hbox (badness 10000) in alignment at lines 878--878
 [][][][][][] 
  []
 
 
 
+[11]
+
 [12]
-
-[13]
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
+Underfull \hbox (badness 10000) in paragraph at lines 897--897
 []|$\OML/lmm/m/it/10 ^^L$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
-[]|$\OML/lmm/m/it/10 ^^L$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
-[]|$\OML/lmm/m/it/10 ^^L$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
-[]|$\OML/lmm/m/it/10 ^^L$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
-[]|$\OML/lmm/m/it/10 ^^L$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
-[]|$\OML/lmm/m/it/10 ^^L$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
-[]|$\OML/lmm/m/it/10 ^^L$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
-[]|$\OML/lmm/m/it/10 ^^L$
- []
-
-
-Overfull \hbox (76.45894pt too wide) in alignment at lines 881--891
-[] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 897--897
+[]|$\OML/lmm/m/it/10 ^^L$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 897--897
+[]|$\OML/lmm/m/it/10 ^^L$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 897--897
+[]|$\OML/lmm/m/it/10 ^^L$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 897--897
+[]|$\OML/lmm/m/it/10 ^^L$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 897--897
+[]|$\OML/lmm/m/it/10 ^^L$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 897--897
+[]|$\OML/lmm/m/it/10 ^^L$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 897--897
+[]|$\OML/lmm/m/it/10 ^^L$
+ []
+
+
+Overfull \hbox (76.45894pt too wide) in alignment at lines 889--899
+[] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 905--905
 []|\T1/lmr/m/n/10 Dependent
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 899--899
+Underfull \hbox (badness 10000) in paragraph at lines 907--907
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 899--899
+Underfull \hbox (badness 10000) in paragraph at lines 907--907
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 899--899
+Underfull \hbox (badness 10000) in paragraph at lines 907--907
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 899--899
+Underfull \hbox (badness 10000) in paragraph at lines 907--907
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 899--899
+Underfull \hbox (badness 10000) in paragraph at lines 907--907
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 899--899
+Underfull \hbox (badness 10000) in paragraph at lines 907--907
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 899--899
+Underfull \hbox (badness 10000) in paragraph at lines 907--907
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 899--899
+Underfull \hbox (badness 10000) in paragraph at lines 907--907
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 891--901
+Overfull \hbox (76.45894pt too wide) in alignment at lines 899--909
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 901--905
+Overfull \hbox (76.45894pt too wide) in alignment at lines 909--913
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 905--908
+Overfull \hbox (76.45894pt too wide) in alignment at lines 913--916
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 910--910
+Underfull \hbox (badness 10000) in paragraph at lines 918--918
 []|\T1/lmr/m/n/10 Pre-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 910--910
+Underfull \hbox (badness 10000) in paragraph at lines 918--918
 \T1/lmr/m/n/10 interval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 914--914
+Underfull \hbox (badness 10000) in paragraph at lines 922--922
 \T1/lmr/m/n/10 interval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 921--921
+Underfull \hbox (badness 10000) in paragraph at lines 929--929
 []|\T1/lmr/m/n/10 Post-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 921--921
+Underfull \hbox (badness 10000) in paragraph at lines 929--929
 \T1/lmr/m/n/10 interval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 928--928
+Underfull \hbox (badness 10000) in paragraph at lines 936--936
 \T1/lmr/m/n/10 interval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 935--935
+Underfull \hbox (badness 10000) in paragraph at lines 943--943
 \T1/lmr/m/n/10 interval
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 908--941
+Overfull \hbox (76.45894pt too wide) in alignment at lines 916--949
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
-[14
+[13
 
-] [15]
+] [14]
 
-[16] (./FitBit_submission.bbl
+[15] (./FitBit_submission.bbl
 
-[17
+[16
 
 ])
 
@@ -1037,7 +1038,7 @@ Package natbib Warning: There were undefined citations.
 
 
 
-[18] (./FitBit_submission.aux)
+[17] (./FitBit_submission.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-07-20>
@@ -1046,18 +1047,18 @@ Package rerunfilecheck Info: File `FitBit_submission.out' has not changed.
 (rerunfilecheck)             Checksum: 53FAFF0199E51B44ADE6D93DC7DEF1D2;3825.
  ) 
 Here is how much of TeX's memory you used:
- 13989 strings out of 475539
- 229221 string characters out of 5775897
+ 13981 strings out of 475539
+ 228712 string characters out of 5775897
  2034960 words of memory out of 5000000
- 36275 multiletter control sequences out of 15000+600000
+ 36269 multiletter control sequences out of 15000+600000
  610862 words of font info for 75 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,16n,79p,753b,655s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt8.pfb>
-Output written on FitBit_submission.pdf (18 pages, 620472 bytes).
+Output written on FitBit_submission.pdf (17 pages, 619233 bytes).
 PDF statistics:
- 518 PDF objects out of 1000 (max. 8388607)
- 442 compressed objects within 5 object streams
- 101 named destinations out of 1000 (max. 500000)
- 149 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 504 PDF objects out of 1000 (max. 8388607)
+ 431 compressed objects within 5 object streams
+ 99 named destinations out of 1000 (max. 500000)
+ 144 words of extra memory for PDF output out of 10000 (max. 10000000)
 

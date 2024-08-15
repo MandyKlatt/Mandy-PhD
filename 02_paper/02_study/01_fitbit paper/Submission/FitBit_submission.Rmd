@@ -545,6 +545,7 @@ writeLines(tab_1, 'tab_1.tex')
     \caption{Mean HR (M), standard deviations HR (SD), and range of teachers’ HR over the course of the entire study and the five intervals (unstandardized in BPM/z-standardized).}
     \label{tab_1}
 \end{table}
+
 ```
 
 ```{r loess-plot, include=FALSE}
