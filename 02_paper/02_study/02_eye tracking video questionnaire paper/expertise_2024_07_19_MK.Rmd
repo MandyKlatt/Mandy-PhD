@@ -41,7 +41,8 @@ needs(tidyverse,
 # read in data and select and rename relevant columns with transmute 
 demo.data <- 
   read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% 
-  filter(!LI06_05 == 201) %>% # exclude participant due to missing eye tracking data
+  filter(!LI06_05 == 201,
+         !LI06_05 == 223) %>% # exclude participant due to missing eye tracking data
   transmute(Group = LI06_05,
             Gender = LI02_01_1,
             Age = LI03_01,
@@ -205,8 +206,7 @@ knitr::kable(demo.table,
  
 # exclude invalid participants
 df_aoi <- df_aoi %>%
-  filter(!Participant == 223,
-         !Participant == 232)
+  filter(!Participant == 223)
 
 # remove temporary data for a cleaner workspace
  rm(list = ls(pattern = "^tib_ProVisio"))
@@ -216,7 +216,7 @@ df_aoi <- df_aoi %>%
 
 ```
 
-XXX 223 (ist eine Doppelung der 214) & 232 (enthält NAs) sind fehlerhaft --> Daten nochmal komplett neu ziehen!! XXX
+XXX 223 (ist eine Doppelung der 214) --> Daten nochmal komplett neu ziehen!! XXX
 
 #### 2.2.1 Number of fixation (micro-teaching unit)
 ```{r nof_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -630,6 +630,8 @@ d_aver_stud <- CohenD(
   y = df_aoi_stud$Average_duration_stud[df_aoi_stud$Group == "Novice"],
   na.rm = TRUE
 )
+
+round(d_aver_stud, 2)
 
 ```
 
