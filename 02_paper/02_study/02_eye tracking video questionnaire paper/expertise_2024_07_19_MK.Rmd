@@ -216,8 +216,6 @@ df_aoi <- df_aoi %>%
 
 ```
 
-XXX 223 (ist eine Doppelung der 214) --> Daten nochmal komplett neu ziehen!! XXX
-
 #### 2.2.1 Number of fixation (micro-teaching unit)
 ```{r nof_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
@@ -1880,7 +1878,7 @@ df_merge <-
 # create a correlation matrix
 cor_tab <- 
   df_merge %>% 
-  cor(method = "spearman") %>% 
+  cor(method = "pearson") %>% 
   round(., digits = 2)
 
 # create a scatter plot 
