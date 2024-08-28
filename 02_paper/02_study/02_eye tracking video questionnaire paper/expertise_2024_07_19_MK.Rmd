@@ -217,7 +217,7 @@ df_aoi <- df_aoi %>%
 
 ```
 
-#### 2.2.1 Number of fixation (micro-teaching unit)
+#### 2.2.1 Number of fixations per minute (micro-teaching unit)
 ```{r nof_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### NUMBER OF FIXATION IN MICRO-TEACHING UNIT ########################
@@ -296,7 +296,7 @@ plot_number_group
 #### t-test & effect size "Number of fixation (micro-teaching unit)"
 ```{r nof_all_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-# NUMBER OF FIXATIONS on all AOIs 
+# NUMBER OF FIXATIONS PER MINUTE (micro-teaching unit) 
 # t-test for expertise differences
 t.test(
   x = df_aoi_sum$Number_fixation_min_mtu[df_aoi_sum$Group == "Expert"],
@@ -305,7 +305,7 @@ t.test(
 )
 
 
-# NUMBER OF FIXATIONS on all AOIs
+# NUMBER OF FIXATIONS PER MINUTE (micro-teaching unit)
 # effect size for expertise differences
 d_number_all <- CohenD(
   x = df_aoi_sum$Number_fixation_min_mtu[df_aoi_sum$Group == "Expert"],
@@ -317,7 +317,7 @@ round(d_number_all, 2)
 
 ```
 
-#### 2.2.2 Number of fixations (AOI students)
+#### 2.2.2 Number of fixations per second (AOI students)
 ```{r nof_students, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### NUMBER OF FIXATIONS (AOI STUDENTS) ########################
@@ -377,7 +377,7 @@ df_aoi_stud %>%
     )
   ) +
   ylim(0, 4) + 
-  labs(x = "", y = "Number of fixations per seconds") +
+  labs(x = "", y = "Number of fixations per second") +
   scale_fill_brewer(palette  = "RdBu") +
   ggtitle("Number of fixations per second\n(AOI students)") +
   theme_cowplot() +
