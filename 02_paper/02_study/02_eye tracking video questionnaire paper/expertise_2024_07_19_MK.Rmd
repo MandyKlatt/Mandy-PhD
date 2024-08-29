@@ -242,11 +242,13 @@ df_aoi %>%
     Participant = Participant,
     Duration_of_interval = Duration_of_interval, 
     Duration_of_interval_min = round(Duration_of_interval/60000, digits = 2),
+    Duration_of_interval_sec = round(Duration_of_interval/1000, digits = 2),
     Sum_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
     Sum_average_duration_fixation = sum(c_across(starts_with("Average_duration")), na.rm = TRUE),
     Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE),
     Average_duration_mtu = round(Sum_duration_fixation / Sum_number_fixation, digits = 0),
     Number_fixation_msec_mtu = round(Sum_number_fixation / Duration_of_interval, digits = 6),
+    Number_fixation_sec_mtu = round(Sum_number_fixation / Duration_of_interval_sec, digits = 2),
     Number_fixation_min_mtu = round(Sum_number_fixation / Duration_of_interval_min, digits = 0),
     Group = as_factor(Group)
   ) %>%
@@ -259,10 +261,10 @@ nof.table <-
   group_by(Group) %>%
   summarise(
     N = n(),
-    "M" = round(mean(Number_fixation_min_mtu), digits = 2),
-    "SD" = round(sd(Number_fixation_min_mtu), digits = 2),
-    "Min" = round(min(Number_fixation_min_mtu), digits = 2),
-    "Max" = round(max(Number_fixation_min_mtu), digits = 2)
+    "M" = round(mean(Number_fixation_sec_mtu), digits = 2),
+    "SD" = round(sd(Number_fixation_sec_mtu), digits = 2),
+    "Min" = round(min(Number_fixation_sec_mtu), digits = 2),
+    "Max" = round(max(Number_fixation_sec_mtu), digits = 2)
   )
 
 knitr::kable(nof.table,
@@ -339,16 +341,59 @@ df_aoi %>%
   rowwise() %>%
   transmute(
     Group = as_factor(Group),
+    Duration_of_interval_min = round(Duration_of_interval/60000, digits = 2),
     Duration_of_interval_sec = round(Duration_of_interval/1000, digits = 2),
     Participant = Participant,
     Stud_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
     Stud_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE),
+    Stud_number_fixation_min = round(Duration_of_interval_min / Stud_number_fixation, digits = 2),
     Stud_number_fixation_sec = round(Duration_of_interval_sec / Stud_number_fixation, digits = 2),
     Average_duration_stud = round(Stud_duration_fixation / Stud_number_fixation, digits = 0)
     ) -> df_aoi_stud
 
-# N, M, SD, min & max number of fixations (AOI students)
-nof.stud.table <-
+# N, M, SD, min & max number of fixations per minute (AOI students)
+nof.min.stud.table <-
+  df_aoi_stud %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(Stud_number_fixation_min), digits = 2),
+    "SD" = round(sd(Stud_number_fixation_min), digits = 2),
+    "Min" = round(min(Stud_number_fixation_min), digits = 2),
+    "Max" = round(max(Stud_number_fixation_min), digits = 2)
+  )
+
+knitr::kable(nof.min.stud.table,
+             caption = "N, M, SD, min & max number of fixations per minute (AOI students)")
+
+
+# plotting number of fixations per minute on AOI Students
+df_aoi_stud %>%
+  ggplot(mapping = aes(x = Group, y = Stud_number_fixation_min)) +
+  geom_boxplot(mapping = aes(fill = Group), outlier.shape = NA) +
+  geom_point(
+    size = 2,
+    alpha = 0.7,
+    position = position_jitter(
+      seed = 1,
+      width = 0.1,
+      height = 0.1
+    )
+  ) +
+  ylim(0, 0.10) + 
+  labs(x = "", y = "Number of fixations per minute") +
+  scale_fill_brewer(palette  = "RdBu") +
+  ggtitle("Number of fixations per minute\n(AOI students)") +
+  theme_cowplot() +
+  theme(legend.position = "none") -> plot_number_min_stud
+
+plot_number_min_stud
+
+
+####################### SECONDS ####################### 
+
+# N, M, SD, min & max number of fixations per seconds (AOI students)
+nof.sec.stud.table <-
   df_aoi_stud %>%
   group_by(Group) %>%
   summarise(
@@ -359,11 +404,11 @@ nof.stud.table <-
     "Max" = round(max(Stud_number_fixation_sec), digits = 2)
   )
 
-knitr::kable(nof.stud.table,
-             caption = "N, M, SD, min & max number of fixations per second (AOI students)")
+knitr::kable(nof.sec.stud.table,
+             caption = "N, M, SD, min & max number of fixations per seconds (AOI students)")
 
 
-# plotting average duration on AOI Students
+# plotting number of fixations per seconds on AOI Students
 df_aoi_stud %>%
   ggplot(mapping = aes(x = Group, y = Stud_number_fixation_sec)) +
   geom_boxplot(mapping = aes(fill = Group), outlier.shape = NA) +
@@ -381,9 +426,9 @@ df_aoi_stud %>%
   scale_fill_brewer(palette  = "RdBu") +
   ggtitle("Number of fixations per second\n(AOI students)") +
   theme_cowplot() +
-  theme(legend.position = "none") -> plot_number_stud
+  theme(legend.position = "none") -> plot_number_sec_stud
 
-plot_number_stud
+plot_number_sec_stud
 
 ```
 
