@@ -377,10 +377,10 @@ df_aoi_stud %>%
     position = position_jitter(
       seed = 1,
       width = 0.1,
-      height = 0.1
+      height = 0.001
     )
   ) +
-  ylim(0, 0.10) + 
+ # ylim(0, 0.10) + 
   labs(x = "", y = "Number of fixations per minute") +
   scale_fill_brewer(palette  = "RdBu") +
   ggtitle("Number of fixations per minute\n(AOI students)") +
