@@ -298,7 +298,7 @@ df_hr_hr_std %>%
                        y = heart_rate
                        )
          ) +
-  geom_smooth(se = T,
+  geom_smooth(se = F,
               size = 0.5,
               colour = "black",
               level = 0.99) +
