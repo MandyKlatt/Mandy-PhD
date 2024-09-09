@@ -272,6 +272,13 @@ knitr::kable(nof.table,
              caption = "N, M, SD, min & max number of fixation per minute (micro-teaching unit)")
 
 
+# Statistical Methods for Outlier Detection
+# IQR method for outlier detection
+# Z-score method for outlier detection
+z_scores <- scale(df_aoi_sum) # Standardizing the data
+outliers <- df_aoi_sum[abs(z_scores) > 3]
+
+
 # plotting number of fixations (micro-teaching unit)
 df_aoi_sum %>%
   ggplot(mapping = aes(x = Group, y = Number_fixation_min_mtu)) +
