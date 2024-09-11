@@ -261,7 +261,7 @@ df_aoi %>%
 # Boxplot showing outliers
 ggplot(df_aoi_sum, aes(x = "", y = Number_fixation_min_mtu)) + 
   geom_boxplot(outlier.color = "red", outlier.shape = 19, outlier.size = 3) +
-  labs(title = "Boxplot of mumber of fixations per minute (micro-teaching unit)",
+  labs(title = "Boxplot of number of fixations per minute (micro-teaching unit)",
        y = "Number of fixations per minute") +
   theme_minimal()
 
