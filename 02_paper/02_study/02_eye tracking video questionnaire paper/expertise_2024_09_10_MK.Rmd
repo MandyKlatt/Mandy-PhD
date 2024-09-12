@@ -1996,6 +1996,7 @@ df_aoi %>%
     GRI_mtu = round(Average_duration_mtu / Sum_number_fixation, digits = 2)
     ) %>%
   drop_na() %>% 
+  filter(!Participant %in% c(216)) %>% 
   dplyr::select(Participant,
          Number_fixation_min_mtu, 
          Average_duration_mtu,
@@ -2118,14 +2119,15 @@ df_sjt <-
                 SJT_ST_gek, # Managing momentum
                 SJT_R_gek, # Rules and routines
                 SJT_KF_gek) %>% # All
-  filter(!UI06_05 %in% c(201, 223)) %>%  # exclude ID with no eye tracking data
+  filter(!UI06_05 %in% c(201, 223, 216)) %>%  # exclude ID with no eye tracking data
   transmute(
     Participant = UI06_05,
     SJT_Monitoring = round(SJT_AL_gek, 2),
     SJT_Managing_momentum = round(SJT_ST_gek, 2),
     SJT_Rules_routines = round(SJT_R_gek, 2),
     SJT_All = round(SJT_KF_gek, 2)
-  )
+    ) %>% 
+    arrange(Participant)
 
 # classroom questionnaire
 df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
@@ -2160,7 +2162,8 @@ df_list <- list(df_demo,
 # merge all data frames in list
 df_merge <-
   df_list %>% reduce(full_join, by='Participant') %>%
-  # filter(Participant > 200) %>% 
+  arrange(Participant) %>% 
+  # filter(!Participant %in% c(216)) %>% 
   dplyr::select(.,
                 -"Participant",
                 -"Teaching Experience")
@@ -2172,7 +2175,8 @@ cor_tab <-
   round(., digits = 2)
 
 # p-value for GRI x STJ_All
-cor.test(df_merge$GRI_mtu, df_merge$SJT_All)
+cor.test(df_aoi_numb_dur$GRI_mtu, df_sjt$SJT_All)
+cor.test(df_merge$GRI_mtu, df_merge$SJT_Monitoring)
 
 # teaching experience only with experts
 df_merge_teaching_experience <-
