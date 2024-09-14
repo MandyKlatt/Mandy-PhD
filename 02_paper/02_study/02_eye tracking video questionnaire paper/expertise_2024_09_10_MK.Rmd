@@ -1231,6 +1231,22 @@ knitr::kable(ttff.disrup.table,
              caption = "N, M, SD, min & max time to first fixation in seconds (AOI disruptive person)")
 
 
+############### M, SD, min, max of the perceived "Disruptive Person"
+number.perceived.disrup.table <-
+  df_no_outliers_ttff %>%
+  group_by(Group, N) %>%
+  summarise(
+    N = n(),
+    "M in sec" = round(mean(N), digits = 2),
+    "SD in sec" = round(sd(N), digits = 2),
+    "Min in sec" = round(min(N), digits = 2),
+    "Max in sec" = round(max(N), digits = 2)
+  )
+
+knitr::kable(number.perceived.disrup.table,
+             caption = "N, M, SD, min & max time to first fixation in seconds (AOI disruptive person)")
+
+
 ############### PLOTTING
 
 ##################### plotting time to first fixation for groups ##################### 
