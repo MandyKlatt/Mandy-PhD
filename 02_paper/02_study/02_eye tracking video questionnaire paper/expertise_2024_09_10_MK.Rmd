@@ -1231,23 +1231,45 @@ knitr::kable(ttff.disrup.table,
              caption = "N, M, SD, min & max time to first fixation in seconds (AOI disruptive person)")
 
 
-############### M, SD, min, max of the perceived "Disruptive Person"
+############### M, SD, min, max of the perceived "Disruptive Person" ############### 
 number.perceived.disrup.table <-
   df_no_outliers_ttff %>%
-  group_by(Group, N) %>%
+  group_by(Group) %>%
   summarise(
-    N = n(),
-    "M in sec" = round(mean(N), digits = 2),
-    "SD in sec" = round(sd(N), digits = 2),
-    "Min in sec" = round(min(N), digits = 2),
-    "Max in sec" = round(max(N), digits = 2)
+    Mean = round(mean(N, na.rm = TRUE), digits = 2),
+    SD = round(sd(N, na.rm = TRUE), digits = 2), 
+    Min = min(N, na.rm = TRUE),
+    Max = max(N, na.rm = TRUE)
   )
 
 knitr::kable(number.perceived.disrup.table,
-             caption = "N, M, SD, min & max time to first fixation in seconds (AOI disruptive person)")
+             caption = "N, M, SD, min & max of the perceived ´disruptive person´")
 
 
-############### PLOTTING
+############### PLOTTING ############### 
+
+##################### plotting "perceived disruptive person" for groups ##################### 
+plot_n_disrup <- 
+  ggplot(data = df_no_outliers_ttff,
+         mapping = aes(x = Group,
+                       y = N)) +
+ geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  ylim(0,10) +
+  labs(x ="",
+       y = "Counts") + 
+  scale_fill_brewer(palette  = "RdBu") +
+  ggtitle("Counts of the perceived ´disruptive person´\n") +
+  theme_cowplot() +
+  theme(legend.position="none") 
+
+plot_n_disrup
+
 
 ##################### plotting time to first fixation for groups ##################### 
 plot_time_disrup <- 
@@ -1273,6 +1295,25 @@ plot_time_disrup
 
 ```
 
+#### t-test & effect size "Counts of the perceived ´disruptive person´")
+```{r ttff_n_disrup_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# TIME TO FIRST FIXATIONS on disruptive person 
+# t-test for expertise differences
+t.test(x = df_no_outliers_ttff$N[df_no_outliers_ttff$Group == "Expert"],
+       y = df_no_outliers_ttff$N[df_no_outliers_ttff$Group == "Novice"],
+       var.equal = TRUE)
+
+# TIME TO FIRST FIXATIONS on disruptive person 
+# effect size for expertise differences
+d_n_disrup <- CohenD(x = df_no_outliers_ttff$N[df_no_outliers_ttff$Group == "Expert"],
+                    y = df_no_outliers_ttff$N[df_no_outliers_ttff$Group == "Novice"],
+                    na.rm = TRUE)
+
+round(d_n_disrup, 2)
+
+```
+
 #### t-test & effect size "Time to first fixation" (AOI disruptive person)
 ```{r ttff_disrup_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
@@ -1292,7 +1333,7 @@ round(d_time_disrup, 2)
 
 ```
 
-### 2.2 Rating Scales (Disruption Appraisal, Confidence Appraisal, Prevalence Rating)
+### 2.2 Rating Scales (Disruption Appraisal, Confidence Appraisal)
 ```{r rating_scales, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # read in data and combine multiple excel sheets into a single table 
@@ -1315,6 +1356,7 @@ sri <-
 
 ############## Disruption appraisal #########################
 
+############## N, M, SD, min & max for disruption appraisal ############## 
 sri.disrup.table <-
   sri %>%
   group_by(ID) %>%
@@ -1344,6 +1386,9 @@ sri.disrup.event.table <-
 # insert a table into HTML
 knitr::kable(sri.disrup.event.table,
              caption = "Disruption appraisal with event")
+
+
+############## PLOTTING ############## 
 
 # create a new data frame with appraisal
 sri_disrup <- subset.data.frame(sri, select = c(ID, event, disruption_appraisal))
@@ -1486,9 +1531,56 @@ d_sri_confi <- CohenD(x = sri$confidence_appraisal[sri$ID == "Expert"],
 round(d_sri_confi, 2)
 ```
 
+### Perform Exploratory Factor Analysis (EFA)
+```{r sri_efa, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Select the relevant columns (e.g., Disruption Appraisal and Confidence Appraisal)
+sri <-
+  excel_sheets("data/Coding_SRI.xlsx") %>%
+  map_df(~ read_xlsx("data/Coding_SRI.xlsx", .)) %>%
+  filter(
+    !ID %in% c(201),
+    !disruption_appraisal == -100,
+    !confidence_appraisal == -100,
+    !disruption_appraisal == -99,
+    !confidence_appraisal == -99,
+    !disruption_appraisal == -88,
+    !confidence_appraisal == -88,
+    !prevalence_rating == -100,
+    !prevalence_rating == -99,
+    !prevalence_rating == -88
+    ) 
+
+sri <- sri %>% 
+  group_by(ID) %>% 
+  summarise(mean_disrup = mean(disruption_appraisal),
+            mean_confi = mean(confidence_appraisal)
+  ) %>% 
+  dplyr::select(mean_disrup,
+                mean_confi)
+  
+# Perform exploratory factor analysis (EFA) with 2 factors
+sri_efa_result <- fa(sri, 
+                     nfactors = 2, 
+                     rotate = "varimax"
+                     )
+
+# Display the result
+print(sri_efa_result)
+
+sri_efa_result$communality
+print(sri_efa_result$loadings, cutoff = 0.4)
+
+# Cronbach's Alpha
+alpha((sri), check.keys =TRUE)
+
+``` 
+
+
+### Prevalence Rating as manipulation check
 ```{r sri_pr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-############## Prevalence Rating #########################
+############## Prevalence Rating as manipulation check #########################
 
 sri.preva.table <-
   sri %>%
@@ -1554,24 +1646,23 @@ preva_group_plot
 
 ```
 
-#### t-Test & effect size "Prevalence rating"
 ```{r sri_pr_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-#################### T-TEST & EFFECT SIZE ############
-
-# Prevalence Rating 
-# t-test for expertise differences
-t.test(x = sri$prevalence_rating[sri$ID == "Expert"],
-       y = sri$prevalence_rating[sri$ID == "Novice"],
-       var.equal = TRUE)
-
-# Prevalence Rating 
-# effect size for expertise differences
-d_sri_preva <- CohenD(x = sri$prevalence_rating[sri$ID == "Expert"],
-                      y = sri$prevalence_rating[sri$ID == "Novice"],
-                      na.rm = TRUE)
-
-round(d_sri_preva, 2)
+# #################### T-TEST & EFFECT SIZE ############
+# 
+# # Prevalence Rating 
+# # t-test for expertise differences
+# t.test(x = sri$prevalence_rating[sri$ID == "Expert"],
+#        y = sri$prevalence_rating[sri$ID == "Novice"],
+#        var.equal = TRUE)
+# 
+# # Prevalence Rating 
+# # effect size for expertise differences
+# d_sri_preva <- CohenD(x = sri$prevalence_rating[sri$ID == "Expert"],
+#                       y = sri$prevalence_rating[sri$ID == "Novice"],
+#                       na.rm = TRUE)
+# 
+# round(d_sri_preva, 2)
 
 ```
 
