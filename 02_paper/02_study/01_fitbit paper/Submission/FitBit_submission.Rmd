@@ -63,7 +63,7 @@ keywords:
   - physiological stress measurement
 journal: "Computers & Education"
 date: "`r Sys.Date()`"
-classoption: preprint, 3p, sort,
+classoption: preprint, 3p, sort
 bibliography: r-references.bib
 linenumbers: false
 numbersections: true
