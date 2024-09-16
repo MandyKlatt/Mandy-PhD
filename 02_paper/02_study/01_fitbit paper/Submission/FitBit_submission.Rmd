@@ -63,7 +63,7 @@ keywords:
   - physiological stress measurement
 journal: "Computers & Education"
 date: "`r Sys.Date()`"
-classoption: preprint, 3p, sort
+classoption: preprint, 3p, authoryear
 bibliography: r-references.bib
 linenumbers: false
 numbersections: true
@@ -263,17 +263,6 @@ main_single_hr <-
   filter(!(time_span == "teaching" & time > 600)) |> 
   mutate(heart_rate_std = (heart_rate - mean_heart)/
            sd_heart)
-
-## count for individuals 
-
-main_single_hr |> 
-  filter(time >= 7200) |> 
-  distinct(ID, .keep_all = TRUE) -> filter_overall
-
-N_prewrangling <- as.numeric(nrow(df_demo))
-
-N_postwrangling <- as.numeric(length(unique(main_single_hr$ID)))
-
 ```
 
 # Method 
@@ -503,7 +492,7 @@ Means, standard deviations, and range of teachers’ unstandardized and standard
     \centering
     \begin{tabularx}{\textwidth}{lXXXXX}
         \toprule
-        Interval & \textit{M HR} & \textit{SD HR} & Min & Max \\
+        Interval & \textit{M} HR & \textit{SD} HR & Min & Max \\
         \midrule
         Overall Course of 2h & 90.09/0.04\footnotemark[9] & 15.76/0.991 & 51/-4.03 & 164/4.56 \\
         Pre-teaching interval ($I_1$) & 96.28/0.48 & 14.11/0.88 & 56/-3.56 & 139/3.24 \\
@@ -513,12 +502,12 @@ Means, standard deviations, and range of teachers’ unstandardized and standard
         End interval ($I_5$) & 77.95/-1.07 & 11.14/0.57 & 50\footnotemark[10]/-2.68 & 120/2.96 \\
         \bottomrule
     \end{tabularx}
-    \caption{Mean HR (M), standard deviations HR (SD), and range of teachers’ HR over the course of the entire study and the five intervals (unstandardized in BPM/z-standardized).}
+    \caption{Mean HR (\textit{M}), standard deviations HR (\textit{SD}), and range of teachers’ HR over the course of the entire study and the five intervals (unstandardized in BPM/z-standardized).}
     \label{tab_1}
 
     
 \end{table}
- \footnotetext[9]{Please note that standardized M and SD of the overall course were not exactly 0 and 1 due to rounding differences.}
+ \footnotetext[9]{Please note that standardized \textit{M} and \textit{SD} of the overall course were not exactly 0 and 1 due to rounding differences.}
  \footnotetext[10]{Deviations of the minimum values in the overall course vs. the end interval ($I_5$) are due to data of a few participants who needed more than two hours to finish the study.}
 
 ```
