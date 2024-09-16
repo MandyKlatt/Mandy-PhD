@@ -1247,3 +1247,26 @@ As far as the procedure for processing the data is concerned, researchers should
 This study investigated whether HR data collected from teacher-worn fitness trackers are suitable for exploring links between HR, subjective stressor appraisal, and individual teaching experience, to achieve a more profound comprehension of teacher stress. Results suggest that the widespread availability of HR data from wearable fitness trackers, moving “from heartbeat to data”, presents opportunities both to teachers for self-monitoring stress levels, and to researchers for assessing physiological indicators of stress. For example, using fitness trackers could enable teachers to strengthen their self-awareness in stressful situations and allow for early self-intervention such as mindfulness techniques (e.g., deep breathing or body scans) [@agyapong2023interventions]. Integrating fitness trackers into teacher training and everyday practice could offer an affordable and practical method for assessing and managing teacher stress. In teacher training as well as in research, triangulating data from fitness trackers, lesson videos, and interviews could provide teachers with insights into their own stress management, and foster the implementation of effective stress and classroom management strategies. Taken together, our findings cater to @wettstein2021 call for the use of ambulatory assessment methods, particularly in the context of classroom disruptions, for gaining a deeper understanding of teacher stress and its impact on both psychological and physiological variables.
 
 In summary, our study contributes to the understanding of stress in educational settings and underscores the potential of wearable fitness trackers in advancing research on teacher well-being. By harnessing the power of wearable technology, we can provide teachers with the tools needed to better understand and manage their stress, ultimately enhancing their overall well-being.
+
+\newpage
+
+# Appendix
+
+```{=latex}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{appendix_figure1.png}
+  \caption{Laboratory setting of the micro-teaching unit. Note. The setting included three actors as the class (left) and a teacher (participant, right).}
+  \label{Laboratory setting of the micro-teaching unit.}
+\end{figure}
+```
+
+
+```{=latex}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{appendix_figure2.png}
+  \caption{Laboratory setting of the interview. Note. The experimenter and participant watched the previously taught micro-teaching unit on video.}
+  \label{Laboratory setting of the interview.}
+\end{figure}
+```
