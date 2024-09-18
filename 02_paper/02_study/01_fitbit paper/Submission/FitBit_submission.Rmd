@@ -1248,25 +1248,125 @@ This study investigated whether HR data collected from teacher-worn fitness trac
 
 In summary, our study contributes to the understanding of stress in educational settings and underscores the potential of wearable fitness trackers in advancing research on teacher well-being. By harnessing the power of wearable technology, we can provide teachers with the tools needed to better understand and manage their stress, ultimately enhancing their overall well-being.
 
-\newpage
+```{r plots_appendix, include=FALSE}
+mods <-   
+  df_regression %>% 
+  split(.$time_span) %>% 
+  map(~ lm(formula = heart_rate_std ~ 0 + ID + time:ID,
+       data = .
+       )
+      )
 
-# Appendix
+graph_data <- 
+  df_regression %>% 
+  split(.$time_span) 
 
-```{=latex}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=1\textwidth]{appendix_figure1.png}
-  \caption{Laboratory setting of the micro-teaching unit. Note. The setting included three actors as the class (left) and a teacher (participant, right).}
-  \label{Laboratory setting of the micro-teaching unit.}
-\end{figure}
+example <- list(mod = mods$preparation, data = graph_data$preparation)
+
+
+plot_list_appendix <- list(
+  `Preparation Phase` = list(name = "Pre-Teaching Interval", mod = mods$preparation, data = graph_data$preparation),
+     `Teaching Phase` = list(name = "Teaching Interval", mod = mods$teaching, data = graph_data$teaching),
+     `Post Teaching Phase` = list(name = "Post-Teaching Interval",mod = mods$post, data = graph_data$post),
+     `Interview Phase` = list(name = "Interview Interval",mod = mods$interview, data = graph_data$interview),
+     `End Phase` = list(name = "End Interval",mod = mods$end, data = graph_data$end)
+     ) %>% 
+  map(~ ggplot(data = .$data,
+               mapping = aes(x = time,
+                             y = heart_rate_std,
+                             group = ID)) +
+        geom_line(mapping = aes(y = fitted(.$mod)),
+                  color = "blue",
+                  size = 1) +
+        geom_point(alpha = 0.5,
+                   size = 0.5) +
+        scale_x_continuous(breaks = c(0, 5, 10)) +
+        labs(title = .$name,
+             y = "Heart Rate (Standardized)",
+             x = "Time (in Seconds)") +
+        facet_wrap( ~ ID, nrow = 6) +
+        theme_apa()
+      )
+
+preparation_plot <- plot_list_appendix$`Preparation Phase`
+
+teaching_plot <- plot_list_appendix$`Teaching Phase`
+
+post_teaching_plot <- plot_list_appendix$`Post Teaching Phase`
+
+interview_plot <- plot_list_appendix$`Interview Phase`
+
+end_plot <- plot_list_appendix$`End Phase`
+
+
+ggsave(preparation_plot,
+       filename = "plots_publication/plot_preparation_appendix.pdf",
+       width = 25,
+       height = 25,
+       units = "cm")
+
+ggsave(teaching_plot,
+       filename = "plots_publication/plot_teaching_appendix.pdf",
+       width = 15,
+       height = 25,
+       units = "cm")
+
+ggsave(post_teaching_plot,
+       filename = "plots_publication/plot_post_teaching_appendix.pdf",
+       width = 20,
+       height = 12,
+       units = "cm")
+
+ggsave(interview_plot,
+       filename = "plots_publication/plot_interview_appendix.pdf",
+       width = 20,
+       height = 12,
+       units = "cm")
+
+ggsave(end_plot,
+       filename = "plots_publication/plot_end_appendix.pdf",
+       width = 20,
+       height = 12,
+       units = "cm")
+
 ```
 
 
+
 ```{=latex}
+\newpage
+\appendix
+\section*{Appendix}
+
+\setcounter{figure}{0}  % Reset figure numbering
+
+\renewcommand{\thefigure}{A\arabic{figure}}  % Figures labeled A1, A2, etc.
+
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=1\textwidth]{appendix_figure2.png}
+  \includegraphics[width=0.7\textwidth]{appendix_figure1.png}
+  \caption{Laboratory setting of the micro-teaching unit. Note. The setting included three actors as the class (left) and a teacher (participant, right).}
+  \label{micro-teaching}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{appendix_figure2.png}
   \caption{Laboratory setting of the interview. Note. The experimenter and participant watched the previously taught micro-teaching unit on video.}
-  \label{Laboratory setting of the interview.}
+  \label{laboratory}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{plots_publication/plot_preparation_appendix.pdf}
+  \caption{bla..}
+  \label{preparation}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{plots_publication/plot_teaching_appendix.pdf}
+  \caption{bla..}
+  \label{teaching}
 \end{figure}
 ```
