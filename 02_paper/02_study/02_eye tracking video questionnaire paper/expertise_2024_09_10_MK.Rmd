@@ -595,8 +595,8 @@ round(d_number_disrup, 2)
 # Boxplot showing outliers
 ggplot(df_aoi_sum, aes(x = "", y = Average_duration_mtu)) + 
   geom_boxplot(outlier.color = "red", outlier.shape = 19, outlier.size = 3) +
-  labs(title = "Boxplot of Average duration of fixations per minute",
-       y = "Average duration of fixations per minute") +
+  labs(title = "Boxplot of Average duration of fixations",
+       y = "Average duration of fixations in msec") +
   theme_minimal()
 
 
