@@ -32,8 +32,7 @@ needs(tidyverse,
       formattable,
       psych,
       apaTables,
-      rstatix,
-      MBESS)
+      rstatix)
 
 ```
 
@@ -1712,6 +1711,136 @@ df_sjt_long <- df_sjt_mean %>%
 # define expert and novice with ifelse function
 df_sjt_long$Group = ifelse(df_sjt_long$Group < 200, "Novice","Expert")
 
+
+
+######## Statistical Methods for Outlier Detection
+
+### OVERALL SCORE (All)
+# Boxplot showing outliers (All)
+ggplot(df_sjt_mean, aes(x = "", y = All)) + 
+  geom_boxplot(outlier.color = "red", outlier.shape = 19, outlier.size = 3) +
+  labs(title = "Boxplot of SJT (All)",
+       y = "Overall score") +
+  theme_minimal()
+
+# Calculate the IQR and bounds
+Q1 <- quantile(df_sjt_mean$All, 0.25)
+Q3 <- quantile(df_sjt_mean$All, 0.75)
+IQR <- Q3 - Q1
+
+LowerBound <- Q1 - 1.5 * IQR
+UpperBound <- Q3 + 1.5 * IQR
+
+# Filter to remove outliers
+df_no_outliers_sjt_all <- df_sjt_mean %>%
+  filter(All >= LowerBound & All <= UpperBound)
+
+# Check the number of rows before and after filtering
+nrow(df_sjt_mean)  # Original data
+nrow(df_no_outliers_sjt_all)  # After removing outliers
+
+# Create a dataframe with only the outliers
+df_outliers_sjt_all <- df_sjt_mean %>%
+  filter(All < LowerBound | All > UpperBound)
+
+# View the removed outliers
+df_outliers_sjt_all
+
+
+### MANAGING MOMENTUM
+# Boxplot showing outliers (All)
+ggplot(df_sjt_mean, aes(x = "", y = `Managing momentum`)) + 
+  geom_boxplot(outlier.color = "red", outlier.shape = 19, outlier.size = 3) +
+  labs(title = "Boxplot of SJT (Managing Momentum)",
+       y = "Score") +
+  theme_minimal()
+
+# Calculate the IQR and bounds
+Q1 <- quantile(df_sjt_mean$`Managing momentum`, 0.25)
+Q3 <- quantile(df_sjt_mean$`Managing momentum`, 0.75)
+IQR <- Q3 - Q1
+
+LowerBound <- Q1 - 1.5 * IQR
+UpperBound <- Q3 + 1.5 * IQR
+
+# Filter to remove outliers
+df_no_outliers_sjt_mm <- df_sjt_mean %>%
+  filter(`Managing momentum` >= LowerBound & `Managing momentum` <= UpperBound)
+
+# Check the number of rows before and after filtering
+nrow(df_sjt_mean)  # Original data
+nrow(df_no_outliers_sjt_mm)  # After removing outliers
+
+# Create a dataframe with only the outliers
+df_outliers_sjt_mm <- df_sjt_mean %>%
+  filter(`Managing momentum` < LowerBound | `Managing momentum` > UpperBound)
+
+# View the removed outliers
+df_outliers_sjt_mm
+
+
+### MONITORING
+# Boxplot showing outliers (All)
+ggplot(df_sjt_mean, aes(x = "", y = Monitoring)) + 
+  geom_boxplot(outlier.color = "red", outlier.shape = 19, outlier.size = 3) +
+  labs(title = "Boxplot of SJT (Monitoring)",
+       y = "Score") +
+  theme_minimal()
+
+# Calculate the IQR and bounds
+Q1 <- quantile(df_sjt_mean$Monitoring, 0.25)
+Q3 <- quantile(df_sjt_mean$Monitoring, 0.75)
+IQR <- Q3 - Q1
+
+LowerBound <- Q1 - 1.5 * IQR
+UpperBound <- Q3 + 1.5 * IQR
+
+# Filter to remove outliers
+df_no_outliers_sjt_m <- df_sjt_mean %>%
+  filter(Monitoring >= LowerBound & Monitoring <= UpperBound)
+
+# Check the number of rows before and after filtering
+nrow(df_sjt_mean)  # Original data
+nrow(df_no_outliers_sjt_m)  # After removing outliers
+
+# Create a dataframe with only the outliers
+df_outliers_sjt_m <- df_sjt_mean %>%
+  filter(Monitoring < LowerBound | Monitoring > UpperBound)
+
+# View the removed outliers
+df_outliers_sjt_m
+
+
+### RULES & ROUTINES
+# Boxplot showing outliers (All)
+ggplot(df_sjt_mean, aes(x = "", y = `Rules and routines`)) + 
+  geom_boxplot(outlier.color = "red", outlier.shape = 19, outlier.size = 3) +
+  labs(title = "Boxplot of SJT (Rules & routines)",
+       y = "Score") +
+  theme_minimal()
+
+# Calculate the IQR and bounds
+Q1 <- quantile(df_sjt_mean$`Rules and routines`, 0.25)
+Q3 <- quantile(df_sjt_mean$`Rules and routines`, 0.75)
+IQR <- Q3 - Q1
+
+LowerBound <- Q1 - 1.5 * IQR
+UpperBound <- Q3 + 1.5 * IQR
+
+# Filter to remove outliers
+df_no_outliers_sjt_r <- df_sjt_mean %>%
+  filter(`Rules and routines` >= LowerBound & `Rules and routines` <= UpperBound)
+
+# Check the number of rows before and after filtering
+nrow(df_sjt_mean)  # Original data
+nrow(df_no_outliers_sjt_r)  # After removing outliers
+
+# Create a dataframe with only the outliers
+df_outliers_sjt_r <- df_sjt_mean %>%
+  filter(`Rules and routines` < LowerBound | `Rules and routines` > UpperBound)
+
+# View the removed outliers
+df_outliers_sjt_r
 
 #################### N, MEAN & SD ############
 
