@@ -1263,30 +1263,53 @@ graph_data <-
 
 example <- list(mod = mods$preparation, data = graph_data$preparation)
 
-
 plot_list_appendix <- list(
   `Preparation Phase` = list(name = "Pre-Teaching Interval", mod = mods$preparation, data = graph_data$preparation),
-     `Teaching Phase` = list(name = "Teaching Interval", mod = mods$teaching, data = graph_data$teaching),
-     `Post Teaching Phase` = list(name = "Post-Teaching Interval",mod = mods$post, data = graph_data$post),
-     `Interview Phase` = list(name = "Interview Interval",mod = mods$interview, data = graph_data$interview),
-     `End Phase` = list(name = "End Interval",mod = mods$end, data = graph_data$end)
-     ) %>% 
+  `Teaching Phase` = list(name = "Teaching Interval", mod = mods$teaching, data = graph_data$teaching),
+  `Post Teaching Phase` = list(name = "Post-Teaching Interval", mod = mods$post, data = graph_data$post),
+  `Interview Phase` = list(name = "Interview Interval", mod = mods$interview, data = graph_data$interview),
+  `End Phase` = list(name = "End Interval", mod = mods$end, data = graph_data$end)
+) %>% 
   map(~ ggplot(data = .$data,
-               mapping = aes(x = time,
-                             y = heart_rate_std,
+               mapping = aes(x = time,  # Use the appropriate 'x' value (like 'work_hrs' in the original)
+                             y = heart_rate_std,  # Use the appropriate 'y' value (like 'inc')
                              group = ID)) +
-        geom_line(mapping = aes(y = fitted(.$mod)),
-                  color = "blue",
-                  size = 1) +
-        geom_point(alpha = 0.5,
-                   size = 0.5) +
-        scale_x_continuous(breaks = c(0, 5, 10)) +
-        labs(title = .$name,
-             y = "Heart Rate (Standardized)",
-             x = "Time (in Seconds)") +
-        facet_wrap( ~ ID, nrow = 6) +
-        theme_apa()
+        geom_line(mapping = aes(y = fitted(.$mod)),  # Line for fitted values from the model
+                  color = "blue",  # Adjust color for clarity
+                  size = 1) +  # Line thickness
+        geom_point(alpha = 0.5, size = 0.5) +  # Points with transparency and size
+        facet_wrap(~ ID, nrow = 8) +  # Arrange plots by 'ID'
+        xlab('Time (in Seconds)') +  # X-axis label (similar to 'Arbeitsstunden pro Woche')
+        ylab('Heart Rate (Standardized)') +  # Y-axis label (similar to 'Nettoeinkommen')
+        scale_x_continuous(breaks = c(0, 5, 10)) +  # Customize x-axis breaks as needed
+        labs(title = .$name) +  # Title for each plot based on phase name
+        theme_bw()  # Use a clean theme
       )
+
+# 
+# plot_list_appendix <- list(
+#   `Preparation Phase` = list(name = "Pre-Teaching Interval", mod = mods$preparation, data = graph_data$preparation),
+#      `Teaching Phase` = list(name = "Teaching Interval", mod = mods$teaching, data = graph_data$teaching),
+#      `Post Teaching Phase` = list(name = "Post-Teaching Interval",mod = mods$post, data = graph_data$post),
+#      `Interview Phase` = list(name = "Interview Interval",mod = mods$interview, data = graph_data$interview),
+#      `End Phase` = list(name = "End Interval",mod = mods$end, data = graph_data$end)
+#      ) %>% 
+#   map(~ ggplot(data = .$data,
+#                mapping = aes(x = time,
+#                              y = heart_rate_std,
+#                              group = ID)) +
+#         geom_line(mapping = aes(y = fitted(.$mod)),
+#                   color = "blue",
+#                   size = 1) +
+#         geom_point(alpha = 0.5,
+#                    size = 0.5) +
+#         scale_x_continuous(breaks = c(0, 5, 10)) +
+#         labs(title = .$name,
+#              y = "Heart Rate (Standardized)",
+#              x = "Time (in Seconds)") +
+#         facet_wrap( ~ ID, nrow = 8) +
+#         theme_apa()
+#       )
 
 preparation_plot <- plot_list_appendix$`Preparation Phase`
 
@@ -1302,31 +1325,31 @@ end_plot <- plot_list_appendix$`End Phase`
 ggsave(preparation_plot,
        filename = "plots_publication/plot_preparation_appendix.pdf",
        width = 25,
-       height = 25,
+       height = 30,
        units = "cm")
 
 ggsave(teaching_plot,
        filename = "plots_publication/plot_teaching_appendix.pdf",
-       width = 15,
-       height = 25,
+       width = 25,
+       height = 30,
        units = "cm")
 
 ggsave(post_teaching_plot,
        filename = "plots_publication/plot_post_teaching_appendix.pdf",
-       width = 20,
-       height = 12,
+       width = 25,
+       height = 30,
        units = "cm")
 
 ggsave(interview_plot,
        filename = "plots_publication/plot_interview_appendix.pdf",
-       width = 20,
-       height = 12,
+       width = 25,
+       height = 30,
        units = "cm")
 
 ggsave(end_plot,
        filename = "plots_publication/plot_end_appendix.pdf",
-       width = 20,
-       height = 12,
+       width = 25,
+       height = 30,
        units = "cm")
 
 ```
@@ -1368,5 +1391,26 @@ ggsave(end_plot,
   \includegraphics[width=1\textwidth]{plots_publication/plot_teaching_appendix.pdf}
   \caption{bla..}
   \label{teaching}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{plots_publication/plot_post_teaching_appendix.pdf}
+  \caption{bla..}
+  \label{post_teaching}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{plots_publication/plot_interview_appendix.pdf}
+  \caption{bla..}
+  \label{interview}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{plots_publication/plot_end_appendix.pdf}
+  \caption{bla..}
+  \label{end}
 \end{figure}
 ```
