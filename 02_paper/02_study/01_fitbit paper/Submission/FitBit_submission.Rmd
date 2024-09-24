@@ -10,19 +10,19 @@ author:
     correspondingauthor: true
     footnote: 1
   - name: Peer Keßler
-    email: Peer@example.com
-    affiliation: Leipzig University
+    email: peer.kessler@uni-greifswald.de.com
+    affiliation: University of Greifswald
     footnote: 2
   - name: Gregor Kachel
     email: gregor@example.com
     affiliation: Leipzig University, Max Planck Institute for Evolutionary Anthropology
     footnote: 1
   - name: Christin Lotz
-    email: christin@example.com
+    email: christin.lotz@uni-leipzig.de
     affiliation: Leipzig University
     footnote: 1
   - name: Anne Deiglmayr
-    email: anne@example.com
+    email: anne.deiglmayr@uni-leipzig.de
     affiliation: Leipzig University
     footnote: 3
 address:
@@ -40,15 +40,21 @@ address:
     city: Leipzig
     state: Sachsen
     country: Germany
+  - code: University of Greifswald
+    organization: Institute of Psychology
+    addressline: Robert-Blum-Str. 13
+    city: Greifswald
+    state: Mecklenburg-Vorpommern
+    postcode: 17489  
 footnote:
   - code: 1
     text: 
-      - "Conceptualization"
-      - "Writing - Original Draft Preparation"
+      - "Conceptualization, "
+      - "Writing - Original Draft Preparation, "
       - "Writing - Review & Editing"
   - code: 2
     text: 
-      - "Writing - Original Draft Preparation"
+      - "Writing - Original Draft Preparation, "
       - "Writing - Review & Editing"
   - code: 3
     text: "Supervision"
@@ -155,7 +161,7 @@ According to @kyriacou1978, teacher stress can be defined as a negative affectiv
   \centering
   \includegraphics[width=1\textwidth]{images/Model_Teacher_Stress_adapted_new.pdf}
   \caption{A model of teacher stress (adapted from van Dick 2006, p.37, modified by the authors)}
-  \label{A model of teacher stress (adapted from van Dick 2006, p.37, modified by the authors)}
+  \label{fig.1}
 \end{figure}
 ```
 
@@ -171,7 +177,7 @@ The present study aimed to explore the relations between teachers’ HR response
 
 Looking at HR measures globally, we expected the participants to show an initial increase in their HR, followed by a peak during the micro-teaching unit and a decrease for the remaining phases. In addition, we examined whether z-standardization of the participants’ HR could serve as a useful method to account for individual differences in baseline HR: We expected to observe the same trends in both standardized and non-standardized HR values.
 
-In addition, we selected five representative 10-minute intervals from the five phases of the lab study (see Figure 2) in order to test the hypotheses that, regarding HR levels, teachers’ HR would be the highest during the micro-teaching unit, compared to all other phases (**Hypothesis 1a**), and, regarding HR slopes, that teachers’ HR would increase while they were preparing for teaching (pre-teaching interval), but decrease in all of the following intervals, i.e. when they were habituating to and recovering from the stressful micro-teaching unit (**Hypothesis 1b**).
+In addition, we selected five representative 10-minute intervals from the five phases of the lab study (see Figure \ref{fig.2}) in order to test the hypotheses that, regarding HR levels, teachers’ HR would be the highest during the micro-teaching unit, compared to all other phases (**Hypothesis 1a**), and, regarding HR slopes, that teachers’ HR would increase while they were preparing for teaching (pre-teaching interval), but decrease in all of the following intervals, i.e. when they were habituating to and recovering from the stressful micro-teaching unit (**Hypothesis 1b**).
 
 (2)	We further explored whether teaching experience made a difference in how teachers’ HR reacted to the classroom disruptions. We expected more experienced teachers to be less stressed by the classroom events (**Hypothesis 2a**).  In addition, we examined the relations between teachers’ subjective appraisals of the classroom events (specifically, the disruptiveness of the events, and their confidence in dealing with them) and teachers’ HR level, beyond the explanatory power of teaching experience. We expected higher HR levels for teachers who felt more disrupted, regardless of their teaching experience (**Hypotheses 2b**), and lower HR levels for teachers who felt more confident, regardless of teaching experience (**Hypothesis 2c**). We hypothesized that each of the three predictors (*teaching experience, disruption appraisal, confidence appraisal*) uniquely contributed to explaining variance in teachers’ HR levels (**Hypothesis 2d**). In addition, we exploratively ran analogous analyses for the *changes* in HR (i.e., slopes).
 
@@ -285,7 +291,7 @@ present study. In the *interview phase*,
   \centering
   \includegraphics[width=0.5\textwidth]{images/Timeline_smaller.pdf}
   \caption{Procedure of the two-hour-long study consisting of five phases with five representative 10-minute intervals}
-  \label{Procedure of the two-hour-long study consisting of five phases with five representative 10-minute intervals}
+  \label{fig.2}
 \end{wrapfigure}
 ```
 \noindent
@@ -620,13 +626,13 @@ ggsave(loess_comp,
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/loess_plot_std_unstd_new.pdf}
   \caption{Overall course of the HR with the unstandardized HR in BPM shown in Fig. 3a. and the z-standardized HR shown in Fig. 3b. for the planned 2-hour study.}
-  \label{Overall course of the HR with the unstandardized HR in BPM shown in Fig. 3a. and the z-standardized HR shown in Fig. 3b. for the planned 2-hour study.}
+  \label{fig.3}
 \end{figure}
 ```
 
 \newpage
 
-Figure 4 shows the distribution of teachers’ mean standardized HR for the five intervals. Repeated measures ANOVA revealed significant differences in mean standardized HR between intervals, $F(4, 400) = 260.62$, $p < .05$, $d = 1.60$ (large effect). Planned contrasts indicated that, as hypothesized (Hypothesis 1a), mean standardized HR was significantly higher in the *teaching interval* ($I_2$) than in all other intervals, specifically, the *pre-teaching interval* ($I_1$; $t(400) = -10.08$, $p < .05$, $d = 1.034$; large effect), the post-teaching interval ($I_3$; $t(400) = -6.94$, $p < .05$, $d = 1.37$; large effect), the interview interval ($I_4$; $t(400) = 15.00$, $p < .05$, $d = 3.29$; large effect), and the end interval ($I_5$); $t(400) = 22.54$, $p < .05$, $d = 4.64$; large effect). 
+Figure \ref{fig.4} shows the distribution of teachers’ mean standardized HR for the five intervals. Repeated measures ANOVA revealed significant differences in mean standardized HR between intervals, $F(4, 400) = 260.62$, $p < .05$, $d = 1.60$ (large effect). Planned contrasts indicated that, as hypothesized (Hypothesis 1a), mean standardized HR was significantly higher in the *teaching interval* ($I_2$) than in all other intervals, specifically, the *pre-teaching interval* ($I_1$; $t(400) = -10.08$, $p < .05$, $d = 1.034$; large effect), the post-teaching interval ($I_3$; $t(400) = -6.94$, $p < .05$, $d = 1.37$; large effect), the interview interval ($I_4$; $t(400) = 15.00$, $p < .05$, $d = 3.29$; large effect), and the end interval ($I_5$); $t(400) = 22.54$, $p < .05$, $d = 4.64$; large effect). 
 
 ```{r box plot, include=FALSE}
 box_plot <-
@@ -699,7 +705,7 @@ ggsave(filename = "plots_publication/box_plot.pdf",
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/box_plot.pdf}
   \caption{Distribution of the standardized heart rate means in the five intervals}
-  \label{Distribution of the standardized heart rate means in the five intervals}
+  \label{fig.4}
 \end{figure}
 ```
 
@@ -1138,7 +1144,6 @@ summary(regr_end4)
 
 \begin{landscape}
 
-% Set longtable to stretch the entire width of the page
 \setlength{\LTleft}{0pt}
 \setlength{\LTright}{0pt}
 
@@ -1301,31 +1306,6 @@ plot_list_appendix <- list(
               )
       )
 
-# 
-# plot_list_appendix <- list(
-#   `Preparation Phase` = list(name = "Pre-Teaching Interval", mod = mods$preparation, data = graph_data$preparation),
-#      `Teaching Phase` = list(name = "Teaching Interval", mod = mods$teaching, data = graph_data$teaching),
-#      `Post Teaching Phase` = list(name = "Post-Teaching Interval",mod = mods$post, data = graph_data$post),
-#      `Interview Phase` = list(name = "Interview Interval",mod = mods$interview, data = graph_data$interview),
-#      `End Phase` = list(name = "End Interval",mod = mods$end, data = graph_data$end)
-#      ) %>% 
-#   map(~ ggplot(data = .$data,
-#                mapping = aes(x = time,
-#                              y = heart_rate_std,
-#                              group = ID)) +
-#         geom_line(mapping = aes(y = fitted(.$mod)),
-#                   color = "blue",
-#                   size = 1) +
-#         geom_point(alpha = 0.5,
-#                    size = 0.5) +
-#         scale_x_continuous(breaks = c(0, 5, 10)) +
-#         labs(title = .$name,
-#              y = "Heart Rate (Standardized)",
-#              x = "Time (in Seconds)") +
-#         facet_wrap( ~ ID, nrow = 8) +
-#         theme_apa()
-#       )
-
 preparation_plot <- plot_list_appendix$`Preparation Phase`
 
 teaching_plot <- plot_list_appendix$`Teaching Phase`
@@ -1384,48 +1364,48 @@ ggsave(end_plot,
   \centering
   \includegraphics[width=0.7\textwidth]{appendix_figure1.png}
   \caption{Laboratory setting of the micro-teaching unit. Note. The setting included three actors as the class (left) and a teacher (participant, right).}
-  \label{micro-teaching}
+  \label{fig.a1}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{appendix_figure2.png}
   \caption{Laboratory setting of the interview. Note. The experimenter and participant watched the previously taught micro-teaching unit on video.}
-  \label{laboratory}
+  \label{fig.a2}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_preparation_appendix.pdf}
   \caption{Preparation Phase}
-  \label{preparation}
+  \label{fig.a3}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_teaching_appendix.pdf}
   \caption{Teaching Phase}
-  \label{teaching}
+  \label{fig.a4}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_post_teaching_appendix.pdf}
-  \caption{Post-Teachin Phase}
-  \label{post_teaching}
+  \caption{Post-Teaching Phase}
+  \label{fig.a5}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_interview_appendix.pdf}
   \caption{Interview Phase}
-  \label{interview}
+  \label{fig.a6}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_end_appendix.pdf}
   \caption{End Phase}
-  \label{end}
+  \label{fig.a7}
 \end{figure}
 ```
