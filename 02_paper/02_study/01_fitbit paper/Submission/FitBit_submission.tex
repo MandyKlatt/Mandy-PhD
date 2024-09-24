@@ -72,6 +72,7 @@ authoryear]{elsarticle} %review=doublespace preprint=single 5p=2 column
 \usepackage{pdflscape}
 \usepackage{longtable}
 \usepackage{geometry}
+\usepackage{caption}
 
 
 
@@ -323,10 +324,30 @@ the interaction between an individual and the environment, whereby
 stress refers to a person's subjective reaction to an event (a stressor)
 that exceeds the person's adaptive resources.
 
+\captionsetup[figure]{
+    labelfont=bf,         % Figure label bold (not italic)
+    parskip=12pt,
+    labelsep=newline,      % Period after Figure label
+    textfont=it,          % Italic font for the caption text
+    font=small,           % Smaller font size for APA style
+    justification=justified, % Left-justified captions, as per APA guidelines
+    singlelinecheck=false % Avoid centering if the caption is single-line
+}
+
+\captionsetup[table]{
+    labelfont=bf,         % Figure label bold (not italic)
+    parskip=12pt,
+    labelsep=newline,      % Period after Figure label
+    textfont=it,          % Italic font for the caption text
+    font=small,           % Smaller font size for APA style
+    justification=justified, % Left-justified captions, as per APA guidelines
+    singlelinecheck=false % Avoid centering if the caption is single-line
+}
+
 \begin{figure}[htbp]
+  \caption{A model of teacher stress (adapted from van Dick 2006, p.37, modified by the authors)}
   \centering
   \includegraphics[width=1\textwidth]{images/Model_Teacher_Stress_adapted_new.pdf}
-  \caption{A model of teacher stress (adapted from van Dick 2006, p.37, modified by the authors)}
   \label{fig.1}
 \end{figure}
 
@@ -464,8 +485,8 @@ self-prepared micro-teaching unit to a class of three trained actors who
 performed nine, potentially disruptive, classroom events (e.g., chatting
 with a neighbor, heckling, looking at the phone; see Table \#\# in the
 supplementary material for an overview and categorization of all events;
-and Fig\#\# in the supplementary material for a depiction of the
-laboratory setting of the micro-teaching unit). The topic and class
+and Figure \ref{fig.a2} in the supplementary material for a depiction of
+the laboratory setting of the micro-teaching unit). The topic and class
 level of the teaching unit could be freely chosen by the teachers with
 the only requirement that the unit had to be an introductory lesson, and
 had to consist of supervised individual work and / or frontal teaching.
@@ -482,8 +503,8 @@ a short knowledge test that was irrelevant to the present study. In the
 
 \begin{wrapfigure}{r}{0.5\textwidth}
   \centering
-  \includegraphics[width=0.5\textwidth]{images/Timeline_smaller.pdf}
   \caption{Procedure of the two-hour-long study consisting of five phases with five representative 10-minute intervals}
+  \includegraphics[width=0.5\textwidth]{images/Timeline_smaller.pdf}
   \label{fig.2}
 \end{wrapfigure}
 
@@ -619,22 +640,11 @@ events had not yet taken place in that phase.
 
 \section{Results}\label{results}
 
-\subsection{Mapping teachers' HR over the course of the study
-phases}\label{mapping-teachers-hr-over-the-course-of-the-study-phases}
-
-Means, standard deviations, and range of teachers' unstandardized and
-standardized HR for the entire study period, and for the five intervals,
-are shown in Table 1. Fig. 3 a. and b. display the unstandardized and
-standardized HR trends, respectively, over the course of the entire
-study period. HR initially increased, peaked, and then decreased, with
-the unstandardized and standardized HR graphs showing high similarity.
-Thus, for all further analyses, we used participants' standardized HR
-values.
-
 \renewcommand{\arraystretch}{1.5}
 
 \begin{table}[ht]
     \centering
+    \caption{Mean HR (\textit{M}), standard deviations HR (\textit{SD}), and range of teachers’ HR over the course of the entire study and the five intervals (unstandardized in BPM/z-standardized).}
     \begin{tabularx}{\textwidth}{lXXXXX}
         \toprule
         Interval & \textit{M} HR & \textit{SD} HR & Min & Max \\
@@ -647,7 +657,6 @@ values.
         End interval ($I_5$) & 77.95/-1.07 & 11.14/0.57 & 50\footnotemark[10]/-2.68 & 120/2.96 \\
         \bottomrule
     \end{tabularx}
-    \caption{Mean HR (\textit{M}), standard deviations HR (\textit{SD}), and range of teachers’ HR over the course of the entire study and the five intervals (unstandardized in BPM/z-standardized).}
     \label{tab_1}
 
     
@@ -657,12 +666,22 @@ values.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{plots_publication/loess_plot_std_unstd_new.pdf}
   \caption{Overall course of the HR with the unstandardized HR in BPM shown in Fig. 3a. and the z-standardized HR shown in Fig. 3b. for the planned 2-hour study.}
+  \includegraphics[width=1\textwidth]{plots_publication/loess_plot_std_unstd_new.pdf}
   \label{fig.3}
 \end{figure}
 
-\newpage
+\subsection{Mapping teachers' HR over the course of the study
+phases}\label{mapping-teachers-hr-over-the-course-of-the-study-phases}
+
+Means, standard deviations, and range of teachers' unstandardized and
+standardized HR for the entire study period, and for the five intervals,
+are shown in Table \ref{tab_1}. Figure \ref{fig.3} displays the
+unstandardized and standardized HR trends, respectively, over the course
+of the entire study period. HR initially increased, peaked, and then
+decreased, with the unstandardized and standardized HR graphs showing
+high similarity. Thus, for all further analyses, we used participants'
+standardized HR values.
 
 Figure \ref{fig.4} shows the distribution of teachers' mean standardized
 HR for the five intervals. Repeated measures ANOVA revealed significant
@@ -680,8 +699,8 @@ interview interval (\(I_4\); \(t(400) = 15.00\), \(p < .05\),
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{plots_publication/box_plot.pdf}
   \caption{Distribution of the standardized heart rate means in the five intervals}
+  \includegraphics[width=1\textwidth]{plots_publication/box_plot.pdf}
   \label{fig.4}
 \end{figure}
 
@@ -702,6 +721,7 @@ differ significantly from zero.
 
 \begin{table}[ht]
     \centering
+    \caption{Analysis (\textit{M, SD, p-values}) for the mean intercepts and the mean slopes for the five intervals.}
     \begin{tabularx}{\textwidth}{lXXXXXX}
         \toprule
         Interval  & \multicolumn{2}{c}{M (SD)} & \multicolumn{2}{c}{$p$} \\ & Intercept & Slope & Intercept & Slope \\
@@ -713,7 +733,6 @@ differ significantly from zero.
         (5) End interval & -1.004 (0.500) & -0.012 (0.074) & $< .05$ & .14 \\
         \bottomrule
     \end{tabularx}
-    \caption{Analysis (\textit{M, SD, p-values}) for the mean intercepts and the mean slopes for the five intervals }
     \label{tab_2}
 \end{table}
 
@@ -750,18 +769,11 @@ predicted only by disruption appraisal, and only in the
 disrupted by the classroom events, when controlling for the other
 variables.
 
-Concerning the explorative investigation of the effects of teaching
-experience and subjective appraisals on \emph{changes} (i.e., mean
-slopes) in teachers' HR, teaching experience significantly predicted the
-mean slope in the \emph{pre-teaching interval} (Table 4, Pre-teaching
-interval, Model 1), indicating a less steep HR increase in teachers with
-more teaching experience. For all other intervals, no variable had
-significant predictive value.
-
 \renewcommand{\arraystretch}{1.5}
 
-\begin{table}[ht]
+\begin{table}[h]
     \centering
+    \caption{Correlations between mean standardized HR/mean slopes and the predictor variables of teaching experience (TE), disruption appraisal (DA), and confidence appraisal (CA) for the five intervals.}
     \begin{tabularx}{\textwidth}{lccccc}
         \toprule
         Variable & Pre-teaching & Teaching & Post-teaching & Interview & End \\
@@ -773,17 +785,26 @@ significant predictive value.
         \bottomrule \\
           Note. * $p < .05$.
     \end{tabularx}
-    \caption{Correlations between mean standardized HR/mean slopes and the predictor variables of teaching experience (TE), disruption appraisal (DA), and confidence appraisal (CA) for the five intervals.}
     \label{tab_3}
 \end{table}
+
+Concerning the explorative investigation of the effects of teaching
+experience and subjective appraisals on \emph{changes} (i.e., mean
+slopes) in teachers' HR, teaching experience significantly predicted the
+mean slope in the \emph{pre-teaching interval} (Table 4, Pre-teaching
+interval, Model 1), indicating a less steep HR increase in teachers with
+more teaching experience. For all other intervals, no variable had
+significant predictive value.
 
 \begin{landscape}
 
 \setlength{\LTleft}{0pt}
 \setlength{\LTright}{0pt}
 
-\begin{longtable}{@{\extracolsep{\fill}} p{1.8cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} @{}}
+\captionof{table}{Standardized regression coefficients of mean standardized heart rate and mean slopes predicted by teaching experience, disruption appraisal, and confidence appraisal for the five intervals.}
 
+\begin{longtable}{@{\extracolsep{\fill}} p{1.8cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} @{}}
+    
     \toprule
     & \multicolumn{4}{c}{Model 1} & \multicolumn{4}{c}{Model 2} & \multicolumn{4}{c}{Model 3} & \multicolumn{4}{c}{Model 4} \\
     \cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13} \cmidrule(lr){14-17}
@@ -794,7 +815,6 @@ significant predictive value.
     \midrule
     \endfirsthead
 
-    \multicolumn{17}{c}{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
     \toprule
     & \multicolumn{4}{c}{Model 1} & \multicolumn{4}{c}{Model 2} & \multicolumn{4}{c}{Model 3} & \multicolumn{4}{c}{Model 4} \\
     \cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13} \cmidrule(lr){14-17}
@@ -811,32 +831,32 @@ significant predictive value.
     \bottomrule
     \endlastfoot
 
-    Pre-teaching \newline interval (I1) & & & & & & & & & & & & & & & & \\
+    Pre-teaching \newline interval ($I_1$) & & & & & & & & & & & & & & & & \\
     Teaching \newline Experience & \begin{tabular}{@{}c@{}}$-.17$\\$(.005)$\end{tabular} & $.12$ & \begin{tabular}{@{}c@{}}$-.27^*$\\$(.002)$\end{tabular} & $<.05$ & & & & & & & & & & & & \\
     R\textsuperscript{2} & $.030$ & & $.071$ & & & & & & & & & & & & & \\
     \midrule
-    Teaching \newline interval (I2) & & & & & & & & & & & & & & & & \\
+    Teaching \newline interval ($I_2$) & & & & & & & & & & & & & & & & \\
     Teaching \newline Experience & \begin{tabular}{@{}c@{}}$.11$\\$(.002)$\end{tabular} & $.34$ & \begin{tabular}{@{}c@{}}$-.02$\\$(.001)$\end{tabular} & $.83$ & \begin{tabular}{@{}c@{}}$.04$\\$(.005)$\end{tabular} & $.73$ & \begin{tabular}{@{}c@{}}$.01$\\$(.001)$\end{tabular} & $.96$ & \begin{tabular}{@{}c@{}}$.10$\\$(.006)$\end{tabular} & $.42$ & \begin{tabular}{@{}c@{}}$-.08$\\$(.001)$\end{tabular} & $.54$ & \begin{tabular}{@{}c@{}}$.05$\\$(.006)$\end{tabular} & $.67$ & \begin{tabular}{@{}c@{}}$-.05$\\$(.001)$\end{tabular} & $.72$ \\
     Disruption \newline Appraisal & \begin{tabular}{@{}c@{}}$-.18$\\$(.041)$\end{tabular} & $.13$ & \begin{tabular}{@{}c@{}}$.08$\\$(.010)$\end{tabular} & $.50$ & \begin{tabular}{@{}c@{}}$-.19$\\$(.042)$\end{tabular} & $.13$ & \begin{tabular}{@{}c@{}}$.12$\\$(.010)$\end{tabular} & $.34$ \\
     Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$.01$\\$(.046)$\end{tabular} & $.92$ & \begin{tabular}{@{}c@{}}$.12$\\$(.011)$\end{tabular} & $.34$ & \begin{tabular}{@{}c@{}}$-.04$\\$(.047)$\end{tabular} & $.76$ & \begin{tabular}{@{}c@{}}$.15$\\$(.012)$\end{tabular} & $.24$ \\
     R\textsuperscript{2} & $.012$ & & $.000$ & & $.040$ & & $.015$ & & $.012$ & & $.010$ & & $.042$ & & $.031$ \\
     $\Delta$ R\textsuperscript{2} & & & $.028$ & & $.015$ & & $.000$ & & $.010$ & & $.030$ & & $.031$ \\
     \midrule
-    Post-teaching \newline interval (I3) & & & & & & & & & & & & & & & & \\
+    Post-teaching \newline interval ($I_3$) & & & & & & & & & & & & & & & & \\
     Teaching \newline Experience & \begin{tabular}{@{}c@{}}$-.04$\\$(.005)$\end{tabular} & $.70$ & \begin{tabular}{@{}c@{}}$-.03$\\$(.001)$\end{tabular} & $.80$ & \begin{tabular}{@{}c@{}}$.04$\\$(.005)$\end{tabular} & $.76$ & \begin{tabular}{@{}c@{}}$-.09$\\$(.001)$\end{tabular} & $.44$ & \begin{tabular}{@{}c@{}}$-.08$\\$(.006)$\end{tabular} & $.55$ & \begin{tabular}{@{}c@{}}$-.02$\\$(.001)$\end{tabular} & $.89$ & \begin{tabular}{@{}c@{}}$-.01$\\$(.006)$\end{tabular} & $.91$ & \begin{tabular}{@{}c@{}}$-.07$\\$(.001)$\end{tabular} & $.61$ \\
     Disruption \newline Appraisal & \begin{tabular}{@{}c@{}}$.22$\\$(.040)$\end{tabular} & $.07$ & \begin{tabular}{@{}c@{}}$-.18$\\$(.009)$\end{tabular} & $.14$ & \begin{tabular}{@{}c@{}}$.25^*$\\$(.041)$\end{tabular} & $<.05$ & \begin{tabular}{@{}c@{}}$-.20$\\$(.010)$\end{tabular} & $.12$ \\
     Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$.08$\\$(.045)$\end{tabular} & $.55$ & \begin{tabular}{@{}c@{}}$-.03$\\$(.011)$\end{tabular} & $.83$ & \begin{tabular}{@{}c@{}}$.14$\\$(.046)$\end{tabular} & $.27$ & \begin{tabular}{@{}c@{}}$-.08$\\$(.011)$\end{tabular} & $.54$ \\
     R\textsuperscript{2} & $.002$ & & $.001$ & & $.043$ & & $.020$ & & $.006$ & & $.002$ & & $.058$ & & $.023$ \\
     $\Delta$ R\textsuperscript{2} & & & $.041$ & & $.019$ & & $.004$ & & $.001$ & & $.056$ & & $.022$ \\
     \midrule
-    Interview \newline interval (I4) & & & & & & & & & & & & & & & & \\
+    Interview \newline interval ($I_4$) & & & & & & & & & & & & & & & & \\
     Teaching \newline Experience & \begin{tabular}{@{}c@{}}$.24^*$\\$(.006)$\end{tabular} & $<.05$ & \begin{tabular}{@{}c@{}}$-.20$\\$(.001)$\end{tabular} & $.07$ & \begin{tabular}{@{}c@{}}$.22$\\$(.006)$\end{tabular} & $.06$ & \begin{tabular}{@{}c@{}}$-.23$\\$(.001)$\end{tabular} & $.06$ & \begin{tabular}{@{}c@{}}$.25^*$\\$(.006)$\end{tabular} & $<.05$ & \begin{tabular}{@{}c@{}}$-.14$\\$(.001)$\end{tabular} & $.25$ & \begin{tabular}{@{}c@{}}$.23$\\$(.007)$\end{tabular} & $.07$ & \begin{tabular}{@{}c@{}}$-.17$\\$(.001)$\end{tabular} & $.18$ \\
     Disruption \newline Appraisal & \begin{tabular}{@{}c@{}}$-.05$\\$(.045)$\end{tabular} & $.66$ & \begin{tabular}{@{}c@{}}$-.08$\\$(.006)$\end{tabular} & $.52$ & \begin{tabular}{@{}c@{}}$-.06$\\$(.047)$\end{tabular} & $.61$ & \begin{tabular}{@{}c@{}}$-.12$\\$(.007)$\end{tabular} & $.34$ \\
     Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$-.02$\\$(.050)$\end{tabular} & $.85$ & \begin{tabular}{@{}c@{}}$-.13$\\$(.007)$\end{tabular} & $.29$ & \begin{tabular}{@{}c@{}}$-.04$\\$(.052)$\end{tabular} & $.76$ & \begin{tabular}{@{}c@{}}$-.16$\\$(.007)$\end{tabular} & $.20$ \\
     R\textsuperscript{2} & $.058$ & & $.040$ & & $.060$ & & $.050$ & & $.058$ & & $.054$ & & $.061$ & & $.069$ \\
     $\Delta$ R\textsuperscript{2} & & & $.002$ & & $.010$ & & $.000$ & & $.014$ & & $.003$ & & $.029$ \\
     \midrule
-    End \newline interval (I5) & & & & & & & & & & & & & & & & \\
+    End \newline interval ($I_5$) & & & & & & & & & & & & & & & & \\
     Teaching \newline Experience & \begin{tabular}{@{}c@{}}$.04$\\$(.004)$\end{tabular} & $.70$ & \begin{tabular}{@{}c@{}}$.11$\\$(.001)$\end{tabular} & $.32$ & \begin{tabular}{@{}c@{}}$.07$\\$(.005)$\end{tabular} & $.58$ & \begin{tabular}{@{}c@{}}$.18$\\$(.001)$\end{tabular} & $.13$ & \begin{tabular}{@{}c@{}}$.09$\\$(.005)$\end{tabular} & $.46$ & \begin{tabular}{@{}c@{}}$.07$\\$(.001)$\end{tabular} & $.58$ & \begin{tabular}{@{}c@{}}$.10$\\$(.005)$\end{tabular} & $.43$ & \begin{tabular}{@{}c@{}}$.12$\\$(.001)$\end{tabular} & $.33$ \\
     Disruption \newline Appraisal & \begin{tabular}{@{}c@{}}$.06$\\$(.035)$\end{tabular} & $.60$ & \begin{tabular}{@{}c@{}}$.19$\\$(.007)$\end{tabular} & $.12$ & \begin{tabular}{@{}c@{}}$.04$\\$(.037)$\end{tabular} & $.76$ & \begin{tabular}{@{}c@{}}$.23$\\$(.007)$\end{tabular} & $.07$ \\
     Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$-.11$\\$(.039)$\end{tabular} & $.38$ & \begin{tabular}{@{}c@{}}$.10$\\$(.008)$\end{tabular} & $.43$ & \begin{tabular}{@{}c@{}}$-.10$\\$(.041)$\end{tabular} & $.44$ & \begin{tabular}{@{}c@{}}$.16$\\$(.008)$\end{tabular} & $.22$ \\
@@ -845,8 +865,7 @@ significant predictive value.
 \end{longtable}
 \begin{tablenotes}
 \footnotesize
-\item Note. In Model 1, mean standardized HR and mean slopes were predicted only by teaching experience. In Model 2, solely disruption appraisal was added to teaching experience as a predictor. In Model 3, solely confidence appraisal was added to teaching experience as a predictor. In Model 4, all three predictors were considered in concert.
-\item * $p < .05$.
+\item Note. In Model 1, mean standardized HR and mean slopes were predicted only by teaching experience. In Model 2, solely disruption appraisal was added to teaching experience as a predictor. In Model 3, solely confidence appraisal was added to teaching experience as a predictor. In Model 4, all three predictors were considered in concert. * $p < .05$.
 \end{tablenotes}
 \end{landscape}
 
@@ -1185,52 +1204,68 @@ enhancing their overall well-being.
 
 \renewcommand{\thefigure}{A\arabic{figure}}  % Figures labeled A1, A2, etc.
 
+\renewcommand{\arraystretch}{1.5}
+
+\begin{table}[ht]
+    \centering
+    \caption{Classification of nine, typical classroom disruptions according to @lohmann2003schulern performed in the micro-teaching unit by actors.}
+    \begin{tabularx}{\textwidth}{XXX}
+        \toprule
+        \textbf{Verbal disruptions} & \textbf{Physical disruptions} & \textbf{Lack of eagerness to learn} \\
+        \midrule
+        Heckling & Clicking pen & Looking at phone \\
+        Chatting & Snipping hands & Drawing \\
+        Whispering & Drumming hands & Head on table \\
+        \bottomrule
+    \end{tabularx}
+    \label{tab.a1}
+\end{table}
+
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.7\textwidth]{appendix_figure1.png}
   \caption{Laboratory setting of the micro-teaching unit. Note. The setting included three actors as the class (left) and a teacher (participant, right).}
+  \includegraphics[width=0.7\textwidth]{appendix_figure1.png}
   \label{fig.a1}
 \end{figure}
 
 \begin{figure}[htbp]
-  \centering
+  \centering\caption{Laboratory setting of the interview. Note. The experimenter and participant watched the previously taught micro-teaching unit on video.}
   \includegraphics[width=0.7\textwidth]{appendix_figure2.png}
-  \caption{Laboratory setting of the interview. Note. The experimenter and participant watched the previously taught micro-teaching unit on video.}
   \label{fig.a2}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
+  \caption{Linear estimation of individual HR changes over time during the preparation phase for $N$ = 81 participants. Each plot illustrates the mean standardized HR values (y-axis) across 10 minutes (x-axis), with the black dots representing observed HR data points and the blue line showing the estimated linear trend.}
   \includegraphics[width=1\textwidth]{plots_publication/plot_preparation_appendix.pdf}
-  \caption{Preparation Phase}
   \label{fig.a3}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
+  \caption{Linear estimation of individual HR changes over time during the teaching phase for $N$ = 81 participants. Each plot illustrates the mean standardized HR values (y-axis) across 10 minutes (x-axis), with the black dots representing observed HR data points and the blue line showing the estimated linear trend.}
   \includegraphics[width=1\textwidth]{plots_publication/plot_teaching_appendix.pdf}
-  \caption{Teaching Phase}
   \label{fig.a4}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
+  \caption{Linear estimation of individual HR changes over time during the post-teaching phase for $N$ = 81 participants. Each plot illustrates the mean standardized HR values (y-axis) across 10 minutes (x-axis), with the black dots representing observed HR data points and the blue line showing the estimated linear trend.}
   \includegraphics[width=1\textwidth]{plots_publication/plot_post_teaching_appendix.pdf}
-  \caption{Post-Teaching Phase}
   \label{fig.a5}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
+  \caption{Linear estimation of individual HR changes over time during the interview phase for $N$ = 81 participants. Each plot illustrates the mean standardized HR values (y-axis) across 10 minutes (x-axis), with the black dots representing observed HR data points and the blue line showing the estimated linear trend.}
   \includegraphics[width=1\textwidth]{plots_publication/plot_interview_appendix.pdf}
-  \caption{Interview Phase}
   \label{fig.a6}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
+  \caption{Linear estimation of individual HR changes over time during the end phase for $N$ = 81 participants. Each plot illustrates the mean standardized HR values (y-axis) across 10 minutes (x-axis), with the black dots representing observed HR data points and the blue line showing the estimated linear trend.}
   \includegraphics[width=1\textwidth]{plots_publication/plot_end_appendix.pdf}
-  \caption{End Phase}
   \label{fig.a7}
 \end{figure}
 
