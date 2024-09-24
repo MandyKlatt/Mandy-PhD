@@ -114,7 +114,10 @@ needs(ltm,
       stargazer,
       papaja,
       grid,
-      purrr)
+      purrr,
+      extrafont)
+
+loadfonts(device = 'win')
 ```
 
 # Introduction 
@@ -559,7 +562,9 @@ df_heart_rate |>
              ) + 
   theme(plot.margin = margin(r = 15,
                              t = 20,
-                             b = 10)
+                             b = 5),
+        text = element_text(family = "Times",
+                            size = 14)
         ) -> loess_hr
 
 
@@ -587,7 +592,9 @@ df_heart_rate_std |>
              ) +
   theme(plot.margin = margin(r = 30,
                              t = 20,
-                             b = 10)
+                             b = 5),
+        text = element_text(family = "Times",
+                            size = 14)
         ) -> loess_hr_std
 
 loess_comp <- grid.arrange(loess_hr,
@@ -595,12 +602,16 @@ loess_comp <- grid.arrange(loess_hr,
                            ncol = 2) 
 
 loess_comp <- annotate_figure(p = loess_comp,
-                              bottom = 'Time (in Minutes)')
+                              bottom = text_grob("Time (in Minutes)",
+                                                 face = "plain",
+                                                 size = 14,       
+                                                 family = "Times")
+                              )
 
 ggsave(loess_comp,
        filename = "plots_publication/loess_plot_std_unstd_new.pdf",
-       width = 20,
-       height = 12,
+       width = 25,
+       height = 15,
        units = "cm")
 ```
 
@@ -661,10 +672,11 @@ box_plot <-
                      ) +   
   # geom_jitter(width = 0.2) +
   theme_apa() + 
-  theme(axis.text.x = 
-          element_text(
+  theme(text = element_text(family = "Times"),
+        axis.text.x = element_text(
             color="black",
-            size = 12),
+            size = 14,
+            family = "Times"),
         plot.caption = element_text(hjust = 0)
         ) + 
   labs(x = "",
@@ -677,8 +689,8 @@ box_plot <-
 
 ggsave(filename = "plots_publication/box_plot.pdf",
        plot = box_plot,
-       width = 20,
-       height = 12,
+       width = 25,
+       height = 15,
        units = "cm")
 ```
 
@@ -1282,8 +1294,11 @@ plot_list_appendix <- list(
         xlab('Time (in Seconds)') +  # X-axis label (similar to 'Arbeitsstunden pro Woche')
         ylab('Heart Rate (Standardized)') +  # Y-axis label (similar to 'Nettoeinkommen')
         scale_x_continuous(breaks = c(0, 5, 10)) +  # Customize x-axis breaks as needed
-        labs(title = .$name) +  # Title for each plot based on phase name
-        theme_bw()  # Use a clean theme
+        #labs(title = .$name) +  # Title for each plot based on phase name
+        theme_bw() + # Use a clean theme
+        theme(text = element_text(family = "Times",
+                                  size = 14)
+              )
       )
 
 # 
@@ -1382,35 +1397,35 @@ ggsave(end_plot,
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_preparation_appendix.pdf}
-  \caption{bla..}
+  \caption{Preparation Phase}
   \label{preparation}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_teaching_appendix.pdf}
-  \caption{bla..}
+  \caption{Teaching Phase}
   \label{teaching}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_post_teaching_appendix.pdf}
-  \caption{bla..}
+  \caption{Post-Teachin Phase}
   \label{post_teaching}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_interview_appendix.pdf}
-  \caption{bla..}
+  \caption{Interview Phase}
   \label{interview}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{plots_publication/plot_end_appendix.pdf}
-  \caption{bla..}
+  \caption{End Phase}
   \label{end}
 \end{figure}
 ```
