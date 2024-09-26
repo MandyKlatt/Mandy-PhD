@@ -10,21 +10,21 @@ author:
     correspondingauthor: true
     footnote: 1
   - name: Peer Keßler
-    email: peer.kessler@uni-greifswald.de.com
+    email: peer.kessler@uni-greifswald.de
     affiliation: University of Greifswald
     footnote: 2
   - name: Gregor Kachel
     email: gregor@example.com
-    affiliation: Leipzig University, Max Planck Institute for Evolutionary Anthropology
-    footnote: 1
+    affiliation: Max Planck Institute for Evolutionary Anthropology
+    footnote: 3
   - name: Christin Lotz
     email: christin.lotz@uni-leipzig.de
     affiliation: Leipzig University
-    footnote: 1
+    footnote: 4
   - name: Anne Deiglmayr
     email: anne.deiglmayr@uni-leipzig.de
     affiliation: Leipzig University
-    footnote: 3
+    footnote: 5
 address:
   - code: Leipzig University
     organization: Empirische Schul- und Unterrichtsforschung
@@ -49,15 +49,16 @@ address:
 footnote:
   - code: 1
     text: 
-      - "Conceptualization, "
-      - "Writing - Original Draft Preparation, "
-      - "Writing - Review & Editing"
+      - "Conceptualization, Methodology, Formal analysis, Investigation, Data Curation, Writing - Original Draft"
   - code: 2
     text: 
-      - "Writing - Original Draft Preparation, "
-      - "Writing - Review & Editing"
+      - "Conceptualization, Methodology, Writing - Review & Editing, Supervision"
   - code: 3
-    text: "Supervision"
+    text: "Formal analysis, Data Curation, Writing - Review & Editing"
+  - code: 4
+    text: "Conceptualization, Methodology, Writing - Review & Editing"
+  - code: 5
+    text: "Conzeptualization, Methodology, Writing - Review & Editing, Supervision"
 abstract: "
 Past research on physiological indicators of teacher stress often had to rely on expensive and obtrusive assessment methods. Modern fitness trackers represent a non-invasive and convenient alternative. This study investigated the use of wrist-worn fitness trackers to assess teacher heart rate (HR) as an indicator of stress during teaching. In a laboratory study, we used a Fitbit® fitness tracker to assess teachers´ HR before, during, and after a potentially stressful micro-teaching session. Our results demonstrate that the fitness tracker was indeed useful for mapping teachers’ stress, with the data showing how teachers’ HR increased before, peaked during, and progressively decreased after the micro-teaching session. Moreover, we related the fitness tracker data to retrospective teacher self-reports. We found that teachers’ subjective stress appraisals, together with their teaching experience, explained only small amounts of variance in HR data. We discuss the potential of fitness trackers as an affordable and ubiquitous assessment tool for research on teacher stress in the classroom and provide advice for practical implementation."
 keywords: 
@@ -303,7 +304,7 @@ The sample consisted of $N$ = 84 pre- and in-service teachers from Germany, who 
 
 The study was carried out following the ethical standards and the approval of the University’s Institutional Review Board. All participants were informed in detail about the aims of the study prior to testing. Participation was voluntary, not incentivized, and only took place after written consent had been given.
 
-Each participant came to the lab for a period of approximately two hours in total, and each participant underwent the same phases (see Figure \ref{fig.2}): In the *pre-teaching phase*, the experimenter welcomed the participants and helped them put on the fitness tracker. This was followed by a warm-up session to familiarize the participants with the laboratory setting and the class. This phase took about 10-15 minutes and participants spent this time mostly standing or slowly walking around. During the *teaching phase*, the participants held their self-prepared micro-teaching unit to a class of three trained actors who performed nine, potentially disruptive, classroom events (e.g., chatting with a neighbor, heckling, looking at the phone; see Table ## in the supplementary material for an overview and categorization of all events; and Figure \ref{fig.a2} in the supplementary material for a depiction of the laboratory setting of the micro-teaching unit). The topic and class level of the teaching unit could be freely chosen by the teachers with the only requirement that the unit had to be an introductory lesson, and had to consist of supervised individual work and / or frontal teaching. The micro-teaching unit lasted about 15-20 minutes. Participants spent this time mostly standing or slowly walking around. While teaching, participants wore eye-tracking glasses, and their lesson was video-recorded. After having completed the micro-teaching unit, in the *post-teaching phase*, participants filled in questionnaires for approximately 10-15 minutes: a brief computer-based survey of sociodemographic
+Each participant came to the lab for a period of approximately two hours in total, and each participant underwent the same phases (see Figure \ref{fig.2}): In the *pre-teaching phase*, the experimenter welcomed the participants and helped them put on the fitness tracker. This was followed by a warm-up session to familiarize the participants with the laboratory setting and the class. This phase took about 10-15 minutes and participants spent this time mostly standing or slowly walking around. During the *teaching phase*, the participants held their self-prepared micro-teaching unit to a class of three trained actors who performed nine, potentially disruptive, classroom events (e.g., chatting with a neighbor, heckling, looking at the phone; see Table \ref{tab_a1} in the supplementary material for an overview and categorization of all events; and Figure \ref{fig.a2} in the supplementary material for a depiction of the laboratory setting of the micro-teaching unit). The topic and class level of the teaching unit could be freely chosen by the teachers with the only requirement that the unit had to be an introductory lesson, and had to consist of supervised individual work and / or frontal teaching. The micro-teaching unit lasted about 15-20 minutes. Participants spent this time mostly standing or slowly walking around. While teaching, participants wore eye-tracking glasses, and their lesson was video-recorded. After having completed the micro-teaching unit, in the *post-teaching phase*, participants filled in questionnaires for approximately 10-15 minutes: a brief computer-based survey of sociodemographic
 ```{=latex}
 \begin{wrapfigure}[36]{r}{0.5\textwidth}
   \centering
@@ -324,7 +325,7 @@ To measure teachers’ HR, we used the wrist-based fitness tracker Fitbit® Char
 
 [^1]: The fluctuations in the number of seconds in which the HR was measured are due to the participants' movements, meaning that the device could not measure the HR every second.
 
-Since we aimed to keep measurement intervals comparable between study phases, we aggregated HR over a representative 10-minute interval within each phase (cf. Fig. 2). Previous research has indicated that 10-minute intervals are a useful duration for analyzing PPG data [@lu2008can]. The intervals were selected based on the following rules: The *pre-teaching interval* ($I_1$) comprised the first 10 minutes after the fitness tracker had been put on. The *teaching interval* ($I_2$) started two minutes after the lesson had started. This interval was of the highest relevance to our study. We explicitly chose an early 10-minute interval within the teaching phase, as previous studies revealed that the beginning of a lesson is most demanding and potentially stressful with regards to teacher-student interaction [@donker2018; @claessens2017positive]. The *post-teaching interval* ($I_3$) started immediately after the end of the teaching unit. The *interview interval* ($I_4$) was defined as the mid-10 minutes between the end of the teaching unit and the time point when the fitness tracker was taken off. All participants were being interviewed during this interval. The end interval (I5) comprised the last 10 minutes before the fitness tracker was taken off. 
+Since we aimed to keep measurement intervals comparable between study phases, we aggregated HR over a representative 10-minute interval within each phase (cf. Figure \ref{fig.2}). Previous research has indicated that 10-minute intervals are a useful duration for analyzing PPG data [@lu2008can]. The intervals were selected based on the following rules: The *pre-teaching interval* ($I_1$) comprised the first 10 minutes after the fitness tracker had been put on. The *teaching interval* ($I_2$) started two minutes after the lesson had started. This interval was of the highest relevance to our study. We explicitly chose an early 10-minute interval within the teaching phase, as previous studies revealed that the beginning of a lesson is most demanding and potentially stressful with regards to teacher-student interaction [@donker2018; @claessens2017positive]. The *post-teaching interval* ($I_3$) started immediately after the end of the teaching unit. The *interview interval* ($I_4$) was defined as the mid-10 minutes between the end of the teaching unit and the time point when the fitness tracker was taken off. All participants were being interviewed during this interval. The end interval ($I_5$) comprised the last 10 minutes before the fitness tracker was taken off. 
 
 ### Teaching Experience
 
@@ -338,11 +339,11 @@ The subjective disruption and confidence appraisals were assessed during the SRI
 
 We conducted all analyses with R [@RStudio2020]. Graphics were created using ggplot2 [@ggplot2].
 
-To enable visual inspection of HR trends, we displayed smoothed teacher HR over the course of the recording[^2].  We visually compared unstandardized and standardized HR trends over the two-hour recording period[^3].  For all further analyses, we used standardized rather than unstandardized HR values.
+To enable visual inspection of HR trends, we displayed smoothed teacher HR over the course of the recording.[^2] We visually compared unstandardized and standardized HR trends over the two-hour recording period.[^3] For all further analyses, we used standardized rather than unstandardized HR values.
 
 [^2]: The curve was smoothed using the geom_smooth() function from the ggplot2 package in R [@ggplot2] based on the smoothing method LOESS (Locally Estimated Scatterplot Smoothing). This method fits a polynomial surface determined by one or more numerical predictors, using local fitting.
 
-[^3]: Note that the study exceeded the planned duration of two hours for a few participants. To avoid distortions when mapping the HR over the course of the study (see Fig. 3), the endpoint was set at two hours for all participants, even though data from later time points was used in the *end interval* for a few participants.
+[^3]: Note that the study exceeded the planned duration of two hours for a few participants. To avoid distortions when mapping the HR over the course of the study (see Figure \ref{fig.3}), the endpoint was set at two hours for all participants, even though data from later time points was used in the *end interval* for a few participants.
 
 We averaged each person’s standardized HR over each of the five selected intervals[^4], resulting in one measure per person per interval. To test Hypothesis 1a, we initially conducted a one-way ANOVA with repeated measures as an omnibus test and then tested the mean differences between the *teaching interval* ($I_2$) and the other four intervals by planned contrasts and inspection of effect size $d$ [@cohen1988statistical]. 
 
@@ -352,7 +353,9 @@ For testing Hypothesis 1b, concerning HR changes within each interval, we first 
 
 [^5]: Although this procedure does not account for nonmonotonic progressions in individual HR, a graphical evaluation revealed that the linear estimates corresponded well to the majority of the cases (see XX in the supplementary material).
 
-Addressing our second research goal, we ran linear regression analysis with teaching experience and subjective appraisals as predictors. To test Hypothesis 2a, we examined the effect of teaching experience on participants’ HR levels (i.e., mean standardized HR) for each of the five intervals, using linear regression models with teaching experience as the sole predictor. To test Hypotheses 2b and 2c, we separately augmented the model by either teachers’ disruption appraisal (Hypothesis 2b) or confidence appraisal (Hypothesis 2c) as predictors, while controlling for teaching experience. To test Hypothesis 2d, we examined the effects of all three predictors in one regression model. Furthermore, we repeated these steps to explore the effects of teaching experience and subjective appraisals on *changes* in teachers’ HR (i.e., mean slopes). Please note: HR levels and changes were not regressed on the disruption and confidence appraisals in the *pre-teaching interval* ($I_1$), because the appraised classroom events had not yet taken place in that phase.
+Addressing our second research goal, we ran linear regression analysis with teaching experience and subjective appraisals as predictors. To test Hypothesis 2a, we examined the effect of teaching experience on participants’ HR levels (i.e., mean standardized HR) for each of the five intervals, using linear regression models with teaching experience as the sole predictor. To test Hypotheses 2b and 2c, we separately augmented the model by either teachers’ disruption appraisal (Hypothesis 2b) or confidence appraisal (Hypothesis 2c) as predictors, while controlling for teaching experience. To test Hypothesis 2d, we examined the effects of all three predictors in one regression model. Furthermore, we repeated these steps to explore the effects of teaching experience and subjective appraisals on *changes* in teachers’ HR (i.e., mean slopes).[^12] 
+
+[^12]: Please note: HR levels and changes were not regressed on the disruption and confidence appraisals in the *pre-teaching interval* ($I_1$), because the appraised classroom events had not yet taken place in that phase.
 
 # Results
 
@@ -527,20 +530,20 @@ writeLines(tab_1, 'tab_1.tex')
         \toprule
         Interval & \textit{M} HR & \textit{SD} HR & Min & Max \\
         \midrule
-        Overall Course of 2h & 90.09/0.04\footnotemark[9] & 15.76/0.991 & 51/-4.03 & 164/4.56 \\
+        Overall Course of 2h & 90.09/0.04\footnotemark[12] & 15.76/0.991 & 51/-4.03 & 164/4.56 \\
         Pre-teaching interval ($I_1$) & 96.28/0.48 & 14.11/0.88 & 56/-3.56 & 139/3.24 \\
         Teaching interval ($I_2$) & 100.80/0.85 & 16.23/0.77 & 63/-2.18 & 164/4.37 \\
         Post-teaching interval ($I_3$) & 93.61/0.27 & 14.01/0.76 & 60/-2.17 & 150/3.06 \\
         Interview interval ($I_4$) & 82.32/-0.72 & 11.85/0.74 & 51/-2.51 & 132/4.39 \\
-        End interval ($I_5$) & 77.95/-1.07 & 11.14/0.57 & 50\footnotemark[10]/-2.68 & 120/2.96 \\
+        End interval ($I_5$) & 77.95/-1.07 & 11.14/0.57 & 50\footnotemark[13]/-2.68 & 120/2.96 \\
         \bottomrule
     \end{tabularx}
     \label{tab_1}
 
     
 \end{table}
- \footnotetext[9]{Please note that standardized \textit{M} and \textit{SD} of the overall course were not exactly 0 and 1 due to rounding differences.}
- \footnotetext[10]{Deviations of the minimum values in the overall course vs. the end interval ($I_5$) are due to data of a few participants who needed more than two hours to finish the study.}
+ \footnotetext[12]{Please note that standardized \textit{M} and \textit{SD} of the overall course were not exactly 0 and 1 due to rounding differences.}
+ \footnotetext[13]{Deviations of the minimum values in the overall course vs. the \textit{end interval} ($I_5$) are due to data of a few participants who needed more than two hours to finish the study.}
 
 ```
 
@@ -773,7 +776,7 @@ table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase 
     Analysis (\textit{M, SD, p}-values) for the mean intercepts and the mean slopes for the five intervals.}
     \begin{tabularx}{\textwidth}{lXXXXXX}
         \toprule
-        Interval  & \multicolumn{2}{c}{M (SD)} & \multicolumn{2}{c}{$p$} \\ & Intercept & Slope & Intercept & Slope \\
+        Interval  & \multicolumn{2}{c}{\textit{M} (\textit{SD})} & \multicolumn{2}{c}{$p$} \\ & Intercept & Slope & Intercept & Slope \\
         \midrule
         (1) Pre-teaching interval & 0.052 (0.820) & 0.085 (0.133) & .57 & $< .05$ \\
         (2) Teaching interval & 1.025 (0.690) & -0.039 (0.108) & $< .05$ & $< .05$ \\
@@ -865,7 +868,7 @@ ggsave(filename = "plots_publication/box_plot.pdf",
 
 ## Predicting mean standardized HR and mean slopes 
 
-Table 3 shows the raw correlations among mean standardized HR/mean slopes (see Table 2 for means and standard deviations), teaching experience ($M = 5.64$, $SD = 9.46$), disruption appraisal ($M = 5.19$, $SD = 2.87$), and confidence appraisal ($M = 7.81$, $SD = 1.97$). With a few notable exceptions, correlations with HR measures were mostly very small and statistically non-significant (Table 3). Correlations between teaching experience and appraisals (not shown in Table 3) were substantial: more experienced teachers gave lower disruption appraisals ($r = -.36$), and higher confidence appraisals ($r = .44$). Moreover, the two appraisal variables were negatively correlated ($r = -.37$).
+Table \ref{tab_3} shows the raw correlations among mean standardized HR/mean slopes (see Table \ref{tab_2} for means and standard deviations), teaching experience ($M = 5.64$, $SD = 9.46$), disruption appraisal ($M = 5.19$, $SD = 2.87$), and confidence appraisal ($M = 7.81$, $SD = 1.97$). With a few notable exceptions, correlations with HR measures were mostly very small and statistically non-significant (Table 3). Correlations between teaching experience and appraisals (not shown in Table \ref{tab_3}) were substantial: more experienced teachers gave lower disruption appraisals ($r = -.36$), and higher confidence appraisals ($r = .44$). Moreover, the two appraisal variables were negatively correlated ($r = -.37$).
 
 ```{r correlations, include=FALSE}
 
@@ -1042,9 +1045,9 @@ main %>%
 ```
 
 
-Table 4 shows the results of the regression analyses. Teaching experience significantly predicted mean standardized HR only in the *interview interval* (Table 4, Interview interval, Model 1), indicating a higher mean standardized HR for teachers with more teaching experience. This relationship is, in fact, in the opposite direction as predicted by Hypothesis 2a. Neither adding disruption appraisal (**Hypothesis 2b**) nor adding confidence appraisal (**Hypothesis 2c**) increased the amount of explained variance to a statistically significant extent.
+Table \ref{tab_4} shows the results of the regression analyses. Teaching experience significantly predicted mean standardized HR only in the *interview interval* (Table \ref{tab_4}, *interview interval*, Model 1), indicating a higher mean standardized HR for teachers with more teaching experience. This relationship is, in fact, in the opposite direction as predicted by Hypothesis 2a. Neither adding disruption appraisal (Hypothesis 2b) nor adding confidence appraisal (Hypothesis 2c) increased the amount of explained variance to a statistically significant extent.
 
-When considering the effects of the three predictors in concert (**Hypothesis 2d**), mean standardized HR was significantly predicted only by disruption appraisal, and only in the *post-teaching interval* (Table 4, Post-teaching interval, Model 4), indicating a higher mean standardized HR for teachers who felt more disrupted by the classroom events, when controlling for the other variables. 
+When considering the effects of the three predictors in concert (Hypothesis 2d), mean standardized HR was significantly predicted only by disruption appraisal, and only in the *post-teaching interval* (Table \ref{tab_4}, *post-teaching interval*, Model 4), indicating a higher mean standardized HR for teachers who felt more disrupted by the classroom events, when controlling for the other variables. 
 
 ```{=latex}
 
@@ -1063,7 +1066,7 @@ When considering the effects of the three predictors in concert (**Hypothesis 2d
         Disruption Appraisal & $- .01/.16$ & $- .20/.08$ & .20/$- .14$ & $- .13/.01$ & .04/.12 \\
         Confidence Appraisal & $- .10/ - .18$ & .06/.09 & .04/$- .03$ & .09/$- .19$ & $- .07/.13$ \\
         \bottomrule \\
-          Note. * $p < .05$.
+          \textit{Note. *} $p < .05$.
     \end{tabularx}
     \label{tab_3}
 \end{table}
@@ -1082,28 +1085,7 @@ Overall, our findings indicate that wrist-worn fitness trackers are a useful too
 
 These findings are in line with prior studies showing that teachers’ HR varies depending on their activities and encountered stressors with increases during phases where teachers are in an exposed position [@sperka1995; @scheuch1997psychophysische; @donker2018; @junker2021], as well as with findings showing how HR changes align with activating events and stress-inducing tasks [@Darnell2019; @chalmers2021]. 
 
-Building on the model of teacher stress [@kyriacou1978, see Fig. 2], we had hypothesized that more experienced teachers, with better classroom management skills at their disposal, experience less physiological stress when dealing with classroom disruptions. Contrary to our expectations, we found no buffering effect of teaching experience on teachers’ HR, i.e., more experienced teachers did not show lower mean standardized HR during the stressful teaching phase than less experienced teachers. Rather, at least descriptively, we observed the opposite trend. There are several possible explanations for this finding. First, teaching experience is inherently confounded with age (the two variables correlated at $r = .94$ in our sample), and age has been shown to affect indicators of cardiovascular reactivity in various ways [@uchino2010older]. However, to avoid this kind of confounding influence, we had used not raw BPM but rather standardized mean HR for all our analyses, thus controlling at least for inter-individual differences in mean HR. Second, as research on teacher professionalization has repeatedly shown, professional experience is not a guarantee for higher professional knowledge and skills [@kirschner2016professionswissen]. Rather, honing skills from professional experience necessitates a deliberate practice of choosing to improve, learning through experience, and integrating new knowledge into future performances [@dunn1999deliberate]. Thus, rather than professional experience alone, more direct assessments of classroom management skills, such as objective behavior-based tests, would be a better indicator of expertise that future studies could explore. Finally, and most importantly, the highly controlled teaching situation that we created in the lab might not have provided sufficient resemblance to the expert teachers’ working conditions to let them effectively use their coping resources. In other words, since the situation was unfamiliar to both experienced and unexperienced teachers, their stress levels might have been more similar than they would have been in a more authentic classroom setting.
-
-While we did not find a buffering effect of teaching experience on mean HR during teaching, we did, however, find a less steep HR increase in more experienced, compared to less experienced teachers during the pre-teaching phase ($\beta = -.27$), i.e., in preparation for the micro-teaching unit. This finding supports the idea that, even though teaching experience guarantees neither superior expertise nor stress resistance, the habits and routines formed by experienced teachers may at least lead to lower arousal levels (e.g., experienced as feeling less nervous and tense) when they anticipate potentially stressful teaching situations.
-
-An interesting observation beyond our hypotheses was that teaching experience was predictive of HR differences, not during teaching, but in the interview phase: compared to less experienced teachers, more experienced teachers showed a higher mean standardized HR ($\beta = .24$) and, thus, probably experienced higher levels of physiological stress during the SRI. One possible explanation for this finding could again be the higher age of the more experienced teachers, along with slower recovery from stress in older teachers. For instance, @ritvanen2006responses observed that, compared to their younger colleagues, older teachers did not experience a decrease in their HR during periods of low stress levels, from which they concluded that recovery from stress was insufficient in the older teachers [@ritvanen2006responses]. Alternatively, the finding could also be attributed to the fact that less experienced teachers, due to their ongoing or only recently concluded training, may have been more accustomed to reflecting on their work and receiving feedback as was the case during the SRI, whereas, these activities were less routine and possibly more face-threatening for experienced teachers. Therefore, it is possible that more experienced teachers found the interview itself to be more stressful and therefore showed a higher mean standardized HR during this phase. 
-
-With regards to the predictive power of teachers’ subjective appraisals of the classroom disruption during teaching, we, first of all, have to conclude that our hypotheses were not supported, as neither confidence appraisal nor disruptiveness appraisal showed any notable correlations with teachers’ means standardized HR or any explanatory power over and beyond teaching experience. Possibly, teachers’ self-reported appraisals, and their actual physiological stress responses, tap into quite different phenomena, or at least, quite different aspects of the multifaceted stress response [@kyriacou1978]. In addition, while HR was assessed online during teaching, self-reported appraisals were given in retrospect during the SRI, and may be subject to biased (e.g., self-serving) reporting or simply an inability to recall one´s immediate stress reactions. 
-
-On the other hand, when controlling for all other factors, teachers who reported to have perceived the events as more disruptive showed a higher HR ($\beta = .25$) in the phase immediately following the micro-teaching unit. This finding would be consistent with the idea that differences in mean HR, as an indicator of the physiological stress response, can be linked to the cognitive appraisal of stressors. 
-
-## Limitations and future directions
-
-While the laboratory setting of the study allowed for a controlled implementation of stressors and high internal validity, it was not an authentic classroom environment, raising questions about its external validity. Most importantly, the teacher and their students did not have a shared history, and only a very thin basis for establishing a positive teacher-student relationship, which is a core characteristic of effective classroom management [@ruedi2014; @beaty2010]. In addition, the micro-teaching unit was only about 15 minutes long, and thus much shorter than a regular school lesson, providing less opportunities for experienced teachers to build up an engaging lesson. Finally, student behavior was scripted, with classroom disruptions following the experimental schedule, irrelevant of the behavior of the teacher.  Thus, the setting may have masked effects of teaching experience by providing too little opportunities of experienced teachers to demonstrate their true classroom management skills, in particular regarding the prevention of disruptions. In subsequent studies, it would therefore be insightful to assess teachers’ HR in more authentic classroom settings over a longer period of time (e.g., days, weeks, or even months). Extended observation of teachers’ HR in authentic classroom settings could reveal how factors such as student behavior, teaching methods, or organizational and administrative demands contribute to fluctuations in physiological arousal, uncovering insights into the sustained physiological demands of teaching that short-term studies may overlook. Finally, linking actual teacher behavior to potential stressors (e.g., classroom disruptions, noise level, etc.) would offer insights into teacher coping strategies and their links with physiological indicators of stress. 
-
-Another limitation concerns the assessment of teachers’ HR. While our results demonstrate the usefulness of drawing upon easily available HR data from ubiquitous, low-cost, un-intrusive fitness trackers to estimate teacher stress, there also are shortcomings of this type of assessment. First, while fitness trackers typically yield HR data, heart rate variability (HRV) has been demonstrated to be an even more accurate indicator of stress [@wettstein2020ambulatory]. While standard fitness trackers did not provide this measure at the time of our data collection, more recent products do offer this function. Thus, future studies might consider assessing HRV instead of HR. Second, we did not record participants’ resting HR, which is generally considered an important baseline for determining inter- and intrapersonal differences in cardiovascular health and reactivity [@nanchen2018; @heneghan2019]. A clean baseline HR requires a resting phase without physical movement or emotional stress, ideally fifteen minutes before the beginning of the activity, which is very difficult to achieve in practice [@sammito2015guideline], e.g., when assessing teacher HR before and during teaching. Thus, our study explored the possibility of substituting baseline HR measurement via z-standardization within participants. As a result, the absolute standardized values of each participant must always be interpreted in the context of the standardization sample, and thus are less interpretable than individual BPM values together with a baseline HR. However, for statistical analyses based on the whole sample, the standardization fulfills the aim of controlling for differences in individual HR due to, for example, age-related differences. Finally, depending on the brand and model of fitness trackers used, the precision of the HR measurement varies. Research on the reliability of our deployed Fitbit® device has proven that this brand is generally accurate in controlled settings and for moderate activity levels [@wallen2016accuracy; @hajj2023; @fuller2020; @jo2016], as in our study. For example, the Fitbit® fitness tracker has previously shown good HR measurement accuracy during resting phases [@jo2016; @muggeridge2021measurement] and for activities such as walking, jogging, and running [@hajj2023]. At higher exercise intensities such as cycling, the Fitbit® tracker may underestimate HR [@thomson2019heart; @montoye2017comparative; @jo2016; @jachymek2021] but is still within an acceptable range according to systematic reviews [@chevance2022accuracy]. Nevertheless, @gagnon2022 stressed that Fitbit® trackers cannot replace ECG when precision is paramount. Despite these considerations, the Fitbit® model appears suitable for our study purposes, as physical strain was moderate. 
-
-Furthermore, while we assessed teachers’ appraisals of the stressful classroom disruptions using a SRI in which they could review the exact situation, these appraisal ratings were still post-hoc self-reports, which limits the interpretation of our results. One of the main issues with post-hoc self-reports is that they rely on the teachers’ memories and subjective interpretations of past events, which may be prone to various biases such as social desirability [@razavi2001self] or recall errors [@van2016accuracy]. Moreover, stress is not a fixed or stable construct; it is a dynamic, constantly evolving affective response that can vary depending on context, individual disposition, and prior experiences, making it particularly challenging to pinpoint valid and reliable process markers for how individuals appraise stress in real-time [@lazarus1990theory]. While SRIs provide a more detailed and reflective understanding of the stressor in question, the delayed nature of the response makes it difficult to capture the immediate, in-the-moment appraisal that occurs when the stressful event actually takes place.
-
-## Hands-on advice for using wrist-worn fitness trackers for research
-
-For researchers aiming to use fitness trackers to collect data, there are practical aspects to consider concerning the design, data collection, and data analysis phases of research projects [for an additional overview, see @nelson2020guidelines]: 
-
+Building on the model of teacher stress [@kyriacou1978, see Fig. 2], we had hypothesized that more experienced teachers, with better classroom management skills at their disposal, experience less physiological stress when dealing with classroom disruptions. Contrary to our expectations, we found no buffering effect of teaching experience on teachers’ HR, i.e., more experienced teachers did not show lower mean standardized HR during the stressful teaching phase than less experienced teachers. Rather, at least descriptively, we observed the opposite trend. There are several possible explanations for this finding. First, teaching experience is inherently confounded with age (the two variables correlated at $r = .94$ in our sample), and age has been shown to affect indicators of cardiovascular reactivity in various ways [@uchino2010older]. However, to avoid this kind of confounding influence, we had used not raw BPM but rather standardized mean HR for all our analyses, thus controlling at least for inter-individual differences in mean HR. Second, as research on teacher professionalization has repeatedly shown, professional experience is not a guarantee for higher professional knowledge and skills [@kirschner2016professionswissen]. Rather, honing skills from professional experience necessitates a deliberate practice of choosing to improve, learning through experience, and integrating new knowledge into future performances [@dunn1999deliberate]. Thus, rather than professional experience alone, more direct assessments of classroom management skills, such as objective behavior-based tests, would be a better indicator of expertise that future studies could explore.
 ```{r regressions, include=FALSE}
 
 # multiple bpm values (merged data frame for multiple regression with multiple measurement points)
@@ -1201,8 +1183,7 @@ summary(regr_end4)
 \setlength{\LTleft}{0pt}
 \setlength{\LTright}{0pt}
 
-\captionof{table}{\\
-Standardized regression coefficients of mean standardized heart rate and mean slopes predicted by teaching experience, disruption appraisal, and confidence appraisal for the five intervals.}
+\captionof{table}{Standardized regression coefficients of mean standardized heart rate and mean slopes predicted by teaching experience, disruption appraisal, and confidence appraisal for the five intervals.}
 
 \begin{longtable}{@{\extracolsep{\fill}} p{1.8cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} p{1cm} @{}}
     
@@ -1263,14 +1244,36 @@ Standardized regression coefficients of mean standardized heart rate and mean sl
     Confidence \newline Appraisal & \begin{tabular}{@{}c@{}}$-.11$\\$(.039)$\end{tabular} & $.38$ & \begin{tabular}{@{}c@{}}$.10$\\$(.008)$\end{tabular} & $.43$ & \begin{tabular}{@{}c@{}}$-.10$\\$(.041)$\end{tabular} & $.44$ & \begin{tabular}{@{}c@{}}$.16$\\$(.008)$\end{tabular} & $.22$ \\
     R\textsuperscript{2} & $.002$ & & $.013$ & & $.005$ & & $.053$ & & $.012$ & & $.025$ & & $.013$ & & $.078$ \\
     $\Delta$ R\textsuperscript{2} & & & $.003$ & & $.040$ & & $.010$ & & $.012$ & & $.011$ & & $.065$ \\
+    \label{tab_4}
 \end{longtable}
 \begin{tablenotes}
 \footnotesize
-\item Note. In Model 1, mean standardized HR and mean slopes were predicted only by teaching experience. In Model 2, solely disruption appraisal was added to teaching experience as a predictor. In Model 3, solely confidence appraisal was added to teaching experience as a predictor. In Model 4, all three predictors were considered in concert. * $p < .05$.
+\item \textit{Note.} In Model 1, mean standardized HR and mean slopes were predicted only by teaching experience. In Model 2, solely disruption appraisal was added to teaching experience as a predictor. In Model 3, solely confidence appraisal was added to teaching experience as a predictor. In Model 4, all three predictors were considered in concert. * $p < .05$.
 \end{tablenotes}
 \end{landscape}
 
 ```
+\noindent Finally, and most importantly, the highly controlled teaching situation that we created in the lab might not have provided sufficient resemblance to the expert teachers’ working conditions to let them effectively use their coping resources. In other words, since the situation was unfamiliar to both experienced and unexperienced teachers, their stress levels might have been more similar than they would have been in a more authentic classroom setting.
+
+While we did not find a buffering effect of teaching experience on mean HR during teaching, we did, however, find a less steep HR increase in more experienced, compared to less experienced teachers during the *pre-teaching phase* ($\beta = -.27$), i.e., in preparation for the micro-teaching unit. This finding supports the idea that, even though teaching experience guarantees neither superior expertise nor stress resistance, the habits and routines formed by experienced teachers may at least lead to lower arousal levels (e.g., experienced as feeling less nervous and tense) when they anticipate potentially stressful teaching situations.
+
+An interesting observation beyond our hypotheses was that teaching experience was predictive of HR differences, not during teaching, but in the *interview phase*: compared to less experienced teachers, more experienced teachers showed a higher mean standardized HR ($\beta = .24$) and, thus, probably experienced higher levels of physiological stress during the SRI. One possible explanation for this finding could again be the higher age of the more experienced teachers, along with slower recovery from stress in older teachers. For instance, @ritvanen2006responses observed that, compared to their younger colleagues, older teachers did not experience a decrease in their HR during periods of low stress levels, from which they concluded that recovery from stress was insufficient in the older teachers [@ritvanen2006responses]. Alternatively, the finding could also be attributed to the fact that less experienced teachers, due to their ongoing or only recently concluded training, may have been more accustomed to reflecting on their work and receiving feedback as was the case during the SRI, whereas, these activities were less routine and possibly more face-threatening for experienced teachers. Therefore, it is possible that more experienced teachers found the interview itself to be more stressful and therefore showed a higher mean standardized HR during this phase. 
+
+With regards to the predictive power of teachers’ subjective appraisals of the classroom disruption during teaching, we, first of all, have to conclude that our hypotheses were not supported, as neither confidence appraisal nor disruptiveness appraisal showed any notable correlations with teachers’ mean standardized HR or any explanatory power over and beyond teaching experience. Possibly, teachers’ self-reported appraisals, and their actual physiological stress responses, tap into quite different phenomena, or at least, quite different aspects of the multifaceted stress response [@kyriacou1978]. In addition, while HR was assessed online during teaching, self-reported appraisals were given in retrospect during the SRI, and may be subject to biased (e.g., self-serving) reporting or simply an inability to recall ones immediate stress reactions. 
+
+On the other hand, when controlling for all other factors, teachers who reported to have perceived the events as more disruptive showed a higher HR ($\beta = .25$) in the phase immediately following the micro-teaching unit. This finding would be consistent with the idea that differences in mean HR, as an indicator of the physiological stress response, can be linked to the cognitive appraisal of stressors. 
+
+## Limitations and future directions
+
+While the laboratory setting of the study allowed for a controlled implementation of stressors and high internal validity, it was not an authentic classroom environment, raising questions about its external validity. Most importantly, the teacher and their students did not have a shared history, and only a very thin basis for establishing a positive teacher-student relationship, which is a core characteristic of effective classroom management [@ruedi2014; @beaty2010]. In addition, the micro-teaching unit was only about 15 minutes long, and thus much shorter than a regular school lesson, providing less opportunities for experienced teachers to build up an engaging lesson. Finally, student behavior was scripted, with classroom disruptions following the experimental schedule, irrelevant of the behavior of the teacher.  Thus, the setting may have masked effects of teaching experience by providing too little opportunities of experienced teachers to demonstrate their true classroom management skills, in particular regarding the prevention of disruptions. In subsequent studies, it would therefore be insightful to assess teachers’ HR in more authentic classroom settings over a longer period of time (e.g., days, weeks, or even months). Extended observation of teachers’ HR in authentic classroom settings could reveal how factors such as student behavior, teaching methods, or organizational and administrative demands contribute to fluctuations in physiological arousal, uncovering insights into the sustained physiological demands of teaching that short-term studies may overlook. Finally, linking actual teacher behavior to potential stressors (e.g., classroom disruptions, noise level, etc.) would offer insights into teacher coping strategies and their links with physiological indicators of stress. 
+
+Another limitation concerns the assessment of teachers’ HR. While our results demonstrate the usefulness of drawing upon easily available HR data from ubiquitous, low-cost, un-intrusive fitness trackers to estimate teacher stress, there also are shortcomings of this type of assessment. First, while fitness trackers typically yield HR data, heart rate variability (HRV) has been demonstrated to be an even more accurate indicator of stress [@wettstein2020ambulatory]. While standard fitness trackers did not provide this measure at the time of our data collection, more recent products do offer this function. Thus, future studies might consider assessing HRV instead of HR. Second, we did not record participants’ resting HR, which is generally considered an important baseline for determining inter- and intrapersonal differences in cardiovascular health and reactivity [@nanchen2018; @heneghan2019]. A clean baseline HR requires a resting phase without physical movement or emotional stress, ideally fifteen minutes before the beginning of the activity, which is very difficult to achieve in practice [@sammito2015guideline], e.g., when assessing teacher HR before and during teaching. Thus, our study explored the possibility of substituting baseline HR measurement via z-standardization within participants. As a result, the absolute standardized values of each participant must always be interpreted in the context of the standardization sample, and thus are less interpretable than individual BPM values together with a baseline HR. However, for statistical analyses based on the whole sample, the standardization fulfills the aim of controlling for differences in individual HR due to, for example, age-related differences. Finally, depending on the brand and model of fitness trackers used, the precision of the HR measurement varies. Research on the reliability of our deployed Fitbit® device has proven that this brand is generally accurate in controlled settings and for moderate activity levels [@wallen2016accuracy; @hajj2023; @fuller2020; @jo2016], as in our study. For example, the Fitbit® fitness tracker has previously shown good HR measurement accuracy during resting phases [@jo2016; @muggeridge2021measurement] and for activities such as walking, jogging, and running [@hajj2023]. At higher exercise intensities such as cycling, the Fitbit® tracker may underestimate HR [@thomson2019heart; @montoye2017comparative; @jo2016; @jachymek2021] but is still within an acceptable range according to systematic reviews [@chevance2022accuracy]. Nevertheless, @gagnon2022 stressed that Fitbit® trackers cannot replace ECG when precision is paramount. Despite these considerations, the Fitbit® model appears suitable for our study purposes, as physical strain was moderate. 
+
+Furthermore, while we assessed teachers’ appraisals of the stressful classroom disruptions using a SRI in which they could review the exact situation, these appraisal ratings were still post-hoc self-reports, which limits the interpretation of our results. One of the main issues with post-hoc self-reports is that they rely on the teachers’ memories and subjective interpretations of past events, which may be prone to various biases such as social desirability [@razavi2001self] or recall errors [@van2016accuracy]. Moreover, stress is not a fixed or stable construct; it is a dynamic, constantly evolving affective response that can vary depending on context, individual disposition, and prior experiences, making it particularly challenging to pinpoint valid and reliable process markers for how individuals appraise stress in real-time [@lazarus1990theory]. While SRIs provide a more detailed and reflective understanding of the stressor in question, the delayed nature of the response makes it difficult to capture the immediate, in-the-moment appraisal that occurs when the stressful event actually takes place.
+
+## Hands-on advice for using wrist-worn fitness trackers for research
+
+For researchers aiming to use fitness trackers to collect data, there are practical aspects to consider concerning the design, data collection, and data analysis phases of research projects [for an additional overview, see @nelson2020guidelines]: 
 
 1)	Choosing a suitable model:
 
@@ -1288,7 +1291,7 @@ As far as the procedure for processing the data is concerned, researchers should
 
 ## Conclusion
 
-This study investigated whether HR data collected from teacher-worn fitness trackers are suitable for exploring links between HR, subjective stressor appraisal, and individual teaching experience, to achieve a more profound comprehension of teacher stress. Results suggest that the widespread availability of HR data from wearable fitness trackers, moving “from heartbeat to data”, presents opportunities both to teachers for self-monitoring stress levels, and to researchers for assessing physiological indicators of stress. For example, using fitness trackers could enable teachers to strengthen their self-awareness in stressful situations and allow for early self-intervention such as mindfulness techniques (e.g., deep breathing or body scans) [@agyapong2023interventions]. Integrating fitness trackers into teacher training and everyday practice could offer an affordable and practical method for assessing and managing teacher stress. In teacher training as well as in research, triangulating data from fitness trackers, lesson videos, and interviews could provide teachers with insights into their own stress management, and foster the implementation of effective stress and classroom management strategies. Taken together, our findings cater to @wettstein2021 call for the use of ambulatory assessment methods, particularly in the context of classroom disruptions, for gaining a deeper understanding of teacher stress and its impact on both psychological and physiological variables.
+This study investigated whether HR data collected from teacher-worn fitness trackers are suitable for exploring links between HR, subjective stressor appraisal, and individual teaching experience, to achieve a more profound comprehension of teacher stress. Results suggest that the widespread availability of HR data from wearable fitness trackers, moving “from heartbeat to data”, presents opportunities both to teachers for self-monitoring stress levels, and to researchers for assessing physiological indicators of stress. For example, using fitness trackers could enable teachers to strengthen their self-awareness in stressful situations and allow for early self-intervention such as mindfulness techniques (e.g., deep breathing or body scans; @agyapong2023interventions). Integrating fitness trackers into teacher training and everyday practice could offer an affordable and practical method for assessing and managing teacher stress. In teacher training as well as in research, triangulating data from fitness trackers, lesson videos, and interviews could provide teachers with insights into their own stress management, and foster the implementation of effective stress and classroom management strategies. Taken together, our findings cater to @wettstein2021 call for the use of ambulatory assessment methods, particularly in the context of classroom disruptions, for gaining a deeper understanding of teacher stress and its impact on both psychological and physiological variables.
 
 In summary, our study contributes to the understanding of stress in educational settings and underscores the potential of wearable fitness trackers in advancing research on teacher well-being. By harnessing the power of wearable technology, we can provide teachers with the tools needed to better understand and manage their stress, ultimately enhancing their overall well-being.
 
@@ -1399,28 +1402,30 @@ ggsave(end_plot,
     Classification of nine, typical classroom disruptions according to \cite{lohmann2003schulern} performed in the micro-teaching unit by actors.}
     \begin{tabularx}{\textwidth}{XXX}
         \toprule
-        \textbf{Verbal disruptions} & \textbf{Physical disruptions} & \textbf{Lack of eagerness to learn} \\
+        Verbal disruptions & Physical disruptions & Lack of eagerness to learn \\
         \midrule
         Heckling & Clicking pen & Looking at phone \\
         Chatting & Snipping hands & Drawing \\
         Whispering & Drumming hands & Head on table \\
         \bottomrule
     \end{tabularx}
-    \label{tab.a1}
+    \label{tab_a1}
 \end{table}
 
 \begin{figure}[htbp]
   \centering
   \caption{\\
-  Laboratory setting of the micro-teaching unit. Note. The setting included three actors as the class (left) and a teacher (participant, right).}
+  Laboratory setting of the micro-teaching unit. .}
   \includegraphics[width=0.5\textwidth]{appendix_figure1.png}
+  \caption*{\textit{Note.} The setting included three actors as the class (left) and a teacher (participant, right).}
   \label{fig.a1}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering\caption{\\
-  Laboratory setting of the interview. Note. The experimenter and participant watched the previously taught micro-teaching unit on video.}
+  Laboratory setting of the interview.}
   \includegraphics[width=0.5\textwidth]{appendix_figure2.png}
+  \caption*{\textit{Note.} The experimenter and participant watched the previously taught micro-teaching unit on video.}
   \label{fig.a2}
 \end{figure}
 
