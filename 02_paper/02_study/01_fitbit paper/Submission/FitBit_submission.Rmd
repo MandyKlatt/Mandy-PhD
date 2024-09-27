@@ -27,7 +27,7 @@ author:
     footnote: 5
 address:
   - code: Leipzig University
-    organization: Empirische Schul- und Unterrichtsforschung
+    organization: Division of Empirical School and Classroom Research, Institute of Educational Sciences
     addressline: Marschnerstr. 29
     city: Leipzig
     state: Sachsen
@@ -41,7 +41,7 @@ address:
     state: Sachsen
     country: Germany
   - code: University of Greifswald
-    organization: Institute of Psychology
+    organization: Division of Health and Prevention, Institute of Psychology
     addressline: Robert-Blum-Str. 13
     city: Greifswald
     state: Mecklenburg-Vorpommern
@@ -351,7 +351,7 @@ We averaged each person’s standardized HR over each of the five selected inter
 
 For testing Hypothesis 1b, concerning HR changes within each interval, we first conducted a linear estimation of the increase or decrease in standardized HR values over time for each participant. To this end, we used fixed intercept fixed slope regression models [@gelman2006data] for each interval to estimate intercepts and linear slopes for each individual, which were then averaged across individuals.[^5] We tested Hypothesis 1b based on the unstandardized estimates of mean slopes (one estimate per participant per interval). 
 
-[^5]: Although this procedure does not account for nonmonotonic progressions in individual HR, a graphical evaluation revealed that the linear estimates corresponded well to the majority of the cases (see XX in the supplementary material).
+[^5]: Although this procedure does not account for nonmonotonic progressions in individual HR, a graphical evaluation revealed that the linear estimates corresponded well to the majority of the cases (see Figures \ref{fig.a3} to \ref{fig.a7} in the supplementary material).
 
 Addressing our second research goal, we ran linear regression analysis with teaching experience and subjective appraisals as predictors. To test Hypothesis 2a, we examined the effect of teaching experience on participants’ HR levels (i.e., mean standardized HR) for each of the five intervals, using linear regression models with teaching experience as the sole predictor. To test Hypotheses 2b and 2c, we separately augmented the model by either teachers’ disruption appraisal (Hypothesis 2b) or confidence appraisal (Hypothesis 2c) as predictors, while controlling for teaching experience. To test Hypothesis 2d, we examined the effects of all three predictors in one regression model. Furthermore, we repeated these steps to explore the effects of teaching experience and subjective appraisals on *changes* in teachers’ HR (i.e., mean slopes).[^12] 
 
@@ -778,11 +778,11 @@ table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase 
         \toprule
         Interval  & \multicolumn{2}{c}{\textit{M} (\textit{SD})} & \multicolumn{2}{c}{$p$} \\ & Intercept & Slope & Intercept & Slope \\
         \midrule
-        (1) Pre-teaching interval & 0.052 (0.820) & 0.085 (0.133) & .57 & $< .05$ \\
-        (2) Teaching interval & 1.025 (0.690) & -0.039 (0.108) & $< .05$ & $< .05$ \\
-        (3) Post-teaching interval & 0.549 (0.547) & -0.060 (0.101) & $< .05$ & $< .05$ \\
-        (4) Interview interval & -0.617 (0.614) & -0.022 (0.070) & $< .05$ & $< .05$ \\
-        (5) End interval & -1.004 (0.500) & -0.012 (0.074) & $< .05$ & .14 \\
+        ($I_1$) Pre-teaching interval & 0.052 (0.820) & 0.085 (0.133) & .57 & $< .05$ \\
+        ($I_2$) Teaching interval & 1.025 (0.690) & -0.039 (0.108) & $< .05$ & $< .05$ \\
+        ($I_3$) Post-teaching interval & 0.549 (0.547) & -0.060 (0.101) & $< .05$ & $< .05$ \\
+        ($I_4$) Interview interval & -0.617 (0.614) & -0.022 (0.070) & $< .05$ & $< .05$ \\
+        ($I_5$) End interval & -1.004 (0.500) & -0.012 (0.074) & $< .05$ & .14 \\
         \bottomrule
     \end{tabularx}
     \label{tab_2}
@@ -1056,7 +1056,7 @@ When considering the effects of the three predictors in concert (Hypothesis 2d),
 \begin{table}[h]
     \centering
     \caption{\\
-    Correlations between mean standardized HR/mean slopes and the predictor variables of teaching experience (TE), disruption appraisal (DA), and confidence appraisal (CA) for the five intervals.}
+    Correlations between mean standardized HR/mean slopes and the predictor variables of teaching experience, disruption appraisal, and confidence appraisal for the five intervals.}
     \begin{tabularx}{\textwidth}{lccccc}
         \toprule
         Variable & Pre-teaching & Teaching & Post-teaching & Interview & End \\
@@ -1415,7 +1415,7 @@ ggsave(end_plot,
 \begin{figure}[htbp]
   \centering
   \caption{\\
-  Laboratory setting of the micro-teaching unit. .}
+  Laboratory setting of the micro-teaching unit.}
   \includegraphics[width=0.5\textwidth]{appendix_figure1.png}
   \caption*{\textit{Note.} The setting included three actors as the class (left) and a teacher (participant, right).}
   \label{fig.a1}
