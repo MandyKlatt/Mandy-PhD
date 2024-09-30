@@ -31,7 +31,8 @@ needs(tidyverse,
       DescTools,
       formattable,
       psych,
-      apaTables)
+      apaTables,
+      rstatix)
 
 ```
 
@@ -270,13 +271,6 @@ nof.table <-
 
 knitr::kable(nof.table,
              caption = "N, M, SD, min & max number of fixation per minute (micro-teaching unit)")
-
-
-# Statistical Methods for Outlier Detection
-# IQR method for outlier detection
-# Z-score method for outlier detection
-z_scores <- scale(df_aoi_sum) # Standardizing the data
-outliers <- df_aoi_sum[abs(z_scores) > 3]
 
 
 # plotting number of fixations (micro-teaching unit)
@@ -738,7 +732,7 @@ round(d_dur_disrup, 2)
 df_aoi_sum %>%
   group_by(Group) %>% 
   mutate(
-    GRI = round(Average_duration_mtu / Sum_number_fixation, digits = 2),
+    GRI = round(Average_duration_mtu / Number_fixation_min_mtu, digits = 2),
     )-> df_gri
 
 
@@ -771,8 +765,8 @@ df_gri %>%
       height = 0.1
     )
   ) +
-  ylim(0, 1) +
-  labs(x = "", y = "mean duration of fixations/\nmean number of fixations") +
+  ylim(0, 12) +
+  labs(x = "", y = "average duration of fixations/\nnumber of fixations per minute") +
   scale_fill_brewer(palette  = "RdBu") +
   ggtitle("GRI\n(micro-teaching unit)") +
   theme_cowplot() +
@@ -946,6 +940,7 @@ round(d_gri_all, 2)
 
 ############### TIME TO FIRST FIXATION ####################
 
+
 df_aoi %>% 
   filter(TOI %in% c("Chatting_with_neighbour",
                     "Clicking_pen",
@@ -965,18 +960,21 @@ df_aoi %>%
   rowwise() %>% 
   drop_na() %>% 
   group_by(Participant) %>% 
-  filter(!Time_to_first_fixation.Disruptive_Person == 0,
+  filter(!Time_to_first_fixation.Disruptive_Person == 0, # exclude all participants with 0 msec
          !Time_to_first_fixation.Disruptive_Person > 30000) %>% # cut-off 30sec
   summarise(N = n(),
             Time_to_first_fixation.Disruptive_Person_Sum = sum(Time_to_first_fixation.Disruptive_Person/N)
             ) %>% 
   mutate(Group = ifelse(Participant < 200, "Novice", "Expert"),
+         Sum_disruptions = sum(N),
          Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person_Sum / 1000, 
                                           digits = 2)) -> df_ttff_disrup # changing milliseconds into seconds 
 
-# M, SD, min, max time to first fixation "Disruptive Person"
+
+############### M, SD, min, max time to first fixation "Disruptive Person"
 ttff.disrup.table <-
   df_ttff_disrup %>%
+  filter(!Participant %in% c("216", "113", "123")) %>% 
   group_by(Group) %>%
   summarise(
     N = n(),
@@ -990,11 +988,53 @@ knitr::kable(ttff.disrup.table,
              caption = "N, M, SD, min & max time to first fixation in seconds (AOI disruptive person)")
 
 
+############### M, SD, min, max of the perceived "Disruptive Person" ############### 
+number.perceived.disrup.table <-
+ df_ttff_disrup %>%
+  filter(!Participant %in% c("216", "113", "123")) %>%
+  group_by(Group) %>%
+  summarise(
+    Mean = round(mean(N, na.rm = TRUE), digits = 2),
+    SD = round(sd(N, na.rm = TRUE), digits = 2), 
+    Min = min(N, na.rm = TRUE),
+    Max = max(N, na.rm = TRUE)
+  )
+
+knitr::kable(number.perceived.disrup.table,
+             caption = "N, M, SD, min & max of the perceived ´disruptive person´")
+
+
+############### PLOTTING ############### 
+
+##################### plotting "perceived disruptive person" for groups ##################### 
+plot_n_disrup <- 
+  df_ttff_disrup %>%
+  filter(!Participant %in% c("216", "113", "123")) %>%
+  ggplot(mapping = aes(x = Group,
+                       y = N)) +
+ geom_boxplot(mapping = aes(fill = Group),
+               outlier.shape = NA) +
+  geom_point(size = 2,
+             alpha = 0.7,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  ylim(0,10) +
+  labs(x ="",
+       y = "Counts") + 
+  scale_fill_brewer(palette  = "RdBu") +
+  ggtitle("Counts of the perceived ´disruptive person´\n") +
+  theme_cowplot() +
+  theme(legend.position="none") 
+
+plot_n_disrup
+
 
 ##################### plotting time to first fixation for groups ##################### 
 plot_time_disrup <- 
-  ggplot(data = df_ttff_disrup,
-         mapping = aes(x = Group,
+  df_ttff_disrup %>%
+  filter(!Participant %in% c("216", "113", "123")) %>%
+  ggplot(mapping = aes(x = Group,
                        y = Disrup_time_fixation_sec)) +
  geom_boxplot(mapping = aes(fill = Group),
                outlier.shape = NA) +
@@ -1003,7 +1043,7 @@ plot_time_disrup <-
              position = position_jitter(seed = 1,
                                         width = 0.1,
                                         height = 0.1)) +
-  ylim(0,14) +
+  ylim(0,10) +
   labs(x ="",
        y = "Seconds") + 
   scale_fill_brewer(palette  = "RdBu") +
@@ -1012,6 +1052,7 @@ plot_time_disrup <-
   theme(legend.position="none") 
 
 plot_time_disrup
+
 ```
 
 #### t-test & effect size "Time to first fixation" (AOI disruptive person)
@@ -1750,7 +1791,7 @@ df_aoi %>%
     Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE),
     Average_duration_mtu = round(Sum_duration_fixation / Sum_number_fixation, digits = 0),
     Number_fixation_min_mtu = round(Sum_number_fixation / Duration_of_interval_min, digits = 0),
-    GRI_mtu = round(Average_duration_mtu / Sum_number_fixation, digits = 2)
+    GRI_mtu = round(Average_duration_mtu / Number_fixation_min_mtu, digits = 2)
     ) %>%
   drop_na() %>% 
   dplyr::select(Participant,
@@ -1782,7 +1823,7 @@ df_aoi %>%
     Stud_number_fixation_min = round(Duration_of_interval_min / Stud_number_fixation, digits = 2),
     Average_duration_stud = round(Stud_duration_fixation / Stud_number_fixation, digits = 0),
     GRI_stud = round(Average_duration_stud / Stud_number_fixation, digits = 2)
-    ) %>% 
+    ) %>%
   dplyr::select(Participant,
                 Stud_number_fixation_min,
                 Average_duration_stud,
@@ -1802,41 +1843,43 @@ df_aoi %>%
       Total_duration_of_fixations.Disruptive_Person / Number_of_fixations.Disruptive_Person,
       digits = 0),
     GRI_disrup = round(
-      Average_duration_disrup / Number_of_fixations.Disruptive_Person, digits = 2)) %>% 
+      Average_duration_disrup / Number_of_fixations.Disruptive_Person, digits = 2)) %>%
   dplyr::select(Participant,
                 Number_of_fixations.Disruptive_Person,
                 Average_duration_disrup,
                 GRI_disrup
                 ) -> df_aoi_disrup
 
-# time to first fixatoin (AOI disruptive person)
-df_aoi %>%
-  filter(
-    TOI %in% c(
-      "Chatting_with_neighbour",
-      "Clicking_pen",
-      "Drawing",
-      "Drumming_with_hands",
-      "Head_on_table",
-      "Heckling",
-      "Looking_at_phone",
-      "Snipping_with_fingers",
-      "Whispering"
-    )
-  ) %>%
-  dplyr::select(Participant, TOI, Time_to_first_fixation.Disruptive_Person, ) %>%
-  rowwise() %>%
-  drop_na() %>%
-  group_by(Participant) %>%
-  summarise(
-    Time_to_first_fixation.Disruptive_Person_Sum = sum(Time_to_first_fixation.Disruptive_Person)
-  ) %>%
-  mutate(
-    Group = ifelse(Participant < 200, "Novice", "Expert"),
-    Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person_Sum / 1000,
-      digits = 2
-    )
-  ) -> df_ttff_disrup
+
+df_aoi %>% 
+  filter(TOI %in% c("Chatting_with_neighbour",
+                    "Clicking_pen",
+                    "Drawing",
+                    "Drumming_with_hands",
+                    "Head_on_table",
+                    "Heckling",
+                    "Looking_at_phone",
+                    "Snipping_with_fingers",
+                    "Whispering"
+                    )
+         ) %>% 
+  dplyr::select(Participant,
+                TOI,
+                Time_to_first_fixation.Disruptive_Person,
+                ) %>% 
+  rowwise() %>% 
+  drop_na() %>% 
+  group_by(Participant) %>% 
+  filter(!Time_to_first_fixation.Disruptive_Person == 0, # exclude all participants with 0 msec
+         !Time_to_first_fixation.Disruptive_Person > 30000) %>% # cut-off 30sec
+  summarise(N = n(),
+            Time_to_first_fixation.Disruptive_Person_Sum = sum(Time_to_first_fixation.Disruptive_Person/N)
+            ) %>% 
+  mutate(Group = ifelse(Participant < 200, "Novice", "Expert"),
+         Sum_disruptions = sum(N),
+         Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person_Sum / 1000, 
+                                          digits = 2)) -> df_ttff_disrup # changing milliseconds into seconds 
+
 
 # rating scales
 df_sri <-
@@ -1864,8 +1907,7 @@ df_sri <-
     )%>% 
   dplyr::select(Participant,
                 Mean_disrupption_appraisal,
-                Mean_confidence_appraisal,
-                Mean_prevalence_rating)
+                Mean_confidence_appraisal)
 
 # sjt
 df_sjt <-
@@ -1879,10 +1921,9 @@ df_sjt <-
   transmute(
     Participant = UI06_05,
     SJT_Monitoring = round(SJT_AL_gek, 2),
-    SJT_Managing_momentum = round(SJT_ST_gek, 2),
-    SJT_Rules_routines = round(SJT_R_gek, 2),
-    SJT_All = round(SJT_KF_gek, 2)
-  )
+    SJT_All = round(SJT_KF_gek, 2),
+  ) %>%
+  arrange(Participant)
 
 # classroom questionnaire
 df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
@@ -1910,6 +1951,7 @@ df_list <- list(df_demo,
                 df_aoi_numb_dur,
                 df_aoi_stud,
                 df_aoi_disrup,
+                df_ttff_disrup,
                 df_sri,
                 df_sjt,
                 df_quest)
@@ -1917,9 +1959,17 @@ df_list <- list(df_demo,
 # merge all data frames in list
 df_merge <-
   df_list %>% reduce(full_join, by='Participant') %>%
-  # filter(Participant > 200) %>% 
-  dplyr::select(.,
-                -"Participant")
+  # filter(`Teaching Experience` > 0) %>% 
+  dplyr::select(Stud_number_fixation_min,
+                Average_duration_stud,
+                Number_of_fixations.Disruptive_Person,
+                Average_duration_disrup,
+                Disrup_time_fixation_sec,
+                GRI_mtu,
+                SJT_All,
+                SJT_Monitoring,
+                Quest_All
+                )
 
 # create a correlation matrix
 cor_tab <- 
@@ -1927,37 +1977,41 @@ cor_tab <-
   cor(method = "pearson") %>% 
   round(., digits = 2)
 
+### Teaching experience with only experts
+# merge all data frames in list
+df_merge_experts <-
+  df_list %>% reduce(full_join, by='Participant') %>%
+  filter(`Teaching Experience` > 0) %>% 
+  dplyr::select(`Teaching Experience`,
+                Stud_number_fixation_min,
+                Average_duration_stud,
+                Number_of_fixations.Disruptive_Person,
+                Average_duration_disrup,
+                Disrup_time_fixation_sec,
+                GRI_mtu,
+                SJT_All,
+                SJT_Monitoring,
+                Quest_All
+                )
 
-# create a scatter plot 
-# pairs(~ Gender + 
-#         Age + 
-#         `Teaching Experience` + 
-#         Sum_number_fixation + 
-#         Stud_number_fixation + 
-#         Number_of_fixations.Disruptive_Person + 
-#         Average_duration_mtu + 
-#         Average_duration_stud + 
-#         Average_duration_disrup + 
-#         GRI_mtu + 
-#         GRI_stud + 
-#         GRI_disrup + 
-#         Mean_disrupption_appraisal + 
-#         Mean_confidence_appraisal + 
-#         Mean_prevalence_rating + 
-#         SJT_Monitoring + 
-#         SJT_Managing_momentum + 
-#         SJT_Rules_routines + 
-#         SJT_All + 
-#         Quest_classroom_management + 
-#         Quest_non_paraverbal_communication + 
-#         Quest_All,
-#       upper.panel = NULL,
-#       pch = 20,
-#       cex = 3, 
-#       main = "Correlation Table Expertise Measures",
-#       col = Gender)
+# create a correlation matrix
+cor_tab_experts <- 
+  df_merge_experts %>% 
+  cor(method = "pearson") %>% 
+  round(., digits = 2)
 
-# apa.cor.table(cor_tab)
+
+# p-value for GRI x STJ_All
+cor.test(df_merge$GRI_mtu, df_merge$SJT_All)
+
+# p-value for GRI x STJ_Monitoring
+cor.test(df_merge$GRI_mtu, df_merge$SJT_Monitoring)
+
+# p-value for GRI x Teaching Experience
+cor.test(df_merge_experts$GRI_mtu, df_merge_experts$`Teaching Experience`)
+
+
+
 
 ```
 
