@@ -767,7 +767,7 @@ To assess the strategic knowledge of classroom management, subjects answered a S
 
 In developing the test procedure, the authors divided the concept of classroom management into three main aspects: *Monitoring*, *managing momentum* (structuring) and *rules and routines* [@gold2015development, p. 230f]. 
 
-<!-- *Monitoring* includes proactive strategies such as omnipresence. This means, the teacher is always informed about the students' behavior, regulates it and reports it back to them. The second strategy is overlapping. In this case, the teacher is able to control several teaching processes at the same time. Monitoring means also reactive strategies of supervision, which also includes the effective handling of classroom disruptions [cf. ibid.; @kounin2006techniken, p. 89ff].  -->
+*Monitoring* includes proactive strategies such as omnipresence. This means, the teacher is always informed about the students' behavior, regulates it and reports it back to them. The second strategy is overlapping. In this case, the teacher is able to control several teaching processes at the same time. Monitoring means also reactive strategies of supervision, which also includes the effective handling of classroom disruptions [cf. ibid.; @kounin2006techniken, p. 89ff].  -->
 
 By *managing momentum* (structuring), @gold2015development understand the skillful control of teaching processes so that they can run smoothly and without delays, taking into account the students' level of understanding and attention [@kounin2006techniken, p. 101ff]. They also include the group focus specifically identified by Kounin [@kounin2006techniken, p. 117ff], i.e. mobilizing the whole class and demanding accountability [@gold2015development, p. 231]. 
 
