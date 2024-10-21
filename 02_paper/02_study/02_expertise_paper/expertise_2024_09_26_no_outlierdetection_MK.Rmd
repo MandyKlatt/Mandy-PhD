@@ -142,25 +142,25 @@ knitr::kable(demo.table,
              caption = "Demographic information & teaching experience")
 
 
-# # create a basic table (tibble) using tidyverse functions
-# exp.table <- demo.data %>%
-#   group_by(Group) %>%
-#   summarise(N=n(),
-#            "M Exp." = round(mean(`Teaching Experience`), 2),
-#             "SD Exp." = round(sd(`Teaching Experience`), 2),
-#             "Min Exp." = min(`Teaching Experience`),
-#             "Max Exp." = max(`Teaching Experience`),
-#             "M Semester" = round(mean(Semester), 2),
-#             "SD Semester" = round(sd(Semester), 2),
-#             "Min Semester" = min(Semester),
-#             "Max Semester" = max(Semester),
-#             "M Internship" = round(mean(Internship), 2),
-#             "SD Internship" = round(sd(Internship), 2),
-#             "Min Internship" = min(Internship),
-#             "Max Internship" = max(Internship),
-#             "Extracurricular Teaching Experience" = round(sum(`Extracurricular Teaching Experience`/Sum_participants) * 100, digits = 2),
-#             "Secondary Teaching Activities" = round(sum(`Secondary Teaching Activities`/Sum_participants) * 100)
-#            )
+# create a basic table (tibble) using tidyverse functions
+exp.table <- demo.data %>%
+  group_by(Group) %>%
+  summarise(N=n(),
+           "M Exp." = round(mean(`Teaching Experience`), 2),
+            "SD Exp." = round(sd(`Teaching Experience`), 2),
+            "Min Exp." = min(`Teaching Experience`),
+            "Max Exp." = max(`Teaching Experience`),
+            "M Semester" = round(mean(Semester), 2),
+            "SD Semester" = round(sd(Semester), 2),
+            "Min Semester" = min(Semester),
+            "Max Semester" = max(Semester),
+            "M Internship" = round(mean(Internship), 2),
+            "SD Internship" = round(sd(Internship), 2),
+            "Min Internship" = min(Internship),
+            "Max Internship" = max(Internship),
+            "Extracurricular Teaching Experience" = round(sum(`Extracurricular Teaching Experience`/Sum_participants) * 100, digits = 2),
+            "Secondary Teaching Activities" = round(sum(`Secondary Teaching Activities`/Sum_participants) * 100)
+           )
 
 ```
 
