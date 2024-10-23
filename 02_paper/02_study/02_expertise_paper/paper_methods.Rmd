@@ -220,6 +220,8 @@ The scripted behavioral instructions during the micro-teaching unit characterize
 # read in data and select and rename relevant columns with transmute 
 demo.data <- 
   read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>% 
+  filter(!LI06_05 == 201,
+         !LI06_05 == 223) %>% # exclude participant due to missing eye tracking data
   transmute(Group = LI06_05,
             Gender = LI02_01_1,
             Age = LI03_01,
@@ -270,7 +272,7 @@ demo.data$Semester <- as.numeric(demo.data$Semester)
 # 1: Grundschule
 # 2: Oberschule
 # 3: Gymnasium
-# 4: Förderschule/Sondershausen
+# 4: Förderschule
 # 5: Berufsbildende Schule
 # -1: andere Schulform
 demo.data$School_type <- factor(x = demo.data$School_type,
@@ -361,7 +363,7 @@ The inclusion criterion for experts was that they have successfully completed te
 
 
 The expert teachers (`r demo.data %>% filter(Gender == 1 & Group == "Expert") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(Group == "Expert") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(Group == "Expert") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(Group == "Expert") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(Group == "Expert") %>% pull("Min Age in years")`-`r demo.table %>%  filter(Group == "Expert") %>% pull("Max Age in years")`) and an average teaching experience of `r exp.table %>% filter(Group == "Expert") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years (*SD* = `r exp.table %>% filter(Group == "Expert") %>% pull("SD Exp.") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Expert") %>% pull("Min Exp.")`-`r exp.table %>%  filter(Group == "Expert") %>% pull("Max Exp.")`). 
-`r demo.data %>% filter(Group == "Expert" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the experts were primary school teachers and `r demo.data %>% filter(Group == "Expert" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% were secondary school teachers. `r exp.table %>% filter(Group == "Expert") %>% pull("Secondary Teaching Activities")`% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers. 
+`r demo.data %>% filter(Group == "Expert" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the experts were primary school teachers and `r demo.data %>% filter(Group == "Expert" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% were secondary school teachers and `r demo.data %>% filter(Group == "Expert" & School_type == "Vocational School") %>% pull("Percent_schooltype") %>% unique()`% were vocational school teachers. `r exp.table %>% filter(Group == "Expert") %>% pull("Secondary Teaching Activities")`% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers. 
 
 The novice teachers (`r demo.data %>% filter(Gender == 1 & Group == "Novice") %>% pull(Gender) %>% length()` women; `r demo.table %>% filter(Group == "Novice") %>% pull("Gender female in percent")`%) had a mean age of `r demo.data %>% filter(Group == "Novice") %>% pull(Age) %>% mean() %>% round(., digits = 1)` years (*SD* = `r demo.table %>% filter(Group == "Novice") %>% pull("SD Age in years") %>% round(., digits = 1)`; range: `r demo.table %>%  filter(Group == "Novice") %>% pull("Min Age in years")`-`r demo.table %>%  filter(Group == "Novice") %>% pull("Max Age in years")`) with an average teaching experience of `r exp.table %>% filter(Group == "Novice") %>% pull("M Exp.") %>% mean() %>% round(., digits = 1)` years. On average, the student teachers were in their `r exp.table %>% filter(Group == "Novice") %>% pull("M Semester") %>% mean() %>% round(., digits = 1)` semester (*SD* = `r exp.table %>% filter(Group == "Novice") %>% pull("SD Semester") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Novice") %>% pull("Min Semester")`-`r exp.table %>%  filter(Group == "Novice") %>% pull("Max Semester")`). Furthermore, they had an average teaching experience of `r exp.table %>% filter(Group == "Novice") %>% pull("M Internship") %>% mean() %>% round(., digits = 1)` teaching units à 45min (*SD* = `r exp.table %>% filter(Group == "Novice") %>% pull("SD Internship") %>% round(., digits = 1)`; range: `r exp.table %>%  filter(Group == "Novice") %>% pull("Min Internship")`-`r exp.table %>%  filter(Group == "Novice") %>% pull("Max Internship")`) through the internships during their studies. 
 `r demo.data %>% filter(Group == "Novice" & School_type == "Primary School") %>% pull("Percent_schooltype") %>% unique()`% of the novices were studying to become primary school teachers, `r demo.data %>% filter(Group == "Novice" & School_type == "Secondary School") %>% pull("Percent_schooltype") %>% unique()`% to become secondary school teachers and `r demo.data %>% filter(Group == "Novice" & School_type == "Special Education") %>% pull("Percent_schooltype") %>% unique()`% to become special education teachers. `r exp.table %>% filter(Group == "Novice") %>% pull("Extracurricular Teaching Experience")`% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision. 
@@ -702,61 +704,61 @@ With these rating scales, the subjects indicated their personal subjective feeli
 
 ```{r rating_scales, include=TRUE, echo=FALSE, results='asis'}
 
-# read in data and combine multiple excel sheets into a single table 
-sri <- 
-  excel_sheets("data/Coding_SRI.xlsx") %>% 
-  map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% 
-  dplyr::select(Group, Event, `Disruption Factor`, `Confident Factor`) %>% # select relevant columns
-  dplyr::filter(!`Disruption Factor` == -100,
-           !`Confident Factor` == -100,
-           !`Disruption Factor`== -99,
-           !`Confident Factor` == -99)
-
-############## Disruption Factor #########################
-
-sri.disrup.table <- 
-  sri %>%
-  group_by(Group, Event) %>%
-  mutate(Group = ifelse(Group < 200, "Novice","Expert")) %>%
-  summarise("M" = round(mean(`Disruption Factor`), 
-                        digits = 2),
-            "SD" = round(sd(`Disruption Factor`),
-                         digits = 2),
-            "Min" = min(`Disruption Factor`),
-            "Max" = max(`Disruption Factor`))
-
-# format and insert table in manuscript
-papaja::apa_table(
-sri.disrup.table,
-  caption = "Table Rating Scales Disruption Factor",
-  # note = "Write Note here",
-  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
-  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
-  font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
-)
-
-############## Confident Factor #########################
-
-sri.confi.table <- 
-  sri %>%
-  group_by(Group, Event) %>%
-  mutate(Group = ifelse(Group < 200, "Novice","Expert")) %>%
-  summarise("M" = round(mean(`Confident Factor`), 
-                        digits = 2),
-            "SD" = round(sd(`Confident Factor`),
-                         digits = 2),
-            "Min" = min(`Confident Factor`),
-            "Max" = max(`Confident Factor`))
-
-# format and insert table in manuscript
-papaja::apa_table(
-sri.confi.table,
-  caption = "Table Rating Scales Confident Factor",
-  # note = "Write Note here",
-  escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
-  placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
-  font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
-)
+# # read in data and combine multiple excel sheets into a single table 
+# sri <- 
+#   excel_sheets("data/Coding_SRI.xlsx") %>% 
+#   map_df(~read_xlsx("data/Coding_SRI.xlsx",.)) %>% 
+#   dplyr::select(Group, Event, `Disruption Factor`, `Confident Factor`) %>% # select relevant columns
+#   dplyr::filter(!`Disruption Factor` == -100,
+#            !`Confident Factor` == -100,
+#            !`Disruption Factor`== -99,
+#            !`Confident Factor` == -99)
+# 
+# ############## Disruption Factor #########################
+# 
+# sri.disrup.table <- 
+#   sri %>%
+#   group_by(Group, Event) %>%
+#   mutate(Group = ifelse(Group < 200, "Novice","Expert")) %>%
+#   summarise("M" = round(mean(`Disruption Factor`), 
+#                         digits = 2),
+#             "SD" = round(sd(`Disruption Factor`),
+#                          digits = 2),
+#             "Min" = min(`Disruption Factor`),
+#             "Max" = max(`Disruption Factor`))
+# 
+# # format and insert table in manuscript
+# papaja::apa_table(
+# sri.disrup.table,
+#   caption = "Table Rating Scales Disruption Factor",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+# )
+# 
+# ############## Confident Factor #########################
+# 
+# sri.confi.table <- 
+#   sri %>%
+#   group_by(Group, Event) %>%
+#   mutate(Group = ifelse(Group < 200, "Novice","Expert")) %>%
+#   summarise("M" = round(mean(`Confident Factor`), 
+#                         digits = 2),
+#             "SD" = round(sd(`Confident Factor`),
+#                          digits = 2),
+#             "Min" = min(`Confident Factor`),
+#             "Max" = max(`Confident Factor`))
+# 
+# # format and insert table in manuscript
+# papaja::apa_table(
+# sri.confi.table,
+#   caption = "Table Rating Scales Confident Factor",
+#   # note = "Write Note here",
+#   escape = TRUE, # if TRUE special Latex characters are escaped; if this is turned to F captions cannot be rendered. I don't know why...
+#   placement = "h", # position of table in page:  exact location (h), at the top (t), bottom (b)
+#   font_size = "tiny" # options are tiny, scriptsize, footnotesize, small, normalsize (default), large, Large, LARGE, huge, Huge
+# )
 
 ```
 

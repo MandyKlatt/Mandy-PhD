@@ -54,14 +54,28 @@
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 % Make \paragraph and \subparagraph free-standing
+\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
+\makeatother
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -353,7 +367,7 @@ The scripted behavioral instructions during the micro-teaching unit characterize
 \toprule
 Group & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{Gender female in percent} & \multicolumn{1}{c}{M Age in years} & \multicolumn{1}{c}{SD Age in years} & \multicolumn{1}{c}{Min Age in years} & \multicolumn{1}{c}{Max Age in years}\\
 \midrule
-Expert & 42 & 59.52 & 39.31 & 10.64 & 26.00 & 60.00\\
+Expert & 40 & 60.00 & 39.10 & 10.55 & 26.00 & 60.00\\
 Novice & 42 & 69.05 & 22.83 & 1.85 & 19.00 & 27.00\\
 \bottomrule
 \end{tabular}
@@ -378,7 +392,7 @@ Novice & 42 & 69.05 & 22.83 & 1.85 & 19.00 & 27.00\\
 \toprule
 Group & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{M Exp.} & \multicolumn{1}{c}{SD Exp.} & \multicolumn{1}{c}{Min Exp.} & \multicolumn{1}{c}{Max Exp.} & \multicolumn{1}{c}{M Semester} & \multicolumn{1}{c}{SD Semester} & \multicolumn{1}{c}{Min Semester} & \multicolumn{1}{c}{Max Semester} & \multicolumn{1}{c}{M Internship} & \multicolumn{1}{c}{SD Internship} & \multicolumn{1}{c}{Min Internship} & \multicolumn{1}{c}{Max Internship} & \multicolumn{1}{c}{Extracurricular Teaching Experience} & \multicolumn{1}{c}{Secondary Teaching Activities}\\
 \midrule
-Expert & 42 & 11.79 & 11.43 & 1.00 & 38.00 & NA & NA & NA & NA & NA & NA & NA & NA & NA & NA\\
+Expert & 40 & 11.55 & 11.32 & 1.00 & 38.00 & NA & NA & NA & NA & NA & NA & NA & NA & NA & 52.00\\
 Novice & 42 & 0.00 & 0.00 & 0.00 & 0.00 & 6.74 & 2.65 & 3.00 & 11.00 & 9.62 & 7.19 & 0.00 & 36.00 & 88.10 & NA\\
 \bottomrule
 \end{tabular}
@@ -390,15 +404,15 @@ Novice & 42 & 0.00 & 0.00 & 0.00 & 0.00 & 6.74 & 2.65 & 3.00 & 11.00 & 9.62 & 7.
 
 \end{table}
 
-The sample consisted of \emph{N} = 84 participants with \emph{n} = 42 expert teachers and \emph{n} = 42 novice teachers.
+The sample consisted of \emph{N} = 82 participants with \emph{n} = 40 expert teachers and \emph{n} = 42 novice teachers.
 
 The inclusion criterion for experts was that they have successfully completed teacher training and are actively employed in the teaching profession. According to Palmer, Stough, Burdenski, and Gonzales (2005), we selected teachers as experts who had at least three years of professional experience and ideally had worked in another teaching position, such as subject advisor or trainer for trainee teachers, in addition to their teaching profession in school. Novices were student teachers who had successfully completed their first internship in a school and gained one to four hours of teaching experience.
 
-The expert teachers (25 women; 59.52\%) had a mean age of 39.30 years (\emph{SD} = 10.60; range: 26-60) and an average teaching experience of 11.80 years (\emph{SD} = 11.40; range: 1-38).
-9.52\% of the experts were primary school teachers and 80.95\% were secondary school teachers. NA\% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers.
+The expert teachers (24 women; 60\%) had a mean age of 39.10 years (\emph{SD} = 10.60; range: 26-60) and an average teaching experience of 11.60 years (\emph{SD} = 11.30; range: 1-38).
+10\% of the experts were primary school teachers and 85\% were secondary school teachers and 5\% were vocational school teachers. 52\% of the experienced teachers were also engaged in an secondary teaching activity, such as lecturers at the university, main training supervisors for trainee teachers and subject advisers.
 
 The novice teachers (29 women; 69.05\%) had a mean age of 22.80 years (\emph{SD} = 1.90; range: 19-27) with an average teaching experience of 0 years. On average, the student teachers were in their 6.70 semester (\emph{SD} = 2.60; range: 3-11). Furthermore, they had an average teaching experience of 9.60 teaching units à 45min (\emph{SD} = 7.20; range: 0-36) through the internships during their studies.
-21.43\% of the novices were studying to become primary school teachers, 57.14\% to become secondary school teachers and 19.05\% to become special education teachers. 88.10\% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision.
+21.43\% of the novices were studying to become primary school teachers, 59.52\% to become secondary school teachers and 19.05\% to become special education teachers. 88.10\% of the student teachers were also engaged in an extracurricular teaching activity, such as tutoring or homework supervision.
 
 The subjects were primarily recruited through personal contacts, social media (Facebook), e-mail distribution lists and advertising in lectures at the University Leipzig. All study procedures were carried out in accordance with the ethical standards of the University's Institutional Review Board. The authors received a positive vote on the study procedures from the Ethics Committee Board of Leipzig University. All participants were informed in detail about the aim and intention of the study prior to testing. Participation in the study was voluntary and only took place after written consent has been given.
 
@@ -657,95 +671,13 @@ Both questions were answered using a scale ranging from 0 to 10. On this scale, 
 
 With these rating scales, the subjects indicated their personal subjective feeling towards the individual lesson disruption. Rating scales usually consist of a number of clearly arranged categories that can be presented visually in a variety of ways (Albers, Klapper, Konradt, Walter, \& Wolf, 2009, p. 67f). In the present questionnaire, the numerical representation with eleven answer options (0-10) was used. There was no specific designated neutral position. In this questionnaire, the middle category 5 was not interpreted as a neutral position. In order to avoid misinterpretations of the scaling, the questionnaire was described verbally by the experimenter and follow-up questions from the test subjects were possible at any time. With regard to the quality criteria, it should be made clear that complete objectivity in answering the two questions is given by the rating scales. The question remained the same for all subjects and no additional comments were made. Validity can also be assumed for the questionnaire, since the subjects couls ask follow-up questions and thus uncertainties were clarified. However, similar to the video data, there was no perfect reliability with this survey instrument, because in a few exceptional cases, for example, the experimenter forgot to ask the subject the relevant questions.
 
-\begin{table}[h]
-
-\begin{center}
-\begin{threeparttable}
-
-\caption{\label{tab:rating_scales}Table Rating Scales Disruption Factor}
-
-\tiny{
-
-\begin{tabular}{llllll}
-\toprule
-Group & \multicolumn{1}{c}{Event} & \multicolumn{1}{c}{M} & \multicolumn{1}{c}{SD} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max}\\
-\midrule
-Expert & chatting & 6.44 & 3.33 & 1.00 & 10.00\\
-Expert & clicking pen & 5.57 & 2.87 & 0.00 & 10.00\\
-Expert & drawing & 1.85 & 1.46 & 0.00 & 6.00\\
-Expert & drumming & 4.60 & 2.44 & 1.00 & 8.00\\
-Expert & head on table & 3.73 & 2.25 & 0.00 & 8.00\\
-Expert & heckling & 7.19 & 2.37 & 2.00 & 10.00\\
-Expert & looking at phone & 4.71 & 3.10 & 1.00 & 10.00\\
-Expert & snipping & 4.00 & 3.61 & 0.00 & 10.00\\
-Expert & whispering & 4.56 & 2.50 & 0.00 & 9.00\\
-Novice & chatting & 8.62 & 1.35 & 5.00 & 10.00\\
-Novice & clicking pen & 7.00 & 2.11 & 3.00 & 10.00\\
-Novice & drawing & 2.24 & 1.48 & 0.00 & 4.00\\
-Novice & drumming & 6.57 & 2.27 & 0.00 & 10.00\\
-Novice & head on table & 4.09 & 2.09 & 1.00 & 8.00\\
-Novice & heckling & 6.96 & 2.57 & 2.00 & 10.00\\
-Novice & looking at phone & 3.90 & 1.94 & 1.00 & 8.00\\
-Novice & snipping & 4.67 & 3.33 & 0.00 & 9.00\\
-Novice & whispering & 6.08 & 2.36 & 1.00 & 10.00\\
-\bottomrule
-\end{tabular}
-
-}
-
-\end{threeparttable}
-\end{center}
-
-\end{table}
-
-\begin{table}[h]
-
-\begin{center}
-\begin{threeparttable}
-
-\caption{\label{tab:rating_scales}Table Rating Scales Confident Factor}
-
-\tiny{
-
-\begin{tabular}{llllll}
-\toprule
-Group & \multicolumn{1}{c}{Event} & \multicolumn{1}{c}{M} & \multicolumn{1}{c}{SD} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max}\\
-\midrule
-Expert & chatting & 8.44 & 2.03 & 2.00 & 10.00\\
-Expert & clicking pen & 8.93 & 1.00 & 7.00 & 10.00\\
-Expert & drawing & 9.23 & 1.36 & 5.00 & 10.00\\
-Expert & drumming & 9.07 & 0.96 & 7.00 & 10.00\\
-Expert & head on table & 9.00 & 1.41 & 5.00 & 10.00\\
-Expert & heckling & 6.75 & 2.89 & 2.00 & 10.00\\
-Expert & looking at phone & 9.21 & 1.05 & 7.00 & 10.00\\
-Expert & snipping & 9.06 & 1.48 & 4.00 & 10.00\\
-Expert & whispering & 8.06 & 2.11 & 3.00 & 10.00\\
-Novice & chatting & 6.42 & 2.39 & 0.00 & 10.00\\
-Novice & clicking pen & 7.54 & 1.89 & 3.00 & 10.00\\
-Novice & drawing & 8.81 & 1.25 & 5.00 & 10.00\\
-Novice & drumming & 7.57 & 2.11 & 3.00 & 10.00\\
-Novice & head on table & 7.30 & 1.96 & 3.00 & 10.00\\
-Novice & heckling & 5.35 & 2.53 & 1.00 & 10.00\\
-Novice & looking at phone & 7.65 & 1.73 & 3.00 & 10.00\\
-Novice & snipping & 8.04 & 1.73 & 3.00 & 10.00\\
-Novice & whispering & 7.25 & 2.03 & 2.00 & 10.00\\
-\bottomrule
-\end{tabular}
-
-}
-
-\end{threeparttable}
-\end{center}
-
-\end{table}
-
 \paragraph{Situational Jugdement Test of Strategic Knowledge of Classroom Management}\label{situational-jugdement-test-of-strategic-knowledge-of-classroom-management}
 
 To assess the strategic knowledge of classroom management, subjects answered a Situational Judgement Test (SJT, (Gold \& Holodynski, 2015)). In the questionnaire, participants were given hypothetical school scenarios with five to six response strategies for which they had to evaluate the effectiveness of each strategy on a 6-point rating scale from 1 (A) to 6 (F) according to school grades (see example scenario XXX REFERENZ EINFÜGEN). Depending on the grade given to each strategy, scores were converted in an SPSS syntax resulting in scores ranging from 0 to 1 for each participant.
 
 In developing the test procedure, the authors divided the concept of classroom management into three main aspects: \emph{Monitoring}, \emph{managing momentum} (structuring) and \emph{rules and routines} (Gold \& Holodynski, 2015, p. 230f).
 
-\emph{Monitoring} includes proactive strategies such as omnipresence. This means, the teacher is always informed about the students' behavior, regulates it and reports it back to them. The second strategy is overlapping. In this case, the teacher is able to control several teaching processes at the same time. Monitoring means also reactive strategies of supervision, which also includes the effective handling of classroom disruptions {[}cf.~ibid.; Kounin (2006), p.~89ff{]}.
+\emph{Monitoring} includes proactive strategies such as omnipresence. This means, the teacher is always informed about the students' behavior, regulates it and reports it back to them. The second strategy is overlapping. In this case, the teacher is able to control several teaching processes at the same time. Monitoring means also reactive strategies of supervision, which also includes the effective handling of classroom disruptions {[}cf.~ibid.; Kounin (2006), p.~89ff{]}. --\textgreater{}
 
 By \emph{managing momentum} (structuring), Gold and Holodynski (2015) understand the skillful control of teaching processes so that they can run smoothly and without delays, taking into account the students' level of understanding and attention (Kounin, 2006, p. 101ff). They also include the group focus specifically identified by Kounin (Kounin, 2006, p. 117ff), i.e.~mobilizing the whole class and demanding accountability (Gold \& Holodynski, 2015, p. 231).
 
@@ -757,7 +689,7 @@ The construct validity of the SJT with the other 11 scenarios and the sensitivit
 
 The scenarios could each be assigned to one facet of the mentioned classroom management: Scenarios 1-4 cover the facet \emph{monitoring}, scenarios 6-9 the facet \emph{managing momentum} and scenarios 11-14 the facet \emph{rules and routines}.
 
-In the current study, objectivity of application was ensured by the questionnaire-format, the written instructions and by a detailed test administration manual of the study \emph{ProVisioNET}. The objectivity of analysis was given by processing the obtained questionnaire data in R (Version 4.3.3; R Core Team, 2021) and the R-packages \emph{ARTofR} (Version 0.4.1; Zhang, 2021), \emph{cowplot} (Version 1.1.3; Wilke, 2020), \emph{DescTools} (Version 0.99.54; Andri et mult. al., 2022), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, \& Müller, 2022), \emph{forcats} (Version 1.0.0; Wickham, 2021), \emph{formattable} (Version 0.2.1; Ren \& Russell, 2021), \emph{ggmosaic} (Jeppson, Hofmann, \& Cook, 2021), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{ggrepel} (Version 0.9.5; Slowikowski, 2021), \emph{ggthemes} (Version 5.1.0; Arnold, 2021), \emph{gridExtra} (Version 2.3; Auguie, 2017), \emph{haven} (Version 2.5.4; Wickham \& Miller, 2021), \emph{imputeTS} (Version 3.3; Moritz \& Bartz-Beielstein, 2017), \emph{janitor} (Version 2.2.0; Firke, 2021), \emph{kableExtra} (Version 1.4.0; Zhu, 2021), \emph{knitr} (Version 1.47; Xie, 2015), \emph{lme4} (Version 1.1.35.4; Bates, Mächler, Bolker, \& Walker, 2015), \emph{ltm} (Version 1.2.0; Rizopoulos, 2006), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{MASS} (Version 7.3.60.0.1; Venables \& Ripley, 2002), \emph{Matrix} (Version 1.6.5; Bates \& Maechler, 2021), \emph{moments} (Version 0.14.1; Komsta \& Novomestky, 2015), \emph{msm} (Version 1.7.1; Jackson, 2011), \emph{needs} (Version 0.0.3; Katz, 2016), \emph{papaja} (Version 0.1.2; Aust \& Barth, 2020), \emph{polycor} (Version 0.8.1; Fox, 2022), \emph{psych} (Version 2.4.6.26; William Revelle, 2024), \emph{purrr} (Version 1.0.2; Henry \& Wickham, 2020), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2021), \emph{readxl} (Version 1.4.3; Wickham \& Bryan, 2019), \emph{rgeos} (Bivand \& Rundel, 2021), \emph{rlang} (Version 1.1.4; Henry \& Wickham, 2022), \emph{rnaturalearth} (South, 2017a, 2017b), \emph{rnaturalearthdata} (South, 2017b), \emph{sf} (E. Pebesma, 2018), \emph{sjlabelled} (Version 1.2.0; Lüdecke, 2022), \emph{sjPlot} (Version 2.8.16; Lüdecke, 2021), \emph{sp} (E. J. Pebesma \& Bivand, 2005), \emph{stringr} (Version 1.5.1; Wickham, 2019), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2021), \emph{tidyr} (Version 1.3.1; Wickham \& Girlich, 2022), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), \emph{tinylabels} (Version 0.2.4; M. Barth, 2022), \emph{viridis} (Version 0.6.5; Garnier et al., 2021a, 2021b), \emph{viridisLite} (Version 0.4.2; Garnier et al., 2021b), and \emph{xtable} (Version 1.8.4; Dahl, Scott, Roosen, Magnusson, \& Swinton, 2019) and IBM SPSS 28.
+In the current study, objectivity of application was ensured by the questionnaire-format, the written instructions and by a detailed test administration manual of the study \emph{ProVisioNET}. The objectivity of analysis was given by processing the obtained questionnaire data in R (Version 4.3.3; R Core Team, 2021) and the R-packages \emph{apaTables} (Version 2.0.8; Stanley, 2021), \emph{ARTofR} (Version 0.4.1; Zhang, 2021), \emph{cowplot} (Version 1.1.3; Wilke, 2020), \emph{DescTools} (Version 0.99.54; Andri et mult. al., 2022), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, \& Müller, 2022), \emph{forcats} (Version 1.0.0; Wickham, 2021), \emph{formattable} (Version 0.2.1; Ren \& Russell, 2021), \emph{ggmosaic} (Jeppson, Hofmann, \& Cook, 2021), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{ggrepel} (Version 0.9.5; Slowikowski, 2021), \emph{ggthemes} (Version 5.1.0; Arnold, 2021), \emph{gridExtra} (Version 2.3; Auguie, 2017), \emph{haven} (Version 2.5.4; Wickham \& Miller, 2021), \emph{imputeTS} (Version 3.3; Moritz \& Bartz-Beielstein, 2017), \emph{janitor} (Version 2.2.0; Firke, 2021), \emph{kableExtra} (Version 1.4.0; Zhu, 2021), \emph{knitr} (Version 1.47; Xie, 2015), \emph{lme4} (Version 1.1.35.4; Bates, Mächler, Bolker, \& Walker, 2015), \emph{ltm} (Version 1.2.0; Rizopoulos, 2006), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{MASS} (Version 7.3.60.0.1; Venables \& Ripley, 2002), \emph{Matrix} (Version 1.6.5; Bates \& Maechler, 2021), \emph{moments} (Version 0.14.1; Komsta \& Novomestky, 2015), \emph{msm} (Version 1.7.1; Jackson, 2011), \emph{needs} (Version 0.0.3; Katz, 2016), \emph{papaja} (Version 0.1.2; Aust \& Barth, 2020), \emph{polycor} (Version 0.8.1; Fox, 2022), \emph{psych} (Version 2.4.6.26; William Revelle, 2024), \emph{purrr} (Version 1.0.2; Henry \& Wickham, 2020), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2021), \emph{readxl} (Version 1.4.3; Wickham \& Bryan, 2019), \emph{rgeos} (Bivand \& Rundel, 2021), \emph{rlang} (Version 1.1.4; Henry \& Wickham, 2022), \emph{rnaturalearth} (South, 2017a, 2017b), \emph{rnaturalearthdata} (South, 2017b), \emph{rstatix} (Version 0.7.2; Kassambara, 2023), \emph{sf} (E. Pebesma, 2018), \emph{sjlabelled} (Version 1.2.0; Lüdecke, 2022), \emph{sjPlot} (Version 2.8.16; Lüdecke, 2021), \emph{sp} (E. J. Pebesma \& Bivand, 2005), \emph{stringr} (Version 1.5.1; Wickham, 2019), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2021), \emph{tidyr} (Version 1.3.1; Wickham \& Girlich, 2022), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), \emph{tinylabels} (Version 0.2.4; M. Barth, 2022), \emph{viridis} (Version 0.6.5; Garnier et al., 2021a, 2021b), \emph{viridisLite} (Version 0.4.2; Garnier et al., 2021b), and \emph{xtable} (Version 1.8.4; Dahl, Scott, Roosen, Magnusson, \& Swinton, 2019) and IBM SPSS 28.
 
 Since the test was a questionnaire designed to assess strategic knowledge of classroom management of \emph{primary school teachers}, but the sample of the study included several types of schools, changes were made in 10 out of 12 scenarios by deleting the indicated class grade. Only in two scenarios was the class grade information not deleted, as the action alternatives would otherwise not be appropriate without the information.
 
@@ -774,9 +706,9 @@ Since the test was a questionnaire designed to assess strategic knowledge of cla
 \toprule
  & \multicolumn{1}{c}{N Items} & \multicolumn{1}{c}{M} & \multicolumn{1}{c}{SD} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} & \multicolumn{1}{c}{Skewness} & \multicolumn{1}{c}{Kurtosis} & \multicolumn{1}{c}{alpha}\\
 \midrule
-Monitoring & 4.00 & 0.71 & 0.11 & 0.44 & 0.96 & -0.11 & 3.76 & 0.37\\
-Managing Momentum & 5.00 & 0.74 & 0.11 & 0.51 & 0.94 & -0.25 & 2.85 & 0.19\\
-Rules and routines & 3.00 & 0.75 & 0.11 & 0.46 & 0.90 & -0.74 & 3.25 & -0.28\\
+Monitoring & 4.00 & 0.68 & 0.13 & 0.17 & 0.96 & -1.15 & 6.34 & 0.53\\
+Managing Momentum & 5.00 & 0.72 & 0.13 & 0.22 & 0.94 & -1.55 & 6.75 & 0.53\\
+Rules and routines & 3.00 & 0.71 & 0.15 & 0.02 & 0.90 & -2.46 & 12.55 & 0.46\\
 \bottomrule
 \end{tabular}
 
@@ -800,9 +732,9 @@ Rules and routines & 3.00 & 0.75 & 0.11 & 0.46 & 0.90 & -0.74 & 3.25 & -0.28\\
 \toprule
  & \multicolumn{1}{c}{N Items} & \multicolumn{1}{c}{M} & \multicolumn{1}{c}{SD} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} & \multicolumn{1}{c}{Skewness} & \multicolumn{1}{c}{Kurtosis} & \multicolumn{1}{c}{alpha}\\
 \midrule
-Monitoring & 4.00 & 0.71 & 0.15 & 0.52 & 0.92 & 0.17 & 1.76 & 0.38\\
-Managing Momentum & 5.00 & 0.70 & 0.13 & 0.52 & 0.89 & 0.31 & 1.77 & 0.34\\
-Rules and routines & 3.00 & 0.70 & 0.13 & 0.47 & 0.89 & -0.27 & 2.20 & 0.46\\
+Monitoring & 4.00 & 0.71 & 0.11 & 0.51 & 0.93 & 0.07 & 2.49 & 0.40\\
+Managing Momentum & 5.00 & 0.72 & 0.12 & 0.51 & 0.95 & -0.02 & 1.86 & 0.41\\
+Rules and routines & 3.00 & 0.72 & 0.11 & 0.47 & 0.92 & -0.15 & 2.39 & 0.25\\
 \bottomrule
 \end{tabular}
 
@@ -888,7 +820,7 @@ Finally, the subjects answered a Situational Judgement Test of Strategic Knowled
 
 We investigated whether experts and novice teachers differed
 
-All reported data analyses were conducted with the R (Version 4.3.3; R Core Team, 2021) and the R-packages \emph{ARTofR} (Version 0.4.1; Zhang, 2021), \emph{cowplot} (Version 1.1.3; Wilke, 2020), \emph{DescTools} (Version 0.99.54; Andri et mult. al., 2022), \emph{dplyr} (Version 1.1.4; Wickham et al., 2022), \emph{forcats} (Version 1.0.0; Wickham, 2021), \emph{formattable} (Version 0.2.1; Ren \& Russell, 2021), \emph{ggmosaic} (Jeppson et al., 2021), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{ggrepel} (Version 0.9.5; Slowikowski, 2021), \emph{ggthemes} (Version 5.1.0; Arnold, 2021), \emph{gridExtra} (Version 2.3; Auguie, 2017), \emph{haven} (Version 2.5.4; Wickham \& Miller, 2021), \emph{imputeTS} (Version 3.3; Moritz \& Bartz-Beielstein, 2017), \emph{janitor} (Version 2.2.0; Firke, 2021), \emph{kableExtra} (Version 1.4.0; Zhu, 2021), \emph{knitr} (Version 1.47; Xie, 2015), \emph{lme4} (Version 1.1.35.4; Bates et al., 2015), \emph{ltm} (Version 1.2.0; Rizopoulos, 2006), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{MASS} (Version 7.3.60.0.1; Venables \& Ripley, 2002), \emph{Matrix} (Version 1.6.5; Bates \& Maechler, 2021), \emph{moments} (Version 0.14.1; Komsta \& Novomestky, 2015), \emph{msm} (Version 1.7.1; Jackson, 2011), \emph{needs} (Version 0.0.3; Katz, 2016), \emph{papaja} (Version 0.1.2; Aust \& Barth, 2020), \emph{polycor} (Version 0.8.1; Fox, 2022), \emph{psych} (Version 2.4.6.26; William Revelle, 2024), \emph{purrr} (Version 1.0.2; Henry \& Wickham, 2020), \emph{readr} (Version 2.1.5; Wickham et al., 2021), \emph{readxl} (Version 1.4.3; Wickham \& Bryan, 2019), \emph{rgeos} (Bivand \& Rundel, 2021), \emph{rlang} (Version 1.1.4; Henry \& Wickham, 2022), \emph{rnaturalearth} (South, 2017a, 2017b), \emph{rnaturalearthdata} (South, 2017b), \emph{sf} (E. Pebesma, 2018), \emph{sjlabelled} (Version 1.2.0; Lüdecke, 2022), \emph{sjPlot} (Version 2.8.16; Lüdecke, 2021), \emph{sp} (E. J. Pebesma \& Bivand, 2005), \emph{stringr} (Version 1.5.1; Wickham, 2019), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2021), \emph{tidyr} (Version 1.3.1; Wickham \& Girlich, 2022), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), \emph{tinylabels} (Version 0.2.4; M. Barth, 2022), \emph{viridis} (Version 0.6.5; Garnier et al., 2021a, 2021b), \emph{viridisLite} (Version 0.4.2; Garnier et al., 2021b), and \emph{xtable} (Version 1.8.4; Dahl et al., 2019) and IBM SPSS 28.
+All reported data analyses were conducted with the R (Version 4.3.3; R Core Team, 2021) and the R-packages \emph{apaTables} (Version 2.0.8; Stanley, 2021), \emph{ARTofR} (Version 0.4.1; Zhang, 2021), \emph{cowplot} (Version 1.1.3; Wilke, 2020), \emph{DescTools} (Version 0.99.54; Andri et mult. al., 2022), \emph{dplyr} (Version 1.1.4; Wickham et al., 2022), \emph{forcats} (Version 1.0.0; Wickham, 2021), \emph{formattable} (Version 0.2.1; Ren \& Russell, 2021), \emph{ggmosaic} (Jeppson et al., 2021), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{ggrepel} (Version 0.9.5; Slowikowski, 2021), \emph{ggthemes} (Version 5.1.0; Arnold, 2021), \emph{gridExtra} (Version 2.3; Auguie, 2017), \emph{haven} (Version 2.5.4; Wickham \& Miller, 2021), \emph{imputeTS} (Version 3.3; Moritz \& Bartz-Beielstein, 2017), \emph{janitor} (Version 2.2.0; Firke, 2021), \emph{kableExtra} (Version 1.4.0; Zhu, 2021), \emph{knitr} (Version 1.47; Xie, 2015), \emph{lme4} (Version 1.1.35.4; Bates et al., 2015), \emph{ltm} (Version 1.2.0; Rizopoulos, 2006), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{MASS} (Version 7.3.60.0.1; Venables \& Ripley, 2002), \emph{Matrix} (Version 1.6.5; Bates \& Maechler, 2021), \emph{moments} (Version 0.14.1; Komsta \& Novomestky, 2015), \emph{msm} (Version 1.7.1; Jackson, 2011), \emph{needs} (Version 0.0.3; Katz, 2016), \emph{papaja} (Version 0.1.2; Aust \& Barth, 2020), \emph{polycor} (Version 0.8.1; Fox, 2022), \emph{psych} (Version 2.4.6.26; William Revelle, 2024), \emph{purrr} (Version 1.0.2; Henry \& Wickham, 2020), \emph{readr} (Version 2.1.5; Wickham et al., 2021), \emph{readxl} (Version 1.4.3; Wickham \& Bryan, 2019), \emph{rgeos} (Bivand \& Rundel, 2021), \emph{rlang} (Version 1.1.4; Henry \& Wickham, 2022), \emph{rnaturalearth} (South, 2017a, 2017b), \emph{rnaturalearthdata} (South, 2017b), \emph{rstatix} (Version 0.7.2; Kassambara, 2023), \emph{sf} (E. Pebesma, 2018), \emph{sjlabelled} (Version 1.2.0; Lüdecke, 2022), \emph{sjPlot} (Version 2.8.16; Lüdecke, 2021), \emph{sp} (E. J. Pebesma \& Bivand, 2005), \emph{stringr} (Version 1.5.1; Wickham, 2019), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2021), \emph{tidyr} (Version 1.3.1; Wickham \& Girlich, 2022), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), \emph{tinylabels} (Version 0.2.4; M. Barth, 2022), \emph{viridis} (Version 0.6.5; Garnier et al., 2021a, 2021b), \emph{viridisLite} (Version 0.4.2; Garnier et al., 2021b), and \emph{xtable} (Version 1.8.4; Dahl et al., 2019) and IBM SPSS 28.
 
 \section{Results}\label{results}
 
@@ -1003,6 +935,9 @@ Jahn, G., Stürmer, K., Seidel, T., \& Prenzel, M. (2014). Professionelle unterr
 \bibitem[\citeproctext]{ref-R-ggmosaic}
 Jeppson, H., Hofmann, H., \& Cook, D. (2021). \emph{Ggmosaic: Mosaic plots in the 'ggplot2' framework}. Retrieved from \url{https://CRAN.R-project.org/package=ggmosaic}
 
+\bibitem[\citeproctext]{ref-R-rstatix}
+Kassambara, A. (2023). \emph{Rstatix: Pipe-friendly framework for basic statistical tests}. Retrieved from \url{https://CRAN.R-project.org/package=rstatix}
+
 \bibitem[\citeproctext]{ref-R-needs}
 Katz, J. (2016). \emph{Needs: Attaches and installs packages}. Retrieved from \url{https://CRAN.R-project.org/package=needs}
 
@@ -1077,6 +1012,9 @@ South, A. (2017a). \emph{Rnaturalearth: World map data from natural earth}. Retr
 
 \bibitem[\citeproctext]{ref-R-rnaturalearthdata}
 South, A. (2017b). \emph{Rnaturalearthdata: World vector map data from natural earth used in 'rnaturalearth'}. Retrieved from \url{https://CRAN.R-project.org/package=rnaturalearthdata}
+
+\bibitem[\citeproctext]{ref-R-apaTables}
+Stanley, D. (2021). \emph{apaTables: Create american psychological association (APA) style tables}. Retrieved from \url{https://CRAN.R-project.org/package=apaTables}
 
 \bibitem[\citeproctext]{ref-treisch2018entwicklung}
 Treisch, F. (2018). \emph{Die entwicklung der professionellen unterrichtswahrnehmung im lehr-lern-labor seminar}. Bayerische Julius-Maximilians-Universitaet Wuerzburg (Germany).
