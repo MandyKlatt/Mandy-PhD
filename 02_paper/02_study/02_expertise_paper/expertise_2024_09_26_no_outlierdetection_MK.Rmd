@@ -219,6 +219,65 @@ df_aoi <- df_aoi %>%
 
 ```
 
+#### 2.2.2 Letter search
+```{r letter_search, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+##################### LETTER SEARCH ########################
+
+# filter
+df_aoi %>%
+  filter(TOI == "Letter_search") %>% 
+  dplyr::select (
+    TOI,
+    Group,
+    Participant,
+    Duration_of_interval) %>% 
+  mutate(Duration_of_interval_sec = 
+           round(Duration_of_interval/1000, digits = 2)
+         ) -> df_letter
+# missing IDs: 101, 111, 205
+
+# N, M, SD, min & max 
+letter.table <-
+  df_letter %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(Duration_of_interval_sec), digits = 2),
+    "SD" = round(sd(Duration_of_interval_sec), digits = 2),
+    "Min" = round(min(Duration_of_interval_sec), digits = 2),
+    "Max" = round(max(Duration_of_interval_sec), digits = 2)
+  )
+
+knitr::kable(letter.table,
+             caption = "N, M, SD, min & max letter search in seconds")
+
+
+```
+
+#### t-test & effect size "Letter search"
+```{r letter_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# LETTER SEARCH 
+# t-test for expertise differences
+t.test(
+  x = df_letter$Duration_of_interval_sec[df_letter$Group == "Expert"],
+  y = df_letter$Duration_of_interval_sec[df_letter$Group == "Novice"],
+  var.equal = TRUE
+)
+
+# NUMBER OF FIXATIONS PER MINUTE (micro-teaching unit)
+# effect size for expertise differences
+d_letter <- CohenD(
+  x = df_letter$Duration_of_interval_sec[df_letter$Group == "Expert"],
+  y = df_letter$Duration_of_interval_sec[df_letter$Group == "Novice"],
+  na.rm = TRUE
+)
+
+round(d_letter, 2)
+
+```
+
 #### 2.2.1 Number of fixations per minute (micro-teaching unit)
 ```{r nof_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
