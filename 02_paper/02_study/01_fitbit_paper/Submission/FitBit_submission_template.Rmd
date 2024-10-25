@@ -692,10 +692,9 @@ df_heart_rate |>
                        y = heart_rate
                        )
          ) +
-  geom_smooth(se = T,
+  geom_smooth(se = F,
               size = 0.5,
-              colour = "black",
-              level = 0.95
+              colour = "black"              
               ) +
   scale_color_viridis_d(option = "A",
                         end = 0.8
@@ -725,10 +724,10 @@ df_heart_rate_std |>
                        y = heart_rate
                        )
          ) +
-  geom_smooth(se = T,
+  geom_smooth(se = F,
               size = 0.5,
-              colour = "black",
-              level = 0.95) +
+              colour = "black"
+              ) +
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
