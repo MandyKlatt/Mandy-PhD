@@ -1,0 +1,525 @@
+@article{donker2020associations,
+  title={Associations between teachers’ interpersonal behavior, physiological arousal, and lesson-focused emotions},
+  author={Donker, Monika H and van Gog, Tamara and Goetz, Thomas and Roos, Anna-Lena and Mainhard, Tim},
+  journal={Contemporary Educational Psychology},
+  volume={63},
+  pages={101906},
+  year={2020},
+  publisher={Elsevier}
+
+
+@incollection{blascovich1996biopsychosocial,
+  title={The biopsychosocial model of arousal regulation},
+  author={Blascovich, Jim and Tomaka, Joe},
+  booktitle={Advances in experimental social psychology},
+  volume={28},
+  pages={1--51},
+  year={1996},
+  publisher={Elsevier}
+}
+
+@article{gagnon2022comparing,
+  title={Comparing a Fitbit Wearable to an Electrocardiogram Gold Standard as a Measure of Heart Rate Under Psychological Stress: A Validation Study},
+  author={Gagnon, Joel and Khau, Michelle and Lavoie-Hudon, L{\'e}andre and Vachon, Fran{\c{c}}ois and Drapeau, Vicky and Tremblay, S{\'e}bastien},
+  journal={JMIR Formative Research},
+  volume={6},
+  number={12},
+  pages={e37885},
+  year={2022},
+  publisher={JMIR Publications Toronto, Canada}
+}
+
+@article{jo2016validation,
+  title={Validation of biofeedback wearables for photoplethysmographic heart rate tracking},
+  author={Jo, Edward and Lewis, Kiana and Directo, Dean and Kim, Michael J and Dolezal, Brett A},
+  journal={Journal of sports science \& medicine},
+  volume={15},
+  number={3},
+  pages={540},
+  year={2016},
+  publisher={Dept. of Sports Medicine, Medical Faculty of Uludag University}
+}
+
+@article{hajj2022wrist,
+  title={Wrist-worn devices for the measurement of heart rate and energy expenditure: A validation study for the Apple Watch 6, Polar Vantage V and Fitbit Sense},
+  author={Hajj-Boutros, Guy and Landry-Duval, Marie-Anne and Comtois, Alain Steve and Gouspillou, Gilles and Karelis, Antony D},
+  journal={European Journal of Sport Science},
+  pages={1--13},
+  year={2022},
+  publisher={Taylor \& Francis}
+}
+
+@article{chalmers2021stress,
+  title={Stress watch: The use of heart rate and heart rate variability to detect stress: A pilot study using smart watch wearables},
+  author={Chalmers, Taryn and Hickey, Blake Anthony and Newton, Phillip and Lin, Chin-Teng and Sibbritt, David and McLachlan, Craig S and Clifton-Bligh, Roderick and Morley, John and Lal, Sara},
+  journal={Sensors},
+  volume={22},
+  number={1},
+  pages={151},
+  year={2021},
+  publisher={MDPI}
+}
+
+@article{liu2020anxiety,
+  title={Anxiety and Stress in In-Service Chinese University Teachers of Arts.},
+  author={Liu, Meihua and Yan, Yi},
+  journal={International journal of higher education},
+  volume={9},
+  number={1},
+  pages={237--248},
+  year={2020},
+  publisher={ERIC}
+}
+
+@article{fimian1990validity,
+  title={The validity and reliability of the Teacher Stress Inventory: A re-analysis of aggregate data},
+  author={Fimian, Michael J and Fastenau, Philip S},
+  journal={Journal of Organizational Behavior},
+  pages={151--157},
+  year={1990},
+  publisher={JSTOR}
+}
+
+@article{goker2012impact,
+  title={Impact of EFL Teachers' Collective Efficacy and Job Stress on Job Satisfaction.},
+  author={G{\"o}ker, Suleyman Davut},
+  journal={Theory \& Practice in Language Studies},
+  volume={2},
+  number={8},
+  year={2012}
+}
+
+@article{chaplain2008stress,
+  title={Stress and psychological distress among trainee secondary teachers in England},
+  author={Chaplain, Roland P},
+  journal={Educational Psychology},
+  volume={28},
+  number={2},
+  pages={195--209},
+  year={2008},
+  publisher={Taylor \& Francis}
+}
+
+@article{kyriacou1978teacher,
+  title={Teacher stress: Prevalence, sources, and symptoms},
+  author={Kyriacou, Chris and SUTCLIFFE, James},
+  journal={British journal of educational psychology},
+  volume={48},
+  number={2},
+  pages={159--167},
+  year={1978},
+  publisher={Wiley Online Library}
+}
+
+@article{rotter2020stressbewaltigung,
+  title={Stressbew{\"a}ltigung},
+  author={Rotter, Max and Renneberg, Babette and Kaluza, Gert},
+  journal={Psychologie in der medizinischen Rehabilitation: Somatopsychologie und Verhaltensmedizin},
+  pages={185--196},
+  year={2020},
+  publisher={Springer}
+}
+
+@article{jachymek2021wristbands,
+  title={Wristbands in Home-Based Rehabilitation—Validation of Heart Rate Measurement},
+  author={Jachymek, Magdalena and Jachymek, Micha{\l} T and Kiedrowicz, Rados{\l}aw M and Ka{\'z}mierczak, Jaros{\l}aw and P{\l}o{\'n}ska-Go{\'s}ciniak, Edyta and Peregud-Pogorzelska, Ma{\l}gorzata},
+  journal={Sensors},
+  volume={22},
+  number={1},
+  pages={60},
+  year={2021},
+  publisher={MDPI}
+}
+
+@article{blascovich2001perceiver,
+  title={Perceiver threat in social interactions with stigmatized others.},
+  author={Blascovich, Jim and Mendes, Wendy Berry and Hunter, Sarah B and Lickel, Brian and Kowai-Bell, Neneh},
+  journal={Journal of personality and social psychology},
+  volume={80},
+  number={2},
+  pages={253},
+  year={2001},
+  publisher={American Psychological Association}
+}
+
+@article{blascovich1999social,
+  title={Social" facilitation" as challenge and threat.},
+  author={Blascovich, Jim and Mendes, Wendy Berry and Hunter, Sarah B and Salomon, Kristen},
+  journal={Journal of personality and social psychology},
+  volume={77},
+  number={1},
+  pages={68},
+  year={1999},
+  publisher={American Psychological Association}
+}
+
+@article{doi:10.1177/1098300717732066,
+author = {Keith C. Herman and Jal’et Hickmon-Rosa and Wendy M. Reinke},
+title ={Empirically Derived Profiles of Teacher Stress, Burnout, Self-Efficacy, and Coping and Associated Student Outcomes},
+journal = {Journal of Positive Behavior Interventions},
+volume = {20},
+number = {2},
+pages = {90-100},
+year = {2018},
+doi = {10.1177/1098300717732066},
+URL = {https://doi.org/10.1177/1098300717732066},
+eprint = {https://doi.org/10.1177/1098300717732066},
+abstract = { Understanding how teacher stress, burnout, coping, and self-efficacy are interrelated can inform preventive and intervention efforts to support teachers. In this study, we explored these constructs to determine their relation to student outcomes, including disruptive behaviors and academic achievement. Participants in this study were 121 teachers and 1,817 students in grades kindergarten to fourth from nine elementary schools in an urban Midwestern school district. Latent profile analysis was used to determine patterns of teacher adjustment in relation to stress, coping, efficacy, and burnout. These profiles were then linked to student behavioral and academic outcomes. Four profiles of teacher adjustment were identified. Three classes were characterized by high levels of stress and were distinguished by variations in coping and burnout ranging from (a) high coping/low burnout (60\%) to (b) moderate coping and burnout (30\%), to (c) low coping/high burnout (3\%). The fourth class was distinguished by low stress, high coping, and low burnout. Only 7\% of the sample fell into this Well-Adjusted class. Teachers in the high stress, high burnout, and low coping class were associated with the poorest student outcomes. Implications for supporting teachers to maximize student outcomes are discussed. }
+}
+
+
+@article{HERMAN202054,
+title = {Profiles of middle school teacher stress and coping: Concurrent and prospective correlates},
+journal = {Journal of School Psychology},
+volume = {78},
+pages = {54-68},
+year = {2020},
+issn = {0022-4405},
+doi = {https://doi.org/10.1016/j.jsp.2019.11.003},
+url = {https://www.sciencedirect.com/science/article/pii/S0022440519300937},
+author = {Keith C. Herman and Sara L. Prewett and Colleen L. Eddy and Alyson Savala and Wendy M. Reinke},
+keywords = {Teacher stress, Teacher coping, Latent profile analysis, Middle school},
+abstract = {This study examined the stress and coping patterns of middle school teachers. A final teacher sample of 102 and student sample of 1450 agreed to participate in the study. We conducted a latent profile analysis of the teachers' self-reported levels of stress and coping at the beginning of the school year and used the resulting profiles to predict teacher practices and student outcomes over time. Nearly all teachers were characterized by high stress and high coping (66%) or high stress and low coping (28%). Based on concurrent ratings and observations, the High Stress/Low Coping profile had higher burnout and lower self-efficacy, higher rates of observed reprimands, and higher student-reported depression in comparison to the other classes. The most adaptive profile, Low Stress/High Coping (6% of sample), had lower burnout, greater parent involvement and higher student prosocial skills in comparison to the other groups. Profiles also predicted the maintenance of most of these effects and the increase of some effects over the school year. Examining stress and coping in combination can inform efforts to improve teacher well-being and have a positive influence on student learning environments.}
+}
+
+@article{chaudhuri2022teachers,
+  title={Teachers’ focus of attention in first-grade classrooms: exploring teachers experiencing less and more stress using mobile eye-tracking},
+  author={Chaudhuri, Saswati and Muhonen, Heli and Pakarinen, Eija and Lerkkanen, Marja-Kristiina},
+  journal={Scandinavian Journal of Educational Research},
+  volume={66},
+  number={6},
+  pages={1076--1092},
+  year={2022},
+  publisher={Taylor \& Francis}
+}
+
+@article{aloe2014multivariate,
+  title={A multivariate meta-analysis of student misbehavior and teacher burnout},
+  author={Aloe, Ariel M and Shisler, Shannon M and Norris, Benjamin D and Nickerson, Amanda B and Rinker, Tyler W},
+  journal={Educational Research Review},
+  volume={12},
+  pages={30--44},
+  year={2014},
+  publisher={Elsevier}
+}
+
+@misc{eckstein2021conditions,
+author = {Eckstein, Boris and Grob, Urs and Reusser, Kurt},
+title = {Conditions of Classroom Disturbances},
+howpublished = {\textsc{url:}~\url{https://www.researchgate.net/profile/Boris-Eckstein/publication/354117558_Conditions_of_Classroom_Disturbances_The_role_of_teaching_quality_and_teachers'_personality_in_the_production_and_the_perception_of_classroom_disturbances_Introduction_Tendencies_in_the_Public_and_Aca/links/612605e0a8348b1a46046f13/Conditions-of-Classroom-Disturbances-The-role-of-teaching-quality-and-teachers-personality-in-the-production-and-the-perception-of-classroom-disturbances-Introduction-Tendencies-in-the-Public-and-Acad.pdf}},
+month = {8},
+year = {2021}
+}
+
+@article{ecksteinconditions,
+  title={Conditions of Classroom Disturbances},
+  author={Eckstein, Boris and Grob, Urs and Reusser, Kurt}
+}
+
+@article{fisher2011factors,
+  title={Factors influencing stress, burnout, and retention of secondary teachers},
+  author={Fisher, Molly H},
+  journal={Current issues in education},
+  volume={14},
+  number={1},
+  year={2011}
+}
+
+@article{obbarius2021modified,
+  title={A modified version of the transactional stress concept according to Lazarus and Folkman was confirmed in a psychosomatic inpatient sample},
+  author={Obbarius, Nina and Fischer, Felix and Liegl, Gregor and Obbarius, Alexander and Rose, Matthias},
+  journal={Frontiers in psychology},
+  volume={12},
+  pages={584333},
+  year={2021},
+  publisher={Frontiers Media SA}
+}
+
+@article{lazarus1987transactional,
+  title={Transactional theory and research on emotions and coping},
+  author={Lazarus, Richard S and Folkman, Susan},
+  journal={European Journal of personality},
+  volume={1},
+  number={3},
+  pages={141--169},
+  year={1987},
+  publisher={SAGE Publications Sage UK: London, England}
+}
+
+@article{pintrich2003motivational,
+  title={A motivational science perspective on the role of student motivation in learning and teaching contexts.},
+  author={Pintrich, Paul R},
+  journal={Journal of educational Psychology},
+  volume={95},
+  number={4},
+  pages={667},
+  year={2003},
+  publisher={American Psychological Association}
+}
+
+@article{junker2021potential,
+  title={Potential classroom stressors of teachers: An audiovisual and physiological approach},
+  author={Junker, Robin and Donker, Monika H and Mainhard, Tim},
+  journal={Learning and Instruction},
+  volume={75},
+  pages={101495},
+  year={2021},
+  publisher={Elsevier}
+}
+
+@misc{nanchen2018resting,
+  title={Resting heart rate: what is normal?},
+  author={Nanchen, David},
+  journal={Heart},
+  volume={104},
+  number={13},
+  pages={1048--1049},
+  year={2018},
+  publisher={BMJ Publishing Group Ltd and British Cardiovascular Society}
+}
+
+@article{friedman2003self,
+  title={Self-efficacy and burnout in teaching: The importance of interpersonal-relations efficacy},
+  author={Friedman, Isaac A},
+  journal={Social Psychology of Education},
+  volume={6},
+  number={3},
+  pages={191--215},
+  year={2003},
+  publisher={Springer}
+}
+
+@article{beaty2010classroom,
+  title={Classroom management strategies for difficult students: Promoting change through relationships},
+  author={Beaty-O’Ferrall, Mary Ellen and Green, Alan and Hanna, Fred},
+  journal={Middle School Journal},
+  volume={41},
+  number={4},
+  pages={4--11},
+  year={2010},
+  publisher={Taylor \& Francis}
+}
+
+@article{ruedi2014bedeutung,
+  title={Zur Bedeutung positiver Beziehungen f{\"u}r die Klassenf{\"u}hrung und den Umgang mit Unterrichtsst{\"o}rungen},
+  author={R{\"u}edi, J{\"u}rg},
+  journal={Beziehungen in Schule und Unterricht. Teil},
+  volume={3},
+  pages={105--126},
+  year={2014}
+}
+
+@article{parker2012teachers,
+  title={Teachers’ workplace well-being: Exploring a process model of goal orientation, coping behavior, engagement, and burnout},
+  author={Parker, Philip D and Martin, Andrew J and Colmar, Susan and Liem, Gregory A},
+  journal={Teaching and Teacher Education},
+  volume={28},
+  number={4},
+  pages={503--513},
+  year={2012},
+  publisher={Elsevier}
+}
+
+@article{aldrup2018student,
+  title={Student misbehavior and teacher well-being: Testing the mediating role of the teacher-student relationship},
+  author={Aldrup, Karen and Klusmann, Uta and L{\"u}dtke, Oliver and G{\"o}llner, Richard and Trautwein, Ulrich},
+  journal={Learning and instruction},
+  volume={58},
+  pages={126--136},
+  year={2018},
+  publisher={Elsevier}
+}
+
+@article{donker2018quantitative,
+  title={A quantitative exploration of two teachers with contrasting emotions: intra-individual process analyses of physiology and interpersonal behavior.},
+  author={Donker, Monika H and Van Gog, Tamara and Mainhard, M Tim},
+  journal={Frontline Learning Research},
+  volume={6},
+  number={3},
+  pages={162--184},
+  year={2018},
+  publisher={ERIC}
+}
+
+@article{jalongo2006editorial,
+  title={Editorial teacher attrition: An issue of national concern},
+  author={Jalongo, Mary Renck and Heider, Kelly},
+  journal={Early Childhood Education Journal},
+  volume={33},
+  number={6},
+  pages={379--380},
+  year={2006},
+  publisher={Springer}
+}
+
+@article{unterbrink2007burnout,
+  title={Burnout and effort--reward-imbalance in a sample of 949 German teachers},
+  author={Unterbrink, Thomas and Hack, Anna and Pfeifer, Ruth and Buhl-Grie{\ss}haber, Veronika and M{\"u}ller, Udo and Wesche, Helmut and Frommhold, Markus and Scheuch, Klaus and Seibt, Reingard and Wirsching, Michael and others},
+  journal={International archives of occupational and environmental health},
+  volume={80},
+  number={5},
+  pages={433--441},
+  year={2007},
+  publisher={Springer}
+}
+
+@article{boyle1995structural,
+  title={A structural model of the dimensions of teacher stress},
+  author={Boyle, Gregory J and Borg, Mark G and Falzon, Joseph M and Baglioni Jr, Anthony J},
+  journal={British Journal of Educational Psychology},
+  volume={65},
+  number={1},
+  pages={49--67},
+  year={1995},
+  publisher={Wiley Online Library}
+}
+
+@book{smith2000stress,
+title = "Scale of occupational stress: a further analysis of the impact of demographic factors and type of job",
+author = "Andrew Smith and C Brice and Alison Collins and Rachel McNamara and Victoria Matthews",
+year = "2000",
+language = "English",
+volume = "Contract research report no. 311/200",
+publisher = "HSE",
+}
+
+@article{dicke2014self,
+  title={Self-efficacy in classroom management, classroom disturbances, and emotional exhaustion: A moderated mediation analysis of teacher candidates.},
+  author={Dicke, Theresa and Parker, Philip D and Marsh, Herbert W and Kunter, Mareike and Schmeck, Annett and Leutner, Detlev},
+  journal={Journal of educational psychology},
+  volume={106},
+  number={2},
+  pages={569},
+  year={2014},
+  publisher={American Psychological Association}
+}
+
+@book{cooper2012teachers,
+  title={Teachers Under Pressure: Stress in the Teaching Profession},
+  author={Cooper, Cary and Travers, Cheryl},
+  year={2012},
+  publisher={Routledge}
+}
+
+@article{Darnell2019StudentEA,
+  title={Student engagement, assessed using heart rate, shows no reset following active learning sessions in lectures},
+  author={D. Darnell and P. Krieg},
+  journal={PLoS ONE},
+  year={2019},
+  volume={14}
+}
+
+@article{ferguson2015validity,
+  title={The validity of consumer-level, activity monitors in healthy adults worn in free-living conditions: a cross-sectional study},
+  author={Ferguson, Ty and Rowlands, Alex V and Olds, Tim and Maher, Carol},
+  journal={International journal of behavioral nutrition and physical activity},
+  volume={12},
+  number={1},
+  pages={1--9},
+  year={2015},
+  publisher={BioMed Central}
+}
+
+@unknown{unknown,
+author = {Chevance, Guillaume and Golaszewski, Natalie and Tipton, Elizabeth and Hekler, Eric and Buman, Matthew},
+year = {2020},
+month = {01},
+pages = {},
+title = {Accuracy and precision of energy expenditure, heart rate, and steps measured by combined-sensing Fitbits: Protocol for a Systematic Review and Meta-Analyses},
+doi = {10.31236/osf.io/tgk7a}
+}
+
+@article{russell2019investigation,
+  title={Investigation of an estimate of daily resting heart rate using a consumer wearable device},
+  author={Russell, Allison and Heneghan, Conor and Venkatraman, Subbu},
+  journal={medRxiv},
+  pages={19008771},
+  year={2019},
+  publisher={Cold Spring Harbor Laboratory Press}
+}
+
+@unknown{unknown,
+author = {Jachymek, Magdalena and Jachymek, Michał and Kiedrowicz, Radosław and Kaźmierczak, Jarosław and Peregud-Pogorzelska, Małgorzata},
+year = {2021},
+month = {06},
+pages = {},
+title = {Validation of heart rate measurement of Fitbit Charge 4 and Xiaomi Mi Band 5 (Preprint)},
+doi = {10.2196/preprints.30893}
+}
+
+@article{karner2018stress,
+  title={Stress im Unterricht? Prozessanalysen zu Interaktionseffekten unterrichtlicher Anforderungen und individueller Ressourcenbewertungen auf physische und psychische Stresssymptome von Berufssch{\"u}ler/innen},
+  author={K{\"a}rner, Tobias and Warwas, Julia},
+  journal={Unterrichtswissenschaft},
+  volume={46},
+  number={2},
+  pages={185--214},
+  year={2018},
+  publisher={Springer}
+}
+
+@book{lazarus1984stress,
+  title={Stress, appraisal, and coping},
+  author={Lazarus, Richard S and Folkman, Susan},
+  year={1984},
+  publisher={Springer publishing company}
+}
+
+@article{mccarthy2019teacher,
+  title={Teacher stress: Balancing demands and resources},
+  author={McCarthy, Christopher Jay},
+  journal={Phi Delta Kappan},
+  volume={101},
+  number={3},
+  pages={8--14},
+  year={2019},
+  publisher={SAGE Publications Sage CA: Los Angeles, CA}
+}
+
+@article{muggeridge2021measurement,
+  title={Measurement of heart rate using the polar OH1 and fitbit charge 3 wearable devices in healthy adults during light, moderate, vigorous, and sprint-based exercise: Validation study},
+  author={Muggeridge, David Joseph and Hickson, Kirsty and Davies, Aimie Victoria and Giggins, Oonagh M and Megson, Ian L and Gorely, Trish and Crabtree, Daniel R},
+  journal={JMIR mHealth and uHealth},
+  volume={9},
+  number={3},
+  pages={e25313},
+  year={2021},
+  publisher={JMIR Publications Inc., Toronto, Canada}
+}
+
+@article{prilleltensky2016teacher,
+  title={Teacher stress: What it is, why it's important, how it can be alleviated},
+  author={Prilleltensky, Isaac and Neff, Marilyn and Bessell, Ann},
+  journal={Theory Into Practice},
+  volume={55},
+  number={2},
+  pages={104--111},
+  year={2016},
+  publisher={Taylor \& Francis}
+}
+
+@article{rungeusing,
+  title={Using Fitbit Fitness Trackers to Measure Teacher Stress and Coping},
+  author={Runge, Natalie and Haarman, Shelby and Fisher, Molly H}
+}
+
+@inproceedings{taelman2009influence,
+  title={Influence of mental stress on heart rate and heart rate variability},
+  author={Taelman, Joachim and Vandeput, Steven and Spaepen, Arthur and Van Huffel, Sabine},
+  booktitle={4th European conference of the international federation for medical and biological engineering},
+  pages={1366--1369},
+  year={2009},
+  organization={Springer}
+}
+
+@article{article,
+author = {Wang, Gy and Pereira, Beatriz and Mota, Jorge},
+year = {2005},
+month = {07},
+pages = {171-7},
+title = {Indoor physical education measured by heart rate monitor—A case study in Portugal},
+volume = {45},
+journal = {The Journal of sports medicine and physical fitness}
+}
+
+

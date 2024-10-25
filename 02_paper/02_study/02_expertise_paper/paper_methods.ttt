@@ -1,0 +1,161 @@
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+
+\begin{center}
+\begin{threeparttable}
+
+\caption{\label{tab:demographicstable}Demographic Information}
+
+\tiny{
+
+\begin{tabular}{lllllll}
+\toprule
+Group & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{Gender female in percent} & \multicolumn{1}{c}{M Age in years} & \multicolumn{1}{c}{SD Age in years} & \multicolumn{1}{c}{Min Age in years} & \multicolumn{1}{c}{Max Age in years}\\
+\midrule
+Expert & 40 & 60.00 & 39.10 & 10.55 & 26.00 & 60.00\\
+Novice & 42 & 69.05 & 22.83 & 1.85 & 19.00 & 27.00\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{threeparttable}
+\end{center}
+
+\end{table*}
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+
+\begin{center}
+\begin{threeparttable}
+
+\caption{\label{tab:demographicstable}Teaching Experience in years, internship experience in teaching units (45min) and extracurricular teaching experience in percent}
+
+\tiny{
+
+\begin{tabular}{llllllllllllllll}
+\toprule
+Group & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{M Exp.} & \multicolumn{1}{c}{SD Exp.} & \multicolumn{1}{c}{Min Exp.} & \multicolumn{1}{c}{Max Exp.} & \multicolumn{1}{c}{M Semester} & \multicolumn{1}{c}{SD Semester} & \multicolumn{1}{c}{Min Semester} & \multicolumn{1}{c}{Max Semester} & \multicolumn{1}{c}{M Internship} & \multicolumn{1}{c}{SD Internship} & \multicolumn{1}{c}{Min Internship} & \multicolumn{1}{c}{Max Internship} & \multicolumn{1}{c}{Extracurricular Teaching Experience} & \multicolumn{1}{c}{Secondary Teaching Activities}\\
+\midrule
+Expert & 40 & 11.55 & 11.32 & 1.00 & 38.00 & NA & NA & NA & NA & NA & NA & NA & NA & NA & 52.00\\
+Novice & 42 & 0.00 & 0.00 & 0.00 & 0.00 & 6.74 & 2.65 & 3.00 & 11.00 & 9.62 & 7.19 & 0.00 & 36.00 & 88.10 & NA\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{threeparttable}
+\end{center}
+
+\end{table*}
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+
+\begin{center}
+\begin{threeparttable}
+
+\caption{\label{tab:presence_questionnaire}Scale analysis for teachers' self-assessment}
+
+\tiny{
+
+\begin{tabular}{lllllllll}
+\toprule
+ & \multicolumn{1}{c}{N Items} & \multicolumn{1}{c}{M} & \multicolumn{1}{c}{SD} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} & \multicolumn{1}{c}{Skewness} & \multicolumn{1}{c}{Kurtosis} & \multicolumn{1}{c}{Alpha}\\
+\midrule
+Classroom Management & 7.00 & 3.06 & 0.39 & 2.14 & 4.00 & 0.11 & 2.61 & 0.63\\
+Balance & 3.00 & 3.27 & 0.52 & 1.67 & 4.00 & -0.49 & 3.14 & 0.69\\
+Presence & 8.00 & 3.21 & 0.40 & 2.12 & 3.88 & -0.38 & 2.44 & 0.74\\
+Natural Behavior & 3.00 & 3.25 & 0.63 & 1.33 & 4.00 & -0.72 & 3.14 & 0.78\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{threeparttable}
+\end{center}
+
+\end{table*}
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+
+\begin{center}
+\begin{threeparttable}
+
+\caption{\label{tab:sjt}Scale analysis SJT novices}
+
+\tiny{
+
+\begin{tabular}{lllllllll}
+\toprule
+ & \multicolumn{1}{c}{N Items} & \multicolumn{1}{c}{M} & \multicolumn{1}{c}{SD} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} & \multicolumn{1}{c}{Skewness} & \multicolumn{1}{c}{Kurtosis} & \multicolumn{1}{c}{alpha}\\
+\midrule
+Monitoring & 4.00 & 0.68 & 0.13 & 0.17 & 0.96 & -1.15 & 6.34 & 0.53\\
+Managing Momentum & 5.00 & 0.72 & 0.13 & 0.22 & 0.94 & -1.55 & 6.75 & 0.53\\
+Rules and routines & 3.00 & 0.71 & 0.15 & 0.02 & 0.90 & -2.46 & 12.55 & 0.46\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{threeparttable}
+\end{center}
+
+\end{table*}
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+
+\begin{center}
+\begin{threeparttable}
+
+\caption{\label{tab:sjt}Scale analysis SJT novices}
+
+\tiny{
+
+\begin{tabular}{lllllllll}
+\toprule
+ & \multicolumn{1}{c}{N Items} & \multicolumn{1}{c}{M} & \multicolumn{1}{c}{SD} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} & \multicolumn{1}{c}{Skewness} & \multicolumn{1}{c}{Kurtosis} & \multicolumn{1}{c}{alpha}\\
+\midrule
+Monitoring & 4.00 & 0.71 & 0.11 & 0.51 & 0.93 & 0.07 & 2.49 & 0.40\\
+Managing Momentum & 5.00 & 0.72 & 0.12 & 0.51 & 0.95 & -0.02 & 1.86 & 0.41\\
+Rules and routines & 3.00 & 0.72 & 0.11 & 0.47 & 0.92 & -0.15 & 2.39 & 0.25\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{threeparttable}
+\end{center}
+
+\end{table*}
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+
+\begin{center}
+\begin{threeparttable}
+
+\caption{\label{tab:disruption_categories}Categories of Disruptions (Lohmann, 2015)}
+
+\tiny{
+
+\begin{tabular}{lll}
+\toprule
+Verbal.Disruption & \multicolumn{1}{c}{Agitation} & \multicolumn{1}{c}{Lack.of.eagerness.to.learn}\\
+\midrule
+chatting with neighbor & drumming hands & putting head on table\\
+whispering with neighbor & clicking pen & looking at phone\\
+heckling & snipping with fingers & drawing on a sheet of paper\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{threeparttable}
+\end{center}
+
+\end{table*}

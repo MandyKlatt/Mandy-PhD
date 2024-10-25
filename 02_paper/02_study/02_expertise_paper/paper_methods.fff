@@ -1,0 +1,30 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics[width=14.07in]{./pictures/tobiiglasses2}
+
+}
+
+\caption{Tobii Pro Glasses 2; Source: https://www.tobiipro.com/product-listing/tobii-pro-glasses-2/}\label{fig:tobiiglasses2}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics{./pictures/teachersgaze}
+
+}
+
+\caption{Teacher's Gaze Point}\label{fig:teachersgaze}
+\end{figure*}
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\centering \includegraphics{./pictures/sri}
+
+}
+
+\caption{Subject and experimenter during the Stimulated Recall Interview}\label{fig:sri}
+\end{figure*}

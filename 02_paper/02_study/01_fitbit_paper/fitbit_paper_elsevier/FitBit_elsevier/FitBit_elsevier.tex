@@ -1,0 +1,206 @@
+\documentclass[preprint, 3p,
+authoryear]{elsarticle} %review=doublespace preprint=single 5p=2 column
+%%% Begin My package additions %%%%%%%%%%%%%%%%%%%
+
+\usepackage[hyphens]{url}
+
+  \journal{Computers \& Education} % Sets Journal name
+
+\usepackage{graphicx}
+%%%%%%%%%%%%%%%% end my additions to header
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+% TODO: Currently lineno needs to be loaded after amsmath because of conflict
+% https://github.com/latex-lineno/lineno/issues/5
+\usepackage{lineno} % add
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
+
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={New approaches to teachers' experience of stress: Do heart rate measurements with fitness trackers provide an efficient, inexpensive, and robust measurement method?},
+            colorlinks=false,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+
+\setcounter{secnumdepth}{5}
+% Pandoc toggle for numbering sections (defaults to be off)
+
+
+% tightlist command for lists without linebreak
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+
+\usepackage{tabularx}
+\usepackage{threeparttable}
+\usepackage{booktabs}
+
+
+
+\begin{document}
+
+
+\begin{frontmatter}
+
+  \title{New approaches to teachers' experience of stress: Do heart rate
+measurements with fitness trackers provide an efficient, inexpensive,
+and robust measurement method?}
+    \author[Leipzig University]{Mandy Klatt%
+  \corref{cor1}%
+  \fnref{1}}
+   \ead{mandy.klatt@uni-leipzig.de} 
+    \author[Leipzig University]{Peer Keßler%
+  %
+  \fnref{2}}
+   \ead{Peer@example.com} 
+    \author[Leipzig University, Max Planck Institute for Evolutionary
+Anthropology]{Gregor Kachel%
+  %
+  \fnref{1}}
+   \ead{gregor@example.com} 
+    \author[Leipzig University]{Christin Lotz%
+  %
+  \fnref{1}}
+   \ead{christin@example.com} 
+    \author[Leipzig University]{Anne Deiglmayr%
+  %
+  \fnref{3}}
+   \ead{anne@example.com} 
+      \affiliation[Leipzig University]{
+    organization={Empirische Schul- und
+Unterrichtsforschung},addressline={Marschnerstr.
+29},city={Leipzig},postcode={4109},state={Sachsen},country={Germany},}
+    \affiliation[Max Planck Institute for Evolutionary Anthropology]{
+    organization={Department},addressline={Deutscher Pl.
+6},city={Leipzig},postcode={4103},state={Sachsen},country={Germany},}
+    \cortext[cor1]{Corresponding author}
+    \fntext[1]{ConceptualizationWriting - Original Draft
+PreparationWriting - Review \& Editing}
+    \fntext[2]{Writing - Original Draft PreparationWriting - Review \&
+Editing}
+    \fntext[3]{Supervision}
+  
+  \begin{abstract}
+  One or two sentences providing a \textbf{basic introduction} to the
+  field, comprehensible to a scientist in any discipline.
+
+  Two to three sentences of \textbf{more detailed background},
+  comprehensible to scientists in related disciplines.
+
+  One sentence clearly stating the \textbf{general problem} being
+  addressed by this particular study.
+
+  One sentence summarizing the main result (with the words
+  ``\textbf{here we show}'' or their equivalent).
+
+  Two or three sentences explaining what the \textbf{main result}
+  reveals in direct comparison to what was thought to be the case
+  previously, or how the main result adds to previous knowledge.
+
+  One or two sentences to put the results into a more \textbf{general
+  context}.
+
+  Two or three sentences to provide a \textbf{broader perspective},
+  readily comprehensible to a scientist in any discipline.
+
+  XXX In this proof-of-concept study, we aimed to advance the field of
+  teacher stress by collecting heart rate data with wrist-worn devices
+  and testing a methodology that has the potential to provide more
+  insights on the non-invasive assessment of teacher stress. XXX
+  \end{abstract}
+    \begin{keyword}
+    heart rate \sep photoplethysmography \sep wearable electronic
+device \sep 
+    teaching
+  \end{keyword}
+  
+ \end{frontmatter}
+
+\input{tab_1.tex}
+
+\section{Present investigation}\label{present-investigation}
+
+The aim was to investigate whether HR measures assessed by a Fitbit
+Charge 4 are a suitable and effective method to \textbf{(1)} map
+teachers course of arousal over the course of a five phase lab study,
+including a micro teaching unit, and \textbf{(2)} examine whether HR
+measures can be predicted by self-reported data on cognitive appraisal.
+
+Within the time frame of approximately two hours, we investigated five
+intervals with a duration of 10-minutes each: In the (1) pre-teaching
+phase, the subjects were prepared for the following micro teaching unit
+teaching lesson and familiarized with the setting. During the (2)
+teaching phase, the participants taught a 15-minute self-prepared lesson
+to a ``class'' of three actors that simulated nine classroom disruptions
+. In the following (3) post-teaching phase, the subjects answered a
+questionnaires, followed by and in the (4) interview phase, in which
+they subjects watched thea pre-recorded video of their 15-minute lesson
+to assess the self-report data of how disrupted subjects felt and how
+confident they felt in dealing with disruptions. In the (5) end phase,
+the subject answered another second questionnaire.
+
+According to previous findings that fitness trackers can be used as a
+low-cost, non-invasive method of measuring HR
+\citep{hajj2022wrist, fuller2020reliability} and that different HRs of
+teachers can be measured in different teaching phases
+\citep{donker2020associations, junker2021potential}, we formulate the
+hypotheses as follows:
+
+\textbf{Hypothesis 1}. In a first step, we wanted to display
+exploratively the course of HR during the entire study. Additionally, we
+presumed the highest mean HR in the (2) teaching phase and lower mean
+values in all other phases (\textbf{Hypothesis 1a}). Moreover, we
+expected an increase in HR in the (1) pre-teaching phase as the first
+phase and a decrease in the following phases (\textbf{Hypothesis 1b}).
+\textbf{Hypothesis 2}. We statistically predicted the subjects'
+standardized mean HR for the (2) teaching, the (3) post-teaching, the
+(4) interview and the (5) end phase with teaching experience and
+self-repoted data on \ldots. With respect to teaching experience, Wwe
+expected a lower HR in teachers with more teaching experience for the
+four phases (\textbf{Hypothesis 2a}). According to the relationship
+between physiological arousal and cognitive appraisal, we controlled for
+shared variance with the self-reported data. Concerning the \ldots, Wwe
+expected higher HR values for for the four phases that teachers who
+reported that they felt more disrupted by disruptions would have higher
+standardized mean HR (\textbf{Hypotheses 2b}). In contrast, individuals
+with high confidence in dealing with disruptions would have a lower
+standardized mean HR in the four phases (\textbf{Hypothesis 2c}). When
+considering the three predictors in concert and controlling for their
+common variance, we expected teaching experience and self-reported data
+to remain substantial predictors (\textbf{Hypothesis 2d}).
+
+\renewcommand\refname{References}
+\bibliography{r-references.bib}
+
+
+\end{document}
