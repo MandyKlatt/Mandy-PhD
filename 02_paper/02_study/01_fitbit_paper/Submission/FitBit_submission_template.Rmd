@@ -13,13 +13,13 @@ author:
     email: christin.lotz@uni-leipzig.de
     affiliation: Leipzig University
     footnote: 2
-  - name: Gregor Kachel
-    email: gregor@example.com
-    affiliation: Max Planck Institute for Evolutionary Anthropology
-    footnote: 3
   - name: Peer Keßler
     email: peer.kessler@uni-greifswald.de
-    affiliation: University of Greifswald
+    affiliation: UoG, DZKJ
+    footnote: 3
+  - name: Gregor Kachel
+    email: gregor.kachel@gmail.com
+    affiliation: Leipzig University
     footnote: 4
   - name: Anne Deiglmayr
     email: anne.deiglmayr@uni-leipzig.de
@@ -27,32 +27,32 @@ author:
     footnote: 5
 address:
   - code: Leipzig University
-    organization: Division of Empirical School and Classroom Research, Institute of Educational Sciences
+    organization: Leipzig University Division of Empirical School and Classroom Research, Institute of Educational Sciences
     addressline: Marschnerstr. 29
     city: Leipzig
     postcode: "04109"
     country: Germany
-  - code: Max Planck Institute for Evolutionary Anthropology
-    organization: Department
-    addressline: Deutscher Pl. 6
-    postcode: "04103"
-    city: Leipzig
-    country: Germany
-  - code: University of Greifswald
-    organization: Division of Health and Prevention, Institute of Psychology
+  - code: UoG
+    organization: University of Greifswald, Division of Health and Prevention, Institute of Psychology
     addressline: Robert-Blum-Str. 13
     city: Greifswald
     postcode: "17489" 
     country: Germany 
+  - code: DZKJ
+    organization: German Center for Child and Adolescent Health (DZKJ)
+    addressline: Robert-Blum-Str. 13
+    city: Greifswald
+    postcode: "17489" 
+    country: Germany
 footnote:
   - code: 1
     text: "Conceptualization, Methodology, Formal analysis, Investigation, Data Curation, Writing - Original Draft"
   - code: 2
     text: "Conceptualization, Methodology, Writing - Review & Editing, Supervision"
   - code: 3
-    text: "Formal analysis, Data Curation, Writing - Review & Editing"
-  - code: 4
     text: "Conceptualization, Methodology, Writing - Review & Editing"
+  - code: 4
+    text: "Formal analysis, Data Curation, Writing - Review & Editing"
   - code: 5
     text: "Conzeptualization, Methodology, Writing - Review & Editing, Supervision"
 abstract: "
@@ -654,11 +654,11 @@ table_data$n[table_data$Phase == "End Phase"] <- df_regression %>% filter(Phase 
         \toprule
         Interval  & \multicolumn{2}{c}{\textit{M} (\textit{SD})} & \multicolumn{2}{c}{$p$} \\ & Intercept & Slope & Intercept & Slope \\
         \midrule
-        Pre-teaching interval & 0.052 (0.820) & 0.085 (0.133) & .57 & $< .05$ ($I_1$)\\
-        Teaching interval & 1.025 (0.690) & -0.039 (0.108) & $< .05$ & $< .05$ ($I_2$)\\
-        Post-teaching interval & 0.549 (0.547) & -0.060 (0.101) & $< .05$ & $< .05$ ($I_3$)\\
-        Interview interval & -0.617 (0.614) & -0.022 (0.070) & $< .05$ & $< .05$ ($I_4$)\\
-        End interval & -1.004 (0.500) & -0.012 (0.074) & $< .05$ & .14 ($I_5$)\\
+        Pre-teaching interval (I$_1$) & 0.052 (0.820) & 0.085 (0.133) & .57 & $< .05$ \\
+        Teaching interval (I$_2$) & 1.025 (0.690) & -0.039 (0.108) & $< .05$ & $< .05$ \\
+        Post-teaching interval (I$_3$) & 0.549 (0.547) & -0.060 (0.101) & $< .05$ & $< .05$ \\
+        Interview interval (I$_4$) & -0.617 (0.614) & -0.022 (0.070) & $< .05$ & $< .05$ \\
+        End interval (I$_5$) & -1.004 (0.500) & -0.012 (0.074) & $< .05$ & .14 \\
         \bottomrule
     \end{tabularx}
     \caption{Analysis (\textit{M, SD, p}-values) for the mean intercepts and the mean slopes for the five intervals.}
@@ -694,11 +694,7 @@ df_heart_rate |>
          ) +
   geom_smooth(se = F,
               size = 0.5,
-<<<<<<< Updated upstream
-              colour = "black"              
-=======
               colour = "black"
->>>>>>> Stashed changes
               ) +
   scale_color_viridis_d(option = "A",
                         end = 0.8
@@ -730,12 +726,8 @@ df_heart_rate_std |>
          ) +
   geom_smooth(se = F,
               size = 0.5,
-<<<<<<< Updated upstream
               colour = "black"
               ) +
-=======
-              colour = "black") +
->>>>>>> Stashed changes
   scale_color_viridis_d(option = "A",
                         end = 0.8) +
   scale_linetype_manual(values = c(1, 6)) +
