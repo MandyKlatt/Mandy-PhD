@@ -1540,7 +1540,7 @@ sri <-
   excel_sheets("data/Coding_SRI.xlsx") %>%
   map_df(~ read_xlsx("data/Coding_SRI.xlsx", .)) %>%
   filter(
-    !ID %in% c(201),
+    !ID %in% c(201, 223),
     !disruption_appraisal == -100,
     !confidence_appraisal == -100,
     !disruption_appraisal == -99,
@@ -1691,7 +1691,8 @@ df_sjt_mean <- df_sjt %>%
          SJT_ST_gek, # Managing momentum
          SJT_R_gek, # Rules and routines
          SJT_KF_gek) %>% # All
-  filter(!UI06_05 == 201) # exclude ID with no eye tracking data
+  filter(!UI06_05 == 201,
+         !UI06_05 == 223) # exclude ID with no eye tracking data
 
 # remove NAs
 df_sjt <- na.omit(df_sjt_mean)
