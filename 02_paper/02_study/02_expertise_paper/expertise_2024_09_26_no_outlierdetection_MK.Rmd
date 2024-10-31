@@ -1,10 +1,11 @@
 ---
-title: "Through the eyes of the teacher - Multimodal exploration of expertise differences
-  in the perception of classroom disruptions in a laboratory study"
-output:
-  html_document:
-    df_print: paged
-  pdf_document: default
+title: "Through the eyes of the teacher - Multimodal exploration of expertise differences in the perception of classroom disruptions in a laboratory study"
+output: 
+  pdf_document:
+    toc: true           # Add a table of contents
+    number_sections: true
+    latex_engine: xelatex  # Specify LaTeX engine if needed
+    keep_tex: true      # Keep .tex file for debugging or customization
 ---
 
 ```{r include=FALSE}
@@ -1327,94 +1328,220 @@ d_sri_confi <- CohenD(x = sri$confidence_appraisal[sri$ID == "Expert"],
 round(d_sri_confi, 2)
 ```
 
-```{r sri_pr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-
-############## Prevalence Rating #########################
-
-sri.preva.table <-
-  sri %>%
-  group_by(ID) %>%
-  summarise(
-    N = n(),
-    "M" = round(mean(prevalence_rating), digits = 2),
-    "SD" = round(sd(prevalence_rating), digits = 2),
-    "Min" = min(prevalence_rating),
-    "Max" = max(prevalence_rating)
-  )
-
-# insert a table into HTML
-knitr::kable(sri.preva.table,
-             caption = "Prevalence rating")
-
-#### with event 
-sri.preva.event.table <-
-  sri %>%
-  group_by(ID, event) %>%
-  summarise(
-    N = n(),
-    "M" = round(mean(prevalence_rating), digits = 2),
-    "SD" = round(sd(prevalence_rating), digits = 2),
-    "Min" = min(prevalence_rating),
-    "Max" = max(prevalence_rating)
-  )
-
-# insert a table into HTML
-knitr::kable(sri.preva.event.table,
-             caption = "Prevalence rating with events")
-
-# create a new data frame with rating
-sri_preva <- subset.data.frame(sri, select = c(ID, event, prevalence_rating))
-
-# plotting prevalence rating for groups
-preva_group_plot <- 
-  sri_preva %>% 
-  mutate(ID = factor(ID,
-                     levels = c("Novice",
-                                "Expert"
-                                )
-                     )
-         ) %>% 
-  ggplot(mapping = aes(x = ID,
-                       y = prevalence_rating)) +
-  geom_boxplot(mapping = aes(fill = ID),
-               outlier.shape = NA) +
-  geom_point(size = 1,
-             alpha = 0.4,
-             position = position_jitter(seed = 1,
-                                        width = 0.1,
-                                        height = 0.1)) +
-  scale_x_discrete(limits = c("Novice", "Expert")) +
-  scale_y_continuous(breaks = seq(from = 0, to = 10, by = 1)) + 
-  labs(x = "",
-       y = "Prevalence Rating") + 
-  scale_fill_brewer(palette  = "RdBu") +  
-  ggtitle("How widespread is this event in the classroom?") +
-  theme_cowplot()
-
-preva_group_plot
-
-```
+# ```{r sri_pr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# 
+# ############## Prevalence Rating #########################
+# 
+# sri.preva.table <-
+#   sri %>%
+#   group_by(ID) %>%
+#   summarise(
+#     N = n(),
+#     "M" = round(mean(prevalence_rating), digits = 2),
+#     "SD" = round(sd(prevalence_rating), digits = 2),
+#     "Min" = min(prevalence_rating),
+#     "Max" = max(prevalence_rating)
+#   )
+# 
+# # insert a table into HTML
+# knitr::kable(sri.preva.table,
+#              caption = "Prevalence rating")
+# 
+# #### with event 
+# sri.preva.event.table <-
+#   sri %>%
+#   group_by(ID, event) %>%
+#   summarise(
+#     N = n(),
+#     "M" = round(mean(prevalence_rating), digits = 2),
+#     "SD" = round(sd(prevalence_rating), digits = 2),
+#     "Min" = min(prevalence_rating),
+#     "Max" = max(prevalence_rating)
+#   )
+# 
+# # insert a table into HTML
+# knitr::kable(sri.preva.event.table,
+#              caption = "Prevalence rating with events")
+# 
+# # create a new data frame with rating
+# sri_preva <- subset.data.frame(sri, select = c(ID, event, prevalence_rating))
+# 
+# # plotting prevalence rating for groups
+# preva_group_plot <- 
+#   sri_preva %>% 
+#   mutate(ID = factor(ID,
+#                      levels = c("Novice",
+#                                 "Expert"
+#                                 )
+#                      )
+#          ) %>% 
+#   ggplot(mapping = aes(x = ID,
+#                        y = prevalence_rating)) +
+#   geom_boxplot(mapping = aes(fill = ID),
+#                outlier.shape = NA) +
+#   geom_point(size = 1,
+#              alpha = 0.4,
+#              position = position_jitter(seed = 1,
+#                                         width = 0.1,
+#                                         height = 0.1)) +
+#   scale_x_discrete(limits = c("Novice", "Expert")) +
+#   scale_y_continuous(breaks = seq(from = 0, to = 10, by = 1)) + 
+#   labs(x = "",
+#        y = "Prevalence Rating") + 
+#   scale_fill_brewer(palette  = "RdBu") +  
+#   ggtitle("How widespread is this event in the classroom?") +
+#   theme_cowplot()
+# 
+# preva_group_plot
+# 
+# ```
 
 #### t-Test & effect size "Prevalence rating"
-```{r sri_pr_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# ```{r sri_pr_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# 
+# #################### T-TEST & EFFECT SIZE ############
+# 
+# # Prevalence Rating 
+# # t-test for expertise differences
+# t.test(x = sri$prevalence_rating[sri$ID == "Expert"],
+#        y = sri$prevalence_rating[sri$ID == "Novice"],
+#        var.equal = TRUE)
+# 
+# # Prevalence Rating 
+# # effect size for expertise differences
+# d_sri_preva <- CohenD(x = sri$prevalence_rating[sri$ID == "Expert"],
+#                       y = sri$prevalence_rating[sri$ID == "Novice"],
+#                       na.rm = TRUE)
+# 
+# round(d_sri_preva, 2)
+# 
+# ```
 
-#################### T-TEST & EFFECT SIZE ############
+### Internal consistency (Omega) for disruption and confidence appraisal
+```{r sri_omega, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-# Prevalence Rating 
-# t-test for expertise differences
-t.test(x = sri$prevalence_rating[sri$ID == "Expert"],
-       y = sri$prevalence_rating[sri$ID == "Novice"],
-       var.equal = TRUE)
+# Select the relevant columns (e.g., Disruption Appraisal and Confidence Appraisal)
+sri <-
+  excel_sheets("data/Coding_SRI.xlsx") %>%
+  map_df(~ read_xlsx("data/Coding_SRI.xlsx", .)) %>%
+  filter(
+    !ID %in% c(201),
+    !disruption_appraisal == -100,
+    !confidence_appraisal == -100,
+    !disruption_appraisal == -99,
+    !confidence_appraisal == -99,
+    !disruption_appraisal == -88,
+    !confidence_appraisal == -88,
+    !prevalence_rating == -100,
+    !prevalence_rating == -99,
+    !prevalence_rating == -88
+    ) 
 
-# Prevalence Rating 
-# effect size for expertise differences
-d_sri_preva <- CohenD(x = sri$prevalence_rating[sri$ID == "Expert"],
-                      y = sri$prevalence_rating[sri$ID == "Novice"],
-                      na.rm = TRUE)
+# change long to wide format
+sri_wide <- sri %>%
+  pivot_wider(names_from = event, 
+              values_from = c(disruption_appraisal, confidence_appraisal, prevalence_rating))
 
-round(d_sri_preva, 2)
+
+### DISRUPTIONS APPRAISAL 
+
+# create new data frame with only disruption items
+sri_wide_disrup <- sri_wide %>%
+  dplyr::select(starts_with("disruption_appraisal")) %>% 
+  drop_na()
+
+# calculate omega with omega() function  
+omega_disrup <- omega(sri_wide_disrup)
+
+# display the results 
+print(omega_disrup)
+ 
+
+### CONFIDENCE APPRAISAL 
+ 
+# create new data frame with only confidence items
+sri_wide_confi <- sri_wide %>%
+  dplyr::select(starts_with("confidence_appraisal")) %>% 
+  drop_na()
+
+# calculate omega with omega() function  
+omega_confi <- omega(sri_wide_confi)
+
+# display the results 
+print(omega_confi)
+
+``` 
+
+
+### Prevalence Rating as manipulation check
+```{r sri_pr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+# 
+# ############## Prevalence Rating as manipulation check #########################
+# 
+# sri.preva.table <-
+#   sri %>%
+#   group_by(ID) %>%
+#   summarise(
+#     N = n(),
+#     "M" = round(mean(prevalence_rating), digits = 2),
+#     "SD" = round(sd(prevalence_rating), digits = 2),
+#     "Min" = min(prevalence_rating),
+#     "Max" = max(prevalence_rating)
+#   )
+# 
+# # insert a table into HTML
+# knitr::kable(sri.preva.table,
+#              caption = "Prevalence rating")
+# 
+# #### with event 
+# sri.preva.event.table <-
+#   sri %>%
+#   group_by(ID, event) %>%
+#   summarise(
+#     N = n(),
+#     "M" = round(mean(prevalence_rating), digits = 2),
+#     "SD" = round(sd(prevalence_rating), digits = 2),
+#     "Min" = min(prevalence_rating),
+#     "Max" = max(prevalence_rating)
+#   )
+# 
+# # insert a table into HTML
+# knitr::kable(sri.preva.event.table,
+#              caption = "Prevalence rating with events")
+# 
+# # create a new data frame with rating
+# sri_preva <- subset.data.frame(sri, select = c(ID, event, prevalence_rating))
+# 
+# # plotting prevalence rating for groups
+# preva_group_plot <- 
+#   sri_preva %>% 
+#   mutate(ID = factor(ID,
+#                      levels = c("Novice",
+#                                 "Expert"
+#                                 )
+#                      )
+#          ) %>% 
+#   ggplot(mapping = aes(x = ID,
+#                        y = prevalence_rating)) +
+#   geom_boxplot(mapping = aes(fill = ID),
+#                outlier.shape = NA) +
+#   geom_point(size = 1,
+#              alpha = 0.4,
+#              position = position_jitter(seed = 1,
+#                                         width = 0.1,
+#                                         height = 0.1)) +
+#   scale_x_discrete(limits = c("Novice", "Expert")) +
+#   scale_y_continuous(breaks = seq(from = 0, to = 10, by = 1)) + 
+#   labs(x = "",
+#        y = "Prevalence Rating") + 
+#   scale_fill_brewer(palette  = "RdBu") +  
+#   ggtitle("How widespread is this event in the classroom?") +
+#   theme_cowplot()
+# 
+# preva_group_plot
 
 ```
+
 
 ### 2.3 Situational Jugdement Test
 ```{r sjt, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -1644,6 +1771,63 @@ round(d_sjt_rr, 2)
 
 ```
 
+### Internal consistency (Omega) for SJT
+```{r sjt_omega, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# read in data
+df_sjt <- 
+  read_excel("./data/SJT.xlsx")
+
+
+### MANAGING MOMENTUM
+
+# select relevant columns
+df_sjt_mm <- df_sjt %>%
+    dplyr::select(WT_S1_F1F2_AL:WT_S4_F4F6_AL)
+
+# remove NAs
+df_sjt_mm <- na.omit(df_sjt_mm)
+
+# calculate omega with omega() function  
+omega_sjt_mm <- omega(df_sjt_mm)
+
+# display the results 
+print(omega_sjt_mm)
+ 
+
+### MONITORING
+
+# select relevant columns
+df_sjt_m <- df_sjt %>%
+    dplyr::select(WT_S5_F1F2_ST:WT_S9_F4F5_ST)
+
+# remove NAs
+df_sjt_m <- na.omit(df_sjt_m)
+
+# calculate omega with omega() function  
+omega_sjt_m <- omega(df_sjt_m)
+
+# display the results 
+print(omega_sjt_m)
+
+
+### RULES & ROUTINES 
+
+# select relevant columns
+df_sjt_r <- df_sjt %>%
+  dplyr::select(WT_S11_F1F5_R:WT_S14_F4F6_R)
+
+# remove NAs
+df_sjt_r <- na.omit(df_sjt_r)
+
+# calculate omega with omega() function  
+omega_sjt_r <- omega(df_sjt_r)
+
+# display the results 
+print(omega_sjt_r)
+
+``` 
+
 
 ### 2.4 Classroom Questionnaire
 ```{r classroom questionnaire, echo=FALSE, results='asis'}
@@ -1814,6 +1998,8 @@ d_quest_npvc <- CohenD(x = df_quest_plot$`Non-/paraverbal communication`[df_ques
 round(d_quest_npvc, 2)
 
 ```
+
+
 
 ## 3. Correlations
 ```{r correlations, echo=FALSE, message=FALSE, warning=FALSE}
