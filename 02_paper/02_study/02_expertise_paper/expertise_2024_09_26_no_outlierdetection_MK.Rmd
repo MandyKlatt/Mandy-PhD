@@ -2146,12 +2146,12 @@ df_sri <-
   rename(Participant = ID) %>%
   group_by(Participant) %>% 
   summarise(
-    Mean_disrupption_appraisal = round(mean(disruption_appraisal), 2),
+    Mean_disruption_appraisal = round(mean(disruption_appraisal), 2),
     Mean_confidence_appraisal = round(mean(confidence_appraisal), 2),
     Mean_prevalence_rating = round(mean(prevalence_rating), 2)
     )%>% 
   dplyr::select(Participant,
-                Mean_disrupption_appraisal,
+                Mean_disruption_appraisal,
                 Mean_confidence_appraisal)
 
 # sjt
@@ -2205,15 +2205,11 @@ df_list <- list(df_demo,
 df_merge <-
   df_list %>% reduce(full_join, by='Participant') %>%
   # filter(`Teaching Experience` > 0) %>% 
-  dplyr::select(Stud_number_fixation_min,
-                Average_duration_stud,
-                Number_of_fixations.Disruptive_Person,
-                Average_duration_disrup,
-                Disrup_time_fixation_sec,
-                GRI_mtu,
+  dplyr::select(GRI_mtu,
                 SJT_All,
-                SJT_Monitoring,
-                Quest_All
+                Quest_All,
+                Mean_disruption_appraisal,
+                Mean_confidence_appraisal
                 )
 
 # create a correlation matrix
@@ -2221,6 +2217,8 @@ cor_tab <-
   df_merge %>% 
   cor(method = "pearson") %>% 
   round(., digits = 2)
+
+
 
 ### Teaching experience with only experts
 # merge all data frames in list
@@ -2249,8 +2247,15 @@ cor_tab_experts <-
 # p-value for GRI x STJ_All
 cor.test(df_merge$GRI_mtu, df_merge$SJT_All)
 
-# p-value for GRI x STJ_Monitoring
-cor.test(df_merge$GRI_mtu, df_merge$SJT_Monitoring)
+# p-value for GRI x Quest_All
+cor.test(df_merge$GRI_mtu, df_merge$Quest_All)
+
+# p-value for GRI x Disruption Rating
+cor.test(df_merge$GRI_mtu, df_merge$Mean_disruption_appraisal)
+
+# p-value for GRI x Confidence Rating
+cor.test(df_merge$GRI_mtu, df_merge$Mean_confidence_appraisal)
+
 
 # p-value for GRI x Teaching Experience
 cor.test(df_merge_experts$GRI_mtu, df_merge_experts$`Teaching Experience`)
