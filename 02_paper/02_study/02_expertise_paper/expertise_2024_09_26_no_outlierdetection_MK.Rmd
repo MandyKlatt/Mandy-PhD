@@ -476,6 +476,110 @@ round(d_number_stud, 2)
 
 ```
 
+#### 2.2.2 Number of fixations per minute (AOI others)
+```{r nof_others, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+##################### NUMBER OF FIXATIONS (AOI others) ########################
+
+# filter group & total duration & number fixation (AOI others)
+df_aoi %>%
+  filter(TOI == "Lesson") %>%
+  dplyr::select (
+    Group,
+    Duration_of_interval,
+    Participant,
+    "Total_duration_of_fixations.Board_Screen",
+    "Total_duration_of_fixations.Classroom_Others",
+    "Total_duration_of_fixations.Material_Students",
+    "Total_duration_of_fixations.Material_Teacher",
+    "Total_duration_of_fixations.Nametag_Anna",
+    "Total_duration_of_fixations.Nametag_Bianca",
+    "Total_duration_of_fixations.Nametag_Carl(a)",
+    "Number_of_fixations.Board_Screen",
+    "Number_of_fixations.Classroom_Others",
+    "Number_of_fixations.Material_Students",
+    "Number_of_fixations.Material_Teacher",
+    "Number_of_fixations.Nametag_Anna",
+    "Number_of_fixations.Nametag_Bianca",
+    "Number_of_fixations.Nametag_Carl(a)"
+  ) %>%
+  rowwise() %>%
+  transmute(
+    Group = as_factor(Group),
+    Duration_of_interval_min = round(Duration_of_interval/60000, digits = 2),
+    Duration_of_interval_sec = round(Duration_of_interval/1000, digits = 2),
+    Participant = Participant,
+    Others_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
+    Others_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE),
+    Others_number_fixation_min = round(Others_number_fixation / Duration_of_interval_min, digits = 2),
+    Average_duration_others = round(Others_duration_fixation / Others_number_fixation, digits = 0)
+    ) -> df_aoi_others
+
+# N, M, SD, min & max number of fixations per minute (AOI students)
+nof.min.others.table <-
+  df_aoi_others %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(Others_number_fixation_min), digits = 2),
+    "SD" = round(sd(Others_number_fixation_min), digits = 2),
+    "Min" = round(min(Others_number_fixation_min), digits = 2),
+    "Max" = round(max(Others_number_fixation_min), digits = 2)
+  )
+
+knitr::kable(nof.min.others.table,
+             caption = "N, M, SD, min & max number of fixations per minute (AOI others)")
+
+
+# plotting number of fixations per minute on AOI Students
+df_aoi_stud %>%
+  ggplot(mapping = aes(x = Group, y = Stud_number_fixation_min)) +
+  geom_boxplot(mapping = aes(fill = Group), outlier.shape = NA) +
+  geom_point(
+    size = 2,
+    alpha = 0.7,
+    position = position_jitter(
+      seed = 1,
+      width = 0.1,
+      height = 0.005
+    )
+  ) +
+  ylim(0, 50) +
+  labs(x = "", y = "Number of fixations per minute") +
+  scale_fill_brewer(palette  = "RdBu") +
+  ggtitle("Number of fixations per minute\n(AOI students)") +
+  theme_cowplot() +
+  theme(legend.position = "none") -> plot_number_min_stud
+
+plot_number_min_stud
+
+```
+
+#### t-test & effect size "Number of fixation" (AOI others)
+```{r nof_others_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# NUMBER OF FIXATIONS on AOI others 
+# t-test for expertise differences
+t.test(
+  x = df_aoi_others$Others_number_fixation_min[df_aoi_others$Group == "Expert"],
+  y = df_aoi_others$Others_number_fixation_min[df_aoi_others$Group == "Novice"],
+  var.equal = TRUE
+)
+
+
+# NUMBER OF FIXATIONS on AOI students
+# effect size for expertise differences
+d_number_others <- CohenD(
+  x = df_aoi_others$Others_number_fixation_min[df_aoi_others$Group == "Expert"],
+  y = df_aoi_others$Others_number_fixation_min[df_aoi_others$Group == "Novice"],
+  na.rm = TRUE
+)
+
+round(d_number_others, 2)
+
+```
+
+
 #### 2.2.3 Number of fixations (AOI disruptive person)
 ```{r nof_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
