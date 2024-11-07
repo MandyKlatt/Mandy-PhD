@@ -31,8 +31,6 @@
 \fi
 % use microtype if available
 \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
-\usepackage[]{natbib}
-\bibliographystyle{plainnat}
 
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
@@ -59,9 +57,45 @@
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
 
+% Pandoc citation processing
+%From Pandoc 3.1.8
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 
-\setcitestyle{sort&compress}
+\bibliographystyle{elsarticle-num}
+\setcitestyle{numbered}
 \usepackage{tabularx}
 \usepackage{threeparttable}
 \usepackage{booktabs}
@@ -160,98 +194,97 @@ disruptions \sep wearable technology \sep
 \section{Introduction}\label{introduction}
 
 The teaching profession is one of the most stressful professions, with
-teachers facing a host of stressors during their everyday work
-\citep{smith2000, herman2020, schult2014belastet}. To better understand
-mechanisms in teacher stress, there is a growing research interest in
-physiological measures such as heart rate (HR) as online measures of
-teachers' stress during teaching
-\citep{karner2021teachers, wettstein2020ambulatory}. For example, it has
-been shown that teacher-centered activities and typical
-classroom-related stressors increase teacher HR during teaching
-activities
-\citep{sperka1995, scheuch1997psychophysische, donker2018, junker2021, huang2022class}.
-However, previous studies have often relied on expensive and obtrusive
-electrocardiographs (ECG). Modern fitness trackers represent a
-non-invasive and convenient alternative \citep{ferguson2015}.
+teachers facing a host of stressors during their everyday work (Smith
+2000; Herman et al. 2020; Schult, Münzer-Schrobildgen, and Sparfeldt
+2014). To better understand mechanisms in teacher stress, there is a
+growing research interest in physiological measures such as heart rate
+(HR) as online measures of teachers' stress during teaching (Kärner and
+Höning 2021; Wettstein et al. 2020). For example, it has been shown that
+teacher-centered activities and typical classroom-related stressors
+increase teacher HR during teaching activities (Sperka and Kittler 1995;
+Scheuch and Knothe 1997; Donker, Van Gog, and Mainhard 2018; Junker,
+Donker, and Mainhard 2021; Huang et al. 2022). However, previous studies
+have often relied on expensive and obtrusive electrocardiographs (ECG).
+Modern fitness trackers represent a non-invasive and convenient
+alternative (Ferguson et al. 2015).
 
 Classroom disruptions are a major stressor in teachers' daily work
-\citep{boyle1995structural, aloe2014multivariate}, and learning how to
-deal with them is an important aspect of professional expertise
-\citep{wolff2015keeping}. According to \citet{lazarus1990theory}
-transactional model of stress and coping, the experience of stress in
-response to stressors such as classroom disruptions depends on the
-teacher´s subjective appraisal, which, in turn, depends on their coping
-resources, such as their professional knowledge. The resulting stress
-response has a psychological, physiological, or behavioral dimension
-\citep{kyriacou1978}. Therefore, in order to better understand how
-classroom stressors affect teachers' stress response, subjective
-self-reports should be accompanied by objective, physiological measures
-\citep{wettstein2021}. Teachers' use of wrist-worn fitness trackers in
-educational research provides fine-grained, in vivo data, allowing
-researchers as well as teachers themselves to monitor their
-physiological stress response continuously during teaching, across
-settings, and at low costs. Being able to monitor, and eventually
-counteract, teacher stress levels appears particularly relevant given
-the profession's generally high stress levels and associated negative
-health effects \citep{johnson2005experience, montgomery2005meta}. To
-harness this potential, the present study explored the use of
-wrist-based fitness trackers as a tool to assess teachers' HR, as an
-indicator of stress, before, during, and after a teaching session during
-which typical, potentially stressful, classroom disruptions occurred.
-Further, we explored to what extent teachers' subjective appraisals of
-classroom disruptions and their teaching experience predicted teacher
-stress as assessed by the fitness tracker.
+(Boyle et al. 1995; Aloe et al. 2014), and learning how to deal with
+them is an important aspect of professional expertise (Wolff et al.
+2015). According to Lazarus (1990) transactional model of stress and
+coping, the experience of stress in response to stressors such as
+classroom disruptions depends on the teacher´s subjective appraisal,
+which, in turn, depends on their coping resources, such as their
+professional knowledge. The resulting stress response has a
+psychological, physiological, or behavioral dimension (Kyriacou and
+Sutcliffe 1978). Therefore, in order to better understand how classroom
+stressors affect teachers' stress response, subjective self-reports
+should be accompanied by objective, physiological measures (Wettstein et
+al. 2021). Teachers' use of wrist-worn fitness trackers in educational
+research provides fine-grained, in vivo data, allowing researchers as
+well as teachers themselves to monitor their physiological stress
+response continuously during teaching, across settings, and at low
+costs. Being able to monitor, and eventually counteract, teacher stress
+levels appears particularly relevant given the profession's generally
+high stress levels and associated negative health effects (Johnson et
+al. 2005; Montgomery and Rupp 2005). To harness this potential, the
+present study explored the use of wrist-based fitness trackers as a tool
+to assess teachers' HR, as an indicator of stress, before, during, and
+after a teaching session during which typical, potentially stressful,
+classroom disruptions occurred. Further, we explored to what extent
+teachers' subjective appraisals of classroom disruptions and their
+teaching experience predicted teacher stress as assessed by the fitness
+tracker.
 
 \subsection{Fitness trackers as a ubiquitous, low-cost tool for
 assessing physiological stress
 responses}\label{fitness-trackers-as-a-ubiquitous-low-cost-tool-for-assessing-physiological-stress-responses}
 
 Fitness trackers provide data on physical activity and cardiovascular
-parameters such as HR, supporting personalized fitness goals
-\citep{nuss2021effects} and stress management \citep{hao2018chrv}. They
-can be used as ubiquitous, low-cost, and unintrusive data collection
-instruments \citep{godfrey2018z}, and their wide-spread use and everyday
+parameters such as HR, supporting personalized fitness goals (Nuss et
+al. 2021) and stress management (Hao et al. 2017). They can be used as
+ubiquitous, low-cost, and unintrusive data collection instruments
+(Godfrey et al. 2018), and their wide-spread use and everyday
 availability align with the increasing popularity and acceptance of
-wearables among the general population \citep{peng2022acceptance}. In
-contrast to self-reported questionnaires on stress
-\citep{chaplain2008, liu2020} that are prone to biases like social
-desirability \citep{razavi2001self} or recall errors
-\citep{van2016accuracy}, fitness trackers, as ambulatory assessment
-methods \citep{trull2013ambulatory, wettstein2020ambulatory}, offer more
-objective insights into teachers' stress levels by monitoring teachers'
-physiological stress responses without disrupting teaching
-\citep{donker2018, runge2020}.
+wearables among the general population (Peng et al. 2022). In contrast
+to self-reported questionnaires on stress (Chaplain 2008; Liu and Yan
+2020) that are prone to biases like social desirability (Razavi 2001) or
+recall errors (Van den Bergh and Walentynowicz 2016), fitness trackers,
+as ambulatory assessment methods (Trull and Ebner-Priemer 2013;
+Wettstein et al. 2020), offer more objective insights into teachers'
+stress levels by monitoring teachers' physiological stress responses
+without disrupting teaching (Donker, Van Gog, and Mainhard 2018; Runge,
+Haarman, and Fisher 2020).
 
 One important health parameter assessed by nearly all wrist-worn fitness
-trackers is heart rate \citep{scalise2018wearables}. HR indicates the
+trackers is heart rate (Scalise and Cosoli 2018). HR indicates the
 number of heartbeats within one minute and is typically expressed as
-beats per minute (BPM)
-\citep{berntson2007cardiovascular, hottenrott2007}. At rest, the average
-HR of adults typically ranges between 60 and 80 BPM
-\citep{sammito2015guideline}. HR can be detected and measured in
+beats per minute (BPM) (Berntson, Quigley, and Lozano 2007; Hottenrot
+2007). At rest, the average HR of adults typically ranges between 60 and
+80 BPM (Sammito et al. 2015). HR can be detected and measured in
 different ways using sensors, such as electrocardiography (ECG) or
-photoplethysmography (PPG) \citep{mukhopadhyay2017wearable}. While ECG
+photoplethysmography (PPG) (Mukhopadhyay and Islam 2017). While ECG
 sensors offer precise measurements by detecting the heart's electrical
 activity, their intrusive nature and requirement of direct skin contact
-may limit their suitability \citep{kranjec2014non}, particularly in
+may limit their suitability (Kranjec et al. 2014), particularly in
 educational settings. In contrast, photoplethysmography (PPG) is a
 rather uncomplicated and inexpensive technique to measure HR, commonly
-found in commercially available fitness trackers
-\citep{castaneda2018review}. This optical method assesses HR by flashing
-green or red lights to measure changes in blood volume in the
-capillaries of the skin \citep{allen2007photoplethysmography}.
+found in commercially available fitness trackers (Castaneda et al.
+2018). This optical method assesses HR by flashing green or red lights
+to measure changes in blood volume in the capillaries of the skin (Allen
+2007).
 
 Physiologically, HR is regulated by the sympathetic and parasympathetic
-nervous systems \citep{pham2021}. An increase in sympathetic activity
-results in HR being sped up (``fight or flight'' response)
-\citep{taelman2009influence}; whereas an increase in parasympathetic
-activity results in HR being slowed down (``rest and digest'' response,
-\citet{battipaglia2015}). Stress or mental and physical strain directly
-increases HR \citep{custodis2014heart, sachs2014}. Therefore, an
-increase in HR can be regarded as an indicator of increasing stress, and
-a decrease as an indicator of relaxation and ease \citep{kyriacou1978}.
-Thus, fitness trackers offer low-cost and unobtrusive access to
-psychological stress data.
+nervous systems (Pham et al. 2021). An increase in sympathetic activity
+results in HR being sped up (``fight or flight'' response) (Taelman et
+al. 2009); whereas an increase in parasympathetic activity results in HR
+being slowed down (``rest and digest'' response, Battipaglia and Lanza
+(2015)). Stress or mental and physical strain directly increases HR
+(Custodis et al. 2014; Sachs 2014). Therefore, an increase in HR can be
+regarded as an indicator of increasing stress, and a decrease as an
+indicator of relaxation and ease (Kyriacou and Sutcliffe 1978). Thus,
+fitness trackers offer low-cost and unobtrusive access to psychological
+stress data.
 
 \subsection{HR in teaching-learning
 contexts}\label{hr-in-teaching-learning-contexts}
@@ -259,43 +292,44 @@ contexts}\label{hr-in-teaching-learning-contexts}
 Prior research, typically using ECG methods, has shown that changes in
 teachers' HR can be mapped onto stressors they experience during
 teaching. For example, teachers' HR tends to increase when teachers take
-an exposed position in student-teacher interaction
-\citep{sperka1995, scheuch1997psychophysische, donker2018, junker2021}.
-\citet{sperka1995} for example recorded the HR of 16 pre-service
-teachers during their first lesson and showed that teachers' HR
-increased significantly during teaching. The activation was particularly
-prominent at the beginning of the lesson and decreased over the course
-of the lesson. The authors suggested that pre-service teachers'
-proactive coping strategies, such as actively managing student
-interactions, helped lower their HR levels. Other ECG studies identified
-typical stressors predicting increases in HR, such as class size
-\citep{huang2022class}, or low student engagement and motivation
-\citep{junker2021}. \citet{junker2021} recorded the HR of 40 teachers
-during a real classroom lesson. Again, teacher stress, induced by
-factors such as low student engagement (e.g., lack of motivation or
-interest in tasks) or teacher-centered activities (e.g., teacher-focused
-classroom activities), resulted in elevated HR.
+an exposed position in student-teacher interaction (Sperka and Kittler
+1995; Scheuch and Knothe 1997; Donker, Van Gog, and Mainhard 2018;
+Junker, Donker, and Mainhard 2021). Sperka and Kittler (1995) for
+example recorded the HR of 16 pre-service teachers during their first
+lesson and showed that teachers' HR increased significantly during
+teaching. The activation was particularly prominent at the beginning of
+the lesson and decreased over the course of the lesson. The authors
+suggested that pre-service teachers' proactive coping strategies, such
+as actively managing student interactions, helped lower their HR levels.
+Other ECG studies identified typical stressors predicting increases in
+HR, such as class size (Huang et al. 2022), or low student engagement
+and motivation (Junker, Donker, and Mainhard 2021). Junker, Donker, and
+Mainhard (2021) recorded the HR of 40 teachers during a real classroom
+lesson. Again, teacher stress, induced by factors such as low student
+engagement (e.g., lack of motivation or interest in tasks) or
+teacher-centered activities (e.g., teacher-focused classroom
+activities), resulted in elevated HR.
 
 More recent studies have begun using wrist-worn fitness trackers to
-investigate HR trends in instructional settings
-\citep{Darnell2019, chalmers2021}. \citet{Darnell2019} measured the HR
-of 15 medical college students listening to lectures, using wrist-worn
+investigate HR trends in instructional settings (Darnell and Krieg 2019;
+Chalmers et al. 2021). Darnell and Krieg (2019) measured the HR of 15
+medical college students listening to lectures, using wrist-worn
 devices. The analysis revealed a constant decrease in HR throughout the
-lecture, with HR peaks during more interactive learning phases.
-\citet{chalmers2021} used HR data from a fitness tracker to identify
+lecture, with HR peaks during more interactive learning phases. Chalmers
+et al. (2021) used HR data from a fitness tracker to identify
 physiological changes during stress-inducing tasks (i.e., the Trier
-Social Stress Test; \citet{kirschbaum1993trier}). Average HR increased
-significantly from the resting to the stress inducing phases. Even
-though the participants of these previous studies
-\citep{Darnell2019, chalmers2021} were not teachers but learners, the
-results are relevant for studying teacher stress as they demonstrated
-that HR can be effectively recorded using fitness trackers over the
-course of a whole learning unit, and HR changes are in line with the
-occurrence of activating or stress-inducing tasks.
+Social Stress Test; Kirschbaum, Pirke, and Hellhammer (1993)). Average
+HR increased significantly from the resting to the stress inducing
+phases. Even though the participants of these previous studies (Darnell
+and Krieg 2019; Chalmers et al. 2021) were not teachers but learners,
+the results are relevant for studying teacher stress as they
+demonstrated that HR can be effectively recorded using fitness trackers
+over the course of a whole learning unit, and HR changes are in line
+with the occurrence of activating or stress-inducing tasks.
 
 To the best of our knowledge, only one study has directly assessed
-teachers' HR during teaching using a wrist-worn fitness tracker:
-\citet{runge2020} assessed HR as an indicator of stress in four
+teachers' HR during teaching using a wrist-worn fitness tracker: Runge,
+Haarman, and Fisher (2020) assessed HR as an indicator of stress in four
 in-service teachers during authentic lessons. They used fitness
 trackers' recordings to create a profile for each teacher, with the aim
 of differentiating between teachers reporting higher vs.~lower levels of
@@ -308,10 +342,10 @@ size.
 In summary, previous studies have revealed that teachers' (and
 students') HR changes depend on their activities and the stressors they
 experience, with an increase in HR already before the expected stressors
-occur, and with peaks in activating phases
-\citep{Darnell2019, chalmers2021}. For teachers, teacher-centered phases
-led to an increase in HR
-\citep{sperka1995, scheuch1997psychophysische, donker2018, junker2021}.
+occur, and with peaks in activating phases (Darnell and Krieg 2019;
+Chalmers et al. 2021). For teachers, teacher-centered phases led to an
+increase in HR (Sperka and Kittler 1995; Scheuch and Knothe 1997;
+Donker, Van Gog, and Mainhard 2018; Junker, Donker, and Mainhard 2021).
 However, there is a lack of studies using teacher-worn fitness trackers
 in larger samples, exploring the feasibility of this convenient tool for
 researching links between teachers' HR and stress inducing events and
@@ -319,51 +353,50 @@ mechanisms.
 
 \subsection{A model of teacher stress}\label{a-model-of-teacher-stress}
 
-According to \citet{kyriacou1978}, teacher stress can be defined as a
-negative affective response, typically accompanied by physiological
-changes such as increased HR, triggered by job-related demands, and
-perceived as threatening to one's self-esteem or well-being. Coping
-mechanisms help to reduce the perceived threat. Kyriacou's definition of
-teacher stress (see \citet{kyriacou1978} and, for a more recent
-adaptation, \citet{van2006stress}) is based on the transactional stress
-model by Lazarus and colleagues
-\citep{lazarus1966psychological, lazarus1990theory}, which highlights
-the interaction between an individual and the environment, whereby
-stress refers to a person's subjective reaction to an event (a stressor)
-that exceeds the person's adaptive resources.
+According to Kyriacou and Sutcliffe (1978), teacher stress can be
+defined as a negative affective response, typically accompanied by
+physiological changes such as increased HR, triggered by job-related
+demands, and perceived as threatening to one's self-esteem or
+well-being. Coping mechanisms help to reduce the perceived threat.
+Kyriacou's definition of teacher stress (see Kyriacou and Sutcliffe
+(1978) and, for a more recent adaptation, Van Dick (2006)) is based on
+the transactional stress model by Lazarus and colleagues (Lazarus 1966,
+1990), which highlights the interaction between an individual and the
+environment, whereby stress refers to a person's subjective reaction to
+an event (a stressor) that exceeds the person's adaptive resources.
 
 Fig.\ref{fig.1} shows, in a simplified way, how classroom events affect
 teachers' stress level, according to the adaptation of the Lazarus model
-to teacher stress proposed by \citet{van2006stress}: When potential
-stressors (e.g., classroom disruptions) occur during teaching (1),
-teachers intuitively judge how disruptive the event is in a primary
-appraisal (2). If potential stressors are judged as threatening, i.e.,
-as actual stressors (3), teachers consider whether they have sufficient
-resources for coping with the stressors (4). Teachers utilize these
-resources in trying to cope with the stressors, e.g., by employing
-classroom management strategies (5). In cases when coping fails, stress
-ensues, often accompanied by physiological reactions like increased HR
-(6). As part of the coping process, and dependent on its outcomes,
-teachers re-evaluate the stressor (7).
+to teacher stress proposed by Van Dick (2006): When potential stressors
+(e.g., classroom disruptions) occur during teaching (1), teachers
+intuitively judge how disruptive the event is in a primary appraisal
+(2). If potential stressors are judged as threatening, i.e., as actual
+stressors (3), teachers consider whether they have sufficient resources
+for coping with the stressors (4). Teachers utilize these resources in
+trying to cope with the stressors, e.g., by employing classroom
+management strategies (5). In cases when coping fails, stress ensues,
+often accompanied by physiological reactions like increased HR (6). As
+part of the coping process, and dependent on its outcomes, teachers
+re-evaluate the stressor (7).
 
 As shown in Fig.\ref{fig.1}, teachers' primary and secondary appraisal
 as well as coping attempts are influenced by professional experience. As
 professional experience grows, teachers develop cognitive scripts for
 managing classroom events, resulting in more complex and problem-focused
-classroom management skills \citep{wolff2021classroom}, and thus more
-effective coping and less stress. Empirically, classroom management
-skills and problem-focused coping styles are linked to fewer instances
-of emotional exhaustion \citep{maslach2001job, clunies2008self}. Novices
-in the teaching profession, on the other hand, face considerable stress
-and often feel overwhelmed by the demands of teaching
-\citep{ophardt2017klassenmanagement, wolff2015keeping, klusmann2012berufliche}
-with many leaving the profession within the first five years
-\citep{ingersoll2003}. Accordingly, when resources are lacking and
-coping fails, negative consequences for health (e.g., burnout) and for
-work (e.g., high turnover rates) can arise
-\citep{jalongo2006, unterbrink2007, aloe2014multivariate}, highlighting
-the importance of professional expertise for managing teacher stress
-\citep{fisher2011}.
+classroom management skills (Wolff, Jarodzka, and Boshuizen 2021), and
+thus more effective coping and less stress. Empirically, classroom
+management skills and problem-focused coping styles are linked to fewer
+instances of emotional exhaustion (Maslach, Schaufeli, and Leiter 2001;
+Clunies-Ross, Little, and Kienhuis 2008). Novices in the teaching
+profession, on the other hand, face considerable stress and often feel
+overwhelmed by the demands of teaching (Ophardt and Thiel 2017; Wolff et
+al. 2015; Klusmann et al. 2012) with many leaving the profession within
+the first five years (Ingersoll and Smith 2003). Accordingly, when
+resources are lacking and coping fails, negative consequences for health
+(e.g., burnout) and for work (e.g., high turnover rates) can arise
+(Jalongo and Heider 2006; Unterbrink et al. 2007; Aloe et al. 2014),
+highlighting the importance of professional expertise for managing
+teacher stress (Fisher 2011).
 
 \captionsetup[figure]{
     labelsep=colon,      % Period after Figure label
@@ -525,7 +558,7 @@ about 10-15 minutes. \newpage
 Intervals}\label{heart-rate-data-and-heart-rate-intervals}
 
 To measure teachers' HR, we used the wrist-based fitness tracker Fitbit®
-Charge 4. In line with the manufacturer's instructions \citep{fitbitnd},
+Charge 4. In line with the manufacturer's instructions (Fitbit 2020),
 the device was attached to the participants' nondominant hand, a
 finger's width above the wrist bone. The tracker works by flashing green
 LEDs hundreds of times per second, using light-sensitive photodiodes to
@@ -543,22 +576,22 @@ level of \(n\) = 81 participants (standardized HR).
 Since we aimed to keep measurement intervals comparable between study
 phases, we aggregated HR over a representative 10-minute interval within
 each phase (cf.~Fig.\ref{fig.2}). Previous research has indicated that
-10-minute intervals are a useful duration for analyzing PPG data
-\citep{lu2008can}. The intervals were selected based on the following
-rules: The \emph{pre-teaching interval} (\(I_1\)) comprised the first 10
-minutes after the fitness tracker had been put on. The \emph{teaching
-interval} (\(I_2\)) started two minutes after the lesson had started.
-This interval was of the highest relevance to our study. We explicitly
-chose an early 10-minute interval within the teaching phase, as previous
+10-minute intervals are a useful duration for analyzing PPG data (Lu et
+al. 2008). The intervals were selected based on the following rules: The
+\emph{pre-teaching interval} (\(I_1\)) comprised the first 10 minutes
+after the fitness tracker had been put on. The \emph{teaching interval}
+(\(I_2\)) started two minutes after the lesson had started. This
+interval was of the highest relevance to our study. We explicitly chose
+an early 10-minute interval within the teaching phase, as previous
 studies revealed that the beginning of a lesson is most demanding and
 potentially stressful with regards to teacher-student interaction
-\citep{donker2018, claessens2017positive}. The \emph{post-teaching
-interval} (\(I_3\)) started immediately after the end of the teaching
-unit. The \emph{interview interval} (\(I_4\)) was defined as the mid-10
-minutes between the end of the teaching unit and the time point when the
-fitness tracker was taken off. All participants were being interviewed
-during this interval. The end interval (\(I_5\)) comprised the last 10
-minutes before the fitness tracker was taken off.
+(Donker, Van Gog, and Mainhard 2018; Claessens et al. 2017). The
+\emph{post-teaching interval} (\(I_3\)) started immediately after the
+end of the teaching unit. The \emph{interview interval} (\(I_4\)) was
+defined as the mid-10 minutes between the end of the teaching unit and
+the time point when the fitness tracker was taken off. All participants
+were being interviewed during this interval. The end interval (\(I_5\))
+comprised the last 10 minutes before the fitness tracker was taken off.
 
 \subsubsection{Teaching Experience}\label{teaching-experience}
 
@@ -578,13 +611,13 @@ phase} for each participant.
 
 \subsection{Data analysis}\label{data-analysis}
 
-We conducted all analyses with R \citep{RStudio2020}. Graphics were
-created using ggplot2 \citep{ggplot2}.
+We conducted all analyses with R (RStudio Team 2020). Graphics were
+created using ggplot2 (Wickham 2016).
 
 To enable visual inspection of HR trends, we displayed smoothed teacher
 HR over the course of the recording.\footnote{The curve was smoothed
   using the geom\_smooth() function from the ggplot2 package in R
-  \citep{ggplot2} based on the smoothing method LOESS (Locally Estimated
+  (Wickham 2016) based on the smoothing method LOESS (Locally Estimated
   Scatterplot Smoothing). This method fits a polynomial surface
   determined by one or more numerical predictors, using local fitting.}
 We visually compared unstandardized and standardized HR trends over the
@@ -604,22 +637,20 @@ resulting in one measure per person per interval. To test Hypothesis 1a,
 we initially conducted a one-way ANOVA with repeated measures as an
 omnibus test and then tested the mean differences between the
 \emph{teaching interval} (\(I_2\)) and the other four intervals by
-planned contrasts and inspection of effect size \(d\)
-\citep{cohen1988statistical}.
+planned contrasts and inspection of effect size \(d\) (Cohen 1988).
 
 For testing Hypothesis 1b, concerning HR changes within each interval,
 we first conducted a linear estimation of the increase or decrease in
 standardized HR values over time for each participant. To this end, we
-used fixed intercept fixed slope regression models
-\citep{gelman2006data} for each interval to estimate intercepts and
-linear slopes for each individual, which were then averaged across
-individuals.\footnote{Although this procedure does not account for
-  nonmonotonic progressions in individual HR, a graphical evaluation
-  revealed that the linear estimates corresponded well to the majority
-  of the cases (see Fig.\ref{fig.a3} to \ref{fig.a7} in the
-  supplementary material).} We tested Hypothesis 1b based on the
-unstandardized estimates of mean slopes (one estimate per participant
-per interval).
+used fixed intercept fixed slope regression models (Gelman and Hill
+2006) for each interval to estimate intercepts and linear slopes for
+each individual, which were then averaged across individuals.\footnote{Although
+  this procedure does not account for nonmonotonic progressions in
+  individual HR, a graphical evaluation revealed that the linear
+  estimates corresponded well to the majority of the cases (see
+  Fig.\ref{fig.a3} to \ref{fig.a7} in the supplementary material).} We
+tested Hypothesis 1b based on the unstandardized estimates of mean
+slopes (one estimate per participant per interval).
 
 Addressing our second research goal, we ran linear regression analysis
 with teaching experience and subjective appraisals as predictors. To
@@ -885,42 +916,43 @@ teaching phase, and decreasing afterward.
 These findings are in line with prior studies showing that teachers' HR
 varies depending on their activities and encountered stressors with
 increases during phases where teachers are in an exposed position
-\citep{sperka1995, scheuch1997psychophysische, donker2018, junker2021},
-as well as with findings showing how HR changes align with activating
-events and stress-inducing tasks \citep{Darnell2019, chalmers2021}.
+(Sperka and Kittler 1995; Scheuch and Knothe 1997; Donker, Van Gog, and
+Mainhard 2018; Junker, Donker, and Mainhard 2021), as well as with
+findings showing how HR changes align with activating events and
+stress-inducing tasks (Darnell and Krieg 2019; Chalmers et al. 2021).
 
-Building on the model of teacher stress (\citet{kyriacou1978}, see
-Fig.\ref{fig.2}), we had hypothesized that more experienced teachers,
-with better classroom management skills at their disposal, experience
-less physiological stress when dealing with classroom disruptions.
-Contrary to our expectations, we found no buffering effect of teaching
-experience on teachers' HR, i.e., more experienced teachers did not show
-lower mean standardized HR during the stressful teaching phase than less
-experienced teachers. Rather, at least descriptively, we observed the
-opposite trend. There are several possible explanations for this
-finding. First, teaching experience is inherently confounded with age
-(the two variables correlated at \(r = .94\) in our sample), and age has
-been shown to affect indicators of cardiovascular reactivity in various
-ways \citep{uchino2010older}. However, to avoid this kind of confounding
-influence, we had used not raw BPM but rather standardized mean HR for
-all our analyses, thus controlling at least for inter-individual
-differences in mean HR. Second, as research on teacher
+Building on the model of teacher stress (Kyriacou and Sutcliffe (1978),
+see Fig.\ref{fig.2}), we had hypothesized that more experienced
+teachers, with better classroom management skills at their disposal,
+experience less physiological stress when dealing with classroom
+disruptions. Contrary to our expectations, we found no buffering effect
+of teaching experience on teachers' HR, i.e., more experienced teachers
+did not show lower mean standardized HR during the stressful teaching
+phase than less experienced teachers. Rather, at least descriptively, we
+observed the opposite trend. There are several possible explanations for
+this finding. First, teaching experience is inherently confounded with
+age (the two variables correlated at \(r = .94\) in our sample), and age
+has been shown to affect indicators of cardiovascular reactivity in
+various ways (Uchino, Birmingham, and Berg 2010). However, to avoid this
+kind of confounding influence, we had used not raw BPM but rather
+standardized mean HR for all our analyses, thus controlling at least for
+inter-individual differences in mean HR. Second, as research on teacher
 professionalization has repeatedly shown, professional experience is not
-a guarantee for higher professional knowledge and skills
-\citep{kirschner2016professionswissen}. Rather, honing skills from
-professional experience necessitates a deliberate practice of choosing
-to improve, learning through experience, and integrating new knowledge
-into future performances \citep{dunn1999deliberate}. Thus, rather than
-professional experience alone, more direct assessments of classroom
-management skills, such as objective behavior-based tests, would be a
-better indicator of expertise that future studies could explore.
-Finally, and most importantly, the highly controlled teaching situation
-that we created in the lab might not have provided sufficient
-resemblance to the expert teachers' working conditions to let them
-effectively use their coping resources. In other words, since the
-situation was unfamiliar to both experienced and unexperienced teachers,
-their stress levels might have been more similar than they would have
-been in a more authentic classroom setting.
+a guarantee for higher professional knowledge and skills (Kirschner et
+al. 2016). Rather, honing skills from professional experience
+necessitates a deliberate practice of choosing to improve, learning
+through experience, and integrating new knowledge into future
+performances (Dunn and Shriner 1999). Thus, rather than professional
+experience alone, more direct assessments of classroom management
+skills, such as objective behavior-based tests, would be a better
+indicator of expertise that future studies could explore. Finally, and
+most importantly, the highly controlled teaching situation that we
+created in the lab might not have provided sufficient resemblance to the
+expert teachers' working conditions to let them effectively use their
+coping resources. In other words, since the situation was unfamiliar to
+both experienced and unexperienced teachers, their stress levels might
+have been more similar than they would have been in a more authentic
+classroom setting.
 
 While we did not find a buffering effect of teaching experience on mean
 HR during teaching, we did, however, find a less steep HR increase in
@@ -941,19 +973,19 @@ experienced teachers showed a higher mean standardized HR
 physiological stress during the SRI. One possible explanation for this
 finding could again be the higher age of the more experienced teachers,
 along with slower recovery from stress in older teachers. For instance,
-\citet{ritvanen2006responses} observed that, compared to their younger
+Ritvanen et al. (2006) observed that, compared to their younger
 colleagues, older teachers did not experience a decrease in their HR
 during periods of low stress levels, from which they concluded that
-recovery from stress was insufficient in the older teachers
-\citep{ritvanen2006responses}. Alternatively, the finding could also be
-attributed to the fact that less experienced teachers, due to their
-ongoing or only recently concluded training, may have been more
-accustomed to reflecting on their work and receiving feedback as was the
-case during the SRI, whereas, these activities were less routine and
-possibly more face-threatening for experienced teachers. Therefore, it
-is possible that more experienced teachers found the interview itself to
-be more stressful and therefore showed a higher mean standardized HR
-during this phase.
+recovery from stress was insufficient in the older teachers (Ritvanen et
+al. 2006). Alternatively, the finding could also be attributed to the
+fact that less experienced teachers, due to their ongoing or only
+recently concluded training, may have been more accustomed to reflecting
+on their work and receiving feedback as was the case during the SRI,
+whereas, these activities were less routine and possibly more
+face-threatening for experienced teachers. Therefore, it is possible
+that more experienced teachers found the interview itself to be more
+stressful and therefore showed a higher mean standardized HR during this
+phase.
 
 With regards to the predictive power of teachers' subjective appraisals
 of the classroom disruption during teaching, we, first of all, have to
@@ -963,11 +995,11 @@ with teachers' mean standardized HR or any explanatory power over and
 beyond teaching experience. Possibly, teachers' self-reported
 appraisals, and their actual physiological stress responses, tap into
 quite different phenomena, or at least, quite different aspects of the
-multifaceted stress response \citep{kyriacou1978}. In addition, while HR
-was assessed online during teaching, self-reported appraisals were given
-in retrospect during the SRI, and may be subject to biased (e.g.,
-self-serving) reporting or simply an inability to recall ones immediate
-stress reactions.
+multifaceted stress response (Kyriacou and Sutcliffe 1978). In addition,
+while HR was assessed online during teaching, self-reported appraisals
+were given in retrospect during the SRI, and may be subject to biased
+(e.g., self-serving) reporting or simply an inability to recall ones
+immediate stress reactions.
 
 On the other hand, when controlling for all other factors, teachers who
 reported to have perceived the events as more disruptive showed a higher
@@ -985,21 +1017,21 @@ authentic classroom environment, raising questions about its external
 validity. Most importantly, the teacher and their students did not have
 a shared history, and only a very thin basis for establishing a positive
 teacher-student relationship, which is a core characteristic of
-effective classroom management \citep{ruedi2014, beaty2010}. In
-addition, the micro-teaching unit was only about 15 minutes long, and
-thus much shorter than a regular school lesson, providing less
-opportunities for experienced teachers to build up an engaging lesson.
-Finally, student behavior was scripted, with classroom disruptions
-following the experimental schedule, irrelevant of the behavior of the
-teacher. Thus, the setting may have masked effects of teaching
-experience by providing too little opportunities of experienced teachers
-to demonstrate their true classroom management skills, in particular
-regarding the prevention of disruptions. In subsequent studies, it would
-therefore be insightful to assess teachers' HR in more authentic
-classroom settings over a longer period of time (e.g., days, weeks, or
-even months). Extended observation of teachers' HR in authentic
-classroom settings could reveal how factors such as student behavior,
-teaching methods, or organizational and administrative demands
+effective classroom management (Rüedi 2014; Beaty-O'Ferrall, Green, and
+Hanna 2010). In addition, the micro-teaching unit was only about 15
+minutes long, and thus much shorter than a regular school lesson,
+providing less opportunities for experienced teachers to build up an
+engaging lesson. Finally, student behavior was scripted, with classroom
+disruptions following the experimental schedule, irrelevant of the
+behavior of the teacher. Thus, the setting may have masked effects of
+teaching experience by providing too little opportunities of experienced
+teachers to demonstrate their true classroom management skills, in
+particular regarding the prevention of disruptions. In subsequent
+studies, it would therefore be insightful to assess teachers' HR in more
+authentic classroom settings over a longer period of time (e.g., days,
+weeks, or even months). Extended observation of teachers' HR in
+authentic classroom settings could reveal how factors such as student
+behavior, teaching methods, or organizational and administrative demands
 contribute to fluctuations in physiological arousal, uncovering insights
 into the sustained physiological demands of teaching that short-term
 studies may overlook. Finally, linking actual teacher behavior to
@@ -1013,42 +1045,42 @@ data from ubiquitous, low-cost, un-intrusive fitness trackers to
 estimate teacher stress, there also are shortcomings of this type of
 assessment. First, while fitness trackers typically yield HR data, heart
 rate variability (HRV) has been demonstrated to be an even more accurate
-indicator of stress \citep{wettstein2020ambulatory}. While standard
-fitness trackers did not provide this measure at the time of our data
+indicator of stress (Wettstein et al. 2020). While standard fitness
+trackers did not provide this measure at the time of our data
 collection, more recent products do offer this function. Thus, future
 studies might consider assessing HRV instead of HR. Second, we did not
 record participants' resting HR, which is generally considered an
 important baseline for determining inter- and intrapersonal differences
-in cardiovascular health and reactivity
-\citep{nanchen2018, heneghan2019}. A clean baseline HR requires a
-resting phase without physical movement or emotional stress, ideally
-fifteen minutes before the beginning of the activity, which is very
-difficult to achieve in practice \citep{sammito2015guideline}, e.g.,
-when assessing teacher HR before and during teaching. Thus, our study
-explored the possibility of substituting baseline HR measurement via
-z-standardization within participants. As a result, the absolute
-standardized values of each participant must always be interpreted in
-the context of the standardization sample, and thus are less
-interpretable than individual BPM values together with a baseline HR.
-However, for statistical analyses based on the whole sample, the
-standardization fulfills the aim of controlling for differences in
-individual HR due to, for example, age-related differences. Finally,
-depending on the brand and model of fitness trackers used, the precision
-of the HR measurement varies. Research on the reliability of our
-deployed Fitbit® device has proven that this brand is generally accurate
-in controlled settings and for moderate activity levels
-\citep{wallen2016accuracy, hajj2023, fuller2020, jo2016}, as in our
-study. For example, the Fitbit® fitness tracker has previously shown
-good HR measurement accuracy during resting phases
-\citep{jo2016, muggeridge2021measurement} and for activities such as
-walking, jogging, and running \citep{hajj2023}. At higher exercise
-intensities such as cycling, the Fitbit® tracker may underestimate HR
-\citep{thomson2019heart, montoye2017comparative, jo2016, jachymek2021}
-but is still within an acceptable range according to systematic reviews
-\citep{chevance2022accuracy}. Nevertheless, \citet{gagnon2022} stressed
-that Fitbit® trackers cannot replace ECG when precision is paramount.
-Despite these considerations, the Fitbit® model appears suitable for our
-study purposes, as physical strain was moderate.
+in cardiovascular health and reactivity (Nanchen 2018; Heneghan,
+Venkatraman, and Russell 2019). A clean baseline HR requires a resting
+phase without physical movement or emotional stress, ideally fifteen
+minutes before the beginning of the activity, which is very difficult to
+achieve in practice (Sammito et al. 2015), e.g., when assessing teacher
+HR before and during teaching. Thus, our study explored the possibility
+of substituting baseline HR measurement via z-standardization within
+participants. As a result, the absolute standardized values of each
+participant must always be interpreted in the context of the
+standardization sample, and thus are less interpretable than individual
+BPM values together with a baseline HR. However, for statistical
+analyses based on the whole sample, the standardization fulfills the aim
+of controlling for differences in individual HR due to, for example,
+age-related differences. Finally, depending on the brand and model of
+fitness trackers used, the precision of the HR measurement varies.
+Research on the reliability of our deployed Fitbit® device has proven
+that this brand is generally accurate in controlled settings and for
+moderate activity levels (Wallen et al. 2016; Hajj-Boutros et al. 2023;
+Fuller et al. 2020; Jo et al. 2016), as in our study. For example, the
+Fitbit® fitness tracker has previously shown good HR measurement
+accuracy during resting phases (Jo et al. 2016; Muggeridge et al. 2021)
+and for activities such as walking, jogging, and running (Hajj-Boutros
+et al. 2023). At higher exercise intensities such as cycling, the
+Fitbit® tracker may underestimate HR (Thomson et al. 2019; Montoye,
+Mitrzyk, and Molesky 2017; Jo et al. 2016; Jachymek et al. 2021) but is
+still within an acceptable range according to systematic reviews
+(Chevance et al. 2022). Nevertheless, Gagnon et al. (2022) stressed that
+Fitbit® trackers cannot replace ECG when precision is paramount. Despite
+these considerations, the Fitbit® model appears suitable for our study
+purposes, as physical strain was moderate.
 
 Furthermore, while we assessed teachers' appraisals of the stressful
 classroom disruptions using a SRI in which they could review the exact
@@ -1056,25 +1088,25 @@ situation, these appraisal ratings were still post-hoc self-reports,
 which limits the interpretation of our results. One of the main issues
 with post-hoc self-reports is that they rely on the teachers' memories
 and subjective interpretations of past events, which may be prone to
-various biases such as social desirability \citep{razavi2001self} or
-recall errors \citep{van2016accuracy}. Moreover, stress is not a fixed
-or stable construct; it is a dynamic, constantly evolving affective
-response that can vary depending on context, individual disposition, and
-prior experiences, making it particularly challenging to pinpoint valid
-and reliable process markers for how individuals appraise stress in
-real-time \citep{lazarus1990theory}. While SRIs provide a more detailed
-and reflective understanding of the stressor in question, the delayed
-nature of the response makes it difficult to capture the immediate,
-in-the-moment appraisal that occurs when the stressful event actually
-takes place.
+various biases such as social desirability (Razavi 2001) or recall
+errors (Van den Bergh and Walentynowicz 2016). Moreover, stress is not a
+fixed or stable construct; it is a dynamic, constantly evolving
+affective response that can vary depending on context, individual
+disposition, and prior experiences, making it particularly challenging
+to pinpoint valid and reliable process markers for how individuals
+appraise stress in real-time (Lazarus 1990). While SRIs provide a more
+detailed and reflective understanding of the stressor in question, the
+delayed nature of the response makes it difficult to capture the
+immediate, in-the-moment appraisal that occurs when the stressful event
+actually takes place.
 
 \subsection{Hands-on advice for using wrist-worn fitness trackers for
 research}\label{hands-on-advice-for-using-wrist-worn-fitness-trackers-for-research}
 
 For researchers aiming to use fitness trackers to collect data, there
 are practical aspects to consider concerning the design, data
-collection, and data analysis phases of research projects \citep[for an
-additional overview, see][]{nelson2020guidelines}:
+collection, and data analysis phases of research projects (for an
+additional overview, see Nelson et al. 2020):
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -1089,13 +1121,13 @@ to consider is whether the study will be conducted in the laboratory, in
 a clinical environment, or under real-world conditions. Conventional
 fitness trackers should not be used if the focus is on measurement
 accuracy, such as in medical contexts, as they cannot replace the
-accuracy of ECG measurements \citep{gagnon2022}. Moreover, researchers
+accuracy of ECG measurements (Gagnon et al. 2022). Moreover, researchers
 should consider that measurement accuracy also depends on the intensity
 of the movements performed by the participants during data collection.
 Fitbit® fitness trackers, for example, underestimate HR at higher
-exercise intensities such as cycling
-\citep{thomson2019heart, montoye2017comparative, jo2016, jachymek2021}.
-For reference, the systematic review by \citet{fuller2020} provides a
+exercise intensities such as cycling (Thomson et al. 2019; Montoye,
+Mitrzyk, and Molesky 2017; Jo et al. 2016; Jachymek et al. 2021). For
+reference, the systematic review by Fuller et al. (2020) provides a
 detailed overview of studies that used wrist-worn fitness trackers
 between 2000 and 2019 and discusses their validity and reliability.
 Another point to consider is the price, which at the time of writing
@@ -1177,18 +1209,18 @@ teachers for self-monitoring stress levels, and to researchers for
 assessing physiological indicators of stress. For example, using fitness
 trackers could enable teachers to strengthen their self-awareness in
 stressful situations and allow for early self-intervention such as
-mindfulness techniques (e.g., deep breathing or body scans;
-\citet{agyapong2023interventions}). Integrating fitness trackers into
-teacher training and everyday practice could offer an affordable and
-practical method for assessing and managing teacher stress. In teacher
-training as well as in research, triangulating data from fitness
-trackers, lesson videos, and interviews could provide teachers with
-insights into their own stress management, and foster the implementation
-of effective stress and classroom management strategies. Taken together,
-our findings cater to \citet{wettstein2021} call for the use of
-ambulatory assessment methods, particularly in the context of classroom
-disruptions, for gaining a deeper understanding of teacher stress and
-its impact on both psychological and physiological variables.
+mindfulness techniques (e.g., deep breathing or body scans; Agyapong et
+al. (2023)). Integrating fitness trackers into teacher training and
+everyday practice could offer an affordable and practical method for
+assessing and managing teacher stress. In teacher training as well as in
+research, triangulating data from fitness trackers, lesson videos, and
+interviews could provide teachers with insights into their own stress
+management, and foster the implementation of effective stress and
+classroom management strategies. Taken together, our findings cater to
+Wettstein et al. (2021) call for the use of ambulatory assessment
+methods, particularly in the context of classroom disruptions, for
+gaining a deeper understanding of teacher stress and its impact on both
+psychological and physiological variables.
 
 In summary, our study contributes to the understanding of stress in
 educational settings and underscores the potential of wearable fitness
@@ -1280,7 +1312,506 @@ enhancing their overall well-being.
 
 \newpage
 
-\bibliography{r-references.bib}
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-agyapong2023interventions}
+Agyapong, B., P. Brett-MacLean, L. Burback, V. I. O. Agyapong, and Y.
+Wei. 2023. {``Interventions to Reduce Stress and Burnout Among Teachers:
+A Scoping Review.''} \emph{International Journal of Environmental
+Research and Public Health} 20 (9): 5625.
+\url{https://doi.org/10.3390/ijerph20095625}.
+
+\bibitem[\citeproctext]{ref-allen2007photoplethysmography}
+Allen, J. 2007. {``Photoplethysmography and Its Application in Clinical
+Physiological Measurement.''} \emph{Physiological Measurement} 28 (3):
+R1. \url{https://doi.org/10.1088/0967-3334/28/3/R01}.
+
+\bibitem[\citeproctext]{ref-aloe2014multivariate}
+Aloe, A. M., S. M. Shisler, B. D. Norris, A. B. Nickerson, and T. W.
+Rinker. 2014. {``A Multivariate Meta-Analysis of Student Misbehavior and
+Teacher Burnout.''} \emph{Educational Research Review} 12: 30--44.
+\url{https://doi.org/10.1016/j.edurev.2014.05.003}.
+
+\bibitem[\citeproctext]{ref-battipaglia2015}
+Battipaglia, I., and G. A. Lanza. 2015. {``The Autonomic Nervous System
+of the Heart.''} In \emph{Autonomic Innervation of the Heart: Role of
+Molecular Imaging}, edited by R. H. J. A. Slart, R. A. Tio, P. H.
+Elsinga, and M. Schwaiger, 1--12. Berlin, Heidelberg: Springer Berlin
+Heidelberg. \url{https://doi.org/10.1007/978-3-662-45074-1_1}.
+
+\bibitem[\citeproctext]{ref-beaty2010}
+Beaty-O'Ferrall, M. E., A. Green, and F. Hanna. 2010. {``Classroom
+Management Strategies for Difficult Students: Promoting Change Through
+Relationships.''} \emph{Middle School Journal} 41 (4): 4--11.
+\url{https://doi.org/10.2307/23044778}.
+
+\bibitem[\citeproctext]{ref-berntson2007cardiovascular}
+Berntson, G., K. Quigley, and D. Lozano. 2007. {``Cardiovascular
+Psychophysiology.''} \emph{Handbook of Psychophysiology} 3: 182--210.
+\url{https://doi.org/10.1017/CBO9780511546396.008}.
+
+\bibitem[\citeproctext]{ref-boyle1995structural}
+Boyle, G. J., M. G. Borg, J. M. Falzon, and A. J. Baglioni Jr. 1995.
+{``A Structural Model of the Dimensions of Teacher Stress.''}
+\emph{British Journal of Educational Psychology} 65 (1): 49--67.
+\url{https://doi.org/10.1111/j.2044-8279.1995.tb01130.x}.
+
+\bibitem[\citeproctext]{ref-castaneda2018review}
+Castaneda, D., A. Esparza, M. Ghamari, C. Soltanpur, and H. Nazeran.
+2018. {``A Review on Wearable Photoplethysmography Sensors and Their
+Potential Future Applications in Health Care.''} \emph{International
+Journal of Biosensors \& Bioelectronics} 4 (4): 195.
+\url{https://doi.org/10.15406/ijbsbe.2018.04.00125}.
+
+\bibitem[\citeproctext]{ref-chalmers2021}
+Chalmers, T., B. A. Hickey, P. Newton, C. Lin, D. Sibbritt, C. S.
+McLachlan, R. Clifton-Bligh, J. Morley, and S. Lal. 2021. {``Stress
+Watch: The Use of Heart Rate and Heart Rate Variability to Detect
+Stress: A Pilot Study Using Smart Watch Wearables.''} \emph{Sensors} 22
+(1): 151. \url{https://doi.org/10.3390/s22010151}.
+
+\bibitem[\citeproctext]{ref-chaplain2008}
+Chaplain, R. P. 2008. {``Stress and Psychological Distress Among Trainee
+Secondary Teachers in England.''} \emph{Educational Psychology} 28 (2):
+195--209. \url{https://doi.org/10.1080/01443410701491858}.
+
+\bibitem[\citeproctext]{ref-chevance2022accuracy}
+Chevance, G., N. M. Golaszewski, E. Tipton, E. B. Hekler, M. Buman, G.
+J. Welk, K. Patrick, J. G. Godino, et al. 2022. {``Accuracy and
+Precision of Energy Expenditure, Heart Rate, and Steps Measured by
+Combined-Sensing Fitbits Against Reference Measures: Systematic Review
+and Meta-Analysis.''} \emph{JMIR mHealth and uHealth} 10 (4): e35626.
+\url{https://doi.org/10.2196/35626}.
+
+\bibitem[\citeproctext]{ref-claessens2017positive}
+Claessens, L. C. A., J. van Tartwijk, A. C. van der Want, H. J. M.
+Pennings, N. Verloop, P. J. den Brok, and T. Wubbels. 2017. {``Positive
+Teacher--Student Relationships Go Beyond the Classroom, Problematic Ones
+Stay Inside.''} \emph{The Journal of Educational Research} 110 (5):
+478--93. \url{https://doi.org/10.1080/00220671.2015.1129595}.
+
+\bibitem[\citeproctext]{ref-clunies2008self}
+Clunies-Ross, P., E. Little, and M. Kienhuis. 2008. {``Self-Reported and
+Actual Use of Proactive and Reactive Classroom Management Strategies and
+Their Relationship with Teacher Stress and Student Behaviour.''}
+\emph{Educational Psychology} 28 (6): 693--710.
+\url{https://doi.org/10.1080/01443410802206700}.
+
+\bibitem[\citeproctext]{ref-cohen1988statistical}
+Cohen, J. 1988. {``Statistical Power for the Behavioural Sciences.
+Hilsdale.''} \emph{NY: Lawrence Erlbaum} 58 (1): 7--19.
+
+\bibitem[\citeproctext]{ref-custodis2014heart}
+Custodis, F., J. C. Reil, S. H. Schirmer, O. Adam, S. Möhlenkamp, U.
+Laufs, and M. Boehm. 2014. {``Heart Rate: Clinical Variable and Risk
+Marker.''} \emph{Deutsche Medizinische Wochenschrift (1946)} 139 (33):
+1661--68. \url{https://doi.org/10.1055/s-0034-1370223}.
+
+\bibitem[\citeproctext]{ref-Darnell2019}
+Darnell, D., and P. Krieg. 2019. {``Student Engagement, Assessed Using
+Heart Rate, Shows No Reset Following Active Learning Sessions in
+Lectures.''} \emph{PLoS ONE} 14.
+\url{https://doi.org/10.1371/journal.pone.0225709}.
+
+\bibitem[\citeproctext]{ref-donker2018}
+Donker, M. H., T. Van Gog, and M. T. Mainhard. 2018. {``A Quantitative
+Exploration of Two Teachers with Contrasting Emotions: Intra-Individual
+Process Analyses of Physiology and Interpersonal Behavior.''}
+\emph{Frontline Learning Research} 6 (3): 162--84.
+\url{https://doi.org/10.14786/flr.v6i3.372}.
+
+\bibitem[\citeproctext]{ref-dunn1999deliberate}
+Dunn, T. G., and C. Shriner. 1999. {``Deliberate Practice in Teaching:
+What Teachers Do for Self-Improvement.''} \emph{Teaching and Teacher
+Education} 15 (6): 631--51.
+\url{https://doi.org/10.1016/S0742-051X(98)00068-7}.
+
+\bibitem[\citeproctext]{ref-ferguson2015}
+Ferguson, T., A. V. Rowlands, T. Olds, and C. Maher. 2015. {``The
+Validity of Consumer-Level, Activity Monitors in Healthy Adults Worn in
+Free-Living Conditions: A Cross-Sectional Study.''} \emph{International
+Journal of Behavioral Nutrition and Physical Activity} 12 (1): 1--9.
+\url{https://doi.org/10.1186/s12966-015-0201-9}.
+
+\bibitem[\citeproctext]{ref-fisher2011}
+Fisher, M. H. 2011. {``Factors Influencing Stress, Burnout, and
+Retention of Secondary Teachers.''} \emph{Current Issues in Education}
+14 (1).
+
+\bibitem[\citeproctext]{ref-fitbitnd}
+Fitbit, Inc. 2020. \emph{Fitbit Charge 4 User Manual Version 1.2}.
+Fitbit, Inc.
+
+\bibitem[\citeproctext]{ref-fuller2020}
+Fuller, D., E. Colwell, J. Low, K. Orychock, M. A. Tobin, B. Simango, R.
+Buote, et al. 2020. {``Reliability and Validity of Commercially
+Available Wearable Devices for Measuring Steps, Energy Expenditure, and
+Heart Rate: Systematic Review.''} \emph{JMIR mHealth and uHealth} 8 (9):
+e18694. \url{https://doi.org/10.2196/18694}.
+
+\bibitem[\citeproctext]{ref-gagnon2022}
+Gagnon, J., M. Khau, L. Lavoie-Hudon, F. Vachon, V. Drapeau, and S.
+Tremblay. 2022. {``Comparing a Fitbit Wearable to an Electrocardiogram
+Gold Standard as a Measure of Heart Rate Under Psychological Stress: A
+Validation Study.''} \emph{JMIR Formative Research} 6 (12): e37885.
+\url{https://doi.org/10.2196/37885}.
+
+\bibitem[\citeproctext]{ref-gelman2006data}
+Gelman, A., and J. Hill. 2006. \emph{Data Analysis Using Regression and
+Multilevel/Hierarchical Models}. Cambridge university press.
+\url{https://doi.org/10.1017/CBO9780511790942}.
+
+\bibitem[\citeproctext]{ref-godfrey2018z}
+Godfrey, A., V. Hetherington, H. Shum, P. Bonato, N. H. Lovell, and S.
+Stuart. 2018. {``From a to z: Wearable Technology Explained.''}
+\emph{Maturitas} 113: 40--47.
+\url{https://doi.org/10.1016/j.maturitas.2018.04.012}.
+
+\bibitem[\citeproctext]{ref-hajj2023}
+Hajj-Boutros, G., M. Landry-Duval, A. S. Comtois, G. Gouspillou, and A.
+D. Karelis. 2023. {``Wrist-Worn Devices for the Measurement of Heart
+Rate and Energy Expenditure: A Validation Study for the Apple Watch 6,
+Polar Vantage v and Fitbit Sense.''} \emph{European Journal of Sport
+Science} 23 (2): 165--77.
+\url{https://doi.org/10.1080/17461391.2021.2023656}.
+
+\bibitem[\citeproctext]{ref-hao2018chrv}
+Hao, T., H. Chang, M. Ball, K. Lin, and X. Zhu. 2017. {``cHRV Uncovering
+Daily Stress Dynamics Using Bio-Signal from Consumer Wearables.''} In
+\emph{MEDINFO 2017: Precision Healthcare Through Informatics}, 98--102.
+IOS Press. \url{https://doi.org/10.3233/978-1-61499-830-3-98}.
+
+\bibitem[\citeproctext]{ref-heneghan2019}
+Heneghan, C., S. Venkatraman, and A. Russell. 2019. {``Investigation of
+an Estimate of Daily Resting Heart Rate Using a Consumer Wearable
+Device.''} \emph{medRxiv}, 19008771.
+\url{https://doi.org/10.1101/19008771}.
+
+\bibitem[\citeproctext]{ref-herman2020}
+Herman, K. C., S. L. Prewett, C. L. Eddy, A. Savala, and W. M. Reinke.
+2020. {``Profiles of Middle School Teacher Stress and Coping: Concurrent
+and Prospective Correlates.''} \emph{Journal of School Psychology} 78:
+54--68. \url{https://doi.org/10.1016/j.jsp.2019.11.003}.
+
+\bibitem[\citeproctext]{ref-hottenrott2007}
+Hottenrot, K. 2007. \emph{Trainingskontrolle: Mit
+Herzfrequenz-Messgeräten, 2. Auflage}. Meyer \& Meyer Verlag.
+
+\bibitem[\citeproctext]{ref-huang2022class}
+Huang, Y., E. Richter, T. Kleickmann, and D. Richter. 2022. {``Class
+Size Affects Preservice Teachers' Physiological and Psychological Stress
+Reactions: An Experiment in a Virtual Reality Classroom.''}
+\emph{Computers \& Education} 184: 104503.
+\url{https://doi.org/10.1016/j.compedu.2022.104503}.
+
+\bibitem[\citeproctext]{ref-ingersoll2003}
+Ingersoll, R. M., and T. M. Smith. 2003. {``The Wrong Solution to the
+Teacher Shortage.''} \emph{Educational Leadership} 60 (8): 30--33.
+
+\bibitem[\citeproctext]{ref-jachymek2021}
+Jachymek, M., M. T. Jachymek, R. M. Kiedrowicz, J. Kaźmierczak, E.
+Płońska-Gościniak, and M. Peregud-Pogorzelska. 2021. {``Wristbands in
+Home-Based Rehabilitation---Validation of Heart Rate Measurement.''}
+\emph{Sensors} 22 (1): 60. \url{https://doi.org/10.3390/s22010060}.
+
+\bibitem[\citeproctext]{ref-jalongo2006}
+Jalongo, M. R., and K. Heider. 2006. {``Editorial Teacher Attrition: An
+Issue of National Concern.''} \emph{Early Childhood Education Journal}
+33: 379--80. \url{https://doi.org/10.1007/s10643-006-0122-y}.
+
+\bibitem[\citeproctext]{ref-jo2016}
+Jo, E., K. Lewis, D. Directo, M. J. Kim, and B. A. Dolezal. 2016.
+{``Validation of Biofeedback Wearables for Photoplethysmographic Heart
+Rate Tracking.''} \emph{Journal of Sports Science \& Medicine} 15 (3):
+540.
+
+\bibitem[\citeproctext]{ref-johnson2005experience}
+Johnson, S., C. Cooper, S. Cartwright, I. Donald, P. Taylor, and C.
+Millet. 2005. {``The Experience of Work-Related Stress Across
+Occupations.''} \emph{Journal of Managerial Psychology} 20 (2): 178--87.
+\url{https://doi.org/10.1108/02683940510579803}.
+
+\bibitem[\citeproctext]{ref-junker2021}
+Junker, R., M. H. Donker, and T. Mainhard. 2021. {``Potential Classroom
+Stressors of Teachers: An Audiovisual and Physiological Approach.''}
+\emph{Learning and Instruction} 75: 101495.
+\url{https://doi.org/10.1016/j.learninstruc.2021.101495}.
+
+\bibitem[\citeproctext]{ref-karner2021teachers}
+Kärner, T., and J. Höning. 2021. {``Teachers' Experienced Classroom
+Demands and Autonomic Stress Reactions: Results of a Pilot Study and
+Implications for Process-Oriented Research in Vocational Education and
+Training.''} \emph{Empirical Research in Vocational Education and
+Training} 13: 1--22. \url{https://doi.org/10.1186/s40461-021-00113-3}.
+
+\bibitem[\citeproctext]{ref-kirschbaum1993trier}
+Kirschbaum, C., K. M. Pirke, and D. H. Hellhammer. 1993. {``The {`Trier
+Social Stress Test'}--a Tool for Investigating Psychobiological Stress
+Responses in a Laboratory Setting.''} \emph{Neuropsychobiology} 28
+(1-2): 76--81. \url{https://doi.org/10.1159/000119004}.
+
+\bibitem[\citeproctext]{ref-kirschner2016professionswissen}
+Kirschner, S., M. Sczudlek, O. Tepner, A. Borowski, H. E. Fischer, G.
+Lenske, D. Leutner, et al. 2016. {``Professionswissen in Den
+Naturwissenschaften (ProwiN).''} In \emph{Entwicklung von
+Professionalit{ä}t p{ä}dagogischen Personals: Interdisziplin{ä}re
+Betrachtungen, Befunde Und Perspektiven}, 113--30. Springer.
+\url{https://doi.org/10.1007/978-3-658-07274-2_7}.
+
+\bibitem[\citeproctext]{ref-klusmann2012berufliche}
+Klusmann, U., M. Kunter, T. Voss, and J. Baumert. 2012. {``Berufliche
+Beanspruchung Angehender Lehrkr{ä}fte: Die Effekte von Pers{ö}nlichkeit,
+p{ä}dagogischer Vorerfahrung Und Professioneller Kompetenz.''}
+\emph{Zeitschrift f{ü}r p{ä}dagogische Psychologie}.
+\url{https://doi.org/10.1024/1010-0652/a000078}.
+
+\bibitem[\citeproctext]{ref-kranjec2014non}
+Kranjec, J., S. Beguš, G. Geršak, and J. Drnovšek. 2014. {``Non-Contact
+Heart Rate and Heart Rate Variability Measurements: A Review.''}
+\emph{Biomedical Signal Processing and Control} 13: 102--12.
+\url{https://doi.org/10.1016/j.bspc.2014.03.004}.
+
+\bibitem[\citeproctext]{ref-kyriacou1978}
+Kyriacou, C., and J. Sutcliffe. 1978. {``Teacher Stress: Prevalence,
+Sources, and Symptoms.''} \emph{British Journal of Educational
+Psychology} 48 (2): 159--67.
+\url{https://doi.org/10.1111/j.2044-8279.1978.tb02381.x}.
+
+\bibitem[\citeproctext]{ref-lazarus1966psychological}
+Lazarus, R. S. 1966. {``Psychological Stress and the Coping Process.''}
+\emph{Mc Grew-Hill}.
+
+\bibitem[\citeproctext]{ref-lazarus1990theory}
+---------. 1990. {``Theory-Based Stress Measurement.''}
+\emph{Psychological Inquiry} 1 (1): 3--13.
+\url{https://doi.org/10.1207/s15327965pli0101_1}.
+
+\bibitem[\citeproctext]{ref-liu2020}
+Liu, M., and Y. Yan. 2020. {``Anxiety and Stress in in-Service Chinese
+University Teachers of Arts.''} \emph{International Journal of Higher
+Education} 9 (1): 237--48. \url{https://doi.org/10.5430/ijhe.v9n1p237}.
+
+\bibitem[\citeproctext]{ref-lu2008can}
+Lu, S., H. Zhao, K. Ju, K. Shin, M. Lee, K. Shelley, and K. H. Chon.
+2008. {``Can Photoplethysmography Variability Serve as an Alternative
+Approach to Obtain Heart Rate Variability Information?''} \emph{Journal
+of Clinical Monitoring and Computing} 22 (1): 23--29.
+\url{https://doi.org/10.1007/s10877-007-9103-y}.
+
+\bibitem[\citeproctext]{ref-maslach2001job}
+Maslach, C., W. B. Schaufeli, and M. P. Leiter. 2001. {``Job Burnout.''}
+\emph{Annual Review of Psychology} 52 (1): 397--422.
+\url{https://doi.org/10.1146/annurev.psych.52.1.397}.
+
+\bibitem[\citeproctext]{ref-montgomery2005meta}
+Montgomery, C., and A. A. Rupp. 2005. {``A Meta-Analysis for Exploring
+the Diverse Causes and Effects of Stress in Teachers.''} \emph{Canadian
+Journal of Education/Revue Canadienne de l'{é}ducation}, 458--86.
+\url{https://doi.org/10.2307/4126479}.
+
+\bibitem[\citeproctext]{ref-montoye2017comparative}
+Montoye, A. H. K., J. R. Mitrzyk, and M. J. Molesky. 2017.
+{``Comparative Accuracy of a Wrist-Worn Activity Tracker and a Smart
+Shirt for Physical Activity Assessment.''} \emph{Measurement in Physical
+Education and Exercise Science} 21 (4): 201--11.
+\url{https://doi.org/10.1080/1091367X.2017.1331166}.
+
+\bibitem[\citeproctext]{ref-muggeridge2021measurement}
+Muggeridge, D. J., K. Hickson, A. V. Davies, O. M. Giggins, I. L.
+Megson, T. Gorely, and D. R. Crabtree. 2021. {``Measurement of Heart
+Rate Using the Polar OH1 and Fitbit Charge 3 Wearable Devices in Healthy
+Adults During Light, Moderate, Vigorous, and Sprint-Based Exercise:
+Validation Study.''} \emph{JMIR mHealth and uHealth} 9 (3): e25313.
+\url{https://doi.org/10.2196/25313}.
+
+\bibitem[\citeproctext]{ref-mukhopadhyay2017wearable}
+Mukhopadhyay, S. C., and T. Islam. 2017. \emph{Wearable Sensors:
+Applications, Design and Implementation}. IOP Publishing.
+\url{https://doi.org/10.1088/978-0-7503-1505-0}.
+
+\bibitem[\citeproctext]{ref-nanchen2018}
+Nanchen, D. 2018. {``Resting Heart Rate: What Is Normal?''}
+\emph{Heart}. BMJ Publishing Group Ltd; British Cardiovascular Society.
+\url{https://doi.org/10.1136/heartjnl-2017-312731}.
+
+\bibitem[\citeproctext]{ref-nelson2020guidelines}
+Nelson, B. W., C. A. Low, N. Jacobson, P. Areán, J. Torous, and N. B.
+Allen. 2020. {``Guidelines for Wrist-Worn Consumer Wearable Assessment
+of Heart Rate in Biobehavioral Research.''} \emph{NPJ Digital Medicine}
+3 (1): 90. \url{https://doi.org/10.1038/s41746-020-0297-4}.
+
+\bibitem[\citeproctext]{ref-nuss2021effects}
+Nuss, K., K. Moore, T. Nelson, and K. Li. 2021. {``Effects of
+Motivational Interviewing and Wearable Fitness Trackers on Motivation
+and Physical Activity: A Systematic Review.''} \emph{American Journal of
+Health Promotion} 35 (2): 226--35.
+\url{https://doi.org/10.1177/0890117120939030}.
+
+\bibitem[\citeproctext]{ref-ophardt2017klassenmanagement}
+Ophardt, D., and F. Thiel. 2017. {``Klassenmanagement Als Basisdimension
+Der Unterrichtsqualit{ä}t.''} \emph{Lehrer-Sch{ü}ler-Interaktion:
+Inhaltsfelder, Forschungsperspektiven Und Methodische Zug{ä}nge},
+245--66.
+
+\bibitem[\citeproctext]{ref-peng2022acceptance}
+Peng, C., N. Xi, H. Zhao, and J. Hamari. 2022. {``Acceptance of Wearable
+Technology: A Meta-Analysis.''} In \emph{Hawaii International Conference
+on System Sciences}, 5101--10.
+\url{https://doi.org/10.24251/HICSS.2022.621}.
+
+\bibitem[\citeproctext]{ref-pham2021}
+Pham, T., Z. J. Lau, S. H. A. Chen, and D. Makowski. 2021. {``Heart Rate
+Variability in Psychology: A Review of HRV Indices and an Analysis
+Tutorial.''} \emph{Sensors} 21 (12): 3998.
+\url{https://doi.org/10.3390/s21123998}.
+
+\bibitem[\citeproctext]{ref-razavi2001self}
+Razavi, T. 2001. {``Self-Report Measures: An Overview of Concerns and
+Limitations of Questionnaire Use in Occupational Stress Research.''}
+
+\bibitem[\citeproctext]{ref-ritvanen2006responses}
+Ritvanen, T., V. Louhevaara, P. Helin, S. Väisänen, and O. Hänninen.
+2006. {``Responses of the Autonomic Nervous System During Periods of
+Perceived High and Low Work Stress in Younger and Older Female
+Teachers.''} \emph{Applied Ergonomics} 37 (3): 311--18.
+\url{https://doi.org/10.1016/j.apergo.2005.06.013}.
+
+\bibitem[\citeproctext]{ref-RStudio2020}
+RStudio Team. 2020. \emph{RStudio: Integrated Development Environment
+for r}. Boston, MA: RStudio, PBC.
+
+\bibitem[\citeproctext]{ref-ruedi2014}
+Rüedi, J. 2014. {``Zur Bedeutung Positive Beziehungen f{ü}r Die
+Klassenf{ü}hrung Und Den Umgang Mit Unterrichtsst{ö}rungen.''}
+\emph{Beziehungen in Schule Und Unterricht. Teil} 3: 105--26.
+
+\bibitem[\citeproctext]{ref-runge2020}
+Runge, N., S. Haarman, and M. Fisher. 2020. {``Using Fitbit Fitness
+Trackers to Measure Teacher Stress and Coping.''} \emph{International
+Journal of Social Policy and Education} 2: 56--70.
+
+\bibitem[\citeproctext]{ref-sachs2014}
+Sachs, S. 2014. {``Physiologische Parameter Zur Bewertung Der
+Lernwirksamkeit von Lernsituationen.''} PhD thesis, Universit{ä}t Ulm.
+
+\bibitem[\citeproctext]{ref-sammito2015guideline}
+Sammito, S., B. Thielmann, R. Seibt, A. Klussmann, M. Weippert, and I.
+Böckelmann. 2015. {``Guideline for the Application of Heart Rate and
+Heart Rate Variability in Occupational Medicine and Occupational
+Science.''} \emph{ASU Int} 2015 (06): 1--29.
+\url{https://doi.org/10.17147/ASUI.2015-06-09-03}.
+
+\bibitem[\citeproctext]{ref-scalise2018wearables}
+Scalise, L., and G. Cosoli. 2018. {``Wearables for Health and Fitness:
+Measurement Characteristics and Accuracy.''} In \emph{2018 IEEE
+International Instrumentation and Measurement Technology Conference
+(I2MTC)}, 1--6. IEEE. \url{https://doi.org/10.1109/I2MTC.2018.8409635}.
+
+\bibitem[\citeproctext]{ref-scheuch1997psychophysische}
+Scheuch, K., and M. Knothe. 1997. {``Psychophysische Beanspruchung von
+Lehrern in Der Unterrichtst{ä}tigkeit.''} \emph{Jahrbuch f{ü}r
+Lehrerforschung} 1 (S 285): 299.
+
+\bibitem[\citeproctext]{ref-schult2014belastet}
+Schult, J., M. Münzer-Schrobildgen, and J. R. Sparfeldt. 2014.
+{``Belastet, Aber Hochzufrieden?''} \emph{Zeitschrift f{ü}r
+Gesundheitspsychologie}.
+\url{https://doi.org/10.1026/0943-8149/a000114}.
+
+\bibitem[\citeproctext]{ref-smith2000}
+Smith, A. 2000. {``The Scale of Perceived Occupational Stress.''}
+\emph{Occupational Medicine} 50 (5): 294--98.
+\url{https://doi.org/10.1093/occmed/50.5.294}.
+
+\bibitem[\citeproctext]{ref-sperka1995}
+Sperka, M., and U.. Kittler. 1995. {``Psychophysiologische Beanspruchung
+von Lehramtskandidatinnen Und -Kandidaten Im Schulunterricht.''} In
+\emph{Psychische Potentiale Für Eine Interdisziplinäre Lehrerausbildung:
+Motivation - Kognition -- Entwicklung}, edited by K. Bräuer, 182--97.
+Essen: Die Blaue Eule.
+
+\bibitem[\citeproctext]{ref-taelman2009influence}
+Taelman, J., S. Vandeput, A. Spaepen, and S. Van Huffel. 2009.
+{``Influence of Mental Stress on Heart Rate and Heart Rate
+Variability.''} In \emph{4th European Conference of the International
+Federation for Medical and Biological Engineering}, 1366--69. Springer.
+\url{https://doi.org/10.1007/978-3-540-89208-3_324}.
+
+\bibitem[\citeproctext]{ref-thomson2019heart}
+Thomson, E. A., K. Nuss, A. Comstock, S. Reinwald, S. Blake, R. E.
+Pimentel, B. L. Tracy, and K. Li. 2019. {``Heart Rate Measures from the
+Apple Watch, Fitbit Charge HR 2, and Electrocardiogram Across Different
+Exercise Intensities.''} \emph{Journal of Sports Sciences} 37 (12):
+1411--19. \url{https://doi.org/10.1080/02640414.2018.1560644}.
+
+\bibitem[\citeproctext]{ref-trull2013ambulatory}
+Trull, T. J., and U. Ebner-Priemer. 2013. {``Ambulatory Assessment.''}
+\emph{Annual Review of Clinical Psychology} 9 (1): 151--76.
+\url{https://doi.org/10.1146/annurev-clinpsy-050212-185510}.
+
+\bibitem[\citeproctext]{ref-uchino2010older}
+Uchino, B. N., W. Birmingham, and C. A. Berg. 2010. {``Are Older Adults
+Less or More Physiologically Reactive? A Meta-Analysis of Age-Related
+Differences in Cardiovascular Reactivity to Laboratory Tasks.''}
+\emph{Journals of Gerontology Series B: Psychological Sciences and
+Social Sciences} 65 (2): 154--62.
+\url{https://doi.org/10.1093/geronb/gbp127}.
+
+\bibitem[\citeproctext]{ref-unterbrink2007}
+Unterbrink, T., A. Hack, R. Pfeifer, V. Buhl-Grießhaber, U. Müller, H.
+Wesche, M. Frommhold, et al. 2007. {``Burnout and
+Effort--Reward-Imbalance in a Sample of 949 German Teachers.''}
+\emph{International Archives of Occupational and Environmental Health}
+80: 433--41. \url{https://doi.org/10.1007/s00420-007-0169-0}.
+
+\bibitem[\citeproctext]{ref-van2016accuracy}
+Van den Bergh, O., and M. Walentynowicz. 2016. {``Accuracy and Bias in
+Retrospective Symptom Reporting.''} \emph{Current Opinion in Psychiatry}
+29 (5): 302--8. \url{https://doi.org/10.1097/YCO.0000000000000267}.
+
+\bibitem[\citeproctext]{ref-van2006stress}
+Van Dick, R. 2006. {``Stress Und Arbeitszufriedenheit Bei Lehrerinnen
+Und Lehrern.''} \emph{Zwischen „Horrorjob ``Und Erf{ü}llung} 2.
+
+\bibitem[\citeproctext]{ref-wallen2016accuracy}
+Wallen, M. P., S. R. Gomersall, S. E. Keating, U. Wisløff, and J. S.
+Coombes. 2016. {``Accuracy of Heart Rate Watches: Implications for
+Weight Management.''} \emph{PloS One} 11 (5): e0154420.
+\url{https://doi.org/10.1371/journal.pone.0154420}.
+
+\bibitem[\citeproctext]{ref-wettstein2020ambulatory}
+Wettstein, A., F. Kühne, W. Tschacher, and R. La Marca. 2020.
+{``Ambulatory Assessment of Psychological and Physiological Stress on
+Workdays and Free Days Among Teachers. A Preliminary Study.''}
+\emph{Frontiers in Neuroscience} 14: 495378.
+\url{https://doi.org/10.3389/fnins.2020.00112}.
+
+\bibitem[\citeproctext]{ref-wettstein2021}
+Wettstein, A., S. Schneider, M. Grosse Holtforth, and R. La Marca. 2021.
+{``Teacher {Stress}: {A} {Psychobiological} {Approach} to {Stressful}
+{Interactions} in the {Classroom}.''} \emph{Frontiers in Education} 6.
+\url{https://doi.org/10.3389/feduc.2021.681258}.
+
+\bibitem[\citeproctext]{ref-ggplot2}
+Wickham, H. 2016. \emph{Ggplot2: Elegant Graphics for Data Analysis}.
+Springer-Verlag New York.
+\url{https://doi.org/10.1007/978-0-387-98141-3}.
+
+\bibitem[\citeproctext]{ref-wolff2015keeping}
+Wolff, C. E., N. van den Bogert, H. Jarodzka, and H. P. A. Boshuizen.
+2015. {``Keeping an Eye on Learning: Differences Between Expert and
+Novice Teachers' Representations of Classroom Management Events.''}
+\emph{Journal of Teacher Education} 66 (1): 68--85.
+\url{https://doi.org/10.1177/0022487114549810}.
+
+\bibitem[\citeproctext]{ref-wolff2021classroom}
+Wolff, C. E., H. Jarodzka, and H. P. A. Boshuizen. 2021. {``Classroom
+Management Scripts: A Theoretical Model Contrasting Expert and Novice
+Teachers' Knowledge and Awareness of Classroom Events.''}
+\emph{Educational Psychology Review} 33 (1): 131--48.
+\url{https://doi.org/10.1007/s10648-020-09542-0}.
+
+\end{CSLReferences}
 
 
 \end{document}

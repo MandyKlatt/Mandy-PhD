@@ -73,9 +73,10 @@ numbersections: true
 output: 
   rticles::elsevier_article:
     keep_tex: true
-    citation_package: natbib
+    citation_package: default
 header-includes:
-  - \setcitestyle{sort&compress}
+  - \bibliographystyle{elsarticle-num}
+  - \setcitestyle{numbered}
   - \usepackage{tabularx}
   - \usepackage{threeparttable}
   - \usepackage{booktabs}
