@@ -561,6 +561,126 @@ round(d_number_stud, 2)
 
 ```
 
+#### 2.2.3 Number of fixations (AOI others)
+```{r nof_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+##################### NUMBER OF FIXATION ON AOI DISRUPTIVE PERSON ########################
+
+##################### NUMBER OF FIXATIONS (AOI others) ########################
+
+# filter group & total duration & number fixation (AOI others)
+df_aoi %>%
+  filter(TOI == "Lesson") %>%
+  dplyr::select (
+    Group,
+    Duration_of_interval,
+    Participant,
+    "Total_duration_of_fixations.Board_Screen",
+    "Total_duration_of_fixations.Classroom_Others",
+    "Total_duration_of_fixations.Material_Students",
+    "Total_duration_of_fixations.Material_Teacher",
+    "Total_duration_of_fixations.Nametag_Anna",
+    "Total_duration_of_fixations.Nametag_Bianca",
+    "Total_duration_of_fixations.Nametag_Carl(a)",
+    "Number_of_fixations.Board_Screen",
+    "Number_of_fixations.Classroom_Others",
+    "Number_of_fixations.Material_Students",
+    "Number_of_fixations.Material_Teacher",
+    "Number_of_fixations.Nametag_Anna",
+    "Number_of_fixations.Nametag_Bianca",
+    "Number_of_fixations.Nametag_Carl(a)"
+  ) %>%
+  rowwise() %>%
+  transmute(
+    Group = as_factor(Group),
+    Duration_of_interval_min = round(Duration_of_interval/60000, digits = 2),
+    Duration_of_interval_sec = round(Duration_of_interval/1000, digits = 2),
+    Participant = Participant,
+    Others_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
+    Others_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE),
+    Others_number_fixation_min = round(Others_number_fixation / Duration_of_interval_min, digits = 2),
+    Average_duration_others = round(Others_duration_fixation / Others_number_fixation, digits = 0)
+    ) -> df_aoi_others
+
+# filter only for experts
+df_aoi_others_expert <- df_aoi_others %>% 
+  filter(Group == "Expert")
+
+# filter only for novices
+df_aoi_others_novice <- df_aoi_others %>% 
+  filter(Group == "Novice")
+
+
+######## Statistical Methods for Outlier Detection
+
+### EXPERTS ### 
+
+# Boxplot showing outliers for experts
+ggplot(df_aoi_others_expert, aes(x = "", y = Others_number_fixation_min)) + 
+  geom_boxplot(outlier.color = "red", outlier.shape = 19, outlier.size = 3) +
+  labs(title = "EXPERTS: Boxplot of number of fixations per minute (AOI others)",
+       y = "Number of fixations per minute") +
+  theme_minimal()
+
+# Calculate the IQR and bounds
+Q1 <- quantile(df_aoi_others_expert$Others_number_fixation_min, 0.25)
+Q3 <- quantile(df_aoi_others_expert$Others_number_fixation_min, 0.75)
+IQR <- Q3 - Q1
+
+LowerBound <- Q1 - 1.5 * IQR
+UpperBound <- Q3 + 1.5 * IQR
+
+# Filter to remove outliers
+df_no_outliers_others_exp <- df_aoi_others_expert %>%
+  filter(Others_number_fixation_min >= LowerBound & Others_number_fixation_min <= UpperBound)
+
+# Check the number of rows before and after filtering
+nrow(df_aoi_others_expert)  # Original data
+nrow(df_no_outliers_others_exp)  # After removing outliers
+
+# Create a dataframe with only the outliers
+df_outliers_others_exp <- df_aoi_others_expert %>%
+  filter(Others_number_fixation_min < LowerBound | Others_number_fixation_min > UpperBound)
+
+# View the removed outliers
+df_outliers_others_exp
+
+
+### NOVICES ### 
+
+# Boxplot showing outliers for novices
+ggplot(df_aoi_others_novice, aes(x = "", y = Others_number_fixation_min)) + 
+  geom_boxplot(outlier.color = "red", outlier.shape = 19, outlier.size = 3) +
+  labs(title = "NOVICES: Boxplot of number of fixations per minute (AOI others)",
+       y = "Number of fixations per minute") +
+  theme_minimal()
+
+# Calculate the IQR and bounds
+Q1 <- quantile(df_aoi_others_novice$Others_number_fixation_min, 0.25)
+Q3 <- quantile(df_aoi_others_novice$Others_number_fixation_min, 0.75)
+IQR <- Q3 - Q1
+
+LowerBound <- Q1 - 1.5 * IQR
+UpperBound <- Q3 + 1.5 * IQR
+
+# Filter to remove outliers
+df_no_outliers_others_nov <- df_aoi_others_novice %>%
+  filter(Others_number_fixation_min >= LowerBound & Others_number_fixation_min <= UpperBound)
+
+# Check the number of rows before and after filtering
+nrow(df_aoi_others_novice)  # Original data
+nrow(df_no_outliers_others_nov)  # After removing outliers
+
+# Create a dataframe with only the outliers
+df_outliers_others_nov <- df_aoi_others_novice %>%
+  filter(Others_number_fixation_min < LowerBound | Others_number_fixation_min > UpperBound)
+
+# View the removed outliers
+df_outliers_others_nov
+
+```
+
+
 #### 2.2.3 Number of fixations (AOI disruptive person)
 ```{r nof_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 

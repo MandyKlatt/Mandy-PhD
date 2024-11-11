@@ -1,11 +1,9 @@
 ---
-title: "Through the eyes of the teacher - Multimodal exploration of expertise differences in the perception of classroom disruptions in a laboratory study"
+title: "Through the Eyes of the Teacher - Multimodal Exploration of Expertise Differences in the Perception of Classroom Disruptions in a Laboratory Study"
 output: 
-  pdf_document:
+  html_document:
     toc: true           # Add a table of contents
     number_sections: true
-    latex_engine: xelatex  # Specify LaTeX engine if needed
-    keep_tex: true      # Keep .tex file for debugging or customization
 ---
 
 ```{r include=FALSE}
@@ -37,7 +35,7 @@ needs(tidyverse,
 
 ```
 
-## 1. Participants
+## Participants
 ```{r demographicstable, include = TRUE, echo=FALSE}
 
 # read in data and select and rename relevant columns with transmute 
@@ -165,9 +163,9 @@ exp.table <- demo.data %>%
 
 ```
 
-## 2. Measures
+## Measures
 
-### 2.1 Eye-Tracking Data
+### Eye-Tracking Data
 ```{r eyetracking_read_in_data, echo=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 
 # return a character vector with names of .tsv data in data folder
@@ -220,7 +218,7 @@ df_aoi <- df_aoi %>%
 
 ```
 
-#### 2.2.2 Letter search
+#### Letter search
 ```{r letter_search, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### LETTER SEARCH ########################
@@ -279,7 +277,84 @@ round(d_letter, 2)
 
 ```
 
-#### 2.2.1 Number of fixations per minute (micro-teaching unit)
+### Fixations per minute across all AOIs
+```{r nof_all_aois, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Filter data and select relevant columns, excluding "Disruptive_Person" only for the total fixations
+df_aoi_filtered <- df_aoi %>%
+  filter(TOI == "Lesson") %>%
+  select(
+    Group,
+    Participant,
+    Duration_of_interval,
+    starts_with("Number_of_fixations")
+  )
+
+# Add a new AOI 'Students' by summing fixations for Anna, Bianca, and Carl(a)
+df_aoi_filtered <- df_aoi_filtered %>%
+  mutate(
+    Number_of_fixations.Students = 
+      `Number_of_fixations.Anna` +
+      `Number_of_fixations.Bianca` +
+      `Number_of_fixations.Carl(a)`,
+    
+    # Calculate Total Fixations for all AOIs, excluding "Disruptive_Person"
+    Total_fixations_all = sum(c_across(starts_with("Number_of_fixations"))[!names(c_across(starts_with("Number_of_fixations"))) == "Number_of_fixations.Disruptive_Person"], na.rm = TRUE)
+  )
+
+# Convert duration to minutes and calculate fixations per minute
+df_aoi_filtered <- df_aoi_filtered %>%
+  mutate(Duration_of_interval_min = Duration_of_interval / 60000)
+
+df_aoi_long <- df_aoi_filtered %>%
+  rowwise() %>%
+  mutate(
+    across(starts_with("Number_of_fixations"), ~ .x / Duration_of_interval_min, .names = "fixation_per_min_{.col}")
+  ) %>%
+  ungroup() %>%
+  pivot_longer(
+    cols = starts_with("fixation_per_min_Number_of_fixations"),
+    names_to = "AOI",
+    values_to = "Fixations_per_minute"
+  ) %>%
+  mutate(AOI = str_remove(AOI, "fixation_per_min_Number_of_fixations.")) %>%
+  mutate(AOI = factor(AOI, levels = c("All", "Students", "Anna", "Bianca", "Carl(a)", "Disruptive_Person", 
+                                      "Board_Screen", "Material_Teacher", "Material_Students", 
+                                      "Classroom_Others", "Nametag_Anna", "Nametag_Bianca", "Nametag_Carl(a)"))) %>%
+  arrange(AOI)
+
+# Summarize descriptives
+aois_descriptives_fixations <- df_aoi_long %>%
+  group_by(Group, AOI) %>%
+  summarise(
+    N = n(),
+    M = round(mean(Fixations_per_minute, na.rm = TRUE), 2),
+    SD = round(sd(Fixations_per_minute, na.rm = TRUE), 2),
+    Min = round(min(Fixations_per_minute, na.rm = TRUE), 2),
+    Max = round(max(Fixations_per_minute, na.rm = TRUE), 2)
+  )
+
+knitr::kable(nof.table,
+             caption = "N, M, SD, min & max number of fixation per minute (across all AOIs)")
+
+
+# Visualization: Boxplot for fixations per minute across AOIs
+ggplot(df_aoi_long, aes(x = AOI, y = Fixations_per_minute, fill = Group)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(
+    position = position_jitterdodge(jitter.width = 0.15),
+    size = 1.5,
+    alpha = 0.7
+  ) +
+  scale_fill_brewer(palette = "RdBu") +
+  labs(x = "AOI", y = "Number of fixations per minute") +
+  ggtitle("Fixations per minute across all AOIs") +
+  theme_minimal() +
+  theme(legend.position = "top", axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+#### Number of fixations per minute (micro-teaching unit)
 ```{r nof_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### NUMBER OF FIXATION IN MICRO-TEACHING UNIT ########################
@@ -380,7 +455,7 @@ round(d_number_all, 2)
 
 ```
 
-#### 2.2.2 Number of fixations per minute (AOI students)
+#### Number of fixations per minute (AOI students)
 ```{r nof_students, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### NUMBER OF FIXATIONS (AOI STUDENTS) ########################
@@ -476,7 +551,7 @@ round(d_number_stud, 2)
 
 ```
 
-#### 2.2.2 Number of fixations per minute (AOI others)
+#### Number of fixations per minute (AOI others)
 ```{r nof_others, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### NUMBER OF FIXATIONS (AOI others) ########################
@@ -532,8 +607,8 @@ knitr::kable(nof.min.others.table,
 
 
 # plotting number of fixations per minute on AOI Students
-df_aoi_stud %>%
-  ggplot(mapping = aes(x = Group, y = Stud_number_fixation_min)) +
+df_aoi_others %>%
+  ggplot(mapping = aes(x = Group, y = Others_number_fixation_min)) +
   geom_boxplot(mapping = aes(fill = Group), outlier.shape = NA) +
   geom_point(
     size = 2,
@@ -544,14 +619,14 @@ df_aoi_stud %>%
       height = 0.005
     )
   ) +
-  ylim(0, 50) +
+  ylim(0, 100) +
   labs(x = "", y = "Number of fixations per minute") +
   scale_fill_brewer(palette  = "RdBu") +
-  ggtitle("Number of fixations per minute\n(AOI students)") +
+  ggtitle("Number of fixations per minute\n(AOI others)") +
   theme_cowplot() +
-  theme(legend.position = "none") -> plot_number_min_stud
+  theme(legend.position = "none") -> plot_number_min_others
 
-plot_number_min_stud
+plot_number_min_others
 
 ```
 
@@ -580,7 +655,7 @@ round(d_number_others, 2)
 ```
 
 
-#### 2.2.3 Number of fixations (AOI disruptive person)
+#### Number of fixations (AOI disruptive person)
 ```{r nof_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### NUMBER OF FIXATION ON AOI DISRUPTIVE PERSON ########################
@@ -652,7 +727,108 @@ round(d_number_disrup, 2)
 
 ```
 
-#### 2.2.4 Average duration of fixations in milliseconds (micro-teaching unit)
+### Duration of Fixations across all AOIs
+```{r average_dur_all_aoi, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Filtere und wähle die relevanten Spalten aus
+df_aoi_filtered <- df_aoi %>%
+  filter(TOI == "Lesson") %>%
+  select(
+    Group,
+    Participant,
+    Duration_of_interval,
+    starts_with("Total_duration_of_fixations"),
+    starts_with("Number_of_fixations")
+  )
+
+# Erstelle die AOI "Students" durch Summieren der Werte für Anna, Bianca und Carl(a)
+df_aoi_filtered <- df_aoi_filtered %>%
+  mutate(
+    Total_duration_of_fixations.Students = 
+      `Total_duration_of_fixations.Anna` +
+      `Total_duration_of_fixations.Bianca` +
+      `Total_duration_of_fixations.Carl(a)`,
+    Number_of_fixations.Students = 
+      `Number_of_fixations.Anna` +
+      `Number_of_fixations.Bianca` +
+      `Number_of_fixations.Carl(a)`
+  )
+
+# Berechne die durchschnittliche Fixationsdauer für jede AOI individuell (einschließlich "Disruptive_Person")
+df_aoi_avg_long <- df_aoi_filtered %>%
+  pivot_longer(
+    cols = starts_with("Total_duration_of_fixations") | starts_with("Number_of_fixations"),
+    names_to = "Measure_AOI",
+    values_to = "Values"
+  ) %>%
+  separate(Measure_AOI, into = c("Measure", "AOI"), sep = "\\.", extra = "merge") %>%
+  pivot_wider(
+    names_from = Measure,
+    values_from = Values
+  ) %>%
+  mutate(
+    Average_duration = round(Total_duration_of_fixations / Number_of_fixations, digits = 2)
+  )
+
+# Berechne `Average_duration_mtu` und `Number_fixation_mtu` durch Aufsummieren der Fixationsdauer und -anzahl, ohne "Disruptive_Person"
+df_mtu_summary <- df_aoi_filtered %>%
+  rowwise() %>%  # Zeilenweise Berechnung
+  mutate(
+    Total_duration_excl_disruptive = sum(c_across(starts_with("Total_duration_of_fixations")), na.rm = TRUE) - `Total_duration_of_fixations.Disruptive_Person`,
+    Total_fixations_excl_disruptive = sum(c_across(starts_with("Number_of_fixations")), na.rm = TRUE) - `Number_of_fixations.Disruptive_Person`
+  ) %>%
+  ungroup() %>%
+  summarise(
+    Group = unique(Group),
+    Average_duration_mtu = round(mean(Total_duration_excl_disruptive / Total_fixations_excl_disruptive, na.rm = TRUE), 2),
+    Number_fixation_mtu = sum(Total_fixations_excl_disruptive, na.rm = TRUE)
+  ) %>%
+  mutate(AOI = "MTU")
+
+# Füge `Average_duration_mtu` und `Number_fixation_mtu` zur Langformat-Datenstruktur hinzu
+df_aoi_avg_long <- bind_rows(df_aoi_avg_long, df_mtu_summary)
+
+# Setze die AOIs in der gewünschten Reihenfolge, einschließlich "MTU"
+df_aoi_avg_long <- df_aoi_avg_long %>%
+  mutate(AOI = factor(AOI, levels = c(
+    "MTU", "Students", "Anna", "Bianca", "Carl(a)", "Disruptive_Person", 
+    "Board_Screen", "Material_Teacher", "Material_Students", 
+    "Classroom_Others", "Nametag_Anna", "Nametag_Bianca", "Nametag_Carl(a)"
+  ))) %>%
+  arrange(AOI)
+
+# Berechne deskriptive Statistiken, einschließlich "MTU"
+aois_descriptives_durations <- df_aoi_avg_long %>%
+  group_by(Group, AOI) %>%
+  summarise(
+    N = n(),
+    M = round(mean(Average_duration, na.rm = TRUE), 2),
+    SD = round(sd(Average_duration, na.rm = TRUE), 2),
+    Min = round(min(Average_duration, na.rm = TRUE), 2),
+    Max = round(max(Average_duration, na.rm = TRUE), 2)
+  )
+
+# Visualisierung: Boxplot der durchschnittlichen Fixationsdauer für alle AOIs
+ggplot(df_aoi_avg_long, aes(x = AOI, y = Average_duration, fill = Group)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(
+    position = position_jitterdodge(jitter.width = 0.15),
+    size = 1.5,
+    alpha = 0.7
+  ) +
+  scale_fill_brewer(palette = "RdBu") +
+  labs(x = "AOI", y = "Average Duration of Fixations (ms)") +
+  ggtitle("Average Duration of Fixations across all AOIs") +
+  theme_minimal() +
+  theme(legend.position = "top", axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Ausgabe der deskriptiven Tabelle, einschließlich "MTU"
+knitr::kable(aois_descriptives_durations,
+             caption = "N, M, SD, min & max duration of fixations in milliseconds (across all AOIs)")
+
+```
+
+#### Average duration of fixations in milliseconds (micro-teaching unit)
 ```{r dur_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### AVERAGE DURATION OF FIXATIONS (MICRO-TEACHING UNIT) ########################
@@ -715,7 +891,7 @@ round(d_aver_all, 2)
 
 ```
 
-#### 2.2.5 Average duration of fixations (AOI students)
+#### Average duration of fixations (AOI students)
 ```{r dur_students, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### AVERAGE DURATION ON AOI STUDENTS ########################
@@ -808,7 +984,7 @@ round(d_aver_stud, 2)
 
 ```
 
-#### 2.2.6 Average duration of fixations (AOI disruptive person)
+#### Average duration of fixations (AOI disruptive person)
 ```{r dur_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### AVERAGE DURATIONS ON AOI DISRUPTIVE PERSON ########################
@@ -887,7 +1063,7 @@ round(d_dur_disrup, 2)
 
 ```
 
-#### 2.2.7 Gaze Relational Index (GRI; micro-teaching unit)
+#### Gaze Relational Index (GRI; micro-teaching unit)
 ```{r gri_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### GRI IN MICRO-TEACHING UNIT ########################
@@ -1099,7 +1275,7 @@ round(d_gri_all, 2)
 
 ```
 
-#### 2.2.10 Time to first fixation in seconds (AOI disruptive person)
+#### Time to first fixation in seconds (AOI disruptive person)
 ```{r ttff_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ############### TIME TO FIRST FIXATION ####################
@@ -1238,7 +1414,7 @@ round(d_time_disrup, 2)
 
 ```
 
-### 2.2 Rating Scales (Disruption Appraisal, Confidence Appraisal, Prevalence Rating)
+### Rating Scales (Disruption Appraisal, Confidence Appraisal, Prevalence Rating)
 ```{r rating_scales, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # read in data and combine multiple excel sheets into a single table 
@@ -1432,94 +1608,80 @@ d_sri_confi <- CohenD(x = sri$confidence_appraisal[sri$ID == "Expert"],
 round(d_sri_confi, 2)
 ```
 
-# ```{r sri_pr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-# 
-# ############## Prevalence Rating #########################
-# 
-# sri.preva.table <-
-#   sri %>%
-#   group_by(ID) %>%
-#   summarise(
-#     N = n(),
-#     "M" = round(mean(prevalence_rating), digits = 2),
-#     "SD" = round(sd(prevalence_rating), digits = 2),
-#     "Min" = min(prevalence_rating),
-#     "Max" = max(prevalence_rating)
-#   )
-# 
-# # insert a table into HTML
-# knitr::kable(sri.preva.table,
-#              caption = "Prevalence rating")
-# 
-# #### with event 
-# sri.preva.event.table <-
-#   sri %>%
-#   group_by(ID, event) %>%
-#   summarise(
-#     N = n(),
-#     "M" = round(mean(prevalence_rating), digits = 2),
-#     "SD" = round(sd(prevalence_rating), digits = 2),
-#     "Min" = min(prevalence_rating),
-#     "Max" = max(prevalence_rating)
-#   )
-# 
-# # insert a table into HTML
-# knitr::kable(sri.preva.event.table,
-#              caption = "Prevalence rating with events")
-# 
-# # create a new data frame with rating
-# sri_preva <- subset.data.frame(sri, select = c(ID, event, prevalence_rating))
-# 
-# # plotting prevalence rating for groups
-# preva_group_plot <- 
-#   sri_preva %>% 
-#   mutate(ID = factor(ID,
-#                      levels = c("Novice",
-#                                 "Expert"
-#                                 )
-#                      )
-#          ) %>% 
-#   ggplot(mapping = aes(x = ID,
-#                        y = prevalence_rating)) +
-#   geom_boxplot(mapping = aes(fill = ID),
-#                outlier.shape = NA) +
-#   geom_point(size = 1,
-#              alpha = 0.4,
-#              position = position_jitter(seed = 1,
-#                                         width = 0.1,
-#                                         height = 0.1)) +
-#   scale_x_discrete(limits = c("Novice", "Expert")) +
-#   scale_y_continuous(breaks = seq(from = 0, to = 10, by = 1)) + 
-#   labs(x = "",
-#        y = "Prevalence Rating") + 
-#   scale_fill_brewer(palette  = "RdBu") +  
-#   ggtitle("How widespread is this event in the classroom?") +
-#   theme_cowplot()
-# 
-# preva_group_plot
-# 
-# ```
+### Prevalence Rating as manipulation check
+```{r sri_pr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-#### t-Test & effect size "Prevalence rating"
-# ```{r sri_pr_ttest, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-# 
-# #################### T-TEST & EFFECT SIZE ############
-# 
-# # Prevalence Rating 
-# # t-test for expertise differences
-# t.test(x = sri$prevalence_rating[sri$ID == "Expert"],
-#        y = sri$prevalence_rating[sri$ID == "Novice"],
-#        var.equal = TRUE)
-# 
-# # Prevalence Rating 
-# # effect size for expertise differences
-# d_sri_preva <- CohenD(x = sri$prevalence_rating[sri$ID == "Expert"],
-#                       y = sri$prevalence_rating[sri$ID == "Novice"],
-#                       na.rm = TRUE)
-# 
-# round(d_sri_preva, 2)
-# 
-# ```
+############## Prevalence Rating #########################
+
+sri.preva.table <-
+  sri %>%
+  group_by(ID) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(prevalence_rating), digits = 2),
+    "SD" = round(sd(prevalence_rating), digits = 2),
+    "Min" = min(prevalence_rating),
+    "Max" = max(prevalence_rating)
+  )
+
+knitr::kable(sri.preva.table,
+             caption = "Prevalence rating")
+
+sri.preva.event.table <-
+  sri %>%
+  group_by(ID, event) %>%
+  summarise(
+    N = n(),
+    "M" = round(mean(prevalence_rating), digits = 2),
+    "SD" = round(sd(prevalence_rating), digits = 2),
+    "Min" = min(prevalence_rating),
+    "Max" = max(prevalence_rating)
+  )
+
+knitr::kable(sri.preva.event.table,
+             caption = "Prevalence rating with events")
+
+sri_preva <- subset.data.frame(sri, select = c(ID, event, prevalence_rating))
+
+preva_group_plot <- 
+  sri_preva %>% 
+  mutate(ID = factor(ID,
+                     levels = c("Novice",
+                                "Expert"
+                                )
+                     )
+         ) %>% 
+  ggplot(mapping = aes(x = ID,
+                       y = prevalence_rating)) +
+  geom_boxplot(mapping = aes(fill = ID),
+               outlier.shape = NA) +
+  geom_point(size = 1,
+             alpha = 0.4,
+             position = position_jitter(seed = 1,
+                                        width = 0.1,
+                                        height = 0.1)) +
+  scale_x_discrete(limits = c("Novice", "Expert")) +
+  scale_y_continuous(breaks = seq(from = 0, to = 10, by = 1)) + 
+  labs(x = "",
+       y = "Prevalence Rating") + 
+  scale_fill_brewer(palette  = "RdBu") +  
+  ggtitle("How widespread is this event in the classroom?") +
+  theme_cowplot()
+
+preva_group_plot
+
+#################### T-TEST & EFFECT SIZE ############
+
+t.test(x = sri$prevalence_rating[sri$ID == "Expert"],
+       y = sri$prevalence_rating[sri$ID == "Novice"],
+       var.equal = TRUE)
+
+d_sri_preva <- CohenD(x = sri$prevalence_rating[sri$ID == "Expert"],
+                      y = sri$prevalence_rating[sri$ID == "Novice"],
+                      na.rm = TRUE)
+
+round(d_sri_preva, 2)
+```
 
 ### Internal consistency (Omega) for disruption and confidence appraisal
 ```{r sri_omega, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -1577,77 +1739,7 @@ print(omega_confi)
 ``` 
 
 
-### Prevalence Rating as manipulation check
-```{r sri_pr, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-# 
-# ############## Prevalence Rating as manipulation check #########################
-# 
-# sri.preva.table <-
-#   sri %>%
-#   group_by(ID) %>%
-#   summarise(
-#     N = n(),
-#     "M" = round(mean(prevalence_rating), digits = 2),
-#     "SD" = round(sd(prevalence_rating), digits = 2),
-#     "Min" = min(prevalence_rating),
-#     "Max" = max(prevalence_rating)
-#   )
-# 
-# # insert a table into HTML
-# knitr::kable(sri.preva.table,
-#              caption = "Prevalence rating")
-# 
-# #### with event 
-# sri.preva.event.table <-
-#   sri %>%
-#   group_by(ID, event) %>%
-#   summarise(
-#     N = n(),
-#     "M" = round(mean(prevalence_rating), digits = 2),
-#     "SD" = round(sd(prevalence_rating), digits = 2),
-#     "Min" = min(prevalence_rating),
-#     "Max" = max(prevalence_rating)
-#   )
-# 
-# # insert a table into HTML
-# knitr::kable(sri.preva.event.table,
-#              caption = "Prevalence rating with events")
-# 
-# # create a new data frame with rating
-# sri_preva <- subset.data.frame(sri, select = c(ID, event, prevalence_rating))
-# 
-# # plotting prevalence rating for groups
-# preva_group_plot <- 
-#   sri_preva %>% 
-#   mutate(ID = factor(ID,
-#                      levels = c("Novice",
-#                                 "Expert"
-#                                 )
-#                      )
-#          ) %>% 
-#   ggplot(mapping = aes(x = ID,
-#                        y = prevalence_rating)) +
-#   geom_boxplot(mapping = aes(fill = ID),
-#                outlier.shape = NA) +
-#   geom_point(size = 1,
-#              alpha = 0.4,
-#              position = position_jitter(seed = 1,
-#                                         width = 0.1,
-#                                         height = 0.1)) +
-#   scale_x_discrete(limits = c("Novice", "Expert")) +
-#   scale_y_continuous(breaks = seq(from = 0, to = 10, by = 1)) + 
-#   labs(x = "",
-#        y = "Prevalence Rating") + 
-#   scale_fill_brewer(palette  = "RdBu") +  
-#   ggtitle("How widespread is this event in the classroom?") +
-#   theme_cowplot()
-# 
-# preva_group_plot
-
-```
-
-
-### 2.3 Situational Jugdement Test
+### Situational Jugdement Test
 ```{r sjt, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # read in data
@@ -1933,7 +2025,7 @@ print(omega_sjt_r)
 ``` 
 
 
-### 2.4 Classroom Questionnaire
+### Classroom Questionnaire
 ```{r classroom questionnaire, echo=FALSE, results='asis'}
 
 # load data files with modified scales
@@ -2105,7 +2197,7 @@ round(d_quest_npvc, 2)
 
 
 
-## 3. Correlations
+## Correlations
 ```{r correlations, echo=FALSE, message=FALSE, warning=FALSE}
 
 # demo data 
@@ -2363,9 +2455,6 @@ cor.test(df_merge$GRI_mtu, df_merge$Mean_confidence_appraisal)
 
 # p-value for GRI x Teaching Experience
 cor.test(df_merge_experts$GRI_mtu, df_merge_experts$`Teaching Experience`)
-
-
-
 
 ```
 
