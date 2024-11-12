@@ -75,8 +75,10 @@ output:
     keep_tex: true
     citation_package: default
 header-includes:
+  - \usepackage{hyperref}
+  - \hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
   - \bibliographystyle{elsarticle-num}
-  - \setcitestyle{numbered}
+  - \setcitestyle{numbers, sort&compress}
   - \usepackage{tabularx}
   - \usepackage{threeparttable}
   - \usepackage{booktabs}

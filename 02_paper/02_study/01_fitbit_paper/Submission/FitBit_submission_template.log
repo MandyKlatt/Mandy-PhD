@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.7)  7 NOV 2024 12:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.7)  11 NOV 2024 15:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -377,7 +377,9 @@ LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
 \calc@Ccount=\count315
 \calc@Cskip=\skip63
-) (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/tabularx.sty
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 98.
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/tabularx.sty
 Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/array.sty
 Package: array 2024/10/17 v2.6g Tabular extension package (FMi)
@@ -489,30 +491,30 @@ Package: longtable 2024-10-27 v4.22 Multi-page Table package (DPC)
 \c@LT@chunks=\count329
 \LT@p@ftn=\toks35
 )
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 114.
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 116.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) (./FitBit_submission_template.aux)
 \openout1 = `FitBit_submission_template.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 116.
+LaTeX Font Info:    ... okay on input line 116.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -555,7 +557,14 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 114.
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2024/06/23 v1.3e Standard LaTeX Color (DPC)
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 149.
+(c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+Package hyperref Info: Link coloring ON on input line 116.
 (./FitBit_submission_template.out) (./FitBit_submission_template.out)
 \@outlinefile=\write4
 \openout4 = `FitBit_submission_template.out'.
@@ -568,144 +577,144 @@ Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )
 Package caption Info: wrapfig package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 172.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 174.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 192.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 194.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 192.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 194.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 192.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 194.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 192.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 194.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 192.
+(Font)              <10> on input line 194.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 192.
+(Font)              <7> on input line 194.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 192.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 192.
+(Font)              <5> on input line 194.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 194.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 192.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 194.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 192.
+(Font)              <8> on input line 194.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 192.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 192.
+(Font)              <6> on input line 194.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 194.
 (c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 238.
+(hyperref)                removing `\<def>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\cnotenum' on input line 238.
+(hyperref)                removing `\cnotenum' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 238.
+(hyperref)                removing `\<def>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@corref' on input line 238.
+(hyperref)                removing `\@corref' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 238.
+(hyperref)                removing `\<let>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 238.
+(hyperref)                removing `\comma' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 238.
+(hyperref)                removing `\<def>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 238.
+(hyperref)                removing `\@fnmark' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 238.
+(hyperref)                removing `\<let>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 238.
+(hyperref)                removing `\comma' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 238.
+(hyperref)                removing `\<def>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 238.
+(hyperref)                removing `\@fnmark' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 238.
+(hyperref)                removing `\<let>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 238.
+(hyperref)                removing `\comma' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 238.
+(hyperref)                removing `\<def>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 238.
+(hyperref)                removing `\@fnmark' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 238.
+(hyperref)                removing `\<let>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 238.
+(hyperref)                removing `\comma' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 238.
+(hyperref)                removing `\<def>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 238.
+(hyperref)                removing `\@fnmark' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<let>-command' on input line 238.
+(hyperref)                removing `\<let>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\comma' on input line 238.
+(hyperref)                removing `\comma' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\<def>-command' on input line 238.
+(hyperref)                removing `\<def>-command' on input line 240.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\@fnmark' on input line 238.
+(hyperref)                removing `\@fnmark' on input line 240.
 
 [1
 
@@ -719,7 +728,7 @@ pdfTeX warning: pdflatex.exe (file ./images/Model_Teacher_Stress_adapted_new.pdf
 <images/Model_Teacher_Stress_adapted_new.pdf, id=126, 963.6pt x 542.025pt>
 File: images/Model_Teacher_Stress_adapted_new.pdf Graphic file (type pdf)
 <use images/Model_Teacher_Stress_adapted_new.pdf>
-Package pdftex.def Info: images/Model_Teacher_Stress_adapted_new.pdf  used on input line 417.
+Package pdftex.def Info: images/Model_Teacher_Stress_adapted_new.pdf  used on input line 419.
 (pdftex.def)             Requested size: 468.0pt x 263.24571pt.
 
 
@@ -731,13 +740,13 @@ Package pdftex.def Info: images/Model_Teacher_Stress_adapted_new.pdf  used on in
 <images/Timeline_smaller.pdf, id=160, 409.53pt x 660.47902pt>
 File: images/Timeline_smaller.pdf Graphic file (type pdf)
 <use images/Timeline_smaller.pdf>
-Package pdftex.def Info: images/Timeline_smaller.pdf  used on input line 550.
+Package pdftex.def Info: images/Timeline_smaller.pdf  used on input line 552.
 (pdftex.def)             Requested size: 234.0pt x 377.39406pt.
 
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 555.
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 557.
 
 
-Package wrapfig Warning: Stationary wrapfigure forced to float on input line 558.
+Package wrapfig Warning: Stationary wrapfigure forced to float on input line 560.
 
 
 
@@ -747,7 +756,7 @@ Package wrapfig Warning: Stationary wrapfigure forced to float on input line 558
 <plots_publication/loess_plot_std_unstd_new.pdf, id=200, 710.655pt x 397.485pt>
 File: plots_publication/loess_plot_std_unstd_new.pdf Graphic file (type pdf)
 <use plots_publication/loess_plot_std_unstd_new.pdf>
-Package pdftex.def Info: plots_publication/loess_plot_std_unstd_new.pdf  used on input line 758.
+Package pdftex.def Info: plots_publication/loess_plot_std_unstd_new.pdf  used on input line 760.
 (pdftex.def)             Requested size: 468.0pt x 261.77078pt.
 
 
@@ -755,159 +764,159 @@ Package pdftex.def Info: plots_publication/loess_plot_std_unstd_new.pdf  used on
 <plots_publication/box_plot.pdf, id=209, 710.655pt x 397.485pt>
 File: plots_publication/box_plot.pdf Graphic file (type pdf)
 <use plots_publication/box_plot.pdf>
-Package pdftex.def Info: plots_publication/box_plot.pdf  used on input line 765.
+Package pdftex.def Info: plots_publication/box_plot.pdf  used on input line 767.
 (pdftex.def)             Requested size: 468.0pt x 261.77078pt.
 
 
 [10 <./plots_publication/loess_plot_std_unstd_new.pdf> <./plots_publication/box_plot.pdf>]
-Underfull \hbox (badness 10000) in alignment at lines 824--824
+Underfull \hbox (badness 10000) in alignment at lines 826--826
 [][][][][][] 
  []
 
 
 
 [11]
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
+Underfull \hbox (badness 10000) in paragraph at lines 846--846
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
+Underfull \hbox (badness 10000) in paragraph at lines 846--846
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
+Underfull \hbox (badness 10000) in paragraph at lines 846--846
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
+Underfull \hbox (badness 10000) in paragraph at lines 846--846
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
+Underfull \hbox (badness 10000) in paragraph at lines 846--846
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
+Underfull \hbox (badness 10000) in paragraph at lines 846--846
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
+Underfull \hbox (badness 10000) in paragraph at lines 846--846
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 844--844
+Underfull \hbox (badness 10000) in paragraph at lines 846--846
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 836--846
+Overfull \hbox (76.45894pt too wide) in alignment at lines 838--848
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 851--851
+Underfull \hbox (badness 10000) in paragraph at lines 853--853
 []|\T1/lmr/m/n/10 Dependent
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--853
+Underfull \hbox (badness 10000) in paragraph at lines 855--855
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--853
+Underfull \hbox (badness 10000) in paragraph at lines 855--855
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--853
+Underfull \hbox (badness 10000) in paragraph at lines 855--855
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--853
+Underfull \hbox (badness 10000) in paragraph at lines 855--855
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--853
+Underfull \hbox (badness 10000) in paragraph at lines 855--855
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--853
+Underfull \hbox (badness 10000) in paragraph at lines 855--855
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--853
+Underfull \hbox (badness 10000) in paragraph at lines 855--855
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--853
+Underfull \hbox (badness 10000) in paragraph at lines 855--855
 []|$\OML/lmm/m/it/10 ^^L$
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 846--855
+Overfull \hbox (76.45894pt too wide) in alignment at lines 848--857
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 855--859
+Overfull \hbox (76.45894pt too wide) in alignment at lines 857--861
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 859--862
+Overfull \hbox (76.45894pt too wide) in alignment at lines 861--864
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 864--864
+Underfull \hbox (badness 10000) in paragraph at lines 866--866
 []|\T1/lmr/m/n/10 Pre-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 864--864
+Underfull \hbox (badness 10000) in paragraph at lines 866--866
 \T1/lmr/m/n/10 interval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 868--868
+Underfull \hbox (badness 10000) in paragraph at lines 870--870
 \T1/lmr/m/n/10 interval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 875--875
+Underfull \hbox (badness 10000) in paragraph at lines 877--877
 []|\T1/lmr/m/n/10 Post-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 875--875
+Underfull \hbox (badness 10000) in paragraph at lines 877--877
 \T1/lmr/m/n/10 interval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 882--882
+Underfull \hbox (badness 10000) in paragraph at lines 884--884
 \T1/lmr/m/n/10 interval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 889--889
+Underfull \hbox (badness 10000) in paragraph at lines 891--891
 \T1/lmr/m/n/10 interval
  []
 
 
-Overfull \hbox (76.45894pt too wide) in alignment at lines 862--896
+Overfull \hbox (76.45894pt too wide) in alignment at lines 864--898
 [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []
  []
 
@@ -916,7 +925,7 @@ Overfull \hbox (76.45894pt too wide) in alignment at lines 862--896
 ] [13]
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 897.
+(caption)                particular \caption on input line 899.
 See the caption package documentation for explanation.
 
 
@@ -933,42 +942,42 @@ See the caption package documentation for explanation.
 
 [18]
 
-Package natbib Warning: Citation `lohmann2003schulern' on page 19 undefined on input line 1258.
+Package natbib Warning: Citation `lohmann2003schulern' on page 19 undefined on input line 1260.
 
 <appendix_figure1.png, id=274, 451.6875pt x 258.36525pt>
 File: appendix_figure1.png Graphic file (type png)
 <use appendix_figure1.png>
-Package pdftex.def Info: appendix_figure1.png  used on input line 1264.
+Package pdftex.def Info: appendix_figure1.png  used on input line 1266.
 (pdftex.def)             Requested size: 210.59857pt x 120.4658pt.
 <appendix_figure2.png, id=276, 452.892pt x 274.626pt>
 File: appendix_figure2.png Graphic file (type png)
 <use appendix_figure2.png>
-Package pdftex.def Info: appendix_figure2.png  used on input line 1272.
+Package pdftex.def Info: appendix_figure2.png  used on input line 1274.
 (pdftex.def)             Requested size: 210.59857pt x 127.69977pt.
 <plots_publication/plot_preparation_appendix.pdf, id=277, 710.655pt x 825.0825pt>
 File: plots_publication/plot_preparation_appendix.pdf Graphic file (type pdf)
 <use plots_publication/plot_preparation_appendix.pdf>
-Package pdftex.def Info: plots_publication/plot_preparation_appendix.pdf  used on input line 1280.
+Package pdftex.def Info: plots_publication/plot_preparation_appendix.pdf  used on input line 1282.
 (pdftex.def)             Requested size: 468.0pt x 543.3727pt.
 <plots_publication/plot_teaching_appendix.pdf, id=278, 710.655pt x 825.0825pt>
 File: plots_publication/plot_teaching_appendix.pdf Graphic file (type pdf)
 <use plots_publication/plot_teaching_appendix.pdf>
-Package pdftex.def Info: plots_publication/plot_teaching_appendix.pdf  used on input line 1287.
+Package pdftex.def Info: plots_publication/plot_teaching_appendix.pdf  used on input line 1289.
 (pdftex.def)             Requested size: 468.0pt x 543.3727pt.
 <plots_publication/plot_post_teaching_appendix.pdf, id=279, 710.655pt x 825.0825pt>
 File: plots_publication/plot_post_teaching_appendix.pdf Graphic file (type pdf)
 <use plots_publication/plot_post_teaching_appendix.pdf>
-Package pdftex.def Info: plots_publication/plot_post_teaching_appendix.pdf  used on input line 1294.
+Package pdftex.def Info: plots_publication/plot_post_teaching_appendix.pdf  used on input line 1296.
 (pdftex.def)             Requested size: 468.0pt x 543.3727pt.
 <plots_publication/plot_interview_appendix.pdf, id=280, 710.655pt x 825.0825pt>
 File: plots_publication/plot_interview_appendix.pdf Graphic file (type pdf)
 <use plots_publication/plot_interview_appendix.pdf>
-Package pdftex.def Info: plots_publication/plot_interview_appendix.pdf  used on input line 1301.
+Package pdftex.def Info: plots_publication/plot_interview_appendix.pdf  used on input line 1303.
 (pdftex.def)             Requested size: 468.0pt x 543.3727pt.
 <plots_publication/plot_end_appendix.pdf, id=281, 710.655pt x 825.0825pt>
 File: plots_publication/plot_end_appendix.pdf Graphic file (type pdf)
 <use plots_publication/plot_end_appendix.pdf>
-Package pdftex.def Info: plots_publication/plot_end_appendix.pdf  used on input line 1308.
+Package pdftex.def Info: plots_publication/plot_end_appendix.pdf  used on input line 1310.
 (pdftex.def)             Requested size: 468.0pt x 543.3727pt.
 
 
@@ -989,8 +998,8 @@ Package pdftex.def Info: plots_publication/plot_end_appendix.pdf  used on input 
 [26]
 
 [27]
-Overfull \hbox (2.22952pt too wide) in paragraph at lines 1768--1771
-\T1/lmr/m/n/10 ing.'' \T1/lmr/m/it/10 Cur-rent Opin-ion in Psy-chi-a-try \T1/lmr/m/n/10 29 (5): 302--8. []$\T1/lmtt/m/n/10 https : / / doi . org / 10 . 1097 / YCO . 0000000000000267$[]\T1/lmr/m/n/10 . 
+Overfull \hbox (2.22952pt too wide) in paragraph at lines 1770--1773
+\T1/lmr/m/n/10 ing.'' \T1/lmr/m/it/10 Cur-rent Opin-ion in Psy-chi-a-try \T1/lmr/m/n/10 29 (5): 302--8. [][]$\T1/lmtt/m/n/10 https : / / doi . org / 10 . 1097 / YCO . 0000000000000267$[][]\T1/lmr/m/n/10 . 
  []
 
 
@@ -1010,15 +1019,15 @@ Package rerunfilecheck Info: File `FitBit_submission_template.out' has not chang
 (rerunfilecheck)             Checksum: 66B8CDCA1BBF89786DFFBB2470329666;4370.
  ) 
 Here is how much of TeX's memory you used:
- 14276 strings out of 475322
- 237552 string characters out of 5768592
- 717076 words of memory out of 5000000
- 36703 multiletter control sequences out of 15000+600000
+ 14346 strings out of 475322
+ 239043 string characters out of 5768592
+ 718479 words of memory out of 5000000
+ 36766 multiletter control sequences out of 15000+600000
  613857 words of font info for 76 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,15n,79p,633b,689s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,15n,79p,633b,690s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy6.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/fredd/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt8.pfb>
-Output written on FitBit_submission_template.pdf (29 pages, 2799106 bytes).
+Output written on FitBit_submission_template.pdf (29 pages, 2800033 bytes).
 PDF statistics:
  689 PDF objects out of 1000 (max. 8388607)
  591 compressed objects within 6 object streams
