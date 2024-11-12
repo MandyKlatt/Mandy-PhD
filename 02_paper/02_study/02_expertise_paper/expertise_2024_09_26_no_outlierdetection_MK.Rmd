@@ -218,6 +218,8 @@ df_aoi <- df_aoi %>%
 
 ```
 
+### Check variables
+
 #### Letter search
 ```{r letter_search, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
@@ -277,6 +279,7 @@ round(d_letter, 2)
 
 ```
 
+
 ### Fixations per minute across all AOIs
 ```{r nof_all_aois, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
@@ -318,7 +321,7 @@ df_aoi_long <- df_aoi_filtered %>%
     values_to = "Fixations_per_minute"
   ) %>%
   mutate(AOI = str_remove(AOI, "fixation_per_min_Number_of_fixations.")) %>%
-  mutate(AOI = factor(AOI, levels = c("All", "Students", "Anna", "Bianca", "Carl(a)", "Disruptive_Person", 
+  mutate(AOI = factor(AOI, levels = c("Students", "Anna", "Bianca", "Carl(a)", "Disruptive_Person", 
                                       "Board_Screen", "Material_Teacher", "Material_Students", 
                                       "Classroom_Others", "Nametag_Anna", "Nametag_Bianca", "Nametag_Carl(a)"))) %>%
   arrange(AOI)
@@ -334,7 +337,7 @@ aois_descriptives_fixations <- df_aoi_long %>%
     Max = round(max(Fixations_per_minute, na.rm = TRUE), 2)
   )
 
-knitr::kable(nof.table,
+knitr::kable(aois_descriptives_fixations,
              caption = "N, M, SD, min & max number of fixation per minute (across all AOIs)")
 
 
@@ -730,7 +733,7 @@ round(d_number_disrup, 2)
 ### Duration of Fixations across all AOIs
 ```{r average_dur_all_aoi, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-# Filtere und wähle die relevanten Spalten aus
+# Filter and select necessary columns
 df_aoi_filtered <- df_aoi %>%
   filter(TOI == "Lesson") %>%
   select(
@@ -741,7 +744,7 @@ df_aoi_filtered <- df_aoi %>%
     starts_with("Number_of_fixations")
   )
 
-# Erstelle die AOI "Students" durch Summieren der Werte für Anna, Bianca und Carl(a)
+# Create a new AOI 'Students' by summing durations and counts for Anna, Bianca, and Carl(a)
 df_aoi_filtered <- df_aoi_filtered %>%
   mutate(
     Total_duration_of_fixations.Students = 
@@ -751,10 +754,15 @@ df_aoi_filtered <- df_aoi_filtered %>%
     Number_of_fixations.Students = 
       `Number_of_fixations.Anna` +
       `Number_of_fixations.Bianca` +
-      `Number_of_fixations.Carl(a)`
+      `Number_of_fixations.Carl(a)`,
+    
+    # Calculate Average Duration for all AOIs, excluding "Disruptive_Person"
+    Total_duration_excl_disruptive = sum(c_across(starts_with("Total_duration_of_fixations"))[!names(c_across(starts_with("Total_duration_of_fixations"))) == "Total_duration_of_fixations.Disruptive_Person"], na.rm = TRUE),
+    Total_fixations_excl_disruptive = sum(c_across(starts_with("Number_of_fixations"))[!names(c_across(starts_with("Number_of_fixations"))) == "Number_of_fixations.Disruptive_Person"], na.rm = TRUE),
+    Average_duration_all = round(Total_duration_excl_disruptive / Total_fixations_excl_disruptive, digits = 2)  # Overall average duration
   )
 
-# Berechne die durchschnittliche Fixationsdauer für jede AOI individuell (einschließlich "Disruptive_Person")
+# Calculate average fixation duration for each AOI individually, excluding disruptive person
 df_aoi_avg_long <- df_aoi_filtered %>%
   pivot_longer(
     cols = starts_with("Total_duration_of_fixations") | starts_with("Number_of_fixations"),
@@ -766,38 +774,21 @@ df_aoi_avg_long <- df_aoi_filtered %>%
     names_from = Measure,
     values_from = Values
   ) %>%
+  filter(AOI != "Disruptive_Person") %>%
   mutate(
     Average_duration = round(Total_duration_of_fixations / Number_of_fixations, digits = 2)
   )
 
-# Berechne `Average_duration_mtu` und `Number_fixation_mtu` durch Aufsummieren der Fixationsdauer und -anzahl, ohne "Disruptive_Person"
-df_mtu_summary <- df_aoi_filtered %>%
-  rowwise() %>%  # Zeilenweise Berechnung
-  mutate(
-    Total_duration_excl_disruptive = sum(c_across(starts_with("Total_duration_of_fixations")), na.rm = TRUE) - `Total_duration_of_fixations.Disruptive_Person`,
-    Total_fixations_excl_disruptive = sum(c_across(starts_with("Number_of_fixations")), na.rm = TRUE) - `Number_of_fixations.Disruptive_Person`
-  ) %>%
-  ungroup() %>%
-  summarise(
-    Group = unique(Group),
-    Average_duration_mtu = round(mean(Total_duration_excl_disruptive / Total_fixations_excl_disruptive, na.rm = TRUE), 2),
-    Number_fixation_mtu = sum(Total_fixations_excl_disruptive, na.rm = TRUE)
-  ) %>%
-  mutate(AOI = "MTU")
-
-# Füge `Average_duration_mtu` und `Number_fixation_mtu` zur Langformat-Datenstruktur hinzu
-df_aoi_avg_long <- bind_rows(df_aoi_avg_long, df_mtu_summary)
-
-# Setze die AOIs in der gewünschten Reihenfolge, einschließlich "MTU"
+# Set the order of AOIs based on the specified sequence
 df_aoi_avg_long <- df_aoi_avg_long %>%
   mutate(AOI = factor(AOI, levels = c(
-    "MTU", "Students", "Anna", "Bianca", "Carl(a)", "Disruptive_Person", 
+    "Students", "Anna", "Bianca", "Carl(a)", "Disruptive_person", 
     "Board_Screen", "Material_Teacher", "Material_Students", 
     "Classroom_Others", "Nametag_Anna", "Nametag_Bianca", "Nametag_Carl(a)"
   ))) %>%
   arrange(AOI)
 
-# Berechne deskriptive Statistiken, einschließlich "MTU"
+# Summarize descriptives for average duration of fixations
 aois_descriptives_durations <- df_aoi_avg_long %>%
   group_by(Group, AOI) %>%
   summarise(
@@ -808,7 +799,11 @@ aois_descriptives_durations <- df_aoi_avg_long %>%
     Max = round(max(Average_duration, na.rm = TRUE), 2)
   )
 
-# Visualisierung: Boxplot der durchschnittlichen Fixationsdauer für alle AOIs
+knitr::kable(aois_descriptives_durations,
+             caption = "N, M, SD, min & max duration of fixation per minute (across all AOIs)")
+
+
+# Visualization: Boxplot for average duration of fixations across AOIs
 ggplot(df_aoi_avg_long, aes(x = AOI, y = Average_duration, fill = Group)) +
   geom_boxplot(outlier.shape = NA) +
   geom_jitter(
@@ -816,15 +811,12 @@ ggplot(df_aoi_avg_long, aes(x = AOI, y = Average_duration, fill = Group)) +
     size = 1.5,
     alpha = 0.7
   ) +
+  ylim(0, 1500) +
   scale_fill_brewer(palette = "RdBu") +
   labs(x = "AOI", y = "Average Duration of Fixations (ms)") +
   ggtitle("Average Duration of Fixations across all AOIs") +
   theme_minimal() +
   theme(legend.position = "top", axis.text.x = element_text(angle = 45, hjust = 1))
-
-# Ausgabe der deskriptiven Tabelle, einschließlich "MTU"
-knitr::kable(aois_descriptives_durations,
-             caption = "N, M, SD, min & max duration of fixations in milliseconds (across all AOIs)")
 
 ```
 
