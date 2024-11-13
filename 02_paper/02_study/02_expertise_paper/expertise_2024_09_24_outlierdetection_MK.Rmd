@@ -134,6 +134,7 @@ demo.table <- demo.data %>%
             "Max Age in years" = max(Age),
                        "M Exp." = round(mean(`Teaching Experience`), 2),
             "SD Exp." = round(sd(`Teaching Experience`), 2),
+            "Median Exp." = round(median(`Teaching Experience`), 2),
             "Min Exp." = min(`Teaching Experience`),
             "Max Exp." = max(`Teaching Experience`)
             )
