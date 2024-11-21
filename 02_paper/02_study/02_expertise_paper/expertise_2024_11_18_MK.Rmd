@@ -1911,7 +1911,7 @@ print(preva_plot)
 
 
 # Omega Calculations -----------------------------------------------------
-# Data Import ------------------------------------------------------------
+# Data Import
 sri <- excel_sheets("data/Coding_SRI.xlsx") %>%
   map_df(~ read_xlsx("data/Coding_SRI.xlsx", .)) %>%
   filter(
@@ -1921,14 +1921,14 @@ sri <- excel_sheets("data/Coding_SRI.xlsx") %>%
     !prevalence_rating %in% c(-100, -99, -88)
   )
 
-# Change Long Format to Wide Format --------------------------------------
+# Change Long Format to Wide Format
 sri_wide <- sri %>%
   pivot_wider(
     names_from = event,
     values_from = c(disruption_appraisal, confidence_appraisal, prevalence_rating)
   )
 
-# Helper Function for Omega Calculation -----------------------------------
+# Helper Function for Omega Calculation
 calculate_omega_total <- function(data, scale_name) {
   if (nrow(data) == 0 || ncol(data) == 0) {
     warning(paste("No valid data for", scale_name))
@@ -2002,7 +2002,8 @@ df_sjt <- read_excel("./data/SJT.xlsx") %>%
     SJT_R_gek,  # Rules and routines
     SJT_KF_gek  # All
   ) %>%
-  filter(!UI06_05 == 201) %>% # Exclude specific ID
+  filter(!UI06_05 == 201,
+         !UI06_05 == 223) %>% # Exclude specific IDs
   na.omit() %>% # Remove NAs
   rename(
     Group = UI06_05,
@@ -2076,7 +2077,9 @@ mean_plot <- df_sjt_long %>%
     legend.title = element_text(size = 14),
     legend.text = element_text(size = 12),
     axis.title.y = element_text(size = 14),
-    axis.text.x = element_text(size = 12)
+    axis.text.x = element_blank(), # Remove x-axis text
+    axis.ticks.x = element_blank(), # Remove x-axis ticks
+    strip.text = element_text(size = 10) # Increase facet label font size
   )
 
 print(mean_plot)
@@ -2121,62 +2124,82 @@ t_test_results <- bind_rows(t_test_all, t_test_mm, t_test_m, t_test_r)
 kable(t_test_results, caption = "t-Test and Effect Sizes for SJT Facets") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
+
 # Internal Consistency (Omega) -------------------------------------------
-# Data Import
-df_sjt <- read_excel("./data/SJT.xlsx")
+# Read in Data
+df_sjt <- read_excel("./data/SJT.xlsx")  # Replace with the correct path
 
-# Subset Data for Each Scale ---------------------------------------------
-## Managing Momentum
-df_managing_momentum <- df_sjt %>%
-  select(matches("^WT_S1|^WT_S2|^WT_S3|^WT_S4")) %>%
-  na.omit()
-
-## Monitoring
-df_monitoring <- df_sjt %>%
-  select(matches("^WT_S5|^WT_S6|^WT_S7|^WT_S8|^WT_S9")) %>%
-  na.omit()
-
-## Rules and Routines
-df_rules_routines <- df_sjt %>%
-  select(matches("^WT_S11|^WT_S12|^WT_S13|^WT_S14")) %>%
-  na.omit()
-
-## Overall Mean (All Items Combined)
-df_overall <- df_sjt %>%
-  select(matches("^WT_S")) %>%  # Select all items starting with "WT_S"
-  na.omit()
-
-# Calculate Omega Total for Each Scale -----------------------------------
-## Helper Function for Omega Calculation
-calculate_omega <- function(data, scale_name) {
-  tryCatch({
-    result <- omega(data)
-    return(round(result$total$omega.tot, 2))  # Extract Omega Total
-  }, error = function(e) {
-    warning(paste("Omega calculation failed for", scale_name, ":", e$message))
+# Helper Function for Omega Calculation
+calculate_omega_total <- function(data, scale_name) {
+  if (nrow(data) == 0 || ncol(data) == 0) {
+    warning(paste("No valid data for", scale_name))
     return(NA)
-  })
+  }
+  
+  # Try Omega Calculation
+  result <- tryCatch(
+    omega(data),
+    error = function(e) {
+      warning(paste("Omega calculation failed for", scale_name, ":", e$message))
+      return(NULL)
+    }
+  )
+  
+  # Check if Result is Valid and Extract omega.tot
+  if (is.null(result) || !"omega.tot" %in% names(result)) {
+    warning(paste("Omega total not available for", scale_name))
+    return(NA)
+  }
+  
+  return(round(result$omega.tot, 2))
 }
 
-## Calculate Omegas
-omega_managing_momentum <- calculate_omega(df_managing_momentum, "Managing Momentum")
-omega_monitoring <- calculate_omega(df_monitoring, "Monitoring")
-omega_rules_routines <- calculate_omega(df_rules_routines, "Rules and Routines")
-omega_overall <- calculate_omega(df_overall, "Overall Test")
+### MANAGING MOMENTUM ----------------------------------------------------
+# Select relevant columns and remove NAs
+df_sjt_mm <- df_sjt %>%
+  dplyr::select(WT_S1_F1F2_AL:WT_S4_F4F6_AL) %>%
+  na.omit()
 
-# Combine Results into a Table -------------------------------------------
+# Calculate omega
+omega_mm <- calculate_omega_total(df_sjt_mm, "Managing Momentum")
+
+### MONITORING -----------------------------------------------------------
+# Select relevant columns and remove NAs
+df_sjt_m <- df_sjt %>%
+  dplyr::select(WT_S5_F1F2_ST:WT_S9_F4F5_ST) %>%
+  na.omit()
+
+# Calculate omega
+omega_m <- calculate_omega_total(df_sjt_m, "Monitoring")
+
+### RULES & ROUTINES -----------------------------------------------------
+# Select relevant columns and remove NAs
+df_sjt_r <- df_sjt %>%
+  dplyr::select(WT_S11_F1F5_R:WT_S14_F4F6_R) %>%
+  na.omit()
+
+# Calculate omega
+omega_r <- calculate_omega_total(df_sjt_r, "Rules and Routines")
+
+### OVERALL TEST -----------------------------------------------------
+# Select relevant columns and remove NAs
+df_overall <- df_sjt %>%
+  select(matches("WT_S")) %>%
+  mutate(across(everything(), as.numeric)) %>%  # Ensure numeric data
+  drop_na()
+
+# Calculate omega
+omega_overall <- calculate_omega_total(df_overall, "Overall Test")
+
+### COMBINE RESULTS INTO AN APA-CONFORM TABLE ----------------------------
+# APA-Conform Table ------------------------------------------------------
 omega_results <- tibble(
-  Facet = c("Managing Momentum", "Monitoring", "Rules and Routines", "Overall Test"),
-  `Omega Total` = c(
-    omega_managing_momentum,
-    omega_monitoring,
-    omega_rules_routines,
-    omega_overall
-  )
+  Facet = c("Overall Test", "Managing Momentum", "Monitoring", "Rules and Routines"),
+  `Omega Total` = c(omega_overall, omega_mm, omega_m, omega_r)
 )
 
 # Display APA-Conform Table ----------------------------------------------
-kable(omega_results, caption = "Internal Consistency (Omega Total) for SJT Facets and Overall Test") %>%
+kable(omega_results, caption = "Internal Consistency (Omega) for SJT Facets") %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
 ``` 
@@ -2185,227 +2208,182 @@ kable(omega_results, caption = "Internal Consistency (Omega Total) for SJT Facet
 ### Self-evaluation 
 ```{r self-eval, echo=FALSE, results='asis'}
 
-# load data files with modified scales
+# Data Import and Preparation --------------------------------------------
 df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  dplyr::select(LI06_05,
-                LM01_01:LM01_08, # classroom management 
-                LP01_01:LP01_08) %>% # non- & paraverbal communication 
-  filter(!LI06_05 == 201) %>% # exclude ID with no eye tracking data
-  mutate(LI06_05 = ifelse(LI06_05 < 200, "Novice", "Expert")) %>% 
-  rename(Group = LI06_05)
+  dplyr::select(
+    LI06_05, 
+    LM01_01:LM01_08,  # Classroom Management
+    LP01_01:LP01_08   # Non-/Paraverbal Communication
+  ) %>%
+  filter(LI06_05 != 201,
+         LI06_05 != 223) %>%  # Exclude ID 201
+  mutate(Group = ifelse(LI06_05 < 200, "Novice", "Expert")) %>%  # Group Definition
+  select(-LI06_05) %>%  # Drop ID column
+  na.omit()  # Remove NAs
 
-# remove NAs
-df_quest <- na.omit(df_quest)
-
-# create table with means
-df_quest_table <-
-  df_quest %>%
+# Summary Statistics Table -----------------------------------------------
+df_quest_table <- df_quest %>%
   group_by(Group) %>%
   summarise(
     N = n(),
-    "M cm" = round(mean(c_across(starts_with(
-      "LM"
-    )), na.rm = TRUE), 2),
-    "SD cm" = round(sd(c_across(starts_with(
-      "LM"
-    )), na.rm = TRUE), 2),
-    "Min cm" = round(min(c_across(starts_with(
-      "LM"
-    )), na.rm = TRUE), 2),
-    "Max cm" = round(max(c_across(starts_with(
-      "LM"
-    )), na.rm = TRUE), 2),
-    # "N cm" = length(c_across(starts_with("LP")), na.rm = TRUE),
-    "M n&pv com" = round(mean(c_across(starts_with(
-      "LP"
-    )), na.rm = TRUE), 2),
-    "SD n&pv com" = round(sd(c_across(starts_with(
-      "LP"
-    )), na.rm = TRUE), 2),
-    "Min n&pv com" = round(min(c_across(starts_with(
-      "LP"
-    )), na.rm = TRUE), 2),
-    "Max n&pv com" = round(max(c_across(starts_with(
-      "LP"
-    )), na.rm = TRUE), 2)
-  ) 
+    `M cm` = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
+    `SD cm` = round(sd(c_across(starts_with("LM")), na.rm = TRUE), 2),
+    `Min cm` = round(min(c_across(starts_with("LM")), na.rm = TRUE), 2),
+    `Max cm` = round(max(c_across(starts_with("LM")), na.rm = TRUE), 2),
+    `M n&pv com` = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2),
+    `SD n&pv com` = round(sd(c_across(starts_with("LP")), na.rm = TRUE), 2),
+    `Min n&pv com` = round(min(c_across(starts_with("LP")), na.rm = TRUE), 2),
+    `Max n&pv com` = round(max(c_across(starts_with("LP")), na.rm = TRUE), 2)
+  )
 
-knitr::kable(df_quest_table,
-             caption = "Mean, SD, min, max for classroom managament (cm) and non-/paraverbal communication (n&pv com)")
+# Display APA-Conform Table
+kable(df_quest_table, 
+      caption = "Summary Statistics for Classroom Management and Non-/Paraverbal Communication") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
-
-#################### Plots ############
-
-# create table with means
-df_quest_plot <-
-  df_quest %>%
-  rowwise() %>% 
-  transmute(Group = Group,
-            "All" = round(mean(c_across(starts_with("L")), na.rm = TRUE), 2),
-            "Classroom management" = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
-            "Non-/paraverbal communication" = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2)
-            )
-    
-    
-# changing from wide to long format
-df_quest_long <- df_quest_plot %>% 
+# Create Dataset for Plotting --------------------------------------------
+df_quest_plot <- df_quest %>%
+  rowwise() %>%
+  transmute(
+    Group = Group,
+    All = round(mean(c_across(starts_with("L")), na.rm = TRUE), 2),
+    `Classroom Management` = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
+    `Non-/Paraverbal Communication` = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2)
+  ) %>%
+  ungroup() %>%
   pivot_longer(!Group, names_to = "Scales Self-evaluation", values_to = "Mean")
 
-# plotting mean of all aspects 
-quest_plot <- 
-df_quest_long %>% 
-  mutate(Group = factor(Group,
-                        levels = c("Novice", 
-                                   "Expert")
-                        )
-         ) %>% 
-  ggplot(mapping = aes(x = Group,
-                       y = Mean)) +
-  geom_boxplot(mapping = aes(fill = Group), 
-               outlier.shape = NA) +
-  geom_point(size = 1, 
-             alpha = 0.4,
-             position = position_jitter(seed = 1, 
-                                        width = 0.1,
-                                        height = 0.1)) +
-  labs(x = "") +
-  ylim(0,4) + 
-  scale_fill_brewer(palette  = "RdBu") +  
-  facet_wrap(vars(`Scales Self-evaluation`), 
-             nrow = 1, strip.position = "bottom") +
+# Plot Mean Scores by Group ----------------------------------------------
+quest_plot <- df_quest_plot %>%
+  mutate(Group = factor(Group, levels = c("Novice", "Expert"))) %>%
+  ggplot(aes(x = Group, y = Mean)) +
+  geom_boxplot(aes(fill = Group), outlier.shape = NA) +
+  geom_point(
+    size = 1,
+    alpha = 0.4,
+    position = position_jitter(seed = 1, width = 0.1, height = 0.1)
+  ) +
+  labs(x = "", y = "Mean Scores") +
+  scale_fill_brewer(palette = "RdBu") +
+  facet_wrap(~`Scales Self-evaluation`, nrow = 1, strip.position = "bottom") +
   theme_cowplot() +
-  ggtitle("Self-evaluation") +
-    theme(
-    plot.title = element_text(size = 25, 
-                              face = "bold"),
+  ggtitle("Self-Evaluation Scores") +
+  theme(
+    plot.title = element_text(size = 25, face = "bold"),
     legend.title = element_text(size = 20),
     legend.text = element_text(size = 15),
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
     strip.text.x = element_text(size = 8),
-    axis.title.y = element_text(size = 20),
-    axis.title.x = element_text(size = 22)
-        )
+    axis.title.y = element_text(size = 20)
+  )
 
-quest_plot
+print(quest_plot)
+
+# T-Test and Effect Sizes ------------------------------------------------
+# t-Test Function for Long Format ----------------------------------------
+t_test_stats_long <- function(data, group_col, scale_filter, scale_name) {
+  # Subset Data for the Specific Scale
+  filtered_data <- data %>%
+    filter(`Scales Self-evaluation` == scale_filter)
+  
+  # Perform t-Test
+  t_test <- t.test(
+    Mean ~ get(group_col),
+    data = filtered_data,
+    var.equal = TRUE
+  )
+  
+  # Calculate Cohen's d
+  cohen_d <- CohenD(
+    x = filtered_data %>% filter(!!rlang::sym(group_col) == "Expert") %>% pull(Mean),
+    y = filtered_data %>% filter(!!rlang::sym(group_col) == "Novice") %>% pull(Mean)
+  )
+  
+  # Return Results
+  tibble(
+    `Scale` = scale_name,
+    `t-value` = round(t_test$statistic, 2),
+    `p-value` = round(t_test$p.value, 3),
+    `Cohen's d` = round(cohen_d, 2)
+  )
+}
+
+# Perform t-Tests for Each Scale
+t_test_all <- t_test_stats_long(df_quest_long, "Group", "All", "Overall")
+t_test_cm <- t_test_stats_long(df_quest_long, "Group", "Classroom Management", "Classroom Management")
+t_test_npvc <- t_test_stats_long(df_quest_long, "Group", "Non-/Paraverbal Communication", "Non-/Paraverbal Communication")
+
+# Combine Results into a Single Table
+t_test_results <- bind_rows(t_test_all, t_test_cm, t_test_npvc)
+
+# Display Results in APA-Conform Table
+kable(t_test_results, caption = "t-Test and Effect Sizes for Self-Evaluation Scales") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+
+# Internal Consistency (Omega) -------------------------------------------
+# Helper Function for Omega Calculation
+calculate_omega_total <- function(data, scale_name) {
+  if (nrow(data) == 0 || ncol(data) == 0) {
+    warning(paste("No valid data for", scale_name))
+    return(NA)
+  }
+  
+  # Try Omega Calculation
+  result <- tryCatch(
+    omega(data),
+    error = function(e) {
+      warning(paste("Omega calculation failed for", scale_name, ":", e$message))
+      return(NULL)
+    }
+  )
+  
+  # Check if Result is Valid and Extract omega.tot
+  if (is.null(result) || !"omega.tot" %in% names(result)) {
+    warning(paste("Omega total not available for", scale_name))
+    return(NA)
+  }
+  
+  return(round(result$omega.tot, 2))
+}
+
+### CLASSROOM MANAGEMENT -------------------------------------------------
+# Select relevant columns and remove NAs
+df_cm <- df_quest %>% select(starts_with("LM"))
+
+# Calculate omega
+omega_cm <- calculate_omega_total(df_cm, "Classroom Management")
+
+### NON & PARAVERBAL COMMUNICATION --------------------------------------
+# Select relevant columns and remove NAs
+df_npvc <- df_quest %>% select(starts_with("LP"))
+
+# Calculate omega
+omega_npvc <- calculate_omega_total(df_npvc, "Non-/Paraverbal Communication")
+
+
+### OVERALL TEST -----------------------------------------------------
+# Select relevant columns and remove NAs
+df_self_all <- df_quest %>%
+  select(matches("L")) %>%
+  mutate(across(everything(), as.numeric)) %>%  # Ensure numeric data
+  drop_na()
+
+# Calculate omega
+omega_self_all <- calculate_omega_total(df_self_all, "Overall Evaluation")
+
+### COMBINE RESULTS INTO AN APA-CONFORM TABLE ----------------------------
+# APA-Conform Table ------------------------------------------------------
+omega_results <- tibble(
+  Facet = c("Overall Evaluation", "Classroom Management", "Non-/Paraverbal Communication"),
+  `Omega Total` = c(omega_self_all, omega_cm, omega_npvc)
+)
+
+# Display APA-Conform Table ----------------------------------------------
+kable(omega_results, caption = "Internal Consistency (Omega) for Self-evaluation") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 ```
-
-#### t-test & effect size "Classroom Questionnaire - All"
-```{r classroom questionnaire_all, echo=FALSE, results='asis'}
-
-#################### T-TEST & EFFECT SIZE ##################
-
-#### All #### 
-# t-test for expertise differences 
-t.test(x = df_quest_plot$All[df_quest_plot$Group == "Expert"],
-       y = df_quest_plot$All[df_quest_plot$Group == "Novice"],
-       var.equal = TRUE
-       )
-
-
-# effect size for expertise differences
-d_quest_all <- CohenD(x = df_quest_plot$All[df_quest_plot$Group == "Expert"],
-                      y = df_quest_plot$All[df_quest_plot$Group == "Novice"],
-                      na.rm = TRUE
-                      )
-
-round(d_quest_all, 2)
-
-```
-
-#### t-test & effect size "Classroom Questionnaire - Classroom Management"
-```{r classroom questionnaire_cm, echo=FALSE, results='asis'}
-
-#### Classroom Management #### 
-# t-test for expertise differences 
-t.test(x = df_quest_plot$`Classroom management`[df_quest_plot$Group == "Expert"],
-       y = df_quest_plot$`Classroom management`[df_quest_plot$Group == "Novice"],
-       var.equal = TRUE)
-
-
-# effect size for expertise differences
-d_quest_cm <- CohenD(x = df_quest_plot$`Classroom management`[df_quest_plot$Group == "Expert"],
-                      y = df_quest_plot$`Classroom management`[df_quest_plot$Group == "Novice"],
-                      na.rm = TRUE
-                      )
-
-round(d_quest_cm, 2)
-```
-
-#### t-test & effect size "Classroom Questionnaire - Non-/paraverbal communication"
-```{r classroom questionnaire_npvc, echo=FALSE, results='asis'}
-
-#### Non-/paraverbal communication #### 
-# t-test for expertise differences 
-t.test(x = df_quest_plot$`Non-/paraverbal communication`[df_quest_plot$Group == "Expert"],
-       y = df_quest_plot$`Non-/paraverbal communication`[df_quest_plot$Group == "Novice"],
-       var.equal = TRUE)
-
-
-# effect size for expertise differences
-d_quest_npvc <- CohenD(x = df_quest_plot$`Non-/paraverbal communication`[df_quest_plot$Group == "Expert"],
-                      y = df_quest_plot$`Non-/paraverbal communication`[df_quest_plot$Group == "Novice"],
-                      na.rm = TRUE
-                      )
-
-round(d_quest_npvc, 2)
-
-```
-
-### Internal consistency (Omega) for Self-evaluation
-```{r cm_omega, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-
-# read in data
-df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  dplyr::select(LM01_01:LM01_08, # classroom management 
-                LP01_01:LP01_08) # non- & paraverbal communication 
-
-# calculate omega with omega() function  
-df_quest <- omega(df_quest)
-
-# display the results 
-print(df_quest)
-
-### CLASSROOM MANAGEMENT
-# read in data
-df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  dplyr::select(LM01_01:LM01_08, # classroom management 
-                LP01_01:LP01_08) # non- & paraverbal communication 
-
-# select relevant columns
-df_quest_cm <- df_quest %>%
-    dplyr::select(LM01_01:LM01_08)
-
-# remove NAs
-df_quest_cm <- na.omit(df_quest_cm)
-
-# calculate omega with omega() function  
-omega_quest_cm <- omega(df_quest_cm)
-
-# display the results 
-print(omega_quest_cm)
- 
-
-### NON- & PARAVERBAL COMMUNICATION
-# read in data
-df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  dplyr::select(LM01_01:LM01_08, # classroom management 
-                LP01_01:LP01_08) # non- & paraverbal communication 
-
-# select relevant columns
-df_quest_npvc <- df_quest %>%
-    dplyr::select(LP01_01:LP01_08)
-
-# remove NAs
-df_quest_npvc <- na.omit(df_quest_npvc)
-
-# calculate omega with omega() function  
-omega_quest_npvc <- omega(df_quest_npvc)
-
-# display the results 
-print(omega_quest_npvc)
-
-``` 
 
 ## Correlations
 ```{r correlations, echo=FALSE, message=FALSE, warning=FALSE}
