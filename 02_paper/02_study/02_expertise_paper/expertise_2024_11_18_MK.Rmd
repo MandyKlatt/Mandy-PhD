@@ -934,9 +934,9 @@ kable(
 ### Duration of disruption
 ```{r dur_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-##################### DURATION OF DISRUPTIONS ########################
+##################### DATA PREPARATION ########################
 
-# 1. Data Preparation: Filter and Calculate Disruption Duration
+# Prepare data for analysis: filter, calculate, and categorize disruptions
 df_aoi_disrup <- df_aoi %>%
   filter(TOI %in% disruptions, Duration_of_interval <= 30000) %>%
   select(Group, Participant, TOI, Duration_of_interval) %>%
@@ -950,52 +950,59 @@ df_aoi_disrup <- df_aoi %>%
     ),
     Duration_of_interval_sec = round(Duration_of_interval / 1000, 2)
   ) %>%
-  filter(!is.na(Disruption_Category)) %>% # Keep only rows with valid categories
+  filter(!is.na(Disruption_Category)) %>%
   drop_na()
 
 ##################### DESCRIPTIVE STATISTICS ########################
 
-# 2. Descriptive Statistics by Group (Overall)
-summary_stats <- df_aoi_disrup %>%
+# Descriptive Statistics by Group
+summary_stats_group <- df_aoi_disrup %>%
   group_by(Group) %>%
-  summarise(
-    Mean = round(mean(Duration_of_interval_sec, na.rm = TRUE), 2),
-    SD = round(sd(Duration_of_interval_sec, na.rm = TRUE), 2),
-    .groups = "drop"
-  )
-
-# 3. Descriptive Statistics by Group and Category
-disruption_stats_table <- df_aoi_disrup %>%
-  group_by(Group, Disruption_Category) %>%
   summarise(
     N = n(),
     Mean = round(mean(Duration_of_interval_sec, na.rm = TRUE), 2),
     SD = round(sd(Duration_of_interval_sec, na.rm = TRUE), 2),
+    Median = round(median(Duration_of_interval_sec, na.rm = TRUE), 2),
+    IQR = round(IQR(Duration_of_interval_sec, na.rm = TRUE), 2),
     Min = round(min(Duration_of_interval_sec, na.rm = TRUE), 2),
     Max = round(max(Duration_of_interval_sec, na.rm = TRUE), 2),
     .groups = "drop"
   )
 
-# Overall t-Test and Cohen's d for Plot Annotations
-t_test_overall <- t.test(Duration_of_interval_sec ~ Group, data = df_aoi_disrup, var.equal = TRUE)
-d_overall <- cohen.d(Duration_of_interval_sec ~ Group, data = df_aoi_disrup)
-
-# By Category t-Test and Cohen's d for Plot Annotations
-category_stats <- df_aoi_disrup %>%
-  group_by(Disruption_Category) %>%
+# Descriptive Statistics by Category and Group
+summary_stats_category_group <- df_aoi_disrup %>%
+  group_by(Disruption_Category, Group) %>%
   summarise(
-    t_value = t.test(Duration_of_interval_sec ~ Group, var.equal = TRUE)$statistic,
-    df = t.test(Duration_of_interval_sec ~ Group, var.equal = TRUE)$parameter,
-    p_value = round(t.test(Duration_of_interval_sec ~ Group, var.equal = TRUE)$p.value, 3),
-    cohen_d = round(cohen.d(Duration_of_interval_sec ~ Group)$estimate, 2),
+    N = n(),
+    Mean = round(mean(Duration_of_interval_sec, na.rm = TRUE), 2),
+    SD = round(sd(Duration_of_interval_sec, na.rm = TRUE), 2),
+    Median = round(median(Duration_of_interval_sec, na.rm = TRUE), 2),
+    IQR = round(IQR(Duration_of_interval_sec, na.rm = TRUE), 2),
+    Min = round(min(Duration_of_interval_sec, na.rm = TRUE), 2),
+    Max = round(max(Duration_of_interval_sec, na.rm = TRUE), 2),
     .groups = "drop"
   )
 
+# Display Descriptive Tables
+kable(
+  summary_stats_group,
+  caption = "Descriptive Statistics for Disruption Duration by Group",
+  col.names = c("Group", "N", "Mean", "SD", "Median", "IQR", "Min", "Max"),
+  row.names = FALSE
+) %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+kable(
+  summary_stats_category_group,
+  caption = "Descriptive Statistics for Disruption Duration by Category and Group",
+  col.names = c("Category", "Group", "N", "Mean", "SD", "Median", "IQR", "Min", "Max"),
+  row.names = FALSE
+) %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
 ##################### PLOTS ########################
 
-# Plot 1: Disruption Duration by Group (Overall)
-y_max <- max(df_aoi_disrup$Duration_of_interval_sec) * 1.5
-
+# Plot 1: Disruption Duration by Group
 plot_duration_group <- ggplot(df_aoi_disrup, aes(x = Group, y = Duration_of_interval_sec, fill = Group)) +
   geom_boxplot(outlier.shape = NA, width = 0.5) +
   geom_jitter(width = 0.15, alpha = 0.5, color = "black", size = 1.5) +
@@ -1004,19 +1011,14 @@ plot_duration_group <- ggplot(df_aoi_disrup, aes(x = Group, y = Duration_of_inte
   scale_fill_brewer(palette = "RdBu") +
   ggtitle("Disruption Duration by Group") +
   theme(legend.position = "none") +
-  ylim(0, y_max) +
-  annotate("text", x = 1, y = y_max * 0.85,
-           label = paste0("M = ", summary_stats$Mean[summary_stats$Group == "Novice"],
-                          "\nSD = ", summary_stats$SD[summary_stats$Group == "Novice"]),
-           hjust = 0.5, size = 4, fontface = "italic") +
-  annotate("text", x = 2, y = y_max * 0.85,
-           label = paste0("M = ", summary_stats$Mean[summary_stats$Group == "Expert"],
-                          "\nSD = ", summary_stats$SD[summary_stats$Group == "Expert"]),
-           hjust = 0.5, size = 4, fontface = "italic") +
-  annotate("text", x = 1.5, y = y_max * 0.95,
-           label = paste0("p = ", format.pval(t_test_overall$p.value, digits = 3, eps = .001),
-                          "\nd = ", round(d_overall$estimate, 2)),
-           hjust = 0.5, size = 4, fontface = "italic")
+  annotate("text", x = 1, y = max(df_aoi_disrup$Duration_of_interval_sec) + 4,
+           label = paste0("Median = ", summary_stats_group$Median[summary_stats_group$Group == "Novice"],
+                          "\nIQR = ", summary_stats_group$IQR[summary_stats_group$Group == "Novice"]),
+           hjust = 0.5, size = 4) +
+  annotate("text", x = 2, y = max(df_aoi_disrup$Duration_of_interval_sec) + 4,
+           label = paste0("Median = ", summary_stats_group$Median[summary_stats_group$Group == "Expert"],
+                          "\nIQR = ", summary_stats_group$IQR[summary_stats_group$Group == "Expert"]),
+           hjust = 0.5, size = 4)
 
 plot_duration_group
 
@@ -1027,62 +1029,86 @@ plot_duration_category <- ggplot(df_aoi_disrup, aes(x = Group, y = Duration_of_i
   facet_wrap(~Disruption_Category, scales = "free", labeller = label_wrap_gen(width = 15)) +
   labs(x = "Group", y = "Disruption Duration (seconds)") +
   theme_cowplot() +
+  ylim(0, 30) + 
   scale_fill_brewer(palette = "RdBu") +
   ggtitle("Disruption Duration by Group and Category") +
-  theme(legend.position = "none") +
-  ylim(0, y_max) +
-  geom_text(data = category_stats, aes(
-    x = 1.5, y = y_max * 0.85,
-    label = paste0("p = ", p_value, "\nd = ", cohen_d)
-  ), inherit.aes = FALSE, size = 4, fontface = "italic")
+  theme(legend.position = "none")
 
 plot_duration_category
 
-##################### t-TEST AND EFFECT SIZE RESULTS ########################
+##################### STATISTICAL TESTS ########################
 
-# 1. Overall t-Test and Cohen's d
-t_test_overall <- t.test(Duration_of_interval_sec ~ Group, data = df_aoi_disrup, var.equal = TRUE)
-d_overall <- cohen.d(Duration_of_interval_sec ~ Group, data = df_aoi_disrup)
-
-# 2. t-Test and Cohen's d Results by Category
-category_stats <- df_aoi_disrup %>%
-  group_by(Disruption_Category) %>%
+# Normality Tests (Shapiro-Wilk)
+normality_tests <- df_aoi_disrup %>%
+  group_by(Group) %>%
   summarise(
-    t_value = round(t.test(Duration_of_interval_sec ~ Group, var.equal = TRUE)$statistic, 2),
-    df = round(t.test(Duration_of_interval_sec ~ Group, var.equal = TRUE)$parameter, 0),
-    p_value = round(t.test(Duration_of_interval_sec ~ Group, var.equal = TRUE)$p.value, 3),
-    cohen_d = round(cohen.d(Duration_of_interval_sec ~ Group)$estimate, 2),
-    "95% CI (d)" = paste0(
-      "[", round(cohen.d(Duration_of_interval_sec ~ Group)$conf.int[1], 2),
-      ", ", round(cohen.d(Duration_of_interval_sec ~ Group)$conf.int[2], 2), "]"
-    ),
+    Shapiro_Wilk_p = round(shapiro.test(Duration_of_interval_sec)$p.value, 3),
     .groups = "drop"
   )
 
-# 3. Format Overall t-Test Results for APA Table
-t_test_result_overall <- data.frame(
-  "t-value" = round(t_test_overall$statistic, 2),
-  "df" = round(t_test_overall$parameter, 0),
-  "p-value" = round(t_test_overall$p.value, 3),
-  "Mean Difference" = round(diff(t_test_overall$estimate), 2),
-  "Cohen's d" = round(d_overall$estimate, 2),
-  "95% CI (d)" = paste0("[", round(d_overall$conf.int[1], 2), ", ", round(d_overall$conf.int[2], 2), "]")
-)
-
-# Display Overall t-Test Results in APA Style
 kable(
-  t_test_result_overall,
-  caption = "t-Test and Effect Size for Disruption Duration (Overall)",
+  normality_tests,
+  caption = "Shapiro-Wilk Test for Normality by Group",
+  col.names = c("Group", "Shapiro-Wilk p-value"),
   row.names = FALSE
 ) %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
-# 4. Display Category-Specific t-Test Results in APA Style
+# Mann-Whitney U-Test and Effect Size
+mann_whitney_test <- wilcox.test(Duration_of_interval_sec ~ Group, data = df_aoi_disrup, exact = FALSE)
+
+# Effect Size Calculation for Mann-Whitney (r)
+n1 <- nrow(df_aoi_disrup %>% filter(Group == "Novice"))
+n2 <- nrow(df_aoi_disrup %>% filter(Group == "Expert"))
+r_effect <- abs(mann_whitney_test$statistic - (n1 * n2 / 2)) / sqrt((n1 * n2 * (n1 + n2 + 1)) / 12)
+
+mann_whitney_results <- data.frame(
+  "Test" = "Mann-Whitney U",
+  "W" = round(mann_whitney_test$statistic, 2),
+  "p-value" = round(mann_whitney_test$p.value, 3),
+  "Effect Size (r)" = round(r_effect, 3)
+)
+
 kable(
-  category_stats,
-  caption = "t-Test and Effect Size for Disruption Duration by Category",
-  col.names = c("Category", "t-value", "df", "p-value", "Cohen's d", "95% CI (d)"),
+  mann_whitney_results,
+  caption = "Mann-Whitney U-Test Results for Disruption Duration",
   row.names = FALSE
+) %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+# Kruskal-Wallis Test and Pairwise Comparisons
+kruskal_test <- kruskal.test(Duration_of_interval_sec ~ Disruption_Category, data = df_aoi_disrup)
+
+kruskal_results <- data.frame(
+  "Test" = "Kruskal-Wallis",
+  "Chi-squared" = round(kruskal_test$statistic, 2),
+  "df" = kruskal_test$parameter,
+  "p-value" = round(kruskal_test$p.value, 3)
+)
+
+kable(
+  kruskal_results,
+  caption = "Kruskal-Wallis Test Results for Differences Between Disruption Categories",
+  row.names = FALSE
+) %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+# Pairwise Wilcoxon test with Bonferroni correction
+pairwise_wilcox <- pairwise.wilcox.test(
+  x = df_aoi_disrup$Duration_of_interval_sec,
+  g = df_aoi_disrup$Disruption_Category,
+  p.adjust.method = "bonferroni"
+)
+
+# Extract and round the p-values to 3 decimal places
+pairwise_results <- as.data.frame(pairwise_wilcox$p.value) %>%
+  mutate(across(everything(), ~ round(., 3)))
+
+# Display the results with rounded p-values
+kable(
+  pairwise_results,
+  caption = "Pairwise Wilcoxon Test Results (Bonferroni Corrected)",
+  row.names = TRUE
 ) %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
