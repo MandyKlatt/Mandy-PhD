@@ -2529,44 +2529,37 @@ kable(omega_results, caption = "Internal Consistency (Omega) for SJT Facets") %>
 
 # Data Import and Preparation --------------------------------------------
 df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  dplyr::select(
-    LI06_05, 
-    LM01_01:LM01_08,  # Classroom Management
-    LP01_01:LP01_08   # Non-/Paraverbal Communication
-  ) %>%
   filter(LI06_05 != 201, LI06_05 != 223) %>%  # Exclude specific IDs
-  mutate(Group = ifelse(LI06_05 < 200, "Novice", "Expert")) %>%  # Group Definition
-  select(-LI06_05) %>%  # Drop ID column
+  mutate(
+    Group = ifelse(LI06_05 < 200, "Novice", "Expert"),  # Group Definition
+    Participant = LI06_05  # Add new column "Participant"
+  ) %>%
+  arrange(Participant) %>% 
+  select(
+    Participant, 
+    Group, 
+    LM01_01:LM01_05,  # Classroom Management
+    LM01_06:LM01_08,  # Disruption Handling
+    LP01_01:LP01_08   # Presence
+  ) %>%
+  rename(
+    CM_01 = LM01_01, CM_02 = LM01_02, CM_03 = LM01_03, CM_04 = LM01_04, CM_05 = LM01_05,
+    DH_01 = LM01_06, DH_02 = LM01_07, DH_03 = LM01_08,
+    P_01 = LP01_01, P_02 = LP01_02, P_03 = LP01_03, P_04 = LP01_04, P_05 = LP01_05,
+    P_06 = LP01_06, P_07 = LP01_07, P_08 = LP01_08
+  ) %>%
   na.omit()  # Remove NAs
 
-# Summary Statistics Table -----------------------------------------------
-df_quest_table <- df_quest %>%
-  group_by(Group) %>%
-  summarise(
-    N = n(),
-    `M cm` = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
-    `SD cm` = round(sd(c_across(starts_with("LM")), na.rm = TRUE), 2),
-    `Min cm` = round(min(c_across(starts_with("LM")), na.rm = TRUE), 2),
-    `Max cm` = round(max(c_across(starts_with("LM")), na.rm = TRUE), 2),
-    `M n&pv com` = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2),
-    `SD n&pv com` = round(sd(c_across(starts_with("LP")), na.rm = TRUE), 2),
-    `Min n&pv com` = round(min(c_across(starts_with("LP")), na.rm = TRUE), 2),
-    `Max n&pv com` = round(max(c_across(starts_with("LP")), na.rm = TRUE), 2)
-  )
-
-# Display APA-Conform Table
-kable(df_quest_table, 
-      caption = "Summary Statistics for Classroom Management and Non-/Paraverbal Communication") %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+ 
 
 # Create Dataset for Plotting --------------------------------------------
 df_quest_long <- df_quest %>%
   rowwise() %>%
   transmute(
     Group = Group,
-    All = round(mean(c_across(starts_with("L")), na.rm = TRUE), 2),
-    `Classroom Management` = round(mean(c_across(starts_with("LM")), na.rm = TRUE), 2),
-    `Non-/Paraverbal Communication` = round(mean(c_across(starts_with("LP")), na.rm = TRUE), 2)
+    `Classroom Management` = round(mean(c_across(starts_with("CM")), na.rm = TRUE), 2),
+    `Disruption Handling` = round(mean(c_across(starts_with("DH")), na.rm = TRUE), 2),
+    `Presence` = round(mean(c_across(starts_with("P") & !starts_with("Participant")), na.rm = TRUE), 2)  # Excluding Participant column
   ) %>%
   ungroup() %>%
   pivot_longer(!Group, names_to = "Scales Self-evaluation", values_to = "Mean")
@@ -2582,6 +2575,7 @@ quest_plot <- df_quest_long %>%
     position = position_jitter(seed = 1, width = 0.1, height = 0.1)
   ) +
   labs(x = "", y = "Mean Scores") +
+  ylim(0, 4) + 
   scale_fill_brewer(palette = "RdBu") +
   facet_wrap(~`Scales Self-evaluation`, nrow = 1, strip.position = "bottom") +
   theme_cowplot() +
