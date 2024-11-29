@@ -37,7 +37,8 @@ needs(
   knitr,         # Enables dynamic reporting by weaving R code and outputs into documents (e.g., R Markdown).
   papaja,        # Helps produce APA-style manuscripts directly from R Markdown.
   afex,          # Performs ANOVAs, including mixed-designs and generalized linear models, with a focus on user-friendliness.
-  emmeans        # Computes estimated marginal means (or least-squares means) for post-hoc comparisons in models.
+  emmeans,       # Computes estimated marginal means (or least-squares means) for post-hoc comparisons in models.
+  corrplot       # Visualize correlation matrices in a visually appealing way.
 )
 
 ```
@@ -727,7 +728,7 @@ kable(
 category_stats <- disruption_summary %>%
   group_by(Disruption_Category, Group) %>%
   summarise(
-    N = n(), # Number of data points
+    N = n_distinct(Participant), # Count unique participants
     Mean = round(mean(fixations_per_second, na.rm = TRUE), 2), # Mean fixation rate
     SD = round(sd(fixations_per_second, na.rm = TRUE), 2), # Standard deviation
     Min = round(min(fixations_per_second, na.rm = TRUE), 2), # Minimum value
@@ -744,7 +745,6 @@ kable(
 ) %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
-##################### PLOTS ########################
 ##################### FIRST PLOT: FIXATION RATE OVERALL ########################
 
 # Calculate values for annotations
@@ -781,17 +781,8 @@ plot_overall <- ggplot(individual_summary, aes(x = Group, y = mean_fixations_per
 
 ##################### SECOND PLOT: FIXATION RATE BY CATEGORY ########################
 
-# # Prepare annotation data for labels
-# annotation_data <- category_stats_with_tests %>%
-#   left_join(y_max_by_category, by = "Disruption_Category") %>%
-#   mutate(
-#     novice_label = paste0("italic(M) == ", M_Novice, " ~ ", "italic(SD) == ", SD_Novice),
-#     expert_label = paste0("italic(M) == ", M_Expert, " ~ ", "italic(SD) == ", SD_Expert),
-#     overall_label = paste0("italic(p) == ", p_value, " ~ ", "italic(d) == ", cohen_d)
-#   )
-
 # Create the plot
-plot_category <- disruption_summary_annotated %>%
+plot_category <- disruption_summary %>%
   ggplot(mapping = aes(x = Group, y = fixations_per_second, fill = Group)) +
   geom_boxplot(outlier.shape = NA) +
   geom_point(
@@ -805,37 +796,15 @@ plot_category <- disruption_summary_annotated %>%
   ) +
   facet_wrap(~Disruption_Category, scales = "fixed", labeller = label_wrap_gen(width = 15)) + # Fixed y-axis across facets
   labs(x = "", y = "Fixations per Second") +
-  ggtitle("Fixation Rate by Disruption Category\n(AOI disruptive person)") +
+  ggtitle("Fixation Rate by Disruption Category\n(AOI Disruptive Person)") +
   scale_fill_brewer(palette = "RdBu") +
   theme_cowplot() +
   theme(
     legend.position = "none",
     strip.text = element_text(size = 10) # Adjust facet text size if necessary
-  ) 
-# +
-#   # Annotate novice statistics
-#   geom_text(
-#     data = annotation_data,
-#     aes(x = 1, y = y_max, label = novice_label),
-#     inherit.aes = FALSE,
-#     parse = TRUE, size = 3.5, hjust = 0.5, vjust = 0
-#   ) +
-#   # Annotate expert statistics
-#   geom_text(
-#     data = annotation_data,
-#     aes(x = 2, y = y_max, label = expert_label),
-#     inherit.aes = FALSE,
-#     parse = TRUE, size = 3.5, hjust = 0.5, vjust = 0
-#   ) +
-#   # Annotate p-value and Cohen's d
-#   geom_text(
-#     data = annotation_data,
-#     aes(x = 1.5, y = y_max * 1.05, label = overall_label),
-#     inherit.aes = FALSE,
-#     parse = TRUE, size = 4, fontface = "italic", hjust = 0.5, vjust = 0
-#   )
+  )
 
-# Display the both plots
+# Display the plots
 plot_overall
 plot_category
 
@@ -858,8 +827,6 @@ kable(
 ) %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
-
-
 ##################### REPEATED MEASURES ANOVA ########################
 
 # Perform the repeated-measures ANOVA
@@ -868,7 +835,7 @@ anova_afex <- afex::aov_ez(
   dv = "fixations_per_second", # Dependent variable
   between = "Group", # Between-subject factor
   within = "Disruption_Category", # Within-subject factor
-  data = anova_data
+  data = disruption_summary
 )
 
 # Extract the ANOVA table
@@ -902,40 +869,39 @@ kable(
 ) %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
-
 # Post-hoc comparisons for Disruption_Category
-  post_hoc_disruption <- emmeans(anova_afex, pairwise ~ Disruption_Category)
-  
-  # Extract pairwise contrasts
-  post_hoc_results <- as.data.frame(post_hoc_disruption$contrasts)
-  
-  # Clean up category names in the contrast column
-  post_hoc_results$contrast <- gsub("_", " ", post_hoc_results$contrast) # Replace underscores with spaces
-  post_hoc_results$contrast <- gsub("\\.", " ", post_hoc_results$contrast) # Replace dots with spaces
-  
-  # Calculate Cohen's d for each pairwise comparison using pooled SD from emmeans
-  post_hoc_results <- post_hoc_results %>%
-    mutate(
-      pooled_sd = sqrt((SE^2 * 2)), # Approximation for pooled SD from SE
-      d = round(estimate / pooled_sd, 2), # Calculate Cohen's d
-      p.value = ifelse(
-        p.value < 0.05, "< .05", round(p.value, 3)
-      ),
-      t = round(t.ratio, 2),
-      df = round(df, 2),
-      Estimate = round(estimate, 2),
-      SE = round(SE, 2)
-    ) %>%
-    select(contrast, Estimate, SE, df, t, p.value, d) # Include Cohen's d
+post_hoc_disruption <- emmeans(anova_afex, pairwise ~ Disruption_Category)
 
-  # Display APA-styled post-hoc table
-  kable(
-    post_hoc_results,
-    caption = "Post-Hoc Pairwise Comparisons for Disruption Categories (Including Effect Sizes)",
-    col.names = c("Comparison", "Estimate", "SE", "df", "t", "p", "Cohen's d"),
-    digits = 2
+# Extract pairwise contrasts
+post_hoc_results <- as.data.frame(post_hoc_disruption$contrasts)
+
+# Clean up category names in the contrast column
+post_hoc_results$contrast <- gsub("_", " ", post_hoc_results$contrast)
+post_hoc_results$contrast <- gsub("\\.", " ", post_hoc_results$contrast)
+
+# Calculate Cohen's d for each pairwise comparison using pooled SD from emmeans
+post_hoc_results <- post_hoc_results %>%
+  mutate(
+    pooled_sd = sqrt((SE^2 * 2)), # Approximation for pooled SD from SE
+    d = round(estimate / pooled_sd, 2), # Calculate Cohen's d
+    p.value = ifelse(
+      p.value < 0.05, "< .05", round(p.value, 3)
+    ),
+    t = round(t.ratio, 2),
+    df = round(df, 2),
+    Estimate = round(estimate, 2),
+    SE = round(SE, 2)
   ) %>%
-    kable_styling(bootstrap_options = "striped", full_width = FALSE)
+  select(contrast, Estimate, SE, df, t, p.value, d) # Include Cohen's d
+
+# Display APA-styled post-hoc table
+kable(
+  post_hoc_results,
+  caption = "Post-Hoc Pairwise Comparisons for Disruption Categories (Including Effect Sizes)",
+  col.names = c("Comparison", "Estimate", "SE", "df", "t", "p", "Cohen's d"),
+  digits = 2
+) %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ```
 
@@ -1044,81 +1010,97 @@ plot_duration_category <- ggplot(df_aoi_disrup, aes(x = Group, y = Duration_of_i
 
 plot_duration_category
 
+
 ##################### STATISTICAL TESTS ########################
 
-# Normality Tests (Shapiro-Wilk)
+# 1. Normality Tests (Shapiro-Wilk)
+# The Shapiro-Wilk test is used to assess whether the data for each group (Novice and Expert) follows a normal distribution.
 normality_tests <- df_aoi_disrup %>%
-  group_by(Group) %>%
+  group_by(Group) %>%  # Group data by "Group" (Novice and Expert)
   summarise(
-    Shapiro_Wilk_p = round(shapiro.test(Duration_of_interval_sec)$p.value, 3),
-    .groups = "drop"
+    Shapiro_Wilk_p = round(shapiro.test(Duration_of_interval_sec)$p.value, 3),  # Perform Shapiro-Wilk test for normality and round the p-value
+    .groups = "drop"  # Drop the grouping after summarizing
   )
 
-kable(
-  normality_tests,
-  caption = "Shapiro-Wilk Test for Normality by Group",
-  col.names = c("Group", "Shapiro-Wilk p-value"),
-  row.names = FALSE
-) %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+# The p-value here is extremely small (0), which indicates that both the "Novice" and "Expert" groups deviate significantly from a normal distribution. This suggests that the data in both groups are not normally distributed, and therefore, non-parametric tests like the Mann-Whitney U test are more appropriate for analyzing differences between these groups.
 
-# Mann-Whitney U-Test and Effect Size
+# Display the Shapiro-Wilk test results in a nicely formatted table
+kable(
+  normality_tests,  # Table with Shapiro-Wilk p-values for each group
+  caption = "Shapiro-Wilk Test for Normality by Group",  # Caption for the table
+  col.names = c("Group", "Shapiro-Wilk p-value"),  # Column names
+  row.names = FALSE  # Don't show row names
+) %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)  # Style the table with a striped pattern
+
+# 2. Mann-Whitney U-Test and Effect Size
+# The Mann-Whitney U test is used to compare the duration of disruption between the Novice and Expert groups
+# This is a non-parametric test used when the data is not normally distributed (based on the Shapiro-Wilk test results).
 mann_whitney_test <- wilcox.test(Duration_of_interval_sec ~ Group, data = df_aoi_disrup, exact = FALSE)
 
-# Effect Size Calculation for Mann-Whitney (r)
-n1 <- nrow(df_aoi_disrup %>% filter(Group == "Novice"))
-n2 <- nrow(df_aoi_disrup %>% filter(Group == "Expert"))
+# Calculate Effect Size (r) for the Mann-Whitney U test
+# Formula for r: r = |W - (n1 * n2 / 2)| / sqrt((n1 * n2 * (n1 + n2 + 1)) / 12)
+n1 <- nrow(df_aoi_disrup %>% filter(Group == "Novice"))  # Number of Novice participants
+n2 <- nrow(df_aoi_disrup %>% filter(Group == "Expert"))  # Number of Expert participants
 r_effect <- abs(mann_whitney_test$statistic - (n1 * n2 / 2)) / sqrt((n1 * n2 * (n1 + n2 + 1)) / 12)
 
+# Create a data frame with the Mann-Whitney U test results, including the test statistic, p-value, and effect size
 mann_whitney_results <- data.frame(
-  "Test" = "Mann-Whitney U",
-  "W" = round(mann_whitney_test$statistic, 2),
-  "p-value" = round(mann_whitney_test$p.value, 3),
-  "Effect Size (r)" = round(r_effect, 3)
+  "Test" = "Mann-Whitney U",  # Test name
+  "W" = round(mann_whitney_test$statistic, 2),  # Test statistic (W)
+  "p-value" = round(mann_whitney_test$p.value, 3),  # p-value from the test
+  "Effect Size (r)" = round(r_effect, 3)  # Effect size (r) rounded to 3 decimals
 )
 
+# Display the Mann-Whitney U test results in a formatted table
 kable(
   mann_whitney_results,
-  caption = "Mann-Whitney U-Test Results for Disruption Duration",
-  row.names = FALSE
+  caption = "Mann-Whitney U-Test Results for Disruption Duration",  # Table caption
+  row.names = FALSE  # Don't show row names
 ) %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)  # Apply striped styling to the table
 
-# Kruskal-Wallis Test and Pairwise Comparisons
+# 3. Kruskal-Wallis Test and Pairwise Comparisons
+# The Kruskal-Wallis test is a non-parametric test to compare multiple groups (Disruption Categories) at once.
+# It tests whether the distributions of disruption duration across categories are equal.
 kruskal_test <- kruskal.test(Duration_of_interval_sec ~ Disruption_Category, data = df_aoi_disrup)
 
+# Create a data frame with the Kruskal-Wallis test results, including Chi-squared statistic, degrees of freedom, and p-value
 kruskal_results <- data.frame(
-  "Test" = "Kruskal-Wallis",
-  "Chi-squared" = round(kruskal_test$statistic, 2),
-  "df" = kruskal_test$parameter,
-  "p-value" = round(kruskal_test$p.value, 3)
+  "Test" = "Kruskal-Wallis",  # Test name
+  "Chi-squared" = round(kruskal_test$statistic, 2),  # Chi-squared statistic from the test
+  "df" = kruskal_test$parameter,  # Degrees of freedom (df)
+  "p-value" = round(kruskal_test$p.value, 3)  # p-value from the test
 )
 
+# Display the Kruskal-Wallis test results in a formatted table
 kable(
   kruskal_results,
-  caption = "Kruskal-Wallis Test Results for Differences Between Disruption Categories",
-  row.names = FALSE
+  caption = "Kruskal-Wallis Test Results for Differences Between Disruption Categories",  # Table caption
+  row.names = FALSE  # Don't show row names
 ) %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)  # Apply striped styling to the table
 
-# Pairwise Wilcoxon test with Bonferroni correction
+# 4. Pairwise Wilcoxon test with Bonferroni correction
+# The pairwise Wilcoxon test is a non-parametric test used for multiple comparisons between pairs of disruption categories.
+# The p-values are adjusted for multiple comparisons using the Bonferroni correction to control for type I error.
 pairwise_wilcox <- pairwise.wilcox.test(
-  x = df_aoi_disrup$Duration_of_interval_sec,
-  g = df_aoi_disrup$Disruption_Category,
-  p.adjust.method = "bonferroni"
+  x = df_aoi_disrup$Duration_of_interval_sec,  # The dependent variable (Duration of Interval)
+  g = df_aoi_disrup$Disruption_Category,  # The grouping factor (Disruption Category)
+  p.adjust.method = "bonferroni"  # Adjust p-values using the Bonferroni method
 )
 
-# Extract and round the p-values to 3 decimal places
+# Extract the p-values from the pairwise Wilcoxon test results and round to 3 decimal places
 pairwise_results <- as.data.frame(pairwise_wilcox$p.value) %>%
-  mutate(across(everything(), ~ round(., 3)))
+  mutate(across(everything(), ~ round(., 3)))  # Round p-values to 3 decimals
 
-# Display the results with rounded p-values
+# Display the pairwise Wilcoxon test results (with Bonferroni correction) in a formatted table
 kable(
   pairwise_results,
-  caption = "Pairwise Wilcoxon Test Results (Bonferroni Corrected)",
-  row.names = TRUE
+  caption = "Pairwise Wilcoxon Test Results (Bonferroni Corrected)",  # Table caption
+  row.names = TRUE  # Display row names
 ) %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)  # Apply striped styling to the table
 
 ```
 
@@ -1892,10 +1874,18 @@ df_ttff_disrup <- df_aoi %>%
     Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person / 1000, 2)
   )
 
+# Summarize the Disrup_time_fixation_sec by Participant
+df_ttff_disrup_participant_summary <- df_ttff_disrup %>%
+  group_by(Participant, Group) %>%
+  summarise(
+    Disrup_time_fixation_sec = round(mean(Disrup_time_fixation_sec, na.rm = TRUE), 2), # Average time to first fixation per participant
+    .groups = "drop"
+  )
+
 ##################### DESCRIPTIVE STATISTICS ########################
 
 # Step 2: Descriptive Statistics by Group
-ttff_disrup_table <- df_ttff_disrup %>%
+ttff_disrup_table <- df_ttff_disrup_participant_summary %>%
   group_by(Group) %>%
   summarise(
     N = n(),
@@ -1915,7 +1905,7 @@ knitr::kable(ttff_disrup_table,
 summary_stats_category_group <- df_ttff_disrup %>%
   group_by(Disruption_Category, Group) %>%
   summarise(
-    N = n(),
+    N = n_distinct(Participant),  # Count unique participants
     Mean = round(mean(Disrup_time_fixation_sec, na.rm = TRUE), 2),
     SD = round(sd(Disrup_time_fixation_sec, na.rm = TRUE), 2),
     Median = round(median(Disrup_time_fixation_sec, na.rm = TRUE), 2),
@@ -1925,10 +1915,11 @@ summary_stats_category_group <- df_ttff_disrup %>%
     .groups = "drop"
   )
 
+# Display the table
 knitr::kable(
   summary_stats_category_group,
   caption = "Descriptive Statistics for Time to First Fixation by Category and Group",
-  col.names = c("Category", "Group", "N", "Mean", "SD", "Median", "IQR", "Min", "Max"),
+  col.names = c("Category", "Group", "N (Participants)", "Mean", "SD", "Median", "IQR", "Min", "Max"), # Ensure the column names match
   row.names = FALSE
 ) %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
@@ -2911,7 +2902,7 @@ kable(omega_results, caption = "Internal Consistency (Omega) for Self-evaluation
 
 # 1. Load and Prepare Data -----------------------------------------------
 
-# Demo Data
+# Demo Data --------------------------------------------
 df_demo <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
   filter(!LI06_05 %in% c(201, 223)) %>%  # Exclude participants without eye-tracking data
   transmute(
@@ -2920,7 +2911,7 @@ df_demo <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
   ) %>%
   arrange(Participant)
 
-# ET-Measures (Micro-Teaching Unit) - Exclude Disruptive Person
+# ET-Measures (Micro-Teaching Unit) - Exclude Disruptive Person --------------------------------------------
 df_aoi_numb_dur <- df_aoi %>%
   filter(TOI == "Lesson") %>%
   dplyr::select(
@@ -2950,7 +2941,7 @@ df_aoi_numb_dur <- df_aoi %>%
   arrange(Participant)
 
 
-# ET-Measures (AOI Students) - Exclude Disruptive Person
+# ET-Measures (AOI Students) - Exclude Disruptive Person --------------------------------------------
 df_aoi_stud <- df_aoi %>%
   filter(TOI == "Lesson") %>%
   dplyr::select (
@@ -2983,8 +2974,9 @@ df_aoi_stud <- df_aoi %>%
   drop_na()
 
 
-# ET-Measures (AOI Disruptive Person)
-# Number of fixations per second and Average duration of fixations
+# ET-Measures (AOI Disruptive Person) --------------------------------------------
+
+# Number of fixations per second and Average duration of fixations --------------------------------------------
 # Define the different types of disruptions and categories
 disruptions <- c("Chatting_with_neighbour", "Clicking_pen", "Drawing", 
                  "Drumming_with_hands", "Head_on_table", "Heckling", 
@@ -3036,12 +3028,52 @@ df_aoi_disrup <- disruption_summary %>%
   select(Participant, Disrup_fixations_per_second, Disrup_average_fixations) %>%  # Select only relevant columns
   arrange(Participant)
 
+# Time to first fixation on AOI Disruptive Person --------------------------------------------
+# Step 1: Data Preparation
+df_ttff_disrup <- df_aoi %>%
+  filter(TOI %in% c(verbal_disruptions, physical_disruptions, lack_of_eagerness)) %>%
+  dplyr::select(
+    Participant,
+    TOI,
+    Time_to_first_fixation.Disruptive_Person
+  ) %>%
+  mutate(
+    Group = ifelse(Participant < 200, "Novice", "Expert"),  # Assigning Group based on Participant
+    Disruption_Category = case_when(
+      TOI %in% verbal_disruptions ~ "Verbal disruptions",
+      TOI %in% physical_disruptions ~ "Physical disruptions",
+      TOI %in% lack_of_eagerness ~ "Lack of eagerness to learn",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(Disruption_Category)) %>% # Keep only rows with valid categories
+  drop_na() %>%
+  filter(
+    Time_to_first_fixation.Disruptive_Person > 0, # Exclude zero fixation times
+    Time_to_first_fixation.Disruptive_Person <= 30000 # Cut-off at 30 seconds
+  ) %>%
+  mutate(
+    Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person / 1000, 2)
+  )
 
+# Summarize the Disrup_time_fixation_sec by Participant
+df_ttff_disrup_participant_summary <- df_ttff_disrup %>%
+  group_by(Participant) %>%
+  summarise(
+    Disrup_time_fixation_sec = round(mean(Disrup_time_fixation_sec, na.rm = TRUE), 2), # Average time to first fixation per participant
+    .groups = "drop"
+  ) %>% 
+  arrange(Participant)
 
-# SRI Rating Data
+# SRI Rating Data --------------------------------------------
+# Data Import and Preprocessing ------------------------------------------
 df_sri <- read_xlsx("data/Coding_SRI.xlsx") %>%
-  filter(!ID %in% c(201, 223)) %>%
-  rename(Participant = ID) %>%
+filter(
+    !ID %in% c(201, 223),
+    !disruption_appraisal %in% c(-100, -99, -88),
+    !confidence_appraisal %in% c(-100, -99, -88),
+    !prevalence_rating %in% c(-100, -99, -88)
+  ) %>%  rename(Participant = ID) %>%
   group_by(Participant) %>%
   summarise(
     Disruption_appraisal = round(mean(disruption_appraisal, na.rm = TRUE), 2),
@@ -3050,65 +3082,173 @@ df_sri <- read_xlsx("data/Coding_SRI.xlsx") %>%
   ) %>% 
   arrange(Participant)
 
-# Situational Judgment Test (SJT)
+# Situational Judgment Test (SJT) --------------------------------------------
 df_sjt <- read_excel("./data/SJT.xlsx") %>%
   filter(!UI06_05 %in% c(201, 223)) %>%
   transmute(
     Participant = UI06_05,
-    SJT_All = SJT_KF_gek,
-    SJT_Monitoring = SJT_AL_gek
-  )
+    SJT_All = round(SJT_KF_gek, 2),
+    SJT_Monitoring = round(SJT_AL_gek, 2)
+  ) %>%
+  arrange(Participant)
 
-# Self-Evaluation Data
-df_self_eval <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  filter(!LI06_05 %in% c(201, 223)) %>%
-  mutate(across(starts_with("L"), as.numeric)) %>%  # Convert all "L"-prefix columns to numeric
-  transmute(
-    Participant = LI06_05,
-    Self_eval_classroom_management = rowMeans(select(., starts_with("LM")), na.rm = TRUE),
-    Self_eval_non_paraverbal_communication = rowMeans(select(., starts_with("LP")), na.rm = TRUE),
-    Self_eval_total = rowMeans(select(., starts_with("L")), na.rm = TRUE)
-  )
+
+# Self-Evaluation Data --------------------------------------------
+# Data Import and Preparation
+df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
+  filter(LI06_05 != 201, LI06_05 != 223) %>%  # Exclude specific IDs
+  mutate(
+    Group = ifelse(LI06_05 < 200, "Novice", "Expert"),  # Group Definition
+    Participant = LI06_05  # Add new column "Participant"
+  ) %>%
+  arrange(Participant) %>% 
+  select(
+    Participant, 
+    Group, 
+    LM01_01:LM01_08,  # Classroom Management and Disruption Handling combined
+    LP01_01:LP01_08   # Presence
+  ) %>%
+  rename(
+    CM_01 = LM01_01, CM_02 = LM01_02, CM_03 = LM01_03, CM_04 = LM01_04, CM_05 = LM01_05,
+    CM_06 = LM01_06, CM_07 = LM01_07, CM_08 = LM01_08,  # Renaming combined columns
+    P_01 = LP01_01, P_02 = LP01_02, P_03 = LP01_03, P_04 = LP01_04, P_05 = LP01_05,
+    P_06 = LP01_06, P_07 = LP01_07, P_08 = LP01_08
+  ) %>%
+  na.omit()  # Remove NAs
+
+# Summarize the scales to a mean per participant, rounded to 2 decimals
+df_quest_summary <- df_quest %>%
+  mutate(
+    # Calculate mean for Classroom Management (CM)
+    Self_Eval_CM = round(rowMeans(select(., starts_with("CM")), na.rm = TRUE), 2),
+    # Calculate mean for Presence (P), excluding the Participant column
+    Self_Eval_Presence = round(rowMeans(select(., starts_with("P"))[, -1], na.rm = TRUE), 2) # Exclude Participant column
+  ) %>%
+  select(Participant, Self_Eval_CM, Self_Eval_Presence) %>% # Keep Participant and means for each scale
+  arrange(Participant)
+
 
 # 2. Combine All Data ---------------------------------------------------
 
-# Combine all prepared datasets
 df_list <- list(
   df_demo,
   df_aoi_numb_dur,
   df_aoi_stud,
   df_aoi_disrup,
+  df_ttff_disrup_participant_summary,
   df_sri,
   df_sjt,
-  df_self_eval
+  df_quest_summary
 )
 
-df_merge <- reduce(df_list, full_join, by = "Participant") %>%
+df_merge <- reduce(df_list, full_join, by = "Participant")
+
+# 3. Correlation Analysis ---------------------------------------------
+
+# Select relevant variables for correlation analysis
+df_correlation <- df_merge %>%
   select(
-    GRI_mtu, SJT_All, Self_eval_total, Mean_disruption_appraisal, Mean_confidence_appraisal
+    `Teaching Experience`, 
+    Number_fixation_min_mtu, 
+    Average_duration_mtu, 
+    GRI_mtu, 
+    Stud_number_fixation_min, 
+    Average_duration_stud, 
+    Disrup_fixations_per_second, 
+    Disrup_average_fixations, 
+    Disrup_time_fixation_sec, 
+    Disruption_appraisal, 
+    Confidence_appraisal, 
+    SJT_All, 
+    SJT_Monitoring, 
+    Self_Eval_CM, 
+    Self_Eval_Presence
   )
 
-# 3. Correlation Analysis -----------------------------------------------
+# Compute the correlation matrix
+cor_matrix <- cor(df_correlation, use = "complete.obs")
 
-# Compute Correlation Matrix
-cor_tab <- cor(df_merge, method = "pearson", use = "complete.obs") %>% round(2)
-
-# Create APA-Style Correlation Table
-apa.cor.table(
-  cor_tab,
-  filename = "correlation_table.docx"
-)
-
-# p-values for specific correlations
-pval_gri_sjt <- cor.test(df_merge$GRI_mtu, df_merge$SJT_All)$p.value
-pval_gri_self_eval <- cor.test(df_merge$GRI_mtu, df_merge$Self_eval_total)$p.value
-
-# Print Correlation Results
-print(cor_tab)
-cat("P-value (GRI x SJT):", pval_gri_sjt, "\n")
-cat("P-value (GRI x Self-evaluation):", pval_gri_self_eval, "\n")
+# Visualize the correlation matrix
+corrplot(cor_matrix, method = "circle", type = "lower", order = "hclust", tl.col = "black", tl.srt = 45)
 
 
+# 4. Correlation Analysis with Experts ---------------------------------------------
+
+# Filter data for Experts (Participants with ID > 200)
+df_experts <- df_merge %>%
+  filter(Participant > 200)  # Only include Experts (ID > 200)
+
+# Select relevant variables for correlation analysis with Teaching Experience
+df_correlation_experts <- df_experts %>%
+  select(
+    `Teaching Experience`, 
+    Number_fixation_min_mtu, 
+    Average_duration_mtu, 
+    GRI_mtu, 
+    Stud_number_fixation_min, 
+    Average_duration_stud, 
+    Disrup_fixations_per_second, 
+    Disrup_average_fixations, 
+    Disrup_time_fixation_sec, 
+    Disruption_appraisal, 
+    Confidence_appraisal, 
+    SJT_All, 
+    SJT_Monitoring, 
+    Self_Eval_CM, 
+    Self_Eval_Presence
+  )
+
+# Check the column types to make sure they are numeric
+sapply(df_correlation_experts, class)
+
+# Compute the correlation matrix
+cor_matrix_experts <- cor(df_correlation_experts, use = "complete.obs")
+
+# Visualize the correlation matrix
+corrplot(cor_matrix_experts, method = "circle", type = "lower", order = "hclust", tl.col = "black", tl.srt = 45)
+
+
+# 5. Correlation Analysis with Novices ---------------------------------------------
+
+# Filter data for Novices (Participants with ID < 200)
+df_novices <- df_merge %>%
+  filter(Participant < 200)  # Only include Novices (ID < 200)
+
+# Select relevant variables for correlation analysis without Teaching Experience
+df_correlation_novices <- df_novices %>%
+  select(
+    Number_fixation_min_mtu, 
+    Average_duration_mtu, 
+    GRI_mtu, 
+    Stud_number_fixation_min, 
+    Average_duration_stud, 
+    Disrup_fixations_per_second, 
+    Disrup_average_fixations, 
+    Disrup_time_fixation_sec, 
+    Disruption_appraisal, 
+    Confidence_appraisal, 
+    SJT_All, 
+    SJT_Monitoring, 
+    Self_Eval_CM, 
+    Self_Eval_Presence
+  )
+
+# Ensure all selected columns are numeric and handle non-numeric entries
+df_correlation_novices_clean <- df_correlation_novices %>%
+  mutate(across(everything(), as.numeric))  # Convert all columns to numeric
+
+# Remove rows with any NA or problematic values
+df_correlation_novices_clean <- df_correlation_novices_clean %>%
+  drop_na()  # Remove rows with NA values
+
+# Check if all columns are numeric after conversion
+sapply(df_correlation_novices_clean, class)
+
+# Compute the correlation matrix for Novices
+cor_matrix_novices <- cor(df_correlation_novices_clean, use = "complete.obs")
+
+# Visualize the correlation matrix for Novices
+corrplot(cor_matrix_novices, method = "circle", type = "lower", order = "hclust", tl.col = "black", tl.srt = 45)
 ```
 
 
