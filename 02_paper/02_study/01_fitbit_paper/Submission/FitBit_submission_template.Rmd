@@ -77,7 +77,7 @@ output:
 header-includes:
   - \usepackage{hyperref}
   - \hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
-  - \setcitestyle{numbers, sort&compress}
+  - \setcitestyle{numbers}
   - \usepackage{tabularx}
   - \usepackage{threeparttable}
   - \usepackage{booktabs}
