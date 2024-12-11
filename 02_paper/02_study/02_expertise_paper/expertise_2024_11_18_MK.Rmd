@@ -306,24 +306,36 @@ grouped_aoi_percentages <- aoi_percentages %>%
 #   column_spec(2:3, width = "3em", border_left = TRUE) 
 
 # Step 7: Plot with descending AOI order, y-axis limit set to 100%, and percentage labels inside the bars
-ggplot(grouped_aoi_percentages, aes(x = reorder(AOI, -Fixation_Percentage), y = Fixation_Percentage, fill = Group)) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
-  geom_text(aes(label = paste0(Fixation_Percentage, "%")), 
-            position = position_dodge(width = 0.8), 
-            vjust = -0.3, size = 3) +
-  labs(
-    title = "Average Fixation Percentage by AOI and Group (Descending Order)",
-    x = "AOI",
-    y = "Fixation Percentage (%)"
+percentage_number_fixation <-
+  ggplot(grouped_aoi_percentages,
+         aes(
+           x = reorder(AOI, -Fixation_Percentage),
+           y = Fixation_Percentage,
+           fill = Group
+         )) +
+  geom_bar(stat = "identity",
+           position = position_dodge(width = 0.8),
+           width = 0.7) +
+  geom_text(
+    aes(label = paste0(Fixation_Percentage, "%")),
+    position = position_dodge(width = 0.8),
+    vjust = -0.3,
+    size = 3
   ) +
+  labs(title = "Average Fixation Percentage by AOI and Group (Descending Order)", x = "AOI", y = "Fixation Percentage (%)") +
   scale_fill_brewer(palette = "RdBu") +
-  theme_minimal() +
+  theme_cowplot() +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
     axis.text.x = element_text(angle = 45, hjust = 1)
   ) +
   guides(fill = guide_legend(title = "Group")) +
   ylim(0, 100)  # Set y-axis limit to 100%
+
+ggsave(filename = "plots/percentage_number_fixation.svg",
+       width = 20,
+       height = 12,
+       units = "cm")
 
 # Step 8: Perform a t-test between Experts and Novices on the percentage values and calculate Cohen's d
 # Define the AOIs you want to analyze with names matching those generated in Step 4
@@ -498,6 +510,11 @@ plot_number_group <- df_aoi_sum %>%
 
 plot_number_group
 
+ggsave(filename = "plots/plot_number_group.svg",
+       width = 20,
+       height = 12,
+       units = "cm")
+
 # 7. Format the t-Test and Cohen's d results for APA Table
 t_test_result <- data.frame(
   "Group Comparison" = "Experts vs. Novices",
@@ -623,6 +640,12 @@ plot_number_min_stud <- df_aoi_stud %>%
 
 # Display the plot
 plot_number_min_stud
+
+
+ggsave(filename = "plots/plot_number_min_stud.svg",
+       width = 20,
+       height = 12,
+       units = "cm")
 
 # 4. t-Test and Effect Size Calculation for Number of Fixations per Minute on AOI Students
 t_test_stud <- t.test(
@@ -760,29 +783,58 @@ cohen_d <- round(cohen.d(mean_fixations_per_second ~ Group, data = individual_su
 
 # Overall fixation rate plot with annotations
 y_max_overall <- max(individual_summary$mean_fixations_per_second, na.rm = TRUE) * 1.5
-plot_overall <- ggplot(individual_summary, aes(x = Group, y = mean_fixations_per_second, fill = Group)) +
+plot_overall_fix_disrup <- ggplot(individual_summary,
+          aes(x = Group, y = mean_fixations_per_second, fill = Group)) +
   geom_boxplot(outlier.shape = NA, width = 0.5) +
-  geom_jitter(width = 0.1, alpha = 0.7, color = "black", size = 1.5) +
+  geom_jitter(
+    width = 0.1,
+    alpha = 0.7,
+    color = "black",
+    size = 1.5
+  ) +
   labs(x = "", y = "Mean Fixations per Second per Participant") +
   ggtitle("Overall Fixation Rate per Participant\n(AOI Disruptive Person)") +
   scale_fill_brewer(palette = "RdBu") +
   theme_cowplot() +
   ylim(0, y_max_overall) +
   theme(legend.position = "none") +
-  annotate("text", x = 1, y = y_max_overall * 0.85,
-           label = paste0("M = ", mean_novice, "\nSD = ", sd_novice),
-           hjust = 0.5, size = 4, fontface = "italic") +
-  annotate("text", x = 2, y = y_max_overall * 0.85,
-           label = paste0("M = ", mean_expert, "\nSD = ", sd_expert),
-           hjust = 0.5, size = 4, fontface = "italic") +
-  annotate("text", x = 1.5, y = y_max_overall * 0.95,
-           label = paste0("p = ", p_value, "\nd = ", cohen_d),
-           hjust = 0.5, size = 4, fontface = "italic")
+  annotate(
+    "text",
+    x = 1,
+    y = y_max_overall * 0.85,
+    label = paste0("M = ", mean_novice, "\nSD = ", sd_novice),
+    hjust = 0.5,
+    size = 4,
+    fontface = "italic"
+  ) +
+  annotate(
+    "text",
+    x = 2,
+    y = y_max_overall * 0.85,
+    label = paste0("M = ", mean_expert, "\nSD = ", sd_expert),
+    hjust = 0.5,
+    size = 4,
+    fontface = "italic"
+  ) +
+  annotate(
+    "text",
+    x = 1.5,
+    y = y_max_overall * 0.95,
+    label = paste0("p = ", p_value, "\nd = ", cohen_d),
+    hjust = 0.5,
+    size = 4,
+    fontface = "italic"
+  )
+
+ggsave(filename = "plots/plot_overall_fix_disrup.svg",
+       width = 20,
+       height = 12,
+       units = "cm")
 
 ##################### SECOND PLOT: FIXATION RATE BY CATEGORY ########################
 
 # Create the plot
-plot_category <- disruption_summary %>%
+plot_category_fix_disrup <- disruption_summary %>%
   ggplot(mapping = aes(x = Group, y = fixations_per_second, fill = Group)) +
   geom_boxplot(outlier.shape = NA) +
   geom_point(
@@ -804,8 +856,13 @@ plot_category <- disruption_summary %>%
     strip.text = element_text(size = 10) # Adjust facet text size if necessary
   )
 
+ggsave(filename = "plots/plot_category_fix_disrup.svg",
+       width = 24,
+       height = 12,
+       units = "cm")
+
 # Display the plots
-plot_overall
+plot_overall_fix_disrup
 plot_category
 
 ##################### STATISTICAL TESTS ########################
@@ -1040,6 +1097,11 @@ plot_duration_group <- ggplot(df_aoi_disrup, aes(x = Group, y = Duration_of_inte
 
 plot_duration_group
 
+ggsave(filename = "plots/plot_duration_group.svg",
+       width = 20,
+       height = 12,
+       units = "cm")
+
 
 # Plot 2: Disruption Duration by Group and Category
 plot_duration_category <- ggplot(df_aoi_disrup, aes(x = Group, y = Duration_of_interval_sec, fill = Group)) +
@@ -1054,6 +1116,11 @@ plot_duration_category <- ggplot(df_aoi_disrup, aes(x = Group, y = Duration_of_i
 
 # Display the plot
 plot_duration_category
+
+ggsave(filename = "plots/plot_duration_category.svg",
+       width = 24,
+       height = 12,
+       units = "cm")
 
 
 ##################### STATISTICAL TESTS ########################
@@ -1504,24 +1571,39 @@ grouped_aoi_durations_percentages <- aoi_durations_percentages %>%
   arrange(Group, desc(Duration_Percentage))
 
 # Step 6: Plot the fixation duration percentages by AOI and Group
-ggplot(grouped_aoi_durations_percentages, aes(x = reorder(AOI, -Duration_Percentage), y = Duration_Percentage, fill = Group)) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
-  geom_text(aes(label = paste0(Duration_Percentage, "%")), 
-            position = position_dodge(width = 0.8), 
-            vjust = -0.3, size = 3) +
-  labs(
-    title = "Total Fixation Duration Percentage by AOI and Group (Descending Order)",
-    x = "AOI",
-    y = "Fixation Duration Percentage (%)"
+percentage_duration_fixation <- ggplot(
+  grouped_aoi_durations_percentages,
+  aes(
+    x = reorder(AOI, -Duration_Percentage),
+    y = Duration_Percentage,
+    fill = Group
+  )
+) +
+  geom_bar(stat = "identity",
+           position = position_dodge(width = 0.8),
+           width = 0.7) +
+  geom_text(
+    aes(label = paste0(Duration_Percentage, "%")),
+    position = position_dodge(width = 0.8),
+    vjust = -0.3,
+    size = 3
   ) +
+  labs(title = "Total Fixation Duration Percentage by AOI and Group (Descending Order)", x = "AOI", y = "Fixation Duration Percentage (%)") +
   scale_fill_brewer(palette = "RdBu") +
-  theme_minimal() +
+  theme_cowplot() +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
     axis.text.x = element_text(angle = 45, hjust = 1)
   ) +
   guides(fill = guide_legend(title = "Group")) +
   ylim(0, 100)  # Set y-axis limit to 100%
+
+ggsave(
+  filename = "plots/percentage_duration_fixation.svg",
+  width = 24,
+  height = 12,
+  units = "cm"
+)
 
 # Step 7: Perform a t-test between Experts and Novices on the duration percentages and calculate Cohen's d
 aoi_list <- c("AOI_Students_pct", "AOI_Disruptive_Person_pct", "AOI_Teacher_Material_pct", "AOI_Student_Desk_pct", "AOI_Classroom_Others_pct")
@@ -1665,7 +1747,7 @@ plot_avg_fixation_group <- df_aoi_sum %>%
   ylim(0, y_max_fixation) +
   labs(x = "", y = "Average Fixation Duration (ms)") +
   scale_fill_brewer(palette = "RdBu") +
-  ggtitle("Average Fixation Duration\n(micro-teaching unit)") +
+  ggtitle("Average Fixation Duration\n(Micro-Teaching Unit)") +
   theme_cowplot() +
   theme(legend.position = "none") +
   # Add annotations for mean (M) and SD
@@ -1681,6 +1763,13 @@ plot_avg_fixation_group <- df_aoi_sum %>%
            hjust = 0.5, size = 4, fontface = "italic")
 
 plot_avg_fixation_group
+
+ggsave(
+  filename = "plots/plot_avg_fixation_group.svg",
+  width = 20,
+  height = 12,
+  units = "cm"
+)
 
 # 7. Format the t-Test and Cohen's d results for APA Table without the first column
 t_test_result <- data.frame(
@@ -1800,6 +1889,14 @@ plot_average_duration_stud <- df_aoi_stud %>%
            hjust = 0.5, size = 4, fontface = "italic")
 
 plot_average_duration_stud
+
+ggsave(
+  filename = "plots/plot_average_duration_stud.svg",
+  width = 20,
+  height = 12,
+  units = "cm"
+)
+
 
 # 4. t-Test and Effect Size Results Table
 t_test_stud_result <- data.frame(
@@ -1928,7 +2025,7 @@ cohen_d <- round(effsize::cohen.d(mean_duration ~ Group, data = individual_summa
 
 # Overall plot
 y_max_overall <- max(individual_summary$mean_duration, na.rm = TRUE) * 1.5
-plot_overall <- ggplot(individual_summary, aes(x = Group, y = mean_duration, fill = Group)) +
+plot_overall_dur_disrup <- ggplot(individual_summary, aes(x = Group, y = mean_duration, fill = Group)) +
   geom_boxplot(outlier.shape = NA, width = 0.5) +
   geom_jitter(width = 0.1, alpha = 0.7, color = "black", size = 1.5) +
   labs(x = "", y = "Mean Duration (ms) per Participant") +
@@ -1947,8 +2044,16 @@ plot_overall <- ggplot(individual_summary, aes(x = Group, y = mean_duration, fil
            label = paste0("p = ", p_value, "\nd = ", cohen_d),
            hjust = 0.5, size = 4, fontface = "italic")
 
+ggsave(
+  filename = "plots/plot_overall_dur_disrup.svg",
+  width = 20,
+  height = 12,
+  units = "cm"
+)
+
+
 # Plot by category
-plot_category <- disruption_summary %>%
+plot_category_dur_disrup <- disruption_summary %>%
   ggplot(aes(x = Group, y = mean_duration_ms, fill = Group)) +  # Ensure using correct column name here
   geom_boxplot(outlier.shape = NA, width = 0.5) +
   geom_jitter(width = 0.1, alpha = 0.7, size = 1.5, color = "black") +
@@ -1962,6 +2067,13 @@ plot_category <- disruption_summary %>%
     legend.position = "none",
     strip.text = element_text(size = 10)
   )
+
+ggsave(
+  filename = "plots/plot_category_dur_disrup.svg",
+  width = 24,
+  height = 12,
+  units = "cm"
+)
 
 # Display plots
 plot_overall
