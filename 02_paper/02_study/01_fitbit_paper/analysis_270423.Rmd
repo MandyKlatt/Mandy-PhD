@@ -374,7 +374,6 @@ ggsave(filename = "plots_publication/loess_plot_std_unstd.png",
 #        units = "cm")
 
 
-## Box Plot (over 81 participants) 
 box_plot <-
   main_single_hr %>% 
   filter(time_span != "overall") %>%   
@@ -412,11 +411,20 @@ box_plot <-
                        y = mean_hr_std
                        )
          ) +
-  geom_boxplot()+
+  geom_boxplot() +
+  stat_summary(
+    fun = mean, geom = "point", 
+    shape = 4, size = 3, color = "red" # Mean as red "x"
+  ) +
+  stat_summary(
+    fun.data = mean_sdl, 
+    fun.args = list(mult = 1), 
+    geom = "errorbar", 
+    width = 0.2, color = "blue" # SD as blue error bars
+  ) +
   scale_y_continuous(breaks=seq(-2, 2, 1), 
                      limits=c(-2, 2)
                      ) +   
-  # geom_jitter(width = 0.2) +
   theme_apa() + 
   theme(axis.text.x = 
           element_text(
@@ -425,16 +433,13 @@ box_plot <-
         plot.caption = element_text(hjust = 0)
         ) + 
   labs(x = "",
-       y = "Mean Standardized Heart Rate",
-       caption = expression(
-         paste(italic("Note: N"), 
-               "= 81 participants per interval. Fig. shows median (bold line), interquartile range (box) and outliers (dots)."
-         )
-       ))
+       y = "Mean Standardized Heart Rate Level")
+)
 
 box_plot
 
-ggsave(filename = "plots_publication/box_plot.png",
+
+ggsave(filename = "plots_publication/box_plot.svg",
        plot = box_plot,
        width = 20,
        height = 12,
