@@ -746,7 +746,7 @@ df_heart_rate_std |>
   theme(plot.margin = margin(r = 30,
                              t = 20,
                              b = 5),
-        text = element_text(family = "Times",
+        text = element_text(family = "Sans-Serif",
                             size = 14)
         ) -> loess_hr_std
 
@@ -758,11 +758,11 @@ loess_comp <- annotate_figure(p = loess_comp,
                               bottom = text_grob("Time (in Minutes)",
                                                  face = "plain",
                                                  size = 14,       
-                                                 family = "Times")
+                                                 family = "Sans-Serif")
                               )
 
 ggsave(loess_comp,
-       filename = "plots_publication/loess_plot_std_unstd_new.pdf",
+       filename = "plots_publication/loess_plot_std_unstd_new.svg",
        width = 25,
        height = 14,
        units = "cm")
@@ -779,11 +779,11 @@ ggsave(loess_comp,
 
 ```{r box plot, include=FALSE}
 box_plot <-
-  main_single_hr |> 
-  filter(time_span != "overall") |>  
+  main_single_hr %>% 
+  filter(time_span != "overall") %>%
   dplyr::select("ID",
          "time_span",
-         "heart_rate_std") |> 
+         "heart_rate_std") %>% 
   mutate(time_span = fct_recode(time_span,
                                 "Pre-teaching Interval" = "preparation",
                                 "Teaching Interval" = "teaching",
@@ -804,39 +804,44 @@ box_plot <-
                                        "Interview\nInterval",
                                        "End\nInterval")
                             )
-         ) |> 
-  distinct() |> 
-  group_by(ID, time_span) |> 
+         ) %>%
+  distinct() %>% 
+  group_by(ID, time_span) %>%
   summarise(mean_hr_std = 
               mean(heart_rate_std, 
                    na.rm = TRUE)
-            ) |> 
+            ) %>% 
   ggplot(mapping = aes(x = time_span,
                        y = mean_hr_std
                        )
          ) +
-  geom_boxplot()+
-  scale_y_continuous(breaks=seq(-2, 2, 1), 
+  geom_boxplot() +
+  stat_summary(
+    fun = mean, geom = "point", 
+    shape = 4, size = 3, color = "red" # Mean as red "x"
+  ) +
+  stat_summary(
+    fun.data = mean_sdl, 
+    fun.args = list(mult = 1), 
+    geom = "errorbar", 
+    width = 0.2, color = "blue" # SD as blue error bars
+  ) +
+scale_y_continuous(breaks=seq(-2, 2, 1), 
                      limits=c(-2, 2)
-                     ) +   
-  # geom_jitter(width = 0.2) +
+                     ) +
   theme_apa() + 
-  theme(text = element_text(family = "Times"),
-        axis.text.x = element_text(
+  theme(axis.text.x = 
+          element_text(family = 'Sans-Serif',
             color="black",
-            size = 14,
-            family = "Times"),
+            size = 12),
         plot.caption = element_text(hjust = 0)
         ) + 
   labs(x = "",
-       y = "Mean Standardized Heart Rate",
-       caption = expression(
-         paste(italic("Note: N"), 
-               "= 81 participants per interval. Fig. shows median (bold line), interquartile range (box) and outliers (dots)."
+       y = "Mean Standardized Heart Rate Level"
          )
-       ))
+       
 
-ggsave(filename = "plots_publication/box_plot.pdf",
+ggsave(filename = "plots_publication/box_plot.svg",
        plot = box_plot,
        width = 25,
        height = 14,
@@ -1311,11 +1316,12 @@ plot_list_appendix <- list(
         facet_wrap(~ ID, nrow = 8) +  # Arrange plots by 'ID'
         xlab('Time (in Minutes)') +  # X-axis label (similar to 'Arbeitsstunden pro Woche')
         ylab('Heart Rate (Standardized)') +  # Y-axis label (similar to 'Nettoeinkommen')
+        ylim(-4, 4) +
         scale_x_continuous(breaks = c(0, 5, 10)) +  # Customize x-axis breaks as needed
         #labs(title = .$name) +  # Title for each plot based on phase name
         theme_bw() + # Use a clean theme
-        theme(text = element_text(family = "Times",
-                                  size = 14)
+        theme(text = element_text(size = 14,
+                                  family = 'Sans-Serif')
               )
       )
 
@@ -1331,31 +1337,31 @@ end_plot <- plot_list_appendix$`End Phase`
 
 
 ggsave(preparation_plot,
-       filename = "plots_publication/plot_preparation_appendix.pdf",
+       filename = "plots_publication/plot_preparation_appendix.svg",
        width = 25,
        height = 29,
        units = "cm")
 
 ggsave(teaching_plot,
-       filename = "plots_publication/plot_teaching_appendix.pdf",
+       filename = "plots_publication/plot_teaching_appendix.svg",
        width = 25,
        height = 29,
        units = "cm")
 
 ggsave(post_teaching_plot,
-       filename = "plots_publication/plot_post_teaching_appendix.pdf",
+       filename = "plots_publication/plot_post_teaching_appendix.svg",
        width = 25,
        height = 29,
        units = "cm")
 
 ggsave(interview_plot,
-       filename = "plots_publication/plot_interview_appendix.pdf",
+       filename = "plots_publication/plot_interview_appendix.svg",
        width = 25,
        height = 29,
        units = "cm")
 
 ggsave(end_plot,
-       filename = "plots_publication/plot_end_appendix.pdf",
+       filename = "plots_publication/plot_end_appendix.svg",
        width = 25,
        height = 29,
        units = "cm")
