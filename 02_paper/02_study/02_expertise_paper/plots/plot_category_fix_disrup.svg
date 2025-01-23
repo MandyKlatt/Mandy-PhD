@@ -379,8 +379,8 @@
 <polyline points='43.10,238.32 46.59,238.32 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <polyline points='43.10,185.53 46.59,185.53 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <polyline points='43.10,132.74 46.59,132.74 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
-<text transform='translate(17.00,191.51) rotate(-90)' text-anchor='middle' style='font-size: 14.00px; font-family: "Arial";' textLength='131.47px' lengthAdjust='spacingAndGlyphs'>Fixations per Second</text>
-<text x='46.59' y='18.43' style='font-size: 16.00px; font-weight: bold; font-family: "Arial";' textLength='281.77px' lengthAdjust='spacingAndGlyphs'>Fixation Rate by Disruption Category</text>
+<text transform='translate(17.00,191.51) rotate(-90)' text-anchor='middle' style='font-size: 14.00px; font-family: "Arial";' textLength='200.69px' lengthAdjust='spacingAndGlyphs'>Number of Fixations per Second</text>
+<text x='46.59' y='18.43' style='font-size: 16.00px; font-weight: bold; font-family: "Arial";' textLength='575.94px' lengthAdjust='spacingAndGlyphs'>Number of Fixations per Second Splitted by Disruption Category and Group</text>
 <text x='46.59' y='35.71' style='font-size: 16.00px; font-weight: bold; font-family: "Arial";' textLength='180.45px' lengthAdjust='spacingAndGlyphs'>(AOI Disruptive Person)</text>
 </g>
 </svg>
