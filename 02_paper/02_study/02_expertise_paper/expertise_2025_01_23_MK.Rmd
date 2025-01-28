@@ -216,8 +216,203 @@ knitr::kable(t_test_result, caption = "t-Test and Effect Size for Letter Search 
 
 ```
 
-# Gaze Allocation Across Areas of Interest 
+# Gaze Behavior Across Areas of Interest 
 ```{r nof__dur_percent, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+#### Percentage of fixation durations on each AOI, relative to the total duration of fixations during the entire "Lesson" 
+# Step 1: Define AOI categories with correct column names for fixation duration
+aoi_columns <- list(
+  "AOI_Students" = c(
+    "Total_duration_of_fixations.Anna",
+    "Total_duration_of_fixations.Bianca",
+    "Total_duration_of_fixations.Carl(a)"
+  ),
+  "AOI_Disruptive_Person" = c("Total_duration_of_fixations.Disruptive_Person"),
+  "AOI_Teacher_Material" = c(
+    "Total_duration_of_fixations.Board_Screen",
+    "Total_duration_of_fixations.Material_Teacher"
+  ),
+  "AOI_Student_Desk" = c(
+    "Total_duration_of_fixations.Nametag_Anna",
+    "Total_duration_of_fixations.Nametag_Bianca",
+    "Total_duration_of_fixations.Nametag_Carl(a)",
+    "Total_duration_of_fixations.Material_Students"
+  ),
+  "AOI_Classroom_Others" = c("Total_duration_of_fixations.Classroom_Others")
+)
+
+# Step 2: Filter data for "Lesson" and select relevant columns for fixation duration
+df_durations <- df_aoi %>%
+  filter(TOI == "Lesson") %>%
+  dplyr::select(Participant, Group, starts_with("Total_duration_of_fixations"))
+
+# Step 3: Calculate total fixation duration per participant, excluding "Disruptive Student"
+relevant_columns <- unlist(aoi_columns[c("AOI_Students", "AOI_Teacher_Material", "AOI_Student_Desk", "AOI_Classroom_Others")])
+
+df_durations <- df_durations %>%
+  mutate(Total_duration_excluding_disruptive = rowSums(across(all_of(relevant_columns)), na.rm = TRUE))
+
+# Step 4: Calculate fixation duration percentages for each AOI based on the adjusted total duration
+aoi_durations_percentages <- df_durations %>%
+  rowwise() %>%
+  mutate(
+    AOI_Students_pct = sum(c_across(any_of(aoi_columns$AOI_Students)), na.rm = TRUE) / Total_duration_excluding_disruptive * 100,
+    AOI_Disruptive_Person_pct = sum(c_across(any_of(aoi_columns$AOI_Disruptive_Person)), na.rm = TRUE) / (
+      Total_duration_excluding_disruptive + sum(c_across(any_of(aoi_columns$AOI_Disruptive_Person)), na.rm = TRUE)
+    ) * 100,
+    AOI_Teacher_Material_pct = sum(c_across(any_of(aoi_columns$AOI_Teacher_Material)), na.rm = TRUE) / Total_duration_excluding_disruptive * 100,
+    AOI_Student_Desk_pct = sum(c_across(any_of(aoi_columns$AOI_Student_Desk)), na.rm = TRUE) / Total_duration_excluding_disruptive * 100,
+    AOI_Classroom_Others_pct = sum(c_across(any_of(aoi_columns$AOI_Classroom_Others)), na.rm = TRUE) / Total_duration_excluding_disruptive * 100
+  ) %>%
+  ungroup()
+
+# Step 5: Summarize fixation duration percentages by Group and arrange in descending order
+grouped_aoi_durations_percentages <- aoi_durations_percentages %>%
+  group_by(Group) %>%
+  summarise(
+    Mean_AOI_Students_pct = round(mean(AOI_Students_pct, na.rm = TRUE), 2),
+    Mean_AOI_Disruptive_Person_pct = round(mean(AOI_Disruptive_Person_pct, na.rm = TRUE), 2),
+    Mean_AOI_Teacher_Material_pct = round(mean(AOI_Teacher_Material_pct, na.rm = TRUE), 2),
+    Mean_AOI_Student_Desk_pct = round(mean(AOI_Student_Desk_pct, na.rm = TRUE), 2),
+    Mean_AOI_Classroom_Others_pct = round(mean(AOI_Classroom_Others_pct, na.rm = TRUE), 2)
+  ) %>%
+  pivot_longer(cols = starts_with("Mean_AOI"), names_to = "AOI", values_to = "Duration_Percentage") %>%
+  mutate(AOI = recode(AOI,
+                      "Mean_AOI_Students_pct" = "Students",
+                      "Mean_AOI_Disruptive_Person_pct" = "Disruptive Student",
+                      "Mean_AOI_Teacher_Material_pct" = "Teacher Material",
+                      "Mean_AOI_Student_Desk_pct" = "Student Desk",
+                      "Mean_AOI_Classroom_Others_pct" = "Classroom/Others")) %>%
+  arrange(Group, desc(Duration_Percentage))
+
+# Step 6: Restructure data for grouping and calculate 95% CI for fixation durations
+grouped_aoi_durations_ci <- aoi_durations_percentages %>%
+  pivot_longer(
+    cols = starts_with("AOI"),
+    names_to = "AOI",
+    values_to = "Duration_Percentage"
+  ) %>%
+  mutate(AOI = recode(
+    AOI,
+    "AOI_Students_pct" = "Students",
+    "AOI_Disruptive_Person_pct" = "Disruptive Student",
+    "AOI_Teacher_Material_pct" = "Teacher Material",
+    "AOI_Student_Desk_pct" = "Student Desk",
+    "AOI_Classroom_Others_pct" = "Classroom/Others"
+  )) %>%
+  group_by(Group, AOI) %>%
+  summarise(
+    Mean_Duration_Percentage = mean(Duration_Percentage, na.rm = TRUE),
+    CI_Lower = Mean_Duration_Percentage - qt(0.975, df = n() - 1) * sd(Duration_Percentage, na.rm = TRUE) / sqrt(n()),
+    CI_Upper = Mean_Duration_Percentage + qt(0.975, df = n() - 1) * sd(Duration_Percentage, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+# Step 7: Plot with 95% confidence intervals
+percentage_duration_fixation <- ggplot(
+  grouped_aoi_durations_ci %>%
+    mutate(Group = recode(Group, "Expert" = "Experienced", "Novice" = "Inexperienced")), # Rename groups
+  aes(
+    x = reorder(AOI, -Mean_Duration_Percentage),
+    y = Mean_Duration_Percentage,
+    fill = Group
+  )
+) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
+  geom_errorbar(
+    aes(ymin = CI_Lower, ymax = CI_Upper),
+    position = position_dodge(width = 0.8),
+    width = 0.2
+  ) +
+  geom_text(
+    aes(label = paste0(round(Mean_Duration_Percentage, 2), "%")),
+    position = position_dodge(width = 0.8),
+    vjust = -2.5,  # Adjusted to place the labels above the bars
+    size = 3
+  ) +
+  ylim(0, 60) + 
+  labs(
+    title = "Average Fixation Duration Percentage by AOI and Group",
+    x = "AOI",
+    y = "Fixation Duration Percentage (%)"
+  ) +
+  scale_fill_brewer(palette = "RdBu") +
+  theme_cowplot() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  guides(fill = guide_legend(title = "Group"))
+percentage_duration_fixation
+
+ggsave(
+  filename = "plots/percentage_duration_fixation_with_ci.svg",
+  width = 20,
+  height = 12,
+  units = "cm"
+)
+
+# Step 7: Perform a t-test between Experts and Novices on the duration percentages and calculate Cohen's d
+aoi_list <- c("AOI_Students_pct", "AOI_Disruptive_Person_pct", "AOI_Teacher_Material_pct", "AOI_Student_Desk_pct", "AOI_Classroom_Others_pct")
+results_duration <- data.frame()
+
+for (column_name in aoi_list) {
+  if (column_name %in% names(aoi_durations_percentages)) {
+    aoi_data <- aoi_durations_percentages %>%
+      select(Group, !!sym(column_name)) %>%
+      rename(Duration_Percentage = !!sym(column_name))
+    
+    expert_data <- aoi_data$Duration_Percentage[aoi_data$Group == "Expert"]
+    novice_data <- aoi_data$Duration_Percentage[aoi_data$Group == "Novice"]
+    
+    if (length(expert_data) > 0 && length(novice_data) > 0) {
+      t_test_result <- t.test(expert_data, novice_data, var.equal = TRUE)
+      cohen_d_value <- cohen.d(expert_data, novice_data, pooled = TRUE)$estimate
+      
+      results_duration <- rbind(
+        results_duration,
+        data.frame(
+          "AOI" = gsub("_pct", "", column_name),
+          "Group Comparison" = "Experts vs. Novices",
+          "t-value" = round(t_test_result$statistic, 2),
+          "df" = t_test_result$parameter,
+          "p-value" = format.pval(t_test_result$p.value, digits = 2, eps = .05),
+          "Mean Difference" = round(t_test_result$estimate[1] - t_test_result$estimate[2], 2),
+          "Cohen's d" = round(cohen_d_value, 2),
+          "95% CI (d)" = paste0("[", round(t_test_result$conf.int[1], 2), ", ", round(t_test_result$conf.int[2], 2), "]")
+        )
+      )
+    } else {
+      results_duration <- rbind(
+        results_duration,
+        data.frame(
+          "AOI" = gsub("_pct", "", column_name),
+          "Group Comparison" = "Experienced vs. Inexperienced",
+          "t-value" = NA,
+          "df" = NA,
+          "p-value" = NA,
+          "Mean Difference" = NA,
+          "Cohen's d" = NA,
+          "95% CI (d)" = NA
+        )
+      )
+    }
+  }
+}
+
+# Map AOI names to clean versions for readability in the final results_duration table
+results_duration$AOI <- recode(results_duration$AOI,
+                      "AOI_Students" = "Students",
+                      "AOI_Disruptive_Person" = "Disruptive Student",
+                      "AOI_Teacher_Material" = "Teacher Material",
+                      "AOI_Student_Desk" = "Student Desk",
+                      "AOI_Classroom_Others" = "Classroom/Others")
+
+# Display the t-Test and Effect Size table in APA style
+knitr::kable(results_duration, 
+             caption = "t-Test and Effect Size for Fixation Duration Percentage across AOIs (Experts vs. Novices)", 
+             row.names = FALSE) %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
 #### Percentage of fixations on each AOI, relative to the total number of fixations during the entire "Lesson" 
 # Step 1: Define AOI categories
 aoi_columns <- list(
@@ -245,8 +440,8 @@ df_fixations <- df_aoi %>%
   filter(TOI == "Lesson") %>%
   dplyr::select(Participant, Group, starts_with("Number_of_fixations"))
 
-# Step 3: Calculate total fixations per participant, excluding "Disruptive Person"
-# Extract relevant column names excluding "Disruptive Person"
+# Step 3: Calculate total fixations per participant, excluding "Disruptive Student"
+# Extract relevant column names excluding "Disruptive Student"
 relevant_columns <- unlist(aoi_columns[c("AOI_Students", "AOI_Teacher_Material", "AOI_Student_Desk", "AOI_Classroom_Others")])
 
 # Calculate row sums for the relevant columns and add as a new column
@@ -292,7 +487,7 @@ grouped_aoi_percentages <- aoi_percentages %>%
   pivot_longer(cols = starts_with("Mean_AOI"), names_to = "AOI", values_to = "Fixation_Percentage") %>%
   mutate(AOI = recode(AOI,
                       "Mean_AOI_Students_pct" = "Students",
-                      "Mean_AOI_Disruptive_Person_pct" = "Disruptive Person",
+                      "Mean_AOI_Disruptive_Person_pct" = "Disruptive Student",
                       "Mean_AOI_Teacher_Material_pct" = "Teacher Material",
                       "Mean_AOI_Student_Desk_pct" = "Student Desk",
                       "Mean_AOI_Classroom_Others_pct" = "Classroom/Others")) %>%
@@ -308,7 +503,7 @@ grouped_aoi_percentages_ci <- aoi_percentages %>%
   mutate(AOI = recode(
     AOI,
     "AOI_Students_pct" = "Students",
-    "AOI_Disruptive_Person_pct" = "Disruptive Person",
+    "AOI_Disruptive_Person_pct" = "Disruptive Student",
     "AOI_Teacher_Material_pct" = "Teacher Material",
     "AOI_Student_Desk_pct" = "Student Desk",
     "AOI_Classroom_Others_pct" = "Classroom/Others"
@@ -432,7 +627,7 @@ for (column_name in aoi_list) {
 # Clean up AOI names for readability in the final table
 aoi_name_mapping <- c(
   "AOI_Students" = "Students",
-  "AOI_Disruptive_Person" = "Disruptive Person",
+  "AOI_Disruptive_Person" = "Disruptive Student",
   "AOI_Teacher_Material" = "Teacher Material",
   "AOI_Student_Desk" = "Student Desk",
   "AOI_Classroom_Others" = "Classroom/Others"
@@ -443,390 +638,193 @@ results_number$AOI <- aoi_name_mapping[results_number$AOI]
 knitr::kable(results_number, caption = "t-Test and Effect Size for Fixation Percentage across AOIs (Experts vs. Novices)", row.names = FALSE) %>%
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
-
-#### Percentage of fixation durations on each AOI, relative to the total duration of fixations during the entire "Lesson" 
-# Step 1: Define AOI categories with correct column names for fixation duration
-aoi_columns <- list(
-  "AOI_Students" = c(
-    "Total_duration_of_fixations.Anna",
-    "Total_duration_of_fixations.Bianca",
-    "Total_duration_of_fixations.Carl(a)"
-  ),
-  "AOI_Disruptive_Person" = c("Total_duration_of_fixations.Disruptive_Person"),
-  "AOI_Teacher_Material" = c(
-    "Total_duration_of_fixations.Board_Screen",
-    "Total_duration_of_fixations.Material_Teacher"
-  ),
-  "AOI_Student_Desk" = c(
-    "Total_duration_of_fixations.Nametag_Anna",
-    "Total_duration_of_fixations.Nametag_Bianca",
-    "Total_duration_of_fixations.Nametag_Carl(a)",
-    "Total_duration_of_fixations.Material_Students"
-  ),
-  "AOI_Classroom_Others" = c("Total_duration_of_fixations.Classroom_Others")
-)
-
-# Step 2: Filter data for "Lesson" and select relevant columns for fixation duration
-df_durations <- df_aoi %>%
-  filter(TOI == "Lesson") %>%
-  dplyr::select(Participant, Group, starts_with("Total_duration_of_fixations"))
-
-# Step 3: Calculate total fixation duration per participant, excluding "Disruptive Person"
-relevant_columns <- unlist(aoi_columns[c("AOI_Students", "AOI_Teacher_Material", "AOI_Student_Desk", "AOI_Classroom_Others")])
-
-df_durations <- df_durations %>%
-  mutate(Total_duration_excluding_disruptive = rowSums(across(all_of(relevant_columns)), na.rm = TRUE))
-
-# Step 4: Calculate fixation duration percentages for each AOI based on the adjusted total duration
-aoi_durations_percentages <- df_durations %>%
-  rowwise() %>%
-  mutate(
-    AOI_Students_pct = sum(c_across(any_of(aoi_columns$AOI_Students)), na.rm = TRUE) / Total_duration_excluding_disruptive * 100,
-    AOI_Disruptive_Person_pct = sum(c_across(any_of(aoi_columns$AOI_Disruptive_Person)), na.rm = TRUE) / (
-      Total_duration_excluding_disruptive + sum(c_across(any_of(aoi_columns$AOI_Disruptive_Person)), na.rm = TRUE)
-    ) * 100,
-    AOI_Teacher_Material_pct = sum(c_across(any_of(aoi_columns$AOI_Teacher_Material)), na.rm = TRUE) / Total_duration_excluding_disruptive * 100,
-    AOI_Student_Desk_pct = sum(c_across(any_of(aoi_columns$AOI_Student_Desk)), na.rm = TRUE) / Total_duration_excluding_disruptive * 100,
-    AOI_Classroom_Others_pct = sum(c_across(any_of(aoi_columns$AOI_Classroom_Others)), na.rm = TRUE) / Total_duration_excluding_disruptive * 100
-  ) %>%
-  ungroup()
-
-# Step 5: Summarize fixation duration percentages by Group and arrange in descending order
-grouped_aoi_durations_percentages <- aoi_durations_percentages %>%
-  group_by(Group) %>%
-  summarise(
-    Mean_AOI_Students_pct = round(mean(AOI_Students_pct, na.rm = TRUE), 2),
-    Mean_AOI_Disruptive_Person_pct = round(mean(AOI_Disruptive_Person_pct, na.rm = TRUE), 2),
-    Mean_AOI_Teacher_Material_pct = round(mean(AOI_Teacher_Material_pct, na.rm = TRUE), 2),
-    Mean_AOI_Student_Desk_pct = round(mean(AOI_Student_Desk_pct, na.rm = TRUE), 2),
-    Mean_AOI_Classroom_Others_pct = round(mean(AOI_Classroom_Others_pct, na.rm = TRUE), 2)
-  ) %>%
-  pivot_longer(cols = starts_with("Mean_AOI"), names_to = "AOI", values_to = "Duration_Percentage") %>%
-  mutate(AOI = recode(AOI,
-                      "Mean_AOI_Students_pct" = "Students",
-                      "Mean_AOI_Disruptive_Person_pct" = "Disruptive Person",
-                      "Mean_AOI_Teacher_Material_pct" = "Teacher Material",
-                      "Mean_AOI_Student_Desk_pct" = "Student Desk",
-                      "Mean_AOI_Classroom_Others_pct" = "Classroom/Others")) %>%
-  arrange(Group, desc(Duration_Percentage))
-
-# Step 6: Restructure data for grouping and calculate 95% CI for fixation durations
-grouped_aoi_durations_ci <- aoi_durations_percentages %>%
-  pivot_longer(
-    cols = starts_with("AOI"),
-    names_to = "AOI",
-    values_to = "Duration_Percentage"
-  ) %>%
-  mutate(AOI = recode(
-    AOI,
-    "AOI_Students_pct" = "Students",
-    "AOI_Disruptive_Person_pct" = "Disruptive Person",
-    "AOI_Teacher_Material_pct" = "Teacher Material",
-    "AOI_Student_Desk_pct" = "Student Desk",
-    "AOI_Classroom_Others_pct" = "Classroom/Others"
-  )) %>%
-  group_by(Group, AOI) %>%
-  summarise(
-    Mean_Duration_Percentage = mean(Duration_Percentage, na.rm = TRUE),
-    CI_Lower = Mean_Duration_Percentage - qt(0.975, df = n() - 1) * sd(Duration_Percentage, na.rm = TRUE) / sqrt(n()),
-    CI_Upper = Mean_Duration_Percentage + qt(0.975, df = n() - 1) * sd(Duration_Percentage, na.rm = TRUE) / sqrt(n()),
-    .groups = "drop"
-  )
-
-# Step 7: Plot with 95% confidence intervals
-percentage_duration_fixation <- ggplot(
-  grouped_aoi_durations_ci %>%
-    mutate(Group = recode(Group, "Expert" = "Experienced", "Novice" = "Inexperienced")), # Rename groups
-  aes(
-    x = reorder(AOI, -Mean_Duration_Percentage),
-    y = Mean_Duration_Percentage,
-    fill = Group
-  )
-) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
-  geom_errorbar(
-    aes(ymin = CI_Lower, ymax = CI_Upper),
-    position = position_dodge(width = 0.8),
-    width = 0.2
-  ) +
-  geom_text(
-    aes(label = paste0(round(Mean_Duration_Percentage, 2), "%")),
-    position = position_dodge(width = 0.8),
-    vjust = -2.5,  # Adjusted to place the labels above the bars
-    size = 3
-  ) +
-  ylim(0, 60) + 
-  labs(
-    title = "Average Fixation Duration Percentage by AOI and Group",
-    x = "AOI",
-    y = "Fixation Duration Percentage (%)"
-  ) +
-  scale_fill_brewer(palette = "RdBu") +
-  theme_cowplot() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  ) +
-  guides(fill = guide_legend(title = "Group"))
-percentage_duration_fixation
-
-ggsave(
-  filename = "plots/percentage_duration_fixation_with_ci.svg",
-  width = 20,
-  height = 12,
-  units = "cm"
-)
-
-# Step 7: Perform a t-test between Experts and Novices on the duration percentages and calculate Cohen's d
-aoi_list <- c("AOI_Students_pct", "AOI_Disruptive_Person_pct", "AOI_Teacher_Material_pct", "AOI_Student_Desk_pct", "AOI_Classroom_Others_pct")
-results_duration <- data.frame()
-
-for (column_name in aoi_list) {
-  if (column_name %in% names(aoi_durations_percentages)) {
-    aoi_data <- aoi_durations_percentages %>%
-      select(Group, !!sym(column_name)) %>%
-      rename(Duration_Percentage = !!sym(column_name))
-    
-    expert_data <- aoi_data$Duration_Percentage[aoi_data$Group == "Expert"]
-    novice_data <- aoi_data$Duration_Percentage[aoi_data$Group == "Novice"]
-    
-    if (length(expert_data) > 0 && length(novice_data) > 0) {
-      t_test_result <- t.test(expert_data, novice_data, var.equal = TRUE)
-      cohen_d_value <- cohen.d(expert_data, novice_data, pooled = TRUE)$estimate
-      
-      results_duration <- rbind(
-        results_duration,
-        data.frame(
-          "AOI" = gsub("_pct", "", column_name),
-          "Group Comparison" = "Experts vs. Novices",
-          "t-value" = round(t_test_result$statistic, 2),
-          "df" = t_test_result$parameter,
-          "p-value" = format.pval(t_test_result$p.value, digits = 2, eps = .05),
-          "Mean Difference" = round(t_test_result$estimate[1] - t_test_result$estimate[2], 2),
-          "Cohen's d" = round(cohen_d_value, 2),
-          "95% CI (d)" = paste0("[", round(t_test_result$conf.int[1], 2), ", ", round(t_test_result$conf.int[2], 2), "]")
-        )
-      )
-    } else {
-      results_duration <- rbind(
-        results_duration,
-        data.frame(
-          "AOI" = gsub("_pct", "", column_name),
-          "Group Comparison" = "Experienced vs. Inexperienced",
-          "t-value" = NA,
-          "df" = NA,
-          "p-value" = NA,
-          "Mean Difference" = NA,
-          "Cohen's d" = NA,
-          "95% CI (d)" = NA
-        )
-      )
-    }
-  }
-}
-
-# Map AOI names to clean versions for readability in the final results_duration table
-results_duration$AOI <- recode(results_duration$AOI,
-                      "AOI_Students" = "Students",
-                      "AOI_Disruptive_Person" = "Disruptive Person",
-                      "AOI_Teacher_Material" = "Teacher Material",
-                      "AOI_Student_Desk" = "Student Desk",
-                      "AOI_Classroom_Others" = "Classroom/Others")
-
-# Display the t-Test and Effect Size table in APA style
-knitr::kable(results_duration, 
-             caption = "t-Test and Effect Size for Fixation Duration Percentage across AOIs (Experts vs. Novices)", 
-             row.names = FALSE) %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-
 ```
 
 
 #### Number of fixations per minute and fixation duration in ms (micro-teaching unit)
 ```{r nof_dur_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-##################### NUMBER OF FIXATIONS PER MINUTE ########################
-
-##################### Data Preparation ########################
-df_aoi_sum <- df_aoi %>%
-  filter(TOI == "Lesson") %>%
-  dplyr::select(
-    Group,
-    Participant,
-    Duration_of_interval,
-    starts_with("Total_duration_of_fixations"),
-    starts_with("Number_of_fixations"),
-    starts_with("Average_duration"),
-    -contains("Disruptive_Person")
-  ) %>%
-  rowwise() %>%
-  transmute(
-    Group = factor(Group, levels = c("Expert", "Novice"), labels = c("Experienced", "Inexperienced")),
-    Participant,
-    Duration_of_interval_min = Duration_of_interval / 60000,
-    Sum_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
-    Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE),
-    Number_fixation_min_mtu = Sum_number_fixation / Duration_of_interval_min,
-    Avg_fixation_duration = Sum_duration_fixation / Sum_number_fixation
-  ) %>%
-  drop_na()
-
-##################### Number of Fixations per Minute ########################
-
-# Descriptive Statistics for Number of Fixations per Minute
-nof_stats <- df_aoi_sum %>%
-  group_by(Group) %>%
-  summarise(
-    N = n(),
-    M = round(mean(Number_fixation_min_mtu, na.rm = TRUE), 2),
-    SD = round(sd(Number_fixation_min_mtu, na.rm = TRUE), 2),
-    Min = round(min(Number_fixation_min_mtu, na.rm = TRUE), 2),
-    Max = round(max(Number_fixation_min_mtu, na.rm = TRUE), 2)
-  )
-
-
-# Display Table
-knitr::kable(nof_stats, caption = "N, M, SD, Min & Max for Number of Fixations per Minute") %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-# t-Test and Cohen's d
-t_test_mtu <- t.test(Number_fixation_min_mtu ~ Group, data = df_aoi_sum, var.equal = TRUE)
-cohen_d_mtu <- cohen.d(Number_fixation_min_mtu ~ Group, data = df_aoi_sum)
-
-# APA Table
-t_test_result_mtu <- data.frame(
-  "Group Comparison" = "Experienced vs. Inexperienced",
-  "t-value" = round(t_test_mtu$statistic, 2),
-  "df" = t_test_mtu$parameter,
-  "p-value" = format.pval(t_test_mtu$p.value, digits = 2, eps = .05),
-  "Mean Difference" = round(t_test_mtu$estimate[1] - t_test_mtu$estimate[2], 2),
-  "Cohen's d" = round(cohen_d_mtu$estimate, 2),
-  "95% CI (d)" = paste0("[", round(cohen_d_mtu$conf.int[1], 2), ", ", round(cohen_d_mtu$conf.int[2], 2), "]")
-)
-
-knitr::kable(t_test_result_mtu, caption = "t-Test and Effect Size for Number of Fixations per Minute") %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-# Ensure cohen_d_mtu is numeric
-cohen_d_mtu <- round(as.numeric(cohen.d(Number_fixation_min_mtu ~ Group, data = df_aoi_sum)$estimate), 2)
-
-# Plot: Number of Fixations per Minute
-y_max_mtu <- max(df_aoi_sum$Number_fixation_min_mtu) * 1.5
-
-plot_number_fixation_group <- df_aoi_sum %>%
-  ggplot(aes(x = Group, y = Number_fixation_min_mtu, fill = Group)) +
-  geom_boxplot(outlier.shape = 16, outlier.size = 2, width = 0.5) +
-  geom_jitter(width = 0.15, height = 0.1, alpha = 0.5, color = "black", size = 1.5) +
-  stat_summary(fun = mean, geom = "point", shape = 4, size = 5, color = "blue", stroke = 1.2) +
-  scale_fill_brewer(palette = "RdBu") +
-  ylim(0, y_max_mtu) +
-  labs(title = "Number of Fixations per Minute\n(Micro-Teaching Unit)", x = "", y = "Fixations per Minute") +
-  theme_cowplot() +
-  theme(legend.position = "none") +
-  annotate("text", x = 1, y = 3,
-           label = paste0("italic(M) == ", round(nof_stats$M[1], 2), " * ',' ~ italic(SD) == ", round(nof_stats$SD[1], 2)),
-           hjust = 0.5, size = 4, parse = TRUE) +
-  annotate("text", x = 2, y = 3,
-           label = paste0("italic(M) == ", round(nof_stats$M[2], 2), " * ',' ~ italic(SD) == ", round(nof_stats$SD[2], 2)),
-           hjust = 0.5, size = 4, parse = TRUE) +
-  annotate("text", x = 1.5, y = y_max_mtu * 0.95,
-           label = paste0("italic(p) == ", round(t_test_mtu$p.value, 2), " * ',' ~ italic(d) == ", cohen_d_mtu),
-           hjust = 0.5, size = 4, fontface = "italic", parse = TRUE)
-
-plot_number_fixation_group
-
-ggsave(filename = "plots/plot_number_fixation_group.svg",
-       width = 20,
-       height = 12,
-       units = "cm")
-
-##################### Average Fixation Duration ########################
-
-# Descriptive Statistics for Average Fixation Duration
-fixation_stats <- df_aoi_sum %>%
-  group_by(Group) %>%
-  summarise(
-    N = n(),
-    M = round(mean(Avg_fixation_duration, na.rm = TRUE), 2),
-    SD = round(sd(Avg_fixation_duration, na.rm = TRUE), 2),
-    Min = round(min(Avg_fixation_duration, na.rm = TRUE), 2),
-    Max = round(max(Avg_fixation_duration, na.rm = TRUE), 2)
-  )
-
-# Display Table
-knitr::kable(fixation_stats, caption = "N, M, SD, Min & Max for Average Fixation Duration") %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-# t-Test and Cohen's d
-t_test_fixation <- t.test(Avg_fixation_duration ~ Group, data = df_aoi_sum, var.equal = TRUE)
-cohen_d_fixation <- cohen.d(Avg_fixation_duration ~ Group, data = df_aoi_sum)
-
-# APA Table
-t_test_result_fixation <- data.frame(
-  "Group Comparison" = "Experienced vs. Inexperienced",
-  "t-value" = round(t_test_fixation$statistic, 2),
-  "df" = t_test_fixation$parameter,
-  "p-value" = format.pval(t_test_fixation$p.value, digits = 2, eps = .05),
-  "Mean Difference" = round(t_test_fixation$estimate[1] - t_test_fixation$estimate[2], 2),
-  "Cohen's d" = round(cohen_d_fixation$estimate, 2),
-  "95% CI (d)" = paste0("[", round(cohen_d_fixation$conf.int[1], 2), ", ", round(cohen_d_fixation$conf.int[2], 2), "]")
-)
-
-knitr::kable(t_test_result_fixation, caption = "t-Test and Effect Size for Average Fixation Duration") %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-# Ensure cohen_d_fixation is numeric
-cohen_d_fixation <- round(cohen.d(Avg_fixation_duration ~ Group, data = df_aoi_sum)$estimate, 2)
-
-# Plot: Average Fixation Duration
-plot_avg_fixation_group <- df_aoi_sum %>%
-  ggplot(aes(x = Group, y = Avg_fixation_duration, fill = Group)) +
-  geom_boxplot(outlier.shape = 16, outlier.size = 2, width = 0.5) +
-  geom_jitter(width = 0.15, height = 0.1, alpha = 0.5, color = "black", size = 1.5) +
-  stat_summary(fun = mean, geom = "point", shape = 4, size = 5, color = "blue", stroke = 1.2) +
-  scale_fill_brewer(palette = "RdBu") +
-  labs(title = "Average Fixation Duration\n(Micro-Teaching Unit)", x = "", y = "Fixation Duration (ms)") +
-  theme_cowplot() +
-  theme(legend.position = "none") +
-  # Add M and SD values below the x-axis for each group
-  annotate("text", x = 1, y = -50,  # Adjust y-coordinate to place below the x-axis
-           label = paste0("italic(M) == ", round(fixation_stats$M[1], 2), " * ',' ~ italic(SD) == ", round(fixation_stats$SD[1], 2)),
-           hjust = 0.5, size = 4, parse = TRUE) +
-  annotate("text", x = 2, y = -50,  # Adjust y-coordinate to place below the x-axis
-           label = paste0("italic(M) == ", round(fixation_stats$M[2], 2), " * ',' ~ italic(SD) == ", round(fixation_stats$SD[2], 2)),
-           hjust = 0.5, size = 4, parse = TRUE) +
-  # Add p-value and d-value above the plot
-  annotate("text", x = 1.5, y = max(df_aoi_sum$Avg_fixation_duration) * 1.1,
-           label = paste0("italic(p) == ", round(t_test_fixation$p.value, 2), " * ',' ~ italic(d) == ", cohen_d_fixation),
-           hjust = 0.5, size = 4, fontface = "italic", parse = TRUE)
-
-plot_avg_fixation_group
-
-ggsave(filename = "plots/plot_avg_fixation_group.svg",
-       width = 20,
-       height = 12,
-       units = "cm")
-
-# Load the patchwork library
-install.packages("patchwork")
-library(patchwork)
-
-# Combine the two plots side by side
-combined_plot <- plot_number_fixation_group + plot_avg_fixation_group +
-  plot_layout(ncol = 2, guides = "collect") &
-  theme(legend.position = "none")
-
-# Display the combined plot
-combined_plot
-
-# Save the combined plot
-ggsave(
-  filename = "plots/combined_results_plot.svg",
-  plot = combined_plot,
-  width = 25,
-  height = 12,
-  units = "cm"
-)
+# ##################### NUMBER OF FIXATIONS PER MINUTE ########################
+# 
+# ##################### Data Preparation ########################
+# df_aoi_sum <- df_aoi %>%
+#   filter(TOI == "Lesson") %>%
+#   dplyr::select(
+#     Group,
+#     Participant,
+#     Duration_of_interval,
+#     starts_with("Total_duration_of_fixations"),
+#     starts_with("Number_of_fixations"),
+#     starts_with("Average_duration"),
+#     -contains("Disruptive_Person")
+#   ) %>%
+#   rowwise() %>%
+#   transmute(
+#     Group = factor(Group, levels = c("Expert", "Novice"), labels = c("Experienced", "Inexperienced")),
+#     Participant,
+#     Duration_of_interval_min = Duration_of_interval / 60000,
+#     Sum_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
+#     Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE),
+#     Number_fixation_min_mtu = Sum_number_fixation / Duration_of_interval_min,
+#     Avg_fixation_duration = Sum_duration_fixation / Sum_number_fixation
+#   ) %>%
+#   drop_na()
+# 
+# ##################### Number of Fixations per Minute ########################
+# 
+# # Descriptive Statistics for Number of Fixations per Minute
+# nof_stats <- df_aoi_sum %>%
+#   group_by(Group) %>%
+#   summarise(
+#     N = n(),
+#     M = round(mean(Number_fixation_min_mtu, na.rm = TRUE), 2),
+#     SD = round(sd(Number_fixation_min_mtu, na.rm = TRUE), 2),
+#     Min = round(min(Number_fixation_min_mtu, na.rm = TRUE), 2),
+#     Max = round(max(Number_fixation_min_mtu, na.rm = TRUE), 2)
+#   )
+# 
+# 
+# # Display Table
+# knitr::kable(nof_stats, caption = "N, M, SD, Min & Max for Number of Fixations per Minute") %>%
+#   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+# 
+# # t-Test and Cohen's d
+# t_test_mtu <- t.test(Number_fixation_min_mtu ~ Group, data = df_aoi_sum, var.equal = TRUE)
+# cohen_d_mtu <- cohen.d(Number_fixation_min_mtu ~ Group, data = df_aoi_sum)
+# 
+# # APA Table
+# t_test_result_mtu <- data.frame(
+#   "Group Comparison" = "Experienced vs. Inexperienced",
+#   "t-value" = round(t_test_mtu$statistic, 2),
+#   "df" = t_test_mtu$parameter,
+#   "p-value" = format.pval(t_test_mtu$p.value, digits = 2, eps = .05),
+#   "Mean Difference" = round(t_test_mtu$estimate[1] - t_test_mtu$estimate[2], 2),
+#   "Cohen's d" = round(cohen_d_mtu$estimate, 2),
+#   "95% CI (d)" = paste0("[", round(cohen_d_mtu$conf.int[1], 2), ", ", round(cohen_d_mtu$conf.int[2], 2), "]")
+# )
+# 
+# knitr::kable(t_test_result_mtu, caption = "t-Test and Effect Size for Number of Fixations per Minute") %>%
+#   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+# 
+# # Ensure cohen_d_mtu is numeric
+# cohen_d_mtu <- round(as.numeric(cohen.d(Number_fixation_min_mtu ~ Group, data = df_aoi_sum)$estimate), 2)
+# 
+# # Plot: Number of Fixations per Minute
+# y_max_mtu <- max(df_aoi_sum$Number_fixation_min_mtu) * 1.5
+# 
+# plot_number_fixation_group <- df_aoi_sum %>%
+#   ggplot(aes(x = Group, y = Number_fixation_min_mtu, fill = Group)) +
+#   geom_boxplot(outlier.shape = 16, outlier.size = 2, width = 0.5) +
+#   geom_jitter(width = 0.15, height = 0.1, alpha = 0.5, color = "black", size = 1.5) +
+#   stat_summary(fun = mean, geom = "point", shape = 4, size = 5, color = "blue", stroke = 1.2) +
+#   scale_fill_brewer(palette = "RdBu") +
+#   ylim(0, y_max_mtu) +
+#   labs(title = "Number of Fixations per Minute\n(Micro-Teaching Unit)", x = "", y = "Fixations per Minute") +
+#   theme_cowplot() +
+#   theme(legend.position = "none") +
+#   annotate("text", x = 1, y = 3,
+#            label = paste0("italic(M) == ", round(nof_stats$M[1], 2), " * ',' ~ italic(SD) == ", round(nof_stats$SD[1], 2)),
+#            hjust = 0.5, size = 4, parse = TRUE) +
+#   annotate("text", x = 2, y = 3,
+#            label = paste0("italic(M) == ", round(nof_stats$M[2], 2), " * ',' ~ italic(SD) == ", round(nof_stats$SD[2], 2)),
+#            hjust = 0.5, size = 4, parse = TRUE) +
+#   annotate("text", x = 1.5, y = y_max_mtu * 0.95,
+#            label = paste0("italic(p) == ", round(t_test_mtu$p.value, 2), " * ',' ~ italic(d) == ", cohen_d_mtu),
+#            hjust = 0.5, size = 4, fontface = "italic", parse = TRUE)
+# 
+# plot_number_fixation_group
+# 
+# ggsave(filename = "plots/plot_number_fixation_group.svg",
+#        width = 20,
+#        height = 12,
+#        units = "cm")
+# 
+# ##################### Average Fixation Duration ########################
+# 
+# # Descriptive Statistics for Average Fixation Duration
+# fixation_stats <- df_aoi_sum %>%
+#   group_by(Group) %>%
+#   summarise(
+#     N = n(),
+#     M = round(mean(Avg_fixation_duration, na.rm = TRUE), 2),
+#     SD = round(sd(Avg_fixation_duration, na.rm = TRUE), 2),
+#     Min = round(min(Avg_fixation_duration, na.rm = TRUE), 2),
+#     Max = round(max(Avg_fixation_duration, na.rm = TRUE), 2)
+#   )
+# 
+# # Display Table
+# knitr::kable(fixation_stats, caption = "N, M, SD, Min & Max for Average Fixation Duration") %>%
+#   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+# 
+# # t-Test and Cohen's d
+# t_test_fixation <- t.test(Avg_fixation_duration ~ Group, data = df_aoi_sum, var.equal = TRUE)
+# cohen_d_fixation <- cohen.d(Avg_fixation_duration ~ Group, data = df_aoi_sum)
+# 
+# # APA Table
+# t_test_result_fixation <- data.frame(
+#   "Group Comparison" = "Experienced vs. Inexperienced",
+#   "t-value" = round(t_test_fixation$statistic, 2),
+#   "df" = t_test_fixation$parameter,
+#   "p-value" = format.pval(t_test_fixation$p.value, digits = 2, eps = .05),
+#   "Mean Difference" = round(t_test_fixation$estimate[1] - t_test_fixation$estimate[2], 2),
+#   "Cohen's d" = round(cohen_d_fixation$estimate, 2),
+#   "95% CI (d)" = paste0("[", round(cohen_d_fixation$conf.int[1], 2), ", ", round(cohen_d_fixation$conf.int[2], 2), "]")
+# )
+# 
+# knitr::kable(t_test_result_fixation, caption = "t-Test and Effect Size for Average Fixation Duration") %>%
+#   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+# 
+# # Ensure cohen_d_fixation is numeric
+# cohen_d_fixation <- round(cohen.d(Avg_fixation_duration ~ Group, data = df_aoi_sum)$estimate, 2)
+# 
+# # Plot: Average Fixation Duration
+# plot_avg_fixation_group <- df_aoi_sum %>%
+#   ggplot(aes(x = Group, y = Avg_fixation_duration, fill = Group)) +
+#   geom_boxplot(outlier.shape = 16, outlier.size = 2, width = 0.5) +
+#   geom_jitter(width = 0.15, height = 0.1, alpha = 0.5, color = "black", size = 1.5) +
+#   stat_summary(fun = mean, geom = "point", shape = 4, size = 5, color = "blue", stroke = 1.2) +
+#   scale_fill_brewer(palette = "RdBu") +
+#   labs(title = "Average Fixation Duration\n(Micro-Teaching Unit)", x = "", y = "Fixation Duration (ms)") +
+#   theme_cowplot() +
+#   theme(legend.position = "none") +
+#   # Add M and SD values below the x-axis for each group
+#   annotate("text", x = 1, y = -50,  # Adjust y-coordinate to place below the x-axis
+#            label = paste0("italic(M) == ", round(fixation_stats$M[1], 2), " * ',' ~ italic(SD) == ", round(fixation_stats$SD[1], 2)),
+#            hjust = 0.5, size = 4, parse = TRUE) +
+#   annotate("text", x = 2, y = -50,  # Adjust y-coordinate to place below the x-axis
+#            label = paste0("italic(M) == ", round(fixation_stats$M[2], 2), " * ',' ~ italic(SD) == ", round(fixation_stats$SD[2], 2)),
+#            hjust = 0.5, size = 4, parse = TRUE) +
+#   # Add p-value and d-value above the plot
+#   annotate("text", x = 1.5, y = max(df_aoi_sum$Avg_fixation_duration) * 1.1,
+#            label = paste0("italic(p) == ", round(t_test_fixation$p.value, 2), " * ',' ~ italic(d) == ", cohen_d_fixation),
+#            hjust = 0.5, size = 4, fontface = "italic", parse = TRUE)
+# 
+# plot_avg_fixation_group
+# 
+# ggsave(filename = "plots/plot_avg_fixation_group.svg",
+#        width = 20,
+#        height = 12,
+#        units = "cm")
+# 
+# # Load the patchwork library
+# install.packages("patchwork")
+# library(patchwork)
+# 
+# # Combine the two plots side by side
+# combined_plot <- plot_number_fixation_group + plot_avg_fixation_group +
+#   plot_layout(ncol = 2, guides = "collect") &
+#   theme(legend.position = "none")
+# 
+# # Display the combined plot
+# combined_plot
+# 
+# # Save the combined plot
+# ggsave(
+#   filename = "plots/combined_results_plot.svg",
+#   plot = combined_plot,
+#   width = 25,
+#   height = 12,
+#   units = "cm"
+# )
 
 ```
 
@@ -1008,77 +1006,76 @@ ggsave(filename = "plots/plot_nof_stud.svg",
        height = 12,
        units = "cm")
 
-##################### Average Fixation Duration ########################
-
-# Descriptive Statistics for Average Fixation Duration
-fixation_stats_stud <- df_aoi_stud %>%
-  group_by(Group) %>%
-  summarise(
-    N = n(),
-    M = round(mean(Avg_fixation_duration_stud, na.rm = TRUE), 2),
-    SD = round(sd(Avg_fixation_duration_stud, na.rm = TRUE), 2),
-    Min = round(min(Avg_fixation_duration_stud, na.rm = TRUE), 2),
-    Max = round(max(Avg_fixation_duration_stud, na.rm = TRUE), 2)
-  )
-
-# Display Table
-knitr::kable(fixation_stats_stud, caption = "N, M, SD, Min & Max for Average Fixation Duration (AOI Students)") %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-# t-Test and Cohen's d
-t_test_fixation_stud <- t.test(Avg_fixation_duration_stud ~ Group, data = df_aoi_stud, var.equal = TRUE)
-cohen_d_fixation_stud <- cohen.d(Avg_fixation_duration_stud ~ Group, data = df_aoi_stud)
-
-# APA Table
-t_test_result_fixation_stud <- data.frame(
-  "Group Comparison" = "Experienced vs. Inexperienced",
-  "t-value" = round(t_test_fixation_stud$statistic, 2),
-  "df" = t_test_fixation_stud$parameter,
-  "p-value" = format.pval(t_test_fixation_stud$p.value, digits = 2, eps = .05),
-  "Mean Difference" = round(t_test_fixation_stud$estimate[1] - t_test_fixation_stud$estimate[2], 2),
-  "Cohen's d" = round(cohen_d_fixation_stud$estimate, 2),
-  "95% CI (d)" = paste0("[", round(cohen_d_fixation_stud$conf.int[1], 2), ", ", round(cohen_d_fixation_stud$conf.int[2], 2), "]")
-)
-
-knitr::kable(t_test_result_fixation_stud, caption = "t-Test and Effect Size for Average Fixation Duration (AOI Students)") %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-# Plot: Average Fixation Duration
-y_max_fixation_stud <- max(df_aoi_stud$Avg_fixation_duration_stud) * 1.5
-
-plot_fixation_duration_stud <- df_aoi_stud %>%
-  ggplot(aes(x = Group, y = Avg_fixation_duration_stud, fill = Group)) +
-  geom_boxplot(outlier.shape = 16, outlier.size = 2, width = 0.5) +
-  geom_jitter(width = 0.15, height = 0.1, alpha = 0.5, color = "black", size = 1.5) +
-  stat_summary(fun = mean, geom = "point", shape = 4, size = 5, color = "blue", stroke = 1.2) +
-  scale_fill_brewer(palette = "RdBu") +
-  ylim(0, y_max_fixation_stud) +
-  labs(title = "Average Fixation Duration\n(AOI Students)", x = "", y = "Fixation Duration (ms)") +
-  theme_cowplot() +
-  theme(legend.position = "none") +
-  annotate("text", x = 1, y = 10,  # Adjust y-coordinate to place above the x-axis
-           label = paste0("italic(M) == ", round(fixation_stats_stud$M[1], 2), " * ',' ~ italic(SD) == ", round(fixation_stats_stud$SD[1], 2)),
-           hjust = 0.5, size = 4, parse = TRUE) +
-  annotate("text", x = 2, y = 10,  # Adjust y-coordinate to place above the x-axis
-           label = paste0("italic(M) == ", round(fixation_stats_stud$M[2], 2), " * ',' ~ italic(SD) == ", round(fixation_stats_stud$SD[2], 2)),
-           hjust = 0.5, size = 4, parse = TRUE) +
-  annotate("text", x = 1.5, y = y_max_fixation_stud * 0.95,
-           label = paste0("italic(p) == ", round(t_test_fixation_stud$p.value, 2), " * ',' ~ italic(d) == ", round(cohen_d_fixation_stud$estimate, 2)),
-           hjust = 0.5, size = 4, fontface = "italic", parse = TRUE)
-
-plot_fixation_duration_stud
-
-ggsave(filename = "plots/plot_fixation_duration_stud.svg",
-       width = 20,
-       height = 12,
-       units = "cm")
+# ##################### Average Fixation Duration ########################
+# # Descriptive Statistics for Average Fixation Duration
+# fixation_stats_stud <- df_aoi_stud %>%
+#   group_by(Group) %>%
+#   summarise(
+#     N = n(),
+#     M = round(mean(Avg_fixation_duration_stud, na.rm = TRUE), 2),
+#     SD = round(sd(Avg_fixation_duration_stud, na.rm = TRUE), 2),
+#     Min = round(min(Avg_fixation_duration_stud, na.rm = TRUE), 2),
+#     Max = round(max(Avg_fixation_duration_stud, na.rm = TRUE), 2)
+#   )
+# 
+# # Display Table
+# knitr::kable(fixation_stats_stud, caption = "N, M, SD, Min & Max for Average Fixation Duration (AOI Students)") %>%
+#   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+# 
+# # t-Test and Cohen's d
+# t_test_fixation_stud <- t.test(Avg_fixation_duration_stud ~ Group, data = df_aoi_stud, var.equal = TRUE)
+# cohen_d_fixation_stud <- cohen.d(Avg_fixation_duration_stud ~ Group, data = df_aoi_stud)
+# 
+# # APA Table
+# t_test_result_fixation_stud <- data.frame(
+#   "Group Comparison" = "Experienced vs. Inexperienced",
+#   "t-value" = round(t_test_fixation_stud$statistic, 2),
+#   "df" = t_test_fixation_stud$parameter,
+#   "p-value" = format.pval(t_test_fixation_stud$p.value, digits = 2, eps = .05),
+#   "Mean Difference" = round(t_test_fixation_stud$estimate[1] - t_test_fixation_stud$estimate[2], 2),
+#   "Cohen's d" = round(cohen_d_fixation_stud$estimate, 2),
+#   "95% CI (d)" = paste0("[", round(cohen_d_fixation_stud$conf.int[1], 2), ", ", round(cohen_d_fixation_stud$conf.int[2], 2), "]")
+# )
+# 
+# knitr::kable(t_test_result_fixation_stud, caption = "t-Test and Effect Size for Average Fixation Duration (AOI Students)") %>%
+#   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+# 
+# # Plot: Average Fixation Duration
+# y_max_fixation_stud <- max(df_aoi_stud$Avg_fixation_duration_stud) * 1.5
+# 
+# plot_fixation_duration_stud <- df_aoi_stud %>%
+#   ggplot(aes(x = Group, y = Avg_fixation_duration_stud, fill = Group)) +
+#   geom_boxplot(outlier.shape = 16, outlier.size = 2, width = 0.5) +
+#   geom_jitter(width = 0.15, height = 0.1, alpha = 0.5, color = "black", size = 1.5) +
+#   stat_summary(fun = mean, geom = "point", shape = 4, size = 5, color = "blue", stroke = 1.2) +
+#   scale_fill_brewer(palette = "RdBu") +
+#   ylim(0, y_max_fixation_stud) +
+#   labs(title = "Average Fixation Duration\n(AOI Students)", x = "", y = "Fixation Duration (ms)") +
+#   theme_cowplot() +
+#   theme(legend.position = "none") +
+#   annotate("text", x = 1, y = 10,  # Adjust y-coordinate to place above the x-axis
+#            label = paste0("italic(M) == ", round(fixation_stats_stud$M[1], 2), " * ',' ~ italic(SD) == ", round(fixation_stats_stud$SD[1], 2)),
+#            hjust = 0.5, size = 4, parse = TRUE) +
+#   annotate("text", x = 2, y = 10,  # Adjust y-coordinate to place above the x-axis
+#            label = paste0("italic(M) == ", round(fixation_stats_stud$M[2], 2), " * ',' ~ italic(SD) == ", round(fixation_stats_stud$SD[2], 2)),
+#            hjust = 0.5, size = 4, parse = TRUE) +
+#   annotate("text", x = 1.5, y = y_max_fixation_stud * 0.95,
+#            label = paste0("italic(p) == ", round(t_test_fixation_stud$p.value, 2), " * ',' ~ italic(d) == ", round(cohen_d_fixation_stud$estimate, 2)),
+#            hjust = 0.5, size = 4, fontface = "italic", parse = TRUE)
+# 
+# plot_fixation_duration_stud
+# 
+# ggsave(filename = "plots/plot_fixation_duration_stud.svg",
+#        width = 20,
+#        height = 12,
+#        units = "cm")
 
 ```
 
-#### Number of fixations per seconds (AOI disruptive person)
+#### Number of fixations per seconds (AOI Disruptive Student)
 ```{r nof_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-##################### NUMBER OF FIXATIONS ON AOI DISRUPTIVE PERSON ########################
+##################### NUMBER OF FIXATIONS ON AOI Disruptive Student ########################
 
 # Define the different types of disruptions and categories
 disruptions <- c("Chatting_with_neighbour", "Clicking_pen", "Drawing", 
@@ -1139,7 +1136,7 @@ overall_stats <- individual_summary %>%
 # Display the overall descriptive statistics table
 kable(
   overall_stats,
-  caption = "Descriptive Statistics (N, Mean, SD, Min, Max) for Number of Fixations by Group (AOI Disruptive Person)",
+  caption = "Descriptive Statistics (N, Mean, SD, Min, Max) for Number of Fixations by Group (AOI Disruptive Student)",
   col.names = c("Group", "N", "M", "SD", "Min", "Max"),
   row.names = FALSE
 ) %>%
@@ -1160,13 +1157,13 @@ category_stats <- disruption_summary %>%
 # Display the descriptive statistics table by category
 kable(
   category_stats,
-  caption = "Descriptive Statistics (N, Mean, SD, Min, Max) for Number of Fixations by Group and Category (AOI Disruptive Person)",
+  caption = "Descriptive Statistics (N, Mean, SD, Min, Max) for Number of Fixations by Group and Category (AOI Disruptive Student)",
   col.names = c("Group", "Category", "N", "M", "SD", "Min", "Max"),
   row.names = FALSE
 ) %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
-##################### FIRST PLOT: Number of Fixations AOI Disruptive Person ########################
+##################### FIRST PLOT: Number of Fixations AOI Disruptive Student ########################
 
 # Calculate values for annotations
 mean_novice <- round(mean(individual_summary$mean_fixations_per_second[individual_summary$Group == "Novice"], na.rm = TRUE), 2)
@@ -1192,7 +1189,7 @@ plot_number_fix_disrup <- ggplot(individual_summary,
     size = 1.5
   ) +
   labs(x = "", y = "Number of Fixations per Second") +
-  ggtitle("Number of Fixations per Second \n(AOI Disruptive Person)") +
+  ggtitle("Number of Fixations per Second \n(AOI Disruptive Student)") +
   scale_fill_brewer(palette = "RdBu") +
   theme_cowplot() +
   ylim(0, y_max_overall) +
@@ -1230,7 +1227,7 @@ ggsave(filename = "plots/plot_number_fix_disrup.svg",
        height = 12,
        units = "cm")
 
-##################### SECOND PLOT: NUMBER OF FIXATIONS BY CATEGORY (AOI DISRUPTIVE PERSON) ########################
+##################### SECOND PLOT: NUMBER OF FIXATIONS BY CATEGORY (AOI Disruptive Student) ########################
 
 # Create the plot
 plot_category_fix_disrup <- disruption_summary %>%
@@ -1247,7 +1244,7 @@ plot_category_fix_disrup <- disruption_summary %>%
   ) +
   facet_wrap(~Disruption_Category, scales = "fixed", labeller = label_wrap_gen(width = 15)) + # Fixed y-axis across facets
   labs(x = "", y = "Number of Fixations per Second") +
-  ggtitle("Number of Fixations per Second Splitted by Disruption Category and Group\n(AOI Disruptive Person)") +
+  ggtitle("Number of Fixations per Second Splitted by Disruption Category and Group\n(AOI Disruptive Student)") +
   scale_fill_brewer(palette = "RdBu") +
   theme_cowplot() +
   theme(
@@ -1277,7 +1274,7 @@ overall_effect <- data.frame(
 # Display t-test and effect size table
 kable(
   overall_effect,
-  caption = "t-Test and Effect Size for Number of Fixations (AOI DIsruptive Person)",
+  caption = "t-Test and Effect Size for Number of Fixations (AOI Disruptive Student)",
   col.names = c("Group", "t-value", "p-value", "Cohen's d"),
   row.names = FALSE
 ) %>%
@@ -1395,7 +1392,7 @@ knitr::kable(
 kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 
-##################### AVERAGE DURATION ON AOI DISRUPTIVE PERSON ########################
+##################### AVERAGE DURATION ON AOI Disruptive Student ########################
 ##################### DATA PREPARATION ########################
 
 # Define the different types of disruptions and categories
@@ -1505,7 +1502,7 @@ plot_overall_dur_disrup <- ggplot(individual_summary, aes(x = Group, y = mean_du
   geom_boxplot(outlier.shape = NA, width = 0.5) +
   geom_jitter(width = 0.1, alpha = 0.7, color = "black", size = 1.5) +
   labs(x = "", y = "Average Fixation Duration (ms)") +
-  ggtitle("Average Fixation Duration\n(AOI Disruptive Person)") +
+  ggtitle("Average Fixation Duration\n(AOI Disruptive Student)") +
   scale_fill_brewer(palette = "RdBu") +
   theme_cowplot() +
   ylim(0, y_max_overall) +
@@ -1536,7 +1533,7 @@ plot_category_dur_disrup <- disruption_summary %>%
   facet_wrap(~Disruption_Category, scales = "fixed", labeller = label_wrap_gen(width = 20)) +
   ylim(0, 2000) +
   labs(x = "", y = "Average Fixation Duration (ms)") +
-  ggtitle("Average Duration of Fixations Splitted by Disruption Category and Group\n(AOI Disruptive Person)") +
+  ggtitle("Average Duration of Fixations Splitted by Disruption Category and Group\n(AOI Disruptive Student)") +
   scale_fill_brewer(palette = "RdBu") +
   theme_cowplot() +
   theme(
@@ -1709,7 +1706,7 @@ kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ```
 
-#### Time to first fixation in seconds (AOI disruptive person)
+#### Time to first fixation in seconds (AOI Disruptive Student)
 ```{r ttff_disrup, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 ##################### TIME TO FIRST FIXATION ########################
@@ -1768,7 +1765,7 @@ ttff_disrup_table <- df_ttff_disrup_participant_summary %>%
   )
 
 knitr::kable(ttff_disrup_table,
-             caption = "N, M, SD, Min & Max Time to First Fixation in Seconds (AOI Disruptive Person)") %>%
+             caption = "N, M, SD, Min & Max Time to First Fixation in Seconds (AOI Disruptive Student)") %>%
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ##################### STATISTICS BY DISRUPTION CATEGORY ########################
@@ -3921,7 +3918,7 @@ df_demo <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
   ) %>%
   arrange(Participant)
 
-# ET-Measures (Micro-Teaching Unit) - Exclude Disruptive Person --------------------------------------------
+# ET-Measures (Micro-Teaching Unit) - Exclude Disruptive Student --------------------------------------------
 df_aoi_numb_dur <- df_aoi %>%
   filter(TOI == "Lesson") %>%
   dplyr::select(
@@ -3932,7 +3929,7 @@ df_aoi_numb_dur <- df_aoi %>%
     Duration_of_interval  # Ensure this variable is included
   ) %>%
   dplyr::select(
-    -contains("Disruptive_Person")  # Exclude Disruptive Person
+    -contains("Disruptive_Person")  # Exclude Disruptive Student
   ) %>%
   rowwise() %>%
   transmute(
@@ -3951,7 +3948,7 @@ df_aoi_numb_dur <- df_aoi %>%
   arrange(Participant)
 
 
-# ET-Measures (AOI Students) - Exclude Disruptive Person --------------------------------------------
+# ET-Measures (AOI Students) - Exclude Disruptive Student --------------------------------------------
 df_aoi_stud <- df_aoi %>%
   filter(TOI == "Lesson") %>%
   dplyr::select (
@@ -3984,7 +3981,7 @@ df_aoi_stud <- df_aoi %>%
   drop_na()
 
 
-# ET-Measures (AOI Disruptive Person) --------------------------------------------
+# ET-Measures (AOI Disruptive Student) --------------------------------------------
 
 # Number of fixations per second and Average duration of fixations --------------------------------------------
 # Define the different types of disruptions and categories
@@ -4038,7 +4035,7 @@ df_aoi_disrup <- disruption_summary %>%
   select(Participant, Disrup_fixations_per_second, Disrup_average_fixations) %>%  # Select only relevant columns
   arrange(Participant)
 
-# Time to first fixation on AOI Disruptive Person --------------------------------------------
+# Time to first fixation on AOI Disruptive Student --------------------------------------------
 # Step 1: Data Preparation
 df_ttff_disrup <- df_aoi %>%
   filter(TOI %in% c(verbal_disruptions, physical_disruptions, lack_of_eagerness)) %>%
