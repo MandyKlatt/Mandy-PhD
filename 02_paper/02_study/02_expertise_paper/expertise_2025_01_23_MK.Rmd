@@ -1740,121 +1740,112 @@ df_ttff_disrup <- df_aoi %>%
     Time_to_first_fixation.Disruptive_Person <= 30000 # Cut-off at 30 seconds
   ) %>%
   mutate(
-    Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person / 1000, 2)
+    Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person / 1000, 2),
+    log_Disrup_time_fixation_sec = round(log(Disrup_time_fixation_sec), 2) # Log-transformed variable
   )
 
-# Summarize the Disrup_time_fixation_sec by Participant
+# Summarize the log-transformed variable by Participant
 df_ttff_disrup_participant_summary <- df_ttff_disrup %>%
   group_by(Participant, Group) %>%
   summarise(
-    Disrup_time_fixation_sec = round(mean(Disrup_time_fixation_sec, na.rm = TRUE), 2), # Average time to first fixation per participant
+    log_Disrup_time_fixation_sec = round(mean(log_Disrup_time_fixation_sec, na.rm = TRUE), 2), # Average log time to first fixation per participant
     .groups = "drop"
   )
 
 ##################### DESCRIPTIVE STATISTICS ########################
 
 # Step 2: Descriptive Statistics by Group
-ttff_disrup_table <- df_ttff_disrup_participant_summary %>%
+log_ttff_disrup_table <- df_ttff_disrup_participant_summary %>%
   group_by(Group) %>%
   summarise(
     N = n(),
-    "M in sec" = round(mean(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    "SD in sec" = round(sd(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    "Min in sec" = round(min(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    "Max in sec" = round(max(Disrup_time_fixation_sec, na.rm = TRUE), 2)
+    "M (log-sec)" = round(mean(log_Disrup_time_fixation_sec, na.rm = TRUE), 2),
+    "SD (log-sec)" = round(sd(log_Disrup_time_fixation_sec, na.rm = TRUE), 2),
+    "Min (log-sec)" = round(min(log_Disrup_time_fixation_sec, na.rm = TRUE), 2),
+    "Max (log-sec)" = round(max(log_Disrup_time_fixation_sec, na.rm = TRUE), 2)
   )
 
-knitr::kable(ttff_disrup_table,
-             caption = "N, M, SD, Min & Max Time to First Fixation in Seconds (AOI Disruptive Student)") %>%
+knitr::kable(log_ttff_disrup_table,
+             caption = "N, M, SD, Min & Max Log-Transformed Time to First Fixation (AOI Disruptive Student)") %>%
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ##################### STATISTICS BY DISRUPTION CATEGORY ########################
 
 # Step 3: Descriptive Statistics by Category and Group
-summary_stats_category_group <- df_ttff_disrup %>%
+summary_stats_log_category_group <- df_ttff_disrup %>%
   group_by(Disruption_Category, Group) %>%
   summarise(
     N = n_distinct(Participant),  # Count unique participants
-    Mean = round(mean(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    SD = round(sd(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    Median = round(median(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    IQR = round(IQR(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    Min = round(min(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    Max = round(max(Disrup_time_fixation_sec, na.rm = TRUE), 2),
-    .groups = "drop"
+    "M (log-sec)" = round(mean(log_Disrup_time_fixation_sec, na.rm = TRUE), 2),
+    "SD (log-sec)" = round(sd(log_Disrup_time_fixation_sec, na.rm = TRUE), 2),
+    "Min (log-sec)" = round(min(log_Disrup_time_fixation_sec, na.rm = TRUE), 2),
+    "Max (log-sec)" = round(max(log_Disrup_time_fixation_sec, na.rm = TRUE), 2)
   )
 
 # Display the table
 knitr::kable(
-  summary_stats_category_group,
-  caption = "Descriptive Statistics for Time to First Fixation by Category and Group",
-  col.names = c("Category", "Group", "N (Participants)", "Mean", "SD", "Median", "IQR", "Min", "Max"), # Ensure the column names match
+  summary_stats_log_category_group,
+  caption = "Descriptive Statistics for Log-Transformed Time to First Fixation by Category and Group",
+  col.names = c("Category", "Group", "N (Participants)", "Mean", "SD", "Min", "Max"), # Ensure the column names match
   row.names = FALSE
 ) %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ##################### PLOTS ########################
 
-# Plot 1: Time to First Fixation by Group
-plot_ttff_group <- ggplot(df_ttff_disrup, aes(x = Group, y = Disrup_time_fixation_sec, fill = Group)) +
+# Plot 1: Log Time to First Fixation by Group
+plot_log_ttff_group <- ggplot(df_ttff_disrup_participant_summary, aes(x = Group, y = log_Disrup_time_fixation_sec, fill = Group)) +
   geom_boxplot(outlier.shape = NA, width = 0.5) +
   geom_jitter(width = 0.15, alpha = 0.5, color = "black", size = 1.5) +
-  labs(x = "Group", y = "Time to First Fixation (seconds)") +
+  labs(x = "Group", y = "Log Time to First Fixation (log-seconds)") +
   theme_cowplot() +
   scale_fill_brewer(palette = "RdBu") +
-  ggtitle("Time to First Fixation by Group") +
-  theme(legend.position = "none") +
-  annotate("text", x = 1, y = max(df_ttff_disrup$Disrup_time_fixation_sec, na.rm = TRUE) * 1.1,
-           label = paste0("Median = ", round(median(df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Novice"], na.rm = TRUE), 2),
-                          "\nIQR = ", round(IQR(df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Novice"], na.rm = TRUE), 2)),
-           hjust = 0.5, size = 4) +
-  annotate("text", x = 2, y = max(df_ttff_disrup$Disrup_time_fixation_sec, na.rm = TRUE) * 1.1,
-           label = paste0("Median = ", round(median(df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Expert"], na.rm = TRUE), 2),
-                          "\nIQR = ", round(IQR(df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Group == "Expert"], na.rm = TRUE), 2)),
-           hjust = 0.5, size = 4)
+  ggtitle("Log Time to First Fixation by Group") +
+  scale_y_continuous(limits = c(-3, 3), breaks = seq(-3, 3, 1)) + # Manuelle Achseneinteilung
+  theme(legend.position = "none")
 
 # Display the first plot
-plot_ttff_group
+plot_log_ttff_group
 
-# Plot 2: Time to First Fixation by Group and Disruption Category
-plot_ttff_category <- ggplot(df_ttff_disrup, aes(x = Group, y = Disrup_time_fixation_sec, fill = Group)) +
+# Plot 2: Log Time to First Fixation by Group and Disruption Category
+plot_log_ttff_category <- ggplot(df_ttff_disrup, aes(x = Group, y = log_Disrup_time_fixation_sec, fill = Group)) +
   geom_boxplot(outlier.shape = NA, width = 0.5) +
   geom_jitter(width = 0.15, alpha = 0.5, color = "black", size = 1.5) +
   facet_wrap(~Disruption_Category, scales = "fixed", labeller = label_wrap_gen(width = 15)) +  # Use fixed scale for all facets  
-  ylim(0, 30) + 
-  labs(x = "Group", y = "Time to First Fixation (seconds)") +
+  labs(x = "Group", y = "Log Time to First Fixation (log-seconds)") +
   theme_cowplot() +
+  scale_y_continuous(limits = c(-5, 5), breaks = seq(-5, 5, 1)) + # Manuelle Achseneinteilung
   scale_fill_brewer(palette = "RdBu") +
-  ggtitle("Time to First Fixation by Group and Disruption Category") +
+  ggtitle("Log Time to First Fixation by Group and Disruption Category") +
   theme(legend.position = "none")
 
 # Display the second plot
-plot_ttff_category
+plot_log_ttff_category
 
 ##################### STATISTICAL TESTS ########################
 
 ##################### REPEATED MEASURES ANOVA ########################
 
-# Perform the repeated-measures ANOVA with `Disrup_time_fixation_sec` as the dependent variable
-anova_afex_ttff <- afex::aov_ez(
+# Perform the repeated-measures ANOVA with `log_Disrup_time_fixation_sec` as the dependent variable
+anova_afex_ttff_log <- afex::aov_ez(
   id = "Participant",  # Random effect (each participant is measured multiple times)
-  dv = "Disrup_time_fixation_sec",  # Dependent variable: Time to First Fixation (seconds)
+  dv = "log_Disrup_time_fixation_sec",  # Dependent variable: Log Time to First Fixation (log-seconds)
   between = "Group",  # Between-subject factor: Group (Novice vs Expert)
   within = "Disruption_Category",  # Within-subject factor: Disruption Categories (Verbal, Physical, Lack of eagerness)
-  data = df_ttff_disrup  # The data frame that contains the TTFF data
+  data = df_ttff_disrup  # The data frame that contains the log-transformed TTFF data
 )
 
 # Extract the ANOVA table
-anova_results_ttff <- as.data.frame(anova_afex_ttff$anova_table)
+anova_results_ttff_log <- as.data.frame(anova_afex_ttff_log$anova_table)
 
 # Recalculate generalized eta squared (η²) for effect size
-eta_squared_results_ttff <- effectsize::eta_squared(anova_afex_ttff, partial = FALSE)
+eta_squared_results_ttff_log <- effectsize::eta_squared(anova_afex_ttff_log, partial = FALSE)
 
 # Combine recalculated eta squared with the ANOVA table
-anova_table_apa_ttff <- anova_results_ttff %>%
+anova_table_apa_ttff_log <- anova_results_ttff_log %>%
   rownames_to_column(var = "Effect") %>%  # Move row names to a column
   left_join(
-    as.data.frame(eta_squared_results_ttff), 
+    as.data.frame(eta_squared_results_ttff_log), 
     by = c("Effect" = "Parameter")  # Match the correct columns
   ) %>%
   mutate(
@@ -1866,10 +1857,10 @@ anova_table_apa_ttff <- anova_results_ttff %>%
   ) %>%
   select(Effect, `num Df`, `den Df`, `F`, `p-value`, `η²`)  # Order columns, place η² last
 
-# Display the ANOVA table for Time to First Fixation
+# Display the ANOVA table for Log Time to First Fixation
 knitr::kable(
-  anova_table_apa_ttff,
-  caption = "Repeated-Measures ANOVA Results for Time to First Fixation (Including Effect Sizes)",
+  anova_table_apa_ttff_log,
+  caption = "Repeated-Measures ANOVA Results for Log-Transformed Time to First Fixation (Including Effect Sizes)",
   col.names = c("Effect", "Df1", "Df2", "F", "p", "η²"),
   digits = 2
 ) %>%
@@ -1879,7 +1870,7 @@ knitr::kable(
 ##################### POST-HOC TESTS Disruption_Category (within-subject factor) ########################
   
 # Perform post-hoc pairwise comparisons for Disruption_Category (within-subject factor)
-post_hoc_disruption <- emmeans(anova_afex_ttff, pairwise ~ Disruption_Category)
+post_hoc_disruption <- emmeans(anova_afex_ttff_log, pairwise ~ Disruption_Category)
   
 # Extract post-hoc pairwise contrasts for Disruption_Category
 post_hoc_results_disruption <- as.data.frame(post_hoc_disruption$contrasts) %>%
@@ -1898,20 +1889,20 @@ post_hoc_results_disruption <- as.data.frame(post_hoc_disruption$contrasts) %>%
   
 # Calculate Cohen's d for each pairwise comparison
 d_LackOfEagerness_vs_Physical <- CohenD(
-  x = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Lack of eagerness to learn"],
-  y = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Physical disruptions"],
+  x = df_ttff_disrup$log_Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Lack of eagerness to learn"],
+  y = df_ttff_disrup$log_Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Physical disruptions"],
   na.rm = TRUE
 )
 
 d_LackOfEagerness_vs_Verbal <- CohenD(
-  x = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Lack of eagerness to learn"],
-  y = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Verbal disruptions"],
+  x = df_ttff_disrup$log_Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Lack of eagerness to learn"],
+  y = df_ttff_disrup$log_Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Verbal disruptions"],
   na.rm = TRUE
 )
 
 d_Physical_vs_Verbal <- CohenD(
-  x = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Physical disruptions"],
-  y = df_ttff_disrup$Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Verbal disruptions"],
+  x = df_ttff_disrup$log_Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Physical disruptions"],
+  y = df_ttff_disrup$log_Disrup_time_fixation_sec[df_ttff_disrup$Disruption_Category == "Verbal disruptions"],
   na.rm = TRUE
 )
 
@@ -2514,6 +2505,10 @@ knitr::kable(
 # #   kable_styling(bootstrap_options = "striped", full_width = FALSE)  # Apply striped styling to the table
 
 ```
+
+## Classroom Management Measures
+
+
 
 ### Rating Scales (Disruption Appraisal, Confidence Appraisal, Prevalence Rating)
 ```{r rating_scales, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -3719,7 +3714,7 @@ kable(omega_results, caption = "Internal Consistency (Omega) for SJT Facets") %>
 <!-- ``` -->
 
 
-### Self-evaluation (8 classroom management items, 8 presence items)
+### self-evaluations of disruption prevention and management competencies (5 classroom management items + 3 self-developed, 8 presence items)
 ```{r self-eval_8-8, echo=FALSE, results='asis'}
 
 # Data Import and Preparation --------------------------------------------
