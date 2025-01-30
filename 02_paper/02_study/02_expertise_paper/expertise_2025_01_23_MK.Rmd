@@ -832,6 +832,30 @@ knitr::kable(results_number, caption = "t-Test and Effect Size for Fixation Perc
 ```{r gri_all, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 ##################### GRI in MICRO-TEACHING UNIT ########################
 
+#################### Data Preparation ########################
+df_aoi_sum <- df_aoi %>%
+  filter(TOI == "Lesson") %>%
+  dplyr::select(
+    Group,
+    Participant,
+    Duration_of_interval,
+    starts_with("Total_duration_of_fixations"),
+    starts_with("Number_of_fixations"),
+    starts_with("Average_duration"),
+    -contains("Disruptive_Person")
+  ) %>%
+  rowwise() %>%
+  transmute(
+    Group = factor(Group, levels = c("Expert", "Novice"), labels = c("Experienced", "Inexperienced")),
+    Participant,
+    Duration_of_interval_min = Duration_of_interval / 60000,
+    Sum_duration_fixation = sum(c_across(starts_with("Total_duration")), na.rm = TRUE),
+    Sum_number_fixation = sum(c_across(starts_with("Number_of")), na.rm = TRUE),
+    Number_fixation_min_mtu = Sum_number_fixation / Duration_of_interval_min,
+    Avg_fixation_duration = Sum_duration_fixation / Sum_number_fixation
+  ) %>%
+  drop_na()
+
 ##################### Data Preparation ########################
 # Step 1: Calculate GRI (Gaze Relational Index) for each participant
 df_gri <- df_aoi_sum %>%
@@ -2508,7 +2532,226 @@ knitr::kable(
 
 ## Classroom Management Measures
 
+### Self-evaluations of disruption prevention and management competencies (5 classroom management items + 3 self-developed, 8 presence items)
+```{r self-eval_8-8, echo=FALSE, results='asis'}
 
+# Data Import and Preparation --------------------------------------------
+df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
+  filter(LI06_05 != 201, LI06_05 != 223) %>%  # Exclude specific IDs
+  mutate(
+    Group = ifelse(LI06_05 < 200, "Novice", "Expert"),  # Group Definition
+    Participant = LI06_05  # Add new column "Participant"
+  ) %>%
+  arrange(Participant) %>% 
+  select(
+    Participant, 
+    Group, 
+    LM01_01:LM01_08,  # Classroom Management and Disruption Handling combined
+    LP01_01:LP01_08   # Presence
+  ) %>%
+  rename(
+    CM_01 = LM01_01, CM_02 = LM01_02, CM_03 = LM01_03, CM_04 = LM01_04, CM_05 = LM01_05,
+    CM_06 = LM01_06, CM_07 = LM01_07, CM_08 = LM01_08,  # Renaming combined columns
+    P_01 = LP01_01, P_02 = LP01_02, P_03 = LP01_03, P_04 = LP01_04, P_05 = LP01_05,
+    P_06 = LP01_06, P_07 = LP01_07, P_08 = LP01_08
+  ) %>%
+  na.omit()  # Remove NAs
+
+# Create Dataset for Plotting with Combined Scales -------------------------
+df_quest_long <- df_quest %>%
+  rowwise() %>%
+  transmute(
+    Group = Group,
+    `Classroom Management` = round(mean(c_across(starts_with("CM")), na.rm = TRUE), 2),  # Combine Classroom Management and Disruption Handling
+    `Presence` = round(mean(c_across(starts_with("P") & !starts_with("Participant")), na.rm = TRUE), 2),  # Excluding Participant column
+    `Overall` = round(mean(c(CM_01, CM_02, CM_03, CM_04, CM_05, CM_06, CM_07, CM_08, P_01, P_02, P_03, P_04, P_05, P_06, P_07, P_08), na.rm = TRUE), 2)  # Correct Overall value
+  ) %>%
+  ungroup() %>%
+  pivot_longer(cols = c(`Classroom Management`, `Presence`, `Overall`),
+               names_to = "Scales Self-evaluation", values_to = "Mean")
+
+# Plot Mean Scores by Group ----------------------------------------------
+quest_plot <- df_quest_long %>%
+  mutate(
+    Group = factor(Group, levels = c("Novice", "Expert")),
+    `Scales Self-evaluation` = factor(`Scales Self-evaluation`, levels = c("Classroom Management + 3 Items", "Presence", "Overall"))  # Reorder scales
+  ) %>%
+  ggplot(aes(x = Group, y = Mean)) +
+  geom_boxplot(aes(fill = Group), outlier.shape = NA) +
+  geom_point(
+    size = 1,
+    alpha = 0.4,
+    position = position_jitter(seed = 1, width = 0.1, height = 0.1)
+  ) +
+  labs(x = "", y = "Mean Scores") +
+  ylim(0, 4) + 
+  scale_fill_brewer(palette = "RdBu") +
+  facet_wrap(~`Scales Self-evaluation`, nrow = 1, strip.position = "bottom") +
+  theme_cowplot() +
+  ggtitle("Self-Evaluation Scores") +
+  theme(
+    plot.title = element_text(size = 25, face = "bold"),
+    legend.title = element_text(size = 20),
+    legend.text = element_text(size = 15),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    strip.text.x = element_text(size = 8),
+    axis.title.y = element_text(size = 20)
+  )
+
+print(quest_plot)
+
+# # Create Dataset for Plotting with Overall Score Only -------------------------
+# df_quest_long <- df_quest %>%
+#   rowwise() %>%
+#   transmute(
+#     Group = Group,
+#     `Overall` = round(mean(c(CM_01, CM_02, CM_03, CM_04, CM_05, CM_06, CM_07, CM_08, P_01, P_02, P_03, P_04, P_05, P_06, P_07, P_08), na.rm = TRUE), 2)  # Overall score only
+#   ) %>%
+#   ungroup()
+# 
+# # Plot Overall Mean Scores by Group ----------------------------------------------
+# quest_plot <- df_quest_long %>%
+#   mutate(
+#     Group = factor(Group, levels = c("Novice", "Expert"))
+#   ) %>%
+#   ggplot(aes(x = Group, y = Overall, fill = Group)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   geom_point(
+#     size = 1,
+#     alpha = 0.4,
+#     position = position_jitter(seed = 1, width = 0.1, height = 0.1)
+#   ) +
+#   labs(x = "", y = "Overall Mean Score") +
+#   ylim(0, 4) + 
+#   scale_fill_brewer(palette = "RdBu") +
+#   theme_cowplot() +
+#   ggtitle("Overall Self-Evaluation Scores") +
+#   theme(
+#     plot.title = element_text(size = 25, face = "bold"),
+#     legend.title = element_text(size = 20),
+#     legend.text = element_text(size = 15),
+#     axis.text.x = element_blank(),
+#     axis.ticks.x = element_blank(),
+#     axis.title.y = element_text(size = 20)
+#   )
+# 
+# print(quest_plot)
+
+# t-Test and Effect Sizes ------------------------------------------------
+# t-Test Function for Long Format ----------------------------------------
+t_test_stats_long <- function(data, group_col, scale_filter, scale_name) {
+  # Subset Data for the Specific Scale
+  filtered_data <- data %>%
+    filter(`Scales Self-evaluation` == scale_filter)
+  
+  # Check if there are exactly two levels in the group
+  if (length(unique(filtered_data[[group_col]])) != 2) {
+    warning(paste("Skipping t-test for", scale_name, ": Group must have exactly two levels"))
+    return(tibble(
+      `Scale` = scale_name,
+      `t-value` = NA,
+      `p-value` = NA,
+      `Cohen's d` = NA
+    ))
+  }
+  
+  # Perform t-Test
+  t_test <- t.test(
+    Mean ~ get(group_col),
+    data = filtered_data,
+    var.equal = TRUE
+  )
+  
+  # Calculate Cohen's d
+  cohen_d <- CohenD(
+    x = filtered_data %>% filter(!!rlang::sym(group_col) == "Expert") %>% pull(Mean),
+    y = filtered_data %>% filter(!!rlang::sym(group_col) == "Novice") %>% pull(Mean)
+  )
+  
+  # Return Results
+  tibble(
+    `Scale` = scale_name,
+    `t-value` = round(t_test$statistic, 2),
+    `p-value` = round(t_test$p.value, 2),
+    `Cohen's d` = round(cohen_d, 2)
+  )
+}
+
+# Perform t-Tests for Each Scale
+t_test_all <- t_test_stats_long(df_quest_long, "Group", "Overall", "Overall Evaluation")
+t_test_cm <- t_test_stats_long(df_quest_long, "Group", "Classroom Management + 3 Items", "Classroom Management + 3 Items")
+t_test_presence <- t_test_stats_long(df_quest_long, "Group", "Presence", "Presence")
+
+# Combine Results into a Single Table
+t_test_results <- bind_rows(t_test_all, t_test_cm, t_test_presence)
+
+# Display Results in APA-Conform Table
+kable(t_test_results, caption = "t-Test and Effect Sizes for Self-Evaluation Scales") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+# Internal Consistency (Omega) -------------------------------------------
+# Helper Function for Omega Calculation
+calculate_omega_total <- function(data, scale_name) {
+  if (nrow(data) == 0 || ncol(data) == 0) {
+    warning(paste("No valid data for", scale_name))
+    return(NA)
+  }
+  
+  # Try Omega Calculation
+  result <- tryCatch(
+    omega(data),
+    error = function(e) {
+      warning(paste("Omega calculation failed for", scale_name, ":", e$message))
+      return(NULL)
+    }
+  )
+  
+  # Check if Result is Valid and Extract omega.tot
+  if (is.null(result) || !"omega.tot" %in% names(result)) {
+    warning(paste("Omega total not available for", scale_name))
+    return(NA)
+  }
+  
+  return(round(result$omega.tot, 2))
+}
+
+### CLASSROOM MANAGEMENT -------------------------------------------------
+# Select relevant columns and remove NAs
+df_cm <- df_quest %>% select(starts_with("CM"))
+
+# Calculate omega for Classroom Management
+omega_cm <- calculate_omega_total(df_cm, "Classroom Management + 3 Items")
+
+### PRESENCE ------------------------------------------------------------
+# Select relevant columns and remove NAs
+df_presence <- df_quest %>% select(starts_with("P") & !starts_with("Participant"))
+
+# Calculate omega for Presence
+omega_presence <- calculate_omega_total(df_presence, "Presence")
+
+### OVERALL TEST -----------------------------------------------------
+# Select relevant columns and remove NAs (for overall evaluation)
+df_self_all <- df_quest %>%
+  select(starts_with("CM"), starts_with("P") & !starts_with("Participant")) %>%
+  mutate(across(everything(), as.numeric)) %>%  # Ensure numeric data
+  drop_na()
+
+# Calculate omega for Overall Evaluation
+omega_self_all <- calculate_omega_total(df_self_all, "Overall Evaluation")
+
+### COMBINE RESULTS INTO AN APA-CONFORM TABLE ----------------------------
+# APA-Conform Table ------------------------------------------------------
+omega_results <- tibble(
+  Facet = c("Overall Evaluation", "Classroom Management + 3 Items", "Presence"),
+  `Omega Total` = c(omega_self_all, omega_cm, omega_presence)
+)
+
+# Display APA-Conform Table ----------------------------------------------
+kable(omega_results, caption = "Internal Consistency (Omega) for Self-evaluation") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+``` 
 
 ### Rating Scales (Disruption Appraisal, Confidence Appraisal, Prevalence Rating)
 ```{r rating_scales, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -3713,190 +3956,6 @@ kable(omega_results, caption = "Internal Consistency (Omega) for SJT Facets") %>
 
 <!-- ``` -->
 
-
-### self-evaluations of disruption prevention and management competencies (5 classroom management items + 3 self-developed, 8 presence items)
-```{r self-eval_8-8, echo=FALSE, results='asis'}
-
-# Data Import and Preparation --------------------------------------------
-df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
-  filter(LI06_05 != 201, LI06_05 != 223) %>%  # Exclude specific IDs
-  mutate(
-    Group = ifelse(LI06_05 < 200, "Novice", "Expert"),  # Group Definition
-    Participant = LI06_05  # Add new column "Participant"
-  ) %>%
-  arrange(Participant) %>% 
-  select(
-    Participant, 
-    Group, 
-    LM01_01:LM01_08,  # Classroom Management and Disruption Handling combined
-    LP01_01:LP01_08   # Presence
-  ) %>%
-  rename(
-    CM_01 = LM01_01, CM_02 = LM01_02, CM_03 = LM01_03, CM_04 = LM01_04, CM_05 = LM01_05,
-    CM_06 = LM01_06, CM_07 = LM01_07, CM_08 = LM01_08,  # Renaming combined columns
-    P_01 = LP01_01, P_02 = LP01_02, P_03 = LP01_03, P_04 = LP01_04, P_05 = LP01_05,
-    P_06 = LP01_06, P_07 = LP01_07, P_08 = LP01_08
-  ) %>%
-  na.omit()  # Remove NAs
-
-# Create Dataset for Plotting with Combined Scales -------------------------
-df_quest_long <- df_quest %>%
-  rowwise() %>%
-  transmute(
-    Group = Group,
-    `Classroom Management` = round(mean(c_across(starts_with("CM")), na.rm = TRUE), 2),  # Combine Classroom Management and Disruption Handling
-    `Presence` = round(mean(c_across(starts_with("P") & !starts_with("Participant")), na.rm = TRUE), 2),  # Excluding Participant column
-    `Overall` = round(mean(c(CM_01, CM_02, CM_03, CM_04, CM_05, CM_06, CM_07, CM_08, P_01, P_02, P_03, P_04, P_05, P_06, P_07, P_08), na.rm = TRUE), 2)  # Correct Overall value
-  ) %>%
-  ungroup() %>%
-  pivot_longer(cols = c(`Classroom Management`, `Presence`, `Overall`),
-               names_to = "Scales Self-evaluation", values_to = "Mean")
-
-# Plot Mean Scores by Group ----------------------------------------------
-quest_plot <- df_quest_long %>%
-  mutate(
-    Group = factor(Group, levels = c("Novice", "Expert")),
-    `Scales Self-evaluation` = factor(`Scales Self-evaluation`, levels = c("Classroom Management", "Presence", "Overall"))  # Reorder scales
-  ) %>%
-  ggplot(aes(x = Group, y = Mean)) +
-  geom_boxplot(aes(fill = Group), outlier.shape = NA) +
-  geom_point(
-    size = 1,
-    alpha = 0.4,
-    position = position_jitter(seed = 1, width = 0.1, height = 0.1)
-  ) +
-  labs(x = "", y = "Mean Scores") +
-  ylim(0, 4) + 
-  scale_fill_brewer(palette = "RdBu") +
-  facet_wrap(~`Scales Self-evaluation`, nrow = 1, strip.position = "bottom") +
-  theme_cowplot() +
-  ggtitle("Self-Evaluation Scores") +
-  theme(
-    plot.title = element_text(size = 25, face = "bold"),
-    legend.title = element_text(size = 20),
-    legend.text = element_text(size = 15),
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(),
-    strip.text.x = element_text(size = 8),
-    axis.title.y = element_text(size = 20)
-  )
-
-print(quest_plot)
-
-# t-Test and Effect Sizes ------------------------------------------------
-# t-Test Function for Long Format ----------------------------------------
-t_test_stats_long <- function(data, group_col, scale_filter, scale_name) {
-  # Subset Data for the Specific Scale
-  filtered_data <- data %>%
-    filter(`Scales Self-evaluation` == scale_filter)
-  
-  # Check if there are exactly two levels in the group
-  if (length(unique(filtered_data[[group_col]])) != 2) {
-    warning(paste("Skipping t-test for", scale_name, ": Group must have exactly two levels"))
-    return(tibble(
-      `Scale` = scale_name,
-      `t-value` = NA,
-      `p-value` = NA,
-      `Cohen's d` = NA
-    ))
-  }
-  
-  # Perform t-Test
-  t_test <- t.test(
-    Mean ~ get(group_col),
-    data = filtered_data,
-    var.equal = TRUE
-  )
-  
-  # Calculate Cohen's d
-  cohen_d <- CohenD(
-    x = filtered_data %>% filter(!!rlang::sym(group_col) == "Expert") %>% pull(Mean),
-    y = filtered_data %>% filter(!!rlang::sym(group_col) == "Novice") %>% pull(Mean)
-  )
-  
-  # Return Results
-  tibble(
-    `Scale` = scale_name,
-    `t-value` = round(t_test$statistic, 2),
-    `p-value` = round(t_test$p.value, 2),
-    `Cohen's d` = round(cohen_d, 2)
-  )
-}
-
-# Perform t-Tests for Each Scale
-t_test_all <- t_test_stats_long(df_quest_long, "Group", "Overall", "Overall Evaluation")
-t_test_cm <- t_test_stats_long(df_quest_long, "Group", "Classroom Management", "Classroom Management")
-t_test_presence <- t_test_stats_long(df_quest_long, "Group", "Presence", "Presence")
-
-# Combine Results into a Single Table
-t_test_results <- bind_rows(t_test_all, t_test_cm, t_test_presence)
-
-# Display Results in APA-Conform Table
-kable(t_test_results, caption = "t-Test and Effect Sizes for Self-Evaluation Scales") %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
-
-# Internal Consistency (Omega) -------------------------------------------
-# Helper Function for Omega Calculation
-calculate_omega_total <- function(data, scale_name) {
-  if (nrow(data) == 0 || ncol(data) == 0) {
-    warning(paste("No valid data for", scale_name))
-    return(NA)
-  }
-  
-  # Try Omega Calculation
-  result <- tryCatch(
-    omega(data),
-    error = function(e) {
-      warning(paste("Omega calculation failed for", scale_name, ":", e$message))
-      return(NULL)
-    }
-  )
-  
-  # Check if Result is Valid and Extract omega.tot
-  if (is.null(result) || !"omega.tot" %in% names(result)) {
-    warning(paste("Omega total not available for", scale_name))
-    return(NA)
-  }
-  
-  return(round(result$omega.tot, 2))
-}
-
-### CLASSROOM MANAGEMENT -------------------------------------------------
-# Select relevant columns and remove NAs
-df_cm <- df_quest %>% select(starts_with("CM"))
-
-# Calculate omega for Classroom Management
-omega_cm <- calculate_omega_total(df_cm, "Classroom Management")
-
-### PRESENCE ------------------------------------------------------------
-# Select relevant columns and remove NAs
-df_presence <- df_quest %>% select(starts_with("P") & !starts_with("Participant"))
-
-# Calculate omega for Presence
-omega_presence <- calculate_omega_total(df_presence, "Presence")
-
-### OVERALL TEST -----------------------------------------------------
-# Select relevant columns and remove NAs (for overall evaluation)
-df_self_all <- df_quest %>%
-  select(starts_with("CM"), starts_with("P") & !starts_with("Participant")) %>%
-  mutate(across(everything(), as.numeric)) %>%  # Ensure numeric data
-  drop_na()
-
-# Calculate omega for Overall Evaluation
-omega_self_all <- calculate_omega_total(df_self_all, "Overall Evaluation")
-
-### COMBINE RESULTS INTO AN APA-CONFORM TABLE ----------------------------
-# APA-Conform Table ------------------------------------------------------
-omega_results <- tibble(
-  Facet = c("Overall Evaluation", "Classroom Management", "Presence"),
-  `Omega Total` = c(omega_self_all, omega_cm, omega_presence)
-)
-
-# Display APA-Conform Table ----------------------------------------------
-kable(omega_results, caption = "Internal Consistency (Omega) for Self-evaluation") %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
-
-``` 
 
 ## Correlations 
 
