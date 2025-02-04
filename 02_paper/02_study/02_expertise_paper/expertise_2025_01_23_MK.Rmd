@@ -1758,7 +1758,24 @@ df_ttff_disrup <- df_aoi %>%
     )
   ) %>%
   filter(!is.na(Disruption_Category)) %>% # Keep only rows with valid categories
-  drop_na() %>%
+  drop_na()
+
+# Count total observations before filtering
+total_count <- nrow(df_ttff_disrup)
+
+# Count dropouts due to filtering conditions
+dropout_count <- df_ttff_disrup %>%
+  filter(Time_to_first_fixation.Disruptive_Person <= 0 | 
+         Time_to_first_fixation.Disruptive_Person > 30000) %>%
+  nrow()
+
+dropout_percentage <- round((dropout_count / total_count) * 100, 2)
+
+# Print the number and percentage of dropouts
+cat("Number of dropouts due to filtering conditions:", dropout_count, "(", dropout_percentage, "%)\n")
+
+# Apply final filtering
+df_ttff_disrup <- df_ttff_disrup %>%
   filter(
     Time_to_first_fixation.Disruptive_Person > 0, # Exclude zero fixation times
     Time_to_first_fixation.Disruptive_Person <= 30000 # Cut-off at 30 seconds
@@ -1791,6 +1808,35 @@ log_ttff_disrup_table <- df_ttff_disrup_participant_summary %>%
 
 knitr::kable(log_ttff_disrup_table,
              caption = "N, M, SD, Min & Max Log-Transformed Time to First Fixation (AOI Disruptive Student)") %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+
+##################### t-Test and Cohen's d ########################
+
+# Perform independent t-test
+log_t_test_ttff <- t.test(log_Disrup_time_fixation_sec ~ Group, 
+                          data = df_ttff_disrup_participant_summary, 
+                          var.equal = TRUE)
+
+# Compute Cohen's d
+log_cohen_d_ttff <- cohen.d(log_Disrup_time_fixation_sec ~ Group, 
+                            data = df_ttff_disrup_participant_summary)
+
+# Create APA-style table
+log_t_test_result_ttff <- data.frame(
+  "Group Comparison" = "Novice vs. Expert",
+  "t-value" = round(log_t_test_ttff$statistic, 2),
+  "df" = log_t_test_ttff$parameter,
+  "p-value" = format.pval(log_t_test_ttff$p.value, digits = 2, eps = .05),
+  "Mean Difference" = round(log_t_test_ttff$estimate[1] - log_t_test_ttff$estimate[2], 2),
+  "Cohen's d" = round(log_cohen_d_ttff$estimate, 2),
+  "95% CI (d)" = paste0("[", round(log_cohen_d_ttff$conf.int[1], 2), ", ", 
+                         round(log_cohen_d_ttff$conf.int[2], 2), "]")
+)
+
+# Display APA table
+knitr::kable(log_t_test_result_ttff, 
+             caption = "t-Test and Effect Size for Log-Transformed Time to First Fixation (AOI Disruptive Student)") %>%
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ##################### STATISTICS BY DISRUPTION CATEGORY ########################
