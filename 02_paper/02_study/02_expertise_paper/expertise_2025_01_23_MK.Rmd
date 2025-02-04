@@ -2603,6 +2603,23 @@ df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
   ) %>%
   na.omit()  # Remove NAs
 
+# Create APA-Conform Table for Overall Evaluation
+overall_summary <- df_quest_long %>%
+  filter(`Scales Self-evaluation` == "Overall") %>%
+  group_by(Group) %>%
+  summarise(
+    N = n(),
+    M = round(mean(Mean, na.rm = TRUE), 2),
+    SD = round(sd(Mean, na.rm = TRUE), 2),
+    Min = round(min(Mean, na.rm = TRUE), 2),
+    Max = round(max(Mean, na.rm = TRUE), 2)
+  )
+
+# Display the table in APA format
+kable(overall_summary, caption = "Descriptive Statistics for Overall Evaluation") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+
+
 # Create Dataset for Plotting with Combined Scales -------------------------
 df_quest_long <- df_quest %>%
   rowwise() %>%
@@ -2620,7 +2637,7 @@ df_quest_long <- df_quest %>%
 quest_plot <- df_quest_long %>%
   mutate(
     Group = factor(Group, levels = c("Novice", "Expert")),
-    `Scales Self-evaluation` = factor(`Scales Self-evaluation`, levels = c("Classroom Management + 3 Items", "Presence", "Overall"))  # Reorder scales
+    `Scales Self-evaluation` = factor(`Scales Self-evaluation`, levels = c("Classroom Management", "Presence", "Overall"))  # Reorder scales
   ) %>%
   ggplot(aes(x = Group, y = Mean)) +
   geom_boxplot(aes(fill = Group), outlier.shape = NA) +
@@ -2726,7 +2743,7 @@ t_test_stats_long <- function(data, group_col, scale_filter, scale_name) {
 
 # Perform t-Tests for Each Scale
 t_test_all <- t_test_stats_long(df_quest_long, "Group", "Overall", "Overall Evaluation")
-t_test_cm <- t_test_stats_long(df_quest_long, "Group", "Classroom Management + 3 Items", "Classroom Management + 3 Items")
+t_test_cm <- t_test_stats_long(df_quest_long, "Group", "Classroom Management", "Classroom Management")
 t_test_presence <- t_test_stats_long(df_quest_long, "Group", "Presence", "Presence")
 
 # Combine Results into a Single Table
@@ -2767,7 +2784,7 @@ calculate_omega_total <- function(data, scale_name) {
 df_cm <- df_quest %>% select(starts_with("CM"))
 
 # Calculate omega for Classroom Management
-omega_cm <- calculate_omega_total(df_cm, "Classroom Management + 3 Items")
+omega_cm <- calculate_omega_total(df_cm, "Classroom Management")
 
 ### PRESENCE ------------------------------------------------------------
 # Select relevant columns and remove NAs
@@ -2789,7 +2806,7 @@ omega_self_all <- calculate_omega_total(df_self_all, "Overall Evaluation")
 ### COMBINE RESULTS INTO AN APA-CONFORM TABLE ----------------------------
 # APA-Conform Table ------------------------------------------------------
 omega_results <- tibble(
-  Facet = c("Overall Evaluation", "Classroom Management + 3 Items", "Presence"),
+  Facet = c("Overall Evaluation", "Classroom Management", "Presence"),
   `Omega Total` = c(omega_self_all, omega_cm, omega_presence)
 )
 
@@ -2802,9 +2819,8 @@ kable(omega_results, caption = "Internal Consistency (Omega) for Self-evaluation
 ### Rating Scales (Disruption Appraisal, Confidence Appraisal, Prevalence Rating)
 ```{r rating_scales, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-# Data Import and Preprocessing ------------------------------------------
-sri <- excel_sheets("data/Coding_SRI.xlsx") %>%
-  map_df(~ read_xlsx("data/Coding_SRI.xlsx", .)) %>%
+# Read the dataset
+sri <- read_excel("data/Coding_SRI.xlsx") %>%
   filter(
     !ID %in% c(201, 223),  # Removing invalid IDs
     !disruption_appraisal %in% c(-100, -99, -88),  # Removing invalid disruption appraisals
@@ -2813,7 +2829,7 @@ sri <- excel_sheets("data/Coding_SRI.xlsx") %>%
   ) %>%
   mutate(
     Group = ifelse(ID < 200, "Novice", "Expert"),  # Create a Group column based on ID
-    ID = as.factor(ID)  # Ensure that ID is treated as a factor (if needed)
+    ID = as.factor(ID)  # Convert ID to factor if needed
   )
 
 # Ensure no NAs and that all relevant columns exist
@@ -2843,7 +2859,7 @@ df_sri_disrup <- sri %>%
 sri_disrup_table <- sri %>%
   group_by(Group) %>%
   summarise(
-    N = n(),
+    n_distinct(ID),
     M = round(mean(disruption_appraisal, na.rm = TRUE), 2),
     SD = round(sd(disruption_appraisal, na.rm = TRUE), 2),
     Min = round(min(disruption_appraisal, na.rm = TRUE), 2),
@@ -2854,7 +2870,7 @@ sri_disrup_table <- sri %>%
 sri_disrup_category_table <- df_sri_disrup %>%
   group_by(Group, Disruption_Category) %>%
   summarise(
-    N = n(),
+    n_distinct(ID),
     M = round(mean(disruption_appraisal, na.rm = TRUE), 2),
     SD = round(sd(disruption_appraisal, na.rm = TRUE), 2),
     Min = round(min(disruption_appraisal, na.rm = TRUE), 2),
@@ -2865,7 +2881,7 @@ sri_disrup_category_table <- df_sri_disrup %>%
 sri_disrup_single_table <- df_sri_disrup %>%
   group_by(Group, event) %>%
   summarise(
-    N = n(),
+    n_distinct(ID),
     M = round(mean(disruption_appraisal, na.rm = TRUE), 2),
     SD = round(sd(disruption_appraisal, na.rm = TRUE), 2),
     Min = round(min(disruption_appraisal, na.rm = TRUE), 2),
@@ -2876,7 +2892,7 @@ sri_disrup_single_table <- df_sri_disrup %>%
 sri_confi_table <- sri %>%
   group_by(Group) %>%
   summarise(
-    N = n(),
+    n_distinct(ID),
     M = round(mean(confidence_appraisal, na.rm = TRUE), 2),
     SD = round(sd(confidence_appraisal, na.rm = TRUE), 2),
     Min = round(min(confidence_appraisal, na.rm = TRUE), 2),
@@ -2887,7 +2903,7 @@ sri_confi_table <- sri %>%
 sri_confi_category_table <- df_sri_disrup %>%
   group_by(Group, Disruption_Category) %>%
   summarise(
-    N = n(),
+    n_distinct(ID),
     M = round(mean(confidence_appraisal, na.rm = TRUE), 2),
     SD = round(sd(confidence_appraisal, na.rm = TRUE), 2),
     Min = round(min(confidence_appraisal, na.rm = TRUE), 2),
@@ -2898,45 +2914,45 @@ sri_confi_category_table <- df_sri_disrup %>%
 sri_confi_single_table <- df_sri_disrup %>%
   group_by(Group, event) %>%
   summarise(
-    N = n(),
+    n_distinct(ID),
     M = round(mean(confidence_appraisal, na.rm = TRUE), 2),
     SD = round(sd(confidence_appraisal, na.rm = TRUE), 2),
     Min = round(min(confidence_appraisal, na.rm = TRUE), 2),
     Max = round(max(confidence_appraisal, na.rm = TRUE), 2)
   )
 
-## Prevalence Rating by Group
-sri_preva_table <- sri %>%
-  group_by(Group) %>%
-  summarise(
-    N = n(),
-    M = round(mean(prevalence_rating, na.rm = TRUE), 2),
-    SD = round(sd(prevalence_rating, na.rm = TRUE), 2),
-    Min = round(min(prevalence_rating, na.rm = TRUE), 2),
-    Max = round(max(prevalence_rating, na.rm = TRUE), 2)
-  )
-
-## Prevalence Rating by Disruption Category (Split by Novice and Expert)
-sri_preva_category_table <- df_sri_disrup %>%
-  group_by(Group, Disruption_Category) %>%
-  summarise(
-    N = n(),
-    M = round(mean(prevalence_rating, na.rm = TRUE), 2),
-    SD = round(sd(prevalence_rating, na.rm = TRUE), 2),
-    Min = round(min(prevalence_rating, na.rm = TRUE), 2),
-    Max = round(max(prevalence_rating, na.rm = TRUE), 2)
-  )
-
-## Prevalence Rating for each disruption event
-sri_preva_single_table <- sri %>%
-  group_by(Group, event) %>%
-  summarise(
-    N = n(),
-    M = round(mean(prevalence_rating, na.rm = TRUE), 2),
-    SD = round(sd(prevalence_rating, na.rm = TRUE), 2),
-    Min = round(min(prevalence_rating, na.rm = TRUE), 2),
-    Max = round(max(prevalence_rating, na.rm = TRUE), 2)
-  )
+# ## Prevalence Rating by Group
+# sri_preva_table <- sri %>%
+#   group_by(Group) %>%
+#   summarise(
+#     n_distinct(ID),
+#     M = round(mean(prevalence_rating, na.rm = TRUE), 2),
+#     SD = round(sd(prevalence_rating, na.rm = TRUE), 2),
+#     Min = round(min(prevalence_rating, na.rm = TRUE), 2),
+#     Max = round(max(prevalence_rating, na.rm = TRUE), 2)
+#   )
+# 
+# ## Prevalence Rating by Disruption Category (Split by Novice and Expert)
+# sri_preva_category_table <- df_sri_disrup %>%
+#   group_by(Group, Disruption_Category) %>%
+#   summarise(
+#     n_distinct(ID),
+#     M = round(mean(prevalence_rating, na.rm = TRUE), 2),
+#     SD = round(sd(prevalence_rating, na.rm = TRUE), 2),
+#     Min = round(min(prevalence_rating, na.rm = TRUE), 2),
+#     Max = round(max(prevalence_rating, na.rm = TRUE), 2)
+#   )
+# 
+# ## Prevalence Rating for each disruption event
+# sri_preva_single_table <- sri %>%
+#   group_by(Group, event) %>%
+#   summarise(
+#     N = n(),
+#     M = round(mean(prevalence_rating, na.rm = TRUE), 2),
+#     SD = round(sd(prevalence_rating, na.rm = TRUE), 2),
+#     Min = round(min(prevalence_rating, na.rm = TRUE), 2),
+#     Max = round(max(prevalence_rating, na.rm = TRUE), 2)
+#   )
 
 # Step 4: Arrange Values in Descending Order by Mean for Each Event ----------------------------------------
 
@@ -2978,17 +2994,17 @@ kable(sri_confi_category_table, caption = "Descriptive Statistics for Confidence
 kable(sri_confi_single_table_sorted, caption = "Descriptive Statistics for Confidence Appraisal by Disruption Event (Sorted by Mean)", digits = 2) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
-## Prevalence Rating by Group
-kable(sri_preva_table, caption = "Descriptive Statistics for Prevalence Rating", digits = 2) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
-
-## Prevalence Rating by Disruption Category (Split by Novice and Expert)
-kable(sri_preva_category_table, caption = "Descriptive Statistics for Prevalence Rating by Disruption Category", digits = 2) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
-
-## Prevalence Rating for each disruption event (Sorted by Mean)
-kable(sri_preva_single_table_sorted, caption = "Descriptive Statistics for Prevalence Rating by Disruption Event (Sorted by Mean)", digits = 2) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+# ## Prevalence Rating by Group
+# kable(sri_preva_table, caption = "Descriptive Statistics for Prevalence Rating", digits = 2) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+# 
+# ## Prevalence Rating by Disruption Category (Split by Novice and Expert)
+# kable(sri_preva_category_table, caption = "Descriptive Statistics for Prevalence Rating by Disruption Category", digits = 2) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+# 
+# ## Prevalence Rating for each disruption event (Sorted by Mean)
+# kable(sri_preva_single_table_sorted, caption = "Descriptive Statistics for Prevalence Rating by Disruption Event (Sorted by Mean)", digits = 2) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
 # Plotting ---------------------------------------------------------------
 
@@ -3046,32 +3062,76 @@ confi_cat_plot <- df_sri_disrup %>%
 
 print(confi_cat_plot)
 
-## Prevalence Rating
-preva_plot <- sri %>%
-  ggplot(aes(x = Group, y = prevalence_rating, fill = Group)) +
-  geom_boxplot(outlier.shape = NA) +
-  geom_jitter(size = 1.5, alpha = 0.6, width = 0.2, height = 0.1) +
-  labs(x = "", y = "Prevalence Rating") +
-  scale_fill_brewer(palette = "RdBu") +  # Using the RdBu color palette for Novice and Expert
-  ggtitle("Prevalence Rating by Group") +
-  theme_cowplot() +
-  theme(legend.position = "none")  # No legend for the main plot
+# ## Prevalence Rating
+# preva_plot <- sri %>%
+#   ggplot(aes(x = Group, y = prevalence_rating, fill = Group)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   geom_jitter(size = 1.5, alpha = 0.6, width = 0.2, height = 0.1) +
+#   labs(x = "", y = "Prevalence Rating") +
+#   scale_fill_brewer(palette = "RdBu") +  # Using the RdBu color palette for Novice and Expert
+#   ggtitle("Prevalence Rating by Group") +
+#   theme_cowplot() +
+#   theme(legend.position = "none")  # No legend for the main plot
+# 
+# print(preva_plot)
+# 
+# ## Prevalence Rating by Disruption Category, Split by ID (Novice vs Expert)
+# preva_cat_plot <- df_sri_disrup %>%
+#   ggplot(aes(x = Disruption_Category, y = prevalence_rating, fill = Group)) +
+#   geom_boxplot(outlier.shape = NA) +
+#   geom_jitter(size = 1.5, alpha = 0.6, width = 0.2, height = 0.1) +
+#   labs(x = "", y = "Prevalence Rating") +
+#   scale_fill_brewer(palette = "RdBu") +  # Use the same RdBu color palette as in preva_plot
+#   ggtitle("Prevalence Rating by Disruption Category") +
+#   theme_cowplot() +
+#   theme(legend.position = "top") +  # Place the legend at the top
+#   scale_fill_discrete(name = "Group")  # Add a title to the legend
+# 
+# print(preva_cat_plot)
 
-print(preva_plot)
 
-## Prevalence Rating by Disruption Category, Split by ID (Novice vs Expert)
-preva_cat_plot <- df_sri_disrup %>%
-  ggplot(aes(x = Disruption_Category, y = prevalence_rating, fill = Group)) +
-  geom_boxplot(outlier.shape = NA) +
-  geom_jitter(size = 1.5, alpha = 0.6, width = 0.2, height = 0.1) +
-  labs(x = "", y = "Prevalence Rating") +
-  scale_fill_brewer(palette = "RdBu") +  # Use the same RdBu color palette as in preva_plot
-  ggtitle("Prevalence Rating by Disruption Category") +
-  theme_cowplot() +
-  theme(legend.position = "top") +  # Place the legend at the top
-  scale_fill_discrete(name = "Group")  # Add a title to the legend
+# Ensure no duplicates (keeping one row per participant)
+sri_clean <- sri %>%
+  group_by(ID) %>%
+  summarise(
+    Group = first(Group),
+    disruption_appraisal = mean(disruption_appraisal, na.rm = TRUE),
+    confidence_appraisal = mean(confidence_appraisal, na.rm = TRUE)
+  ) %>%
+  ungroup()
 
-print(preva_cat_plot)
+# Check the number of unique participants
+print(nrow(sri_clean))  # Should be 82
+
+# t-Test for Disruption Appraisal
+t_test_disrup <- t.test(disruption_appraisal ~ Group, data = sri_clean, var.equal = TRUE)
+cohen_d_disrup <- cohen.d(disruption_appraisal ~ Group, data = sri_clean)
+
+# t-Test for Confidence Appraisal
+t_test_confi <- t.test(confidence_appraisal ~ Group, data = sri_clean, var.equal = TRUE)
+cohen_d_confi <- cohen.d(confidence_appraisal ~ Group, data = sri_clean)
+
+# Create APA-Formatted Table
+t_test_results <- data.frame(
+  "Group Comparison" = c("Experienced vs. Inexperienced", "Experienced vs. Inexperienced"),
+  "Variable" = c("Disruption Appraisal", "Confidence Appraisal"),
+  "t-value" = round(c(t_test_disrup$statistic, t_test_confi$statistic), 2),
+  "df" = c(t_test_disrup$parameter, t_test_confi$parameter),
+  "p-value" = format.pval(c(t_test_disrup$p.value, t_test_confi$p.value), digits = 3, eps = .001),
+  "Mean Difference" = round(c(
+    diff(t_test_disrup$estimate), 
+    diff(t_test_confi$estimate)
+  ), 2),
+  "Cohen's d" = round(c(cohen_d_disrup$estimate, cohen_d_confi$estimate), 2),
+  "95% CI (d)" = c(
+    paste0("[", round(cohen_d_disrup$conf.int[1], 2), ", ", round(cohen_d_disrup$conf.int[2], 2), "]"),
+    paste0("[", round(cohen_d_confi$conf.int[1], 2), ", ", round(cohen_d_confi$conf.int[2], 2), "]")
+  )
+)
+
+# Print APA-formatted Table
+knitr::kable(t_test_results, caption = "t-Test and Effect Sizes for Disruption and Confidence Ratings") %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 # REPEATED MEASURES ANOVA ---------------------------------------------------------------
 
@@ -3514,8 +3574,7 @@ knitr::kable(
 
 # Omega Calculations -----------------------------------------------------
 # Data Import
-sri <- excel_sheets("data/Coding_SRI.xlsx") %>%
-  map_df(~ read_xlsx("data/Coding_SRI.xlsx", .)) %>%
+sri <- read_excel("data/Coding_SRI.xlsx") %>%
   filter(
     !ID %in% c(201, 223), # Exclude specific IDs
     !disruption_appraisal %in% c(-100, -99, -88),
@@ -4039,14 +4098,13 @@ df_aoi_numb_dur <- df_aoi %>%
                                       Duration_of_interval_min, 0),
     Average_duration_mtu = round(sum(c_across(starts_with("Total_duration")), na.rm = TRUE) /
                                     sum(c_across(starts_with("Number_of")), na.rm = TRUE), 0),
-    GRI_mtu = round(Average_duration_mtu / Number_fixation_min_mtu, 2)
+    GRI = round(Average_duration_mtu / Number_fixation_min_mtu, 2)
   ) %>%
   select(Participant,
         Number_fixation_min_mtu,
         Average_duration_mtu,
-        GRI_mtu) %>% 
+        GRI) %>% 
   arrange(Participant)
-
 
 # ET-Measures (AOI Students) - Exclude Disruptive Student --------------------------------------------
 df_aoi_stud <- df_aoi %>%
@@ -4075,7 +4133,6 @@ df_aoi_stud <- df_aoi %>%
   ) %>%
   select(Participant,
          Stud_number_fixation_min,
-         Average_duration_stud
          ) %>% 
   arrange(Participant) %>% 
   drop_na()
@@ -4083,59 +4140,14 @@ df_aoi_stud <- df_aoi %>%
 
 # ET-Measures (AOI Disruptive Student) --------------------------------------------
 
-# Number of fixations per second and Average duration of fixations --------------------------------------------
-# Define the different types of disruptions and categories
-disruptions <- c("Chatting_with_neighbour", "Clicking_pen", "Drawing", 
-                 "Drumming_with_hands", "Head_on_table", "Heckling", 
-                 "Looking_at_phone", "Snipping_with_fingers", "Whispering")
+# Time to first fixation on AOI Disruptive Student --------------------------------------------
+
+# Define disruptions and categories
 verbal_disruptions <- c("Chatting_with_neighbour", "Heckling", "Whispering")
 physical_disruptions <- c("Clicking_pen", "Drumming_with_hands", "Snipping_with_fingers")
 lack_of_eagerness <- c("Looking_at_phone", "Head_on_table", "Drawing")
 
-# Step 1: Filter and prepare the data for both fixation counts and average durations
-df_aoi_disrup <- df_aoi %>%
-  filter(TOI %in% disruptions) %>%  # Filter rows based on the disruption list
-  select(Group, Participant, TOI, 
-         Duration_of_interval, 
-         "Number_of_fixations.Disruptive_Person", 
-         "Total_duration_of_fixations.Disruptive_Person") %>%
-  mutate(
-    Group = as_factor(Group),  # Convert Group column to a factor
-    Disruption_Category = case_when(  # Assign categories based on disruption type
-      TOI %in% verbal_disruptions ~ "Verbal disruptions",
-      TOI %in% physical_disruptions ~ "Physical disruptions",
-      TOI %in% lack_of_eagerness ~ "Lack of eagerness to learn",
-      TRUE ~ NA_character_
-    ),
-    Duration_of_interval_sec = round(Duration_of_interval / 1000, 2),  # Convert duration to seconds
-    Disrup_average_fixations = round(Total_duration_of_fixations.Disruptive_Person / 
-                                     `Number_of_fixations.Disruptive_Person`, 2)  # Average duration in seconds
-  ) %>%
-  filter(!is.na(Disruption_Category))  # Remove rows with NA in disruption category
 
-# Step 2: Summarize data by disruption category
-disruption_summary <- df_aoi_disrup %>%
-  group_by(Group, Participant, Disruption_Category) %>%
-  summarise(
-    total_duration_sec = round(sum(Duration_of_interval_sec, na.rm = TRUE), 2),  # Total time in seconds
-    fixation_count = round(sum(`Number_of_fixations.Disruptive_Person`, na.rm = TRUE), 2),  # Total fixations
-    Disrup_fixations_per_second = round(fixation_count / total_duration_sec, 2),  # Number of Fixation per second
-    Disrup_average_fixations = round(mean(Disrup_average_fixations, na.rm = TRUE), 2),  # Average disruption fixations duration
-    .groups = "drop"
-  )
-
-# Step 3: Summarize by participant
-df_aoi_disrup <- disruption_summary %>%
-  group_by(Group, Participant) %>%
-  summarise(
-    Disrup_fixations_per_second = round(mean(Disrup_fixations_per_second, na.rm = TRUE), 2),  # Mean Number of Fixation per participant
-    Disrup_average_fixations = round(mean(Disrup_average_fixations, na.rm = TRUE), 2),  # Mean disruption fixation duration per participant
-    .groups = "drop"
-  ) %>% 
-  select(Participant, Disrup_fixations_per_second, Disrup_average_fixations) %>%  # Select only relevant columns
-  arrange(Participant)
-
-# Time to first fixation on AOI Disruptive Student --------------------------------------------
 # Step 1: Data Preparation
 df_ttff_disrup <- df_aoi %>%
   filter(TOI %in% c(verbal_disruptions, physical_disruptions, lack_of_eagerness)) %>%
@@ -4154,28 +4166,31 @@ df_ttff_disrup <- df_aoi %>%
     )
   ) %>%
   filter(!is.na(Disruption_Category)) %>% # Keep only rows with valid categories
-  drop_na() %>%
+  drop_na()
+
+# Apply final filtering
+df_ttff_disrup <- df_ttff_disrup %>%
   filter(
     Time_to_first_fixation.Disruptive_Person > 0, # Exclude zero fixation times
     Time_to_first_fixation.Disruptive_Person <= 30000 # Cut-off at 30 seconds
   ) %>%
   mutate(
-    Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person / 1000, 2)
+    Disrup_time_fixation_sec = round(Time_to_first_fixation.Disruptive_Person / 1000, 2),
+    log_Disrup_time_fixation_sec = round(log(Disrup_time_fixation_sec), 2) # Log-transformed variable
   )
 
-# Summarize the Disrup_time_fixation_sec by Participant
+# Summarize the log-transformed variable by Participant
 df_ttff_disrup_participant_summary <- df_ttff_disrup %>%
   group_by(Participant) %>%
   summarise(
-    Disrup_time_fixation_sec = round(mean(Disrup_time_fixation_sec, na.rm = TRUE), 2), # Average time to first fixation per participant
+    log_Disrup_time_fixation_sec = round(mean(log_Disrup_time_fixation_sec, na.rm = TRUE), 2), # Average log time to first fixation per participant
     .groups = "drop"
-  ) %>% 
-  arrange(Participant)
+  )
+
 
 # SRI Rating Data --------------------------------------------
 # Data Import and Preprocessing ------------------------------------------
-df_sri <- excel_sheets("data/Coding_SRI.xlsx") %>%
-  map_df(~ read_xlsx("data/Coding_SRI.xlsx", .)) %>%
+df_sri <- read_excel("data/Coding_SRI.xlsx") %>%
   filter(
     !ID %in% c(201, 223),  # Removing invalid IDs
     !disruption_appraisal %in% c(-100, -99, -88),  # Removing invalid disruption appraisals
@@ -4185,8 +4200,8 @@ df_sri <- excel_sheets("data/Coding_SRI.xlsx") %>%
   mutate(
     Group = ifelse(ID < 200, "Novice", "Expert"),  # Create a Group column based on ID
     Participant = ID,  # Keep ID as is for Participant column
-    Disruption_Appraisal = as.numeric(disruption_appraisal),
-    Confidence_Appraisal = as.numeric(confidence_appraisal),
+    Disruption_Rating = as.numeric(disruption_appraisal),
+    Confidence_Rating = as.numeric(confidence_appraisal),
     Prevalence_Rating = as.numeric(prevalence_rating)
   ) %>%
   select(-ID) %>% # Remove the original ID column after renaming
@@ -4194,11 +4209,7 @@ df_sri <- excel_sheets("data/Coding_SRI.xlsx") %>%
 
 # Summarize the SRI Data for Disruptions and Overall Columns
 
-# Step 1: Filter for specific disruptions
-verbal_disruptions <- c("whispering", "chatting")
-lack_of_eagerness <- c("drawing", "looking at phone")
-
-# Step 2: Summarize appraisals for each disruption
+# Step 1: Summarize appraisals for each disruption
 df_sri_disrup_summary <- df_sri %>%
   filter(event %in% c(verbal_disruptions, lack_of_eagerness)) %>%
   group_by(Participant, event) %>%
@@ -4215,13 +4226,12 @@ df_sri_disrup_summary <- df_sri %>%
   mutate(across(everything(), ~ replace_na(., 0))) %>%   # Replace missing values with 0
   arrange(Participant)
 
-# Step 3: Summarize overall appraisals by Participant
+# Step 2: Summarize overall appraisals by Participant
 df_sri_clean <- df_sri %>%
   group_by(Participant) %>%
   summarise(
-    Disruption_Appraisal = round(mean(Disruption_Appraisal, na.rm = TRUE), 2),
-    Confidence_Appraisal = round(mean(Confidence_Appraisal, na.rm = TRUE), 2),
-    Prevalence_Rating = round(mean(Prevalence_Rating, na.rm = TRUE), 2),
+    Disruption_Rating = round(mean(Disruption_Rating, na.rm = TRUE), 2),
+    Confidence_Rating = round(mean(Disruption_Rating, na.rm = TRUE), 2),
     .groups = "drop"
   ) %>%
   arrange(Participant)
@@ -4246,33 +4256,25 @@ df_sjt <- read_excel("./data/SJT.xlsx") %>%
 df_quest <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
   filter(LI06_05 != 201, LI06_05 != 223) %>%  # Exclude specific IDs
   mutate(
-    Group = ifelse(LI06_05 < 200, "Novice", "Expert"),  # Group Definition
-    Participant = LI06_05  # Add new column "Participant"
+    Group = ifelse(LI06_05 < 200, "Novice", "Expert"),  # Define groups
+    Participant = LI06_05  # Create a new Participant column
   ) %>%
   arrange(Participant) %>% 
   select(
     Participant, 
     Group, 
-    LM01_01:LM01_08,  # Classroom Management and Disruption Handling combined
-    LP01_01:LP01_08   # Presence
+    starts_with("LM01"),  # Classroom Management and Disruption Handling
+    starts_with("LP01")   # Presence
   ) %>%
-  rename(
-    CM_01 = LM01_01, CM_02 = LM01_02, CM_03 = LM01_03, CM_04 = LM01_04, CM_05 = LM01_05,
-    CM_06 = LM01_06, CM_07 = LM01_07, CM_08 = LM01_08,  # Renaming combined columns
-    P_01 = LP01_01, P_02 = LP01_02, P_03 = LP01_03, P_04 = LP01_04, P_05 = LP01_05,
-    P_06 = LP01_06, P_07 = LP01_07, P_08 = LP01_08
-  ) %>%
-  na.omit()  # Remove NAs
+  na.omit()  # Remove rows with missing values
 
-# Summarize the scales to a mean per participant, rounded to 2 decimals
+# Summarize the scales to an overall mean per participant
 df_quest_summary <- df_quest %>%
   mutate(
-    # Calculate mean for Classroom Management (CM)
-    Self_Eval_CM = round(rowMeans(select(., starts_with("CM")), na.rm = TRUE), 2),
-    # Calculate mean for Presence (P), excluding the Participant column
-    Self_Eval_Presence = round(rowMeans(select(., starts_with("P"))[, -1], na.rm = TRUE), 2) # Exclude Participant column
+    # Calculate the overall self-evaluation mean across all classroom management and presence subscales
+    Self_Eval_Overall = round(rowMeans(select(., starts_with("LM01"), starts_with("LP01")), na.rm = TRUE), 2)
   ) %>%
-  select(Participant, Self_Eval_CM, Self_Eval_Presence) %>% # Keep Participant and means for each scale
+  select(Participant, Self_Eval_Overall) %>%  # Keep only the overall self-evaluation score
   arrange(Participant)
 
 
@@ -4282,7 +4284,6 @@ df_quest_summary <- df_quest %>%
 df_demo <- df_demo %>% mutate(Participant = as.numeric(Participant))
 df_aoi_numb_dur <- df_aoi_numb_dur %>% mutate(Participant = as.numeric(Participant))
 df_aoi_stud <- df_aoi_stud %>% mutate(Participant = as.numeric(Participant))
-df_aoi_disrup <- df_aoi_disrup %>% mutate(Participant = as.numeric(Participant))
 df_ttff_disrup_participant_summary <- df_ttff_disrup_participant_summary %>% mutate(Participant = as.numeric(Participant))
 df_sri_combined <- df_sri_combined %>% mutate(Participant = as.numeric(Participant))
 df_sjt <- df_sjt %>% mutate(Participant = as.numeric(Participant))
@@ -4293,7 +4294,6 @@ df_list <- list(
   df_demo,
   df_aoi_numb_dur,
   df_aoi_stud,
-  df_aoi_disrup,
   df_ttff_disrup_participant_summary,
   df_sri_combined,
   df_sjt,
@@ -4310,58 +4310,42 @@ library(knitr)
 library(kableExtra)
 
 # 3. Correlation Analysis: Overall ---------------------------------------------
-
-# Select relevant variables for correlation analysis
-
+# 1. Select relevant variables for correlation analysis --------------------
 df_correlation <- df_merge %>%
   select(
-    Participant,
-    `Teaching Experience`, 
     Number_fixation_min_mtu, 
     Average_duration_mtu, 
     GRI_mtu, 
-    Stud_number_fixation_min, 
-    Average_duration_stud, 
-    Disrup_fixations_per_second, 
-    Disrup_average_fixations, 
-    Disrup_time_fixation_sec, 
-    Disruption_Appraisal, 
-    Confidence_Appraisal, 
-    Prevalence_Rating,
-    Disruption_Appraisal_Mean_chatting,
-    Disruption_Appraisal_Mean_drawing,
-    Disruption_Appraisal_Mean_whispering,
-    Confidence_Appraisal_Mean_chatting,
-    Confidence_Appraisal_Mean_drawing,
-    Confidence_Appraisal_Mean_whispering,
+    Stud_number_fixation_min,
+    log_Disrup_time_fixation_sec,
+    Disruption_Rating, 
+    Confidence_Rating, 
     SJT_All, 
-    SJT_Monitoring, 
-    Self_Eval_CM, 
-    Self_Eval_Presence
-  )
+    Self_Eval_Overall
+  ) %>%
+  drop_na()  # Remove rows with missing values for accurate correlation
 
-# Compute correlation coefficients and p-values for the full dataset
+# 2. Compute correlation coefficients and p-values ------------------------
 cor_results <- rcorr(as.matrix(df_correlation))
-cor_matrix <- as.data.frame(cor_results$r)  # Extract correlation coefficients
-p_matrix <- as.data.frame(cor_results$P)   # Extract p-values
+cor_matrix <- cor_results$r  # Extract correlation coefficients
+p_matrix <- cor_results$P    # Extract p-values
 
-# Reshape correlation coefficients and p-values into a tidy format
-correlation_pvalues <- cor_matrix %>%
-  rownames_to_column(var = "Variable1") %>%
-  pivot_longer(-Variable1, names_to = "Variable2", values_to = "Correlation") %>%
+# 3. Reshape correlation coefficients and p-values into a tidy format -----
+correlation_pvalues <- as.data.frame(as.table(cor_matrix)) %>%
+  rename(Variable1 = Var1, Variable2 = Var2, Correlation = Freq) %>%
   left_join(
-    p_matrix %>%
-      rownames_to_column(var = "Variable1") %>%
-      pivot_longer(-Variable1, names_to = "Variable2", values_to = "P_value"),
+    as.data.frame(as.table(p_matrix)) %>%
+      rename(Variable1 = Var1, Variable2 = Var2, P_value = Freq),
     by = c("Variable1", "Variable2")
   ) %>%
+  filter(Variable1 != Variable2) %>%  # Remove redundant self-correlations
   mutate(
     Correlation = round(Correlation, 2),  # Round correlation coefficients
-    P_value = round(P_value, 2),          # Round p-values
-    APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))  # Format APA style
+    P_value = round(P_value, 3),          # Round p-values
+    APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))  # APA formatting
   )
 
-# Create an APA-style table
+# 4. Create an APA-style correlation table --------------------------------------------
 correlation_table <- correlation_pvalues %>%
   select(Variable1, Variable2, APA_Format) %>%
   pivot_wider(
@@ -4369,92 +4353,130 @@ correlation_table <- correlation_pvalues %>%
     values_from = APA_Format
   )
 
-# Display the table
-kable(correlation_table, format = "html", caption = "Correlation Table: Overall") %>%
-  kable_styling(full_width = TRUE, bootstrap_options = c("striped", "hover", "condensed"))
+# Ensure Variable1 is a factor to maintain order
+correlation_table$Variable1 <- factor(correlation_table$Variable1, levels = unique(correlation_table$Variable1))
+
+# Convert to flextable for APA formatting
+cor_flextable <- correlation_table %>%
+  flextable() %>%
+  theme_booktabs() %>%
+  autofit() %>%
+  set_caption("Table 1: Correlation Table (APA Format)")
+
+# Load required libraries
+library(officer)
+library(flextable)
+
+# Ensure flextable is properly formatted
+cor_flextable <- cor_flextable %>%
+  fontsize(size = 11, part = "all") %>%  # Set font size
+  bold(part = "header") %>%  # Make headers bold
+  align(align = "center", part = "all") %>%  # Center align the text
+  width(width = 1.5)  # Adjust column width
+
+# Print table to check before saving (Debugging Step)
+print(cor_flextable)
+
+# 5. Save the table as a Word document --------------------------------------
+doc <- read_docx() %>% 
+  body_add_par("Table 1: Correlation Table (APA Format)", style = "heading 1") %>%
+  body_add_par("", style = "Normal") %>%  # Add a blank space before the table
+  body_add_flextable(cor_flextable) %>%
+  body_add_par("", style = "Normal")  # Add blank space after the table
+
+# Save the document
+docx_path <- "Correlation_Table_APA.docx"
+save_as_docx(doc, path = docx_path)
 
 
-# 4. Correlation Analysis: Experts ---------------------------------------------
+# Define the full file path explicitly
+docx_path <- file.path(getwd(), "Correlation_Table_APA.docx")
 
-# Filter data for Experts (Participants with ID > 200)
-df_experts <- df_merge %>%
-  filter(Participant > 200) %>% 
-  select(-Participant)
-
-# Compute correlation coefficients and p-values for Experts
-cor_results_experts <- rcorr(as.matrix(df_experts))
-cor_matrix_experts <- as.data.frame(cor_results_experts$r)  # Extract correlation coefficients
-p_matrix_experts <- as.data.frame(cor_results_experts$P)   # Extract p-values
-
-# Reshape data into tidy format for Experts
-correlation_pvalues_experts <- cor_matrix_experts %>%
-  rownames_to_column(var = "Variable1") %>%
-  pivot_longer(-Variable1, names_to = "Variable2", values_to = "Correlation") %>%
-  left_join(
-    p_matrix_experts %>%
-      rownames_to_column(var = "Variable1") %>%
-      pivot_longer(-Variable1, names_to = "Variable2", values_to = "P_value"),
-    by = c("Variable1", "Variable2")
-  ) %>%
-  mutate(
-    Correlation = round(Correlation, 2),
-    P_value = round(P_value, 2),
-    APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
-  )
-
-# Create an APA-style table for Experts
-correlation_table_experts <- correlation_pvalues_experts %>%
-  select(Variable1, Variable2, APA_Format) %>%
-  pivot_wider(
-    names_from = Variable2,
-    values_from = APA_Format
-  )
-
-# Display the Experts table
-kable(correlation_table_experts, format = "html", caption = "Correlation Table: Experts") %>%
-  kable_styling(full_width = TRUE, bootstrap_options = c("striped", "hover", "condensed"))
+# Save the document
+save_as_docx(doc, path = docx_path)
 
 
-# 5. Correlation Analysis: Novices ---------------------------------------------
-
-# Filter data for Novices (Participants with ID < 200)
-df_novices <- df_merge %>%
-  filter(Participant < 200) %>% 
-  select(-`Teaching Experience`,
-         -Participant)
-
-# Compute correlation coefficients and p-values for Novices
-cor_results_novices <- rcorr(as.matrix(df_novices))
-cor_matrix_novices <- as.data.frame(cor_results_novices$r)  # Extract correlation coefficients
-p_matrix_novices <- as.data.frame(cor_results_novices$P)   # Extract p-values
-
-# Reshape data into tidy format for Novices
-correlation_pvalues_novices <- cor_matrix_novices %>%
-  rownames_to_column(var = "Variable1") %>%
-  pivot_longer(-Variable1, names_to = "Variable2", values_to = "Correlation") %>%
-  left_join(
-    p_matrix_novices %>%
-      rownames_to_column(var = "Variable1") %>%
-      pivot_longer(-Variable1, names_to = "Variable2", values_to = "P_value"),
-    by = c("Variable1", "Variable2")
-  ) %>%
-  mutate(
-    Correlation = round(Correlation, 2),
-    P_value = round(P_value, 2),
-    APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
-  )
-
-# Create an APA-style table for Novices
-correlation_table_novices <- correlation_pvalues_novices %>%
-  select(Variable1, Variable2, APA_Format) %>%
-  pivot_wider(
-    names_from = Variable2,
-    values_from = APA_Format
-  )
-
-# Display the Novices table
-kable(correlation_table_novices, format = "html", caption = "Correlation Table: Novices") %>%
-  kable_styling(full_width = TRUE, bootstrap_options = c("striped", "hover", "condensed"))
+# # 4. Correlation Analysis: Experts ---------------------------------------------
+# 
+# # Filter data for Experts (Participants with ID > 200)
+# df_experts <- df_merge %>%
+#   filter(Participant > 200) %>% 
+#   select(-Participant)
+# 
+# # Compute correlation coefficients and p-values for Experts
+# cor_results_experts <- rcorr(as.matrix(df_experts))
+# cor_matrix_experts <- as.data.frame(cor_results_experts$r)  # Extract correlation coefficients
+# p_matrix_experts <- as.data.frame(cor_results_experts$P)   # Extract p-values
+# 
+# # Reshape data into tidy format for Experts
+# correlation_pvalues_experts <- cor_matrix_experts %>%
+#   rownames_to_column(var = "Variable1") %>%
+#   pivot_longer(-Variable1, names_to = "Variable2", values_to = "Correlation") %>%
+#   left_join(
+#     p_matrix_experts %>%
+#       rownames_to_column(var = "Variable1") %>%
+#       pivot_longer(-Variable1, names_to = "Variable2", values_to = "P_value"),
+#     by = c("Variable1", "Variable2")
+#   ) %>%
+#   mutate(
+#     Correlation = round(Correlation, 2),
+#     P_value = round(P_value, 2),
+#     APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
+#   )
+# 
+# # Create an APA-style table for Experts
+# correlation_table_experts <- correlation_pvalues_experts %>%
+#   select(Variable1, Variable2, APA_Format) %>%
+#   pivot_wider(
+#     names_from = Variable2,
+#     values_from = APA_Format
+#   )
+# 
+# # Display the Experts table
+# kable(correlation_table_experts, format = "html", caption = "Correlation Table: Experts") %>%
+#   kable_styling(full_width = TRUE, bootstrap_options = c("striped", "hover", "condensed"))
+# 
+# 
+# # 5. Correlation Analysis: Novices ---------------------------------------------
+# 
+# # Filter data for Novices (Participants with ID < 200)
+# df_novices <- df_merge %>%
+#   filter(Participant < 200) %>% 
+#   select(-`Teaching Experience`,
+#          -Participant)
+# 
+# # Compute correlation coefficients and p-values for Novices
+# cor_results_novices <- rcorr(as.matrix(df_novices))
+# cor_matrix_novices <- as.data.frame(cor_results_novices$r)  # Extract correlation coefficients
+# p_matrix_novices <- as.data.frame(cor_results_novices$P)   # Extract p-values
+# 
+# # Reshape data into tidy format for Novices
+# correlation_pvalues_novices <- cor_matrix_novices %>%
+#   rownames_to_column(var = "Variable1") %>%
+#   pivot_longer(-Variable1, names_to = "Variable2", values_to = "Correlation") %>%
+#   left_join(
+#     p_matrix_novices %>%
+#       rownames_to_column(var = "Variable1") %>%
+#       pivot_longer(-Variable1, names_to = "Variable2", values_to = "P_value"),
+#     by = c("Variable1", "Variable2")
+#   ) %>%
+#   mutate(
+#     Correlation = round(Correlation, 2),
+#     P_value = round(P_value, 2),
+#     APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
+#   )
+# 
+# # Create an APA-style table for Novices
+# correlation_table_novices <- correlation_pvalues_novices %>%
+#   select(Variable1, Variable2, APA_Format) %>%
+#   pivot_wider(
+#     names_from = Variable2,
+#     values_from = APA_Format
+#   )
+# 
+# # Display the Novices table
+# kable(correlation_table_novices, format = "html", caption = "Correlation Table: Novices") %>%
+#   kable_styling(full_width = TRUE, bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
