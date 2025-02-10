@@ -4073,7 +4073,7 @@ df_demo <- read_excel("./data/data_empschul_labor_lehrperson.xlsx") %>%
   filter(!LI06_05 %in% c(201, 223)) %>%  # Exclude participants without eye-tracking data
   transmute(
     Participant = LI06_05,
-    `Teaching Experience` = LI04_01
+    # `Teaching Experience` = LI04_01
   ) %>%
   arrange(Participant)
 
@@ -4198,46 +4198,19 @@ df_sri <- read_excel("data/Coding_SRI.xlsx") %>%
     !prevalence_rating %in% c(-100, -99, -88)  # Removing invalid prevalence ratings
   ) %>%
   mutate(
-    Group = ifelse(ID < 200, "Novice", "Expert"),  # Create a Group column based on ID
     Participant = ID,  # Keep ID as is for Participant column
     Disruption_Rating = as.numeric(disruption_appraisal),
-    Confidence_Rating = as.numeric(confidence_appraisal),
-    Prevalence_Rating = as.numeric(prevalence_rating)
-  ) %>%
-  select(-ID) %>% # Remove the original ID column after renaming
-  arrange(Participant)
-
-# Summarize the SRI Data for Disruptions and Overall Columns
-
-# Step 1: Summarize appraisals for each disruption
-df_sri_disrup_summary <- df_sri %>%
-  filter(event %in% c(verbal_disruptions, lack_of_eagerness)) %>%
-  group_by(Participant, event) %>%
-  summarise(
-    Disruption_Appraisal_Mean = mean(disruption_appraisal, na.rm = TRUE),
-    Confidence_Appraisal_Mean = mean(confidence_appraisal, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  pivot_wider(
-    names_from = event,
-    values_from = c(Disruption_Appraisal_Mean, Confidence_Appraisal_Mean),
-    names_sep = "_"
-  ) %>%
-  mutate(across(everything(), ~ replace_na(., 0))) %>%   # Replace missing values with 0
-  arrange(Participant)
-
-# Step 2: Summarize overall appraisals by Participant
-df_sri_clean <- df_sri %>%
+    Confidence_Rating = as.numeric(confidence_appraisal)
+    )%>%
+  select(Participant, 
+         Disruption_Rating,
+         Confidence_Rating) %>% # Remove the original ID column after renaming
+  arrange(Participant) %>%
   group_by(Participant) %>%
   summarise(
     Disruption_Rating = round(mean(Disruption_Rating, na.rm = TRUE), 2),
-    Confidence_Rating = round(mean(Disruption_Rating, na.rm = TRUE), 2),
-    .groups = "drop"
-  ) %>%
-  arrange(Participant)
-
-# Combine both summaries (disruption-specific and overall)
-df_sri_combined <- full_join(df_sri_clean, df_sri_disrup_summary, by = "Participant")
+    Confidence_Rating = round(mean(Confidence_Rating, na.rm = TRUE), 2)
+  )
 
 
 # Situational Judgment Test (SJT) --------------------------------------------
@@ -4285,7 +4258,7 @@ df_demo <- df_demo %>% mutate(Participant = as.numeric(Participant))
 df_aoi_numb_dur <- df_aoi_numb_dur %>% mutate(Participant = as.numeric(Participant))
 df_aoi_stud <- df_aoi_stud %>% mutate(Participant = as.numeric(Participant))
 df_ttff_disrup_participant_summary <- df_ttff_disrup_participant_summary %>% mutate(Participant = as.numeric(Participant))
-df_sri_combined <- df_sri_combined %>% mutate(Participant = as.numeric(Participant))
+df_sri <- df_sri %>% mutate(Participant = as.numeric(Participant))
 df_sjt <- df_sjt %>% mutate(Participant = as.numeric(Participant))
 df_quest_summary <- df_quest_summary %>% mutate(Participant = as.numeric(Participant))
 
@@ -4295,7 +4268,7 @@ df_list <- list(
   df_aoi_numb_dur,
   df_aoi_stud,
   df_ttff_disrup_participant_summary,
-  df_sri_combined,
+  df_sri,
   df_sjt,
   df_quest_summary
 )
@@ -4309,13 +4282,14 @@ library(Hmisc)
 library(knitr)
 library(kableExtra)
 
-# 3. Correlation Analysis: Overall ---------------------------------------------
-# 1. Select relevant variables for correlation analysis --------------------
-df_correlation <- df_merge %>%
+# Separate Data by Experience Level
+# Experienced teachers (ID > 200)
+df_correlation_experienced <- df_merge %>%
+  filter(Participant > 200) %>%
   select(
     Number_fixation_min_mtu, 
     Average_duration_mtu, 
-    GRI_mtu, 
+    GRI, 
     Stud_number_fixation_min,
     log_Disrup_time_fixation_sec,
     Disruption_Rating, 
@@ -4323,160 +4297,89 @@ df_correlation <- df_merge %>%
     SJT_All, 
     Self_Eval_Overall
   ) %>%
-  drop_na()  # Remove rows with missing values for accurate correlation
+  drop_na()
 
-# 2. Compute correlation coefficients and p-values ------------------------
-cor_results <- rcorr(as.matrix(df_correlation))
-cor_matrix <- cor_results$r  # Extract correlation coefficients
-p_matrix <- cor_results$P    # Extract p-values
+# Inexperienced teachers (ID < 200)
+df_correlation_inexperienced <- df_merge %>%
+  filter(Participant < 200) %>%
+  select(
+    Average_duration_mtu,
+    Number_fixation_min_mtu, 
+    GRI, 
+    Stud_number_fixation_min,
+    log_Disrup_time_fixation_sec,
+    Disruption_Rating, 
+    Confidence_Rating, 
+    Self_Eval_Overall,
+    SJT_All
+  ) %>%
+  drop_na()
 
-# 3. Reshape correlation coefficients and p-values into a tidy format -----
-correlation_pvalues <- as.data.frame(as.table(cor_matrix)) %>%
+# Compute Correlations for Experienced Teachers
+cor_results_experienced <- rcorr(as.matrix(df_correlation_experienced))
+cor_matrix_experienced <- cor_results_experienced$r
+p_matrix_experienced <- cor_results_experienced$P
+
+# Compute Correlations for Inexperienced Teachers
+cor_results_inexperienced <- rcorr(as.matrix(df_correlation_inexperienced))
+cor_matrix_inexperienced <- cor_results_inexperienced$r
+p_matrix_inexperienced <- cor_results_inexperienced$P
+
+# Reshape correlation coefficients and p-values into a tidy format for experienced teachers
+correlation_pvalues_experienced <- as.data.frame(as.table(cor_matrix_experienced)) %>%
   rename(Variable1 = Var1, Variable2 = Var2, Correlation = Freq) %>%
   left_join(
-    as.data.frame(as.table(p_matrix)) %>%
+    as.data.frame(as.table(p_matrix_experienced)) %>%
       rename(Variable1 = Var1, Variable2 = Var2, P_value = Freq),
     by = c("Variable1", "Variable2")
   ) %>%
-  filter(Variable1 != Variable2) %>%  # Remove redundant self-correlations
+  filter(Variable1 != Variable2) %>%
   mutate(
-    Correlation = round(Correlation, 2),  # Round correlation coefficients
-    P_value = round(P_value, 3),          # Round p-values
-    APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))  # APA formatting
+    Correlation = round(Correlation, 2),
+    P_value = round(P_value, 3),
+    APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
   )
 
-# 4. Create an APA-style correlation table --------------------------------------------
-correlation_table <- correlation_pvalues %>%
-  select(Variable1, Variable2, APA_Format) %>%
-  pivot_wider(
-    names_from = Variable2,
-    values_from = APA_Format
+# Reshape correlation coefficients and p-values into a tidy format for inexperienced teachers
+correlation_pvalues_inexperienced <- as.data.frame(as.table(cor_matrix_inexperienced)) %>%
+  rename(Variable1 = Var1, Variable2 = Var2, Correlation = Freq) %>%
+  left_join(
+    as.data.frame(as.table(p_matrix_inexperienced)) %>%
+      rename(Variable1 = Var1, Variable2 = Var2, P_value = Freq),
+    by = c("Variable1", "Variable2")
+  ) %>%
+  filter(Variable1 != Variable2) %>%
+  mutate(
+    Correlation = round(Correlation, 2),
+    P_value = round(P_value, 3),
+    APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
   )
+
+# Create correlation tables for both groups
+correlation_table_experienced <- correlation_pvalues_experienced %>%
+  select(Variable1, Variable2, APA_Format) %>%
+  pivot_wider(names_from = Variable2, values_from = APA_Format)
+
+correlation_table_inexperienced <- correlation_pvalues_inexperienced %>%
+  select(Variable1, Variable2, APA_Format) %>%
+  pivot_wider(names_from = Variable2, values_from = APA_Format)
 
 # Ensure Variable1 is a factor to maintain order
-correlation_table$Variable1 <- factor(correlation_table$Variable1, levels = unique(correlation_table$Variable1))
+correlation_table_experienced$Variable1 <- factor(correlation_table_experienced$Variable1, levels = unique(correlation_table_experienced$Variable1))
+correlation_table_inexperienced$Variable1 <- factor(correlation_table_inexperienced$Variable1, levels = unique(correlation_table_inexperienced$Variable1))
 
 # Convert to flextable for APA formatting
-cor_flextable <- correlation_table %>%
+cor_flextable_experienced <- correlation_table_experienced %>%
   flextable() %>%
   theme_booktabs() %>%
   autofit() %>%
-  set_caption("Table 1: Correlation Table (APA Format)")
+  set_caption("Table 1: Correlation Table for Experienced Teachers")
 
-# Load required libraries
-library(officer)
-library(flextable)
-
-# Ensure flextable is properly formatted
-cor_flextable <- cor_flextable %>%
-  fontsize(size = 11, part = "all") %>%  # Set font size
-  bold(part = "header") %>%  # Make headers bold
-  align(align = "center", part = "all") %>%  # Center align the text
-  width(width = 1.5)  # Adjust column width
-
-# Print table to check before saving (Debugging Step)
-print(cor_flextable)
-
-# 5. Save the table as a Word document --------------------------------------
-doc <- read_docx() %>% 
-  body_add_par("Table 1: Correlation Table (APA Format)", style = "heading 1") %>%
-  body_add_par("", style = "Normal") %>%  # Add a blank space before the table
-  body_add_flextable(cor_flextable) %>%
-  body_add_par("", style = "Normal")  # Add blank space after the table
-
-# Save the document
-docx_path <- "Correlation_Table_APA.docx"
-save_as_docx(doc, path = docx_path)
-
-
-# Define the full file path explicitly
-docx_path <- file.path(getwd(), "Correlation_Table_APA.docx")
-
-# Save the document
-save_as_docx(doc, path = docx_path)
-
-
-# # 4. Correlation Analysis: Experts ---------------------------------------------
-# 
-# # Filter data for Experts (Participants with ID > 200)
-# df_experts <- df_merge %>%
-#   filter(Participant > 200) %>% 
-#   select(-Participant)
-# 
-# # Compute correlation coefficients and p-values for Experts
-# cor_results_experts <- rcorr(as.matrix(df_experts))
-# cor_matrix_experts <- as.data.frame(cor_results_experts$r)  # Extract correlation coefficients
-# p_matrix_experts <- as.data.frame(cor_results_experts$P)   # Extract p-values
-# 
-# # Reshape data into tidy format for Experts
-# correlation_pvalues_experts <- cor_matrix_experts %>%
-#   rownames_to_column(var = "Variable1") %>%
-#   pivot_longer(-Variable1, names_to = "Variable2", values_to = "Correlation") %>%
-#   left_join(
-#     p_matrix_experts %>%
-#       rownames_to_column(var = "Variable1") %>%
-#       pivot_longer(-Variable1, names_to = "Variable2", values_to = "P_value"),
-#     by = c("Variable1", "Variable2")
-#   ) %>%
-#   mutate(
-#     Correlation = round(Correlation, 2),
-#     P_value = round(P_value, 2),
-#     APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
-#   )
-# 
-# # Create an APA-style table for Experts
-# correlation_table_experts <- correlation_pvalues_experts %>%
-#   select(Variable1, Variable2, APA_Format) %>%
-#   pivot_wider(
-#     names_from = Variable2,
-#     values_from = APA_Format
-#   )
-# 
-# # Display the Experts table
-# kable(correlation_table_experts, format = "html", caption = "Correlation Table: Experts") %>%
-#   kable_styling(full_width = TRUE, bootstrap_options = c("striped", "hover", "condensed"))
-# 
-# 
-# # 5. Correlation Analysis: Novices ---------------------------------------------
-# 
-# # Filter data for Novices (Participants with ID < 200)
-# df_novices <- df_merge %>%
-#   filter(Participant < 200) %>% 
-#   select(-`Teaching Experience`,
-#          -Participant)
-# 
-# # Compute correlation coefficients and p-values for Novices
-# cor_results_novices <- rcorr(as.matrix(df_novices))
-# cor_matrix_novices <- as.data.frame(cor_results_novices$r)  # Extract correlation coefficients
-# p_matrix_novices <- as.data.frame(cor_results_novices$P)   # Extract p-values
-# 
-# # Reshape data into tidy format for Novices
-# correlation_pvalues_novices <- cor_matrix_novices %>%
-#   rownames_to_column(var = "Variable1") %>%
-#   pivot_longer(-Variable1, names_to = "Variable2", values_to = "Correlation") %>%
-#   left_join(
-#     p_matrix_novices %>%
-#       rownames_to_column(var = "Variable1") %>%
-#       pivot_longer(-Variable1, names_to = "Variable2", values_to = "P_value"),
-#     by = c("Variable1", "Variable2")
-#   ) %>%
-#   mutate(
-#     Correlation = round(Correlation, 2),
-#     P_value = round(P_value, 2),
-#     APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
-#   )
-# 
-# # Create an APA-style table for Novices
-# correlation_table_novices <- correlation_pvalues_novices %>%
-#   select(Variable1, Variable2, APA_Format) %>%
-#   pivot_wider(
-#     names_from = Variable2,
-#     values_from = APA_Format
-#   )
-# 
-# # Display the Novices table
-# kable(correlation_table_novices, format = "html", caption = "Correlation Table: Novices") %>%
-#   kable_styling(full_width = TRUE, bootstrap_options = c("striped", "hover", "condensed"))
+cor_flextable_inexperienced <- correlation_table_inexperienced %>%
+  flextable() %>%
+  theme_booktabs() %>%
+  autofit() %>%
+  set_caption("Table 2: Correlation Table for Inexperienced Teachers")
 
 ```
 
