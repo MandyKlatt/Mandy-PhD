@@ -4381,6 +4381,65 @@ cor_flextable_inexperienced <- correlation_table_inexperienced %>%
   autofit() %>%
   set_caption("Table 2: Correlation Table for Inexperienced Teachers")
 
+
+### Correlation table for all participants
+
+# Define relevant columns for correlation analysis
+correlation_columns <- c(
+  "GRI", 
+  "Stud_number_fixation_min",
+  "log_Disrup_time_fixation_sec",
+  "Disruption_Rating", 
+  "Confidence_Rating", 
+  "SJT_All", 
+  "Self_Eval_Overall"
+)
+
+# Drop rows with missing values
+df_correlation_all <- df_merge %>%
+  select(all_of(correlation_columns)) %>%
+  drop_na()
+
+# Compute Pearson correlation matrix
+cor_results_all <- rcorr(as.matrix(df_correlation_all))
+
+# Extract correlation coefficients and p-values
+cor_matrix_all <- cor_results_all$r
+p_matrix_all <- cor_results_all$P
+
+# Convert correlation and p-value matrices into a tidy format
+correlation_pvalues_all <- as.data.frame(as.table(cor_matrix_all)) %>%
+  rename(Variable1 = Var1, Variable2 = Var2, Correlation = Freq) %>%
+  left_join(
+    as.data.frame(as.table(p_matrix_all)) %>%
+      rename(Variable1 = Var1, Variable2 = Var2, P_value = Freq),
+    by = c("Variable1", "Variable2")
+  ) %>%
+  filter(Variable1 != Variable2) %>%
+  mutate(
+    Correlation = round(Correlation, 2),
+    P_value = round(P_value, 3),
+    APA_Format = paste0(Correlation, ifelse(P_value < 0.05, "*", ""))
+  )
+
+# Reshape into a correlation table format
+correlation_table_all <- correlation_pvalues_all %>%
+  select(Variable1, Variable2, APA_Format) %>%
+  pivot_wider(names_from = Variable2, values_from = APA_Format)
+
+# Ensure Variable1 is a factor to maintain order
+correlation_table_all$Variable1 <- factor(correlation_table_all$Variable1, levels = unique(correlation_table_all$Variable1))
+
+# Create APA-styled table
+cor_flextable_all <- correlation_table_all %>%
+  flextable() %>%
+  theme_booktabs() %>%
+  autofit() %>%
+  set_caption("Table: Correlation Table for All Participants")
+
+# Print the table
+cor_flextable_all
+
 ```
 
 
